@@ -41,3 +41,7 @@
 .read-the-docs {
   color: #888;
 }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem; /* matches navbar height */
+}

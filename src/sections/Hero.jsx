@@ -4,7 +4,7 @@ import NeuralFieldBackground from "../components/NeuralFieldBackground";
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen w-screen overflow-hidden">
+    <section className="relative min-h-screen w-screen overflow-hidden" id="hero">
       
       {/* Full Background */}
       <div className="absolute inset-0 z-0">

@@ -1,29 +1,34 @@
-import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import Navbar from "./components/Navbar";
 
-import Intro from "./components/Intro";
+// Sections
 import Hero from "./sections/Hero";
 import About from "./sections/About";
-
+import Skills from "./sections/Skills";
+import Certifications from "./sections/Certifications";
+import Projects from "./sections/Projects";
+import Education from "./sections/Education";
+import Experience from "./sections/Experience";
+import Contact from "./sections/Contact";
+import Footer from "./components/Footer";
 function App() {
-  const [showIntro, setShowIntro] = useState(true);
-
   return (
     <>
-      {/* Intro Animation */}
-      <AnimatePresence mode="wait">
-        {showIntro && (
-          <Intro onFinish={() => setShowIntro(false)} />
-        )}
-      </AnimatePresence>
+
+      {/* Navigation */}
+      <Navbar />
 
       {/* Main Content */}
-      {!showIntro && (
-        <>
-          <Hero />
-          <About />
-        </>
-      )}
+      <main className="relative z-10">
+        <Hero />
+        <About />
+        <Skills />
+        <Certifications />
+        <Projects />
+        <Education />
+        <Experience />
+        <Contact />
+        <Footer />
+      </main>
     </>
   );
 }
