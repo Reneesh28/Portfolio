@@ -1,13 +1,22 @@
 import education from "../data/education";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function Education() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section
       id="education"
       className="scroll-mt-16 w-full bg-black text-white px-6 sm:px-12 lg:px-24 py-28"
     >
-      <div className="max-w-7xl mx-auto">
-
+      <motion.div
+        className="max-w-7xl mx-auto"
+        initial={{ opacity: 0, y: reduceMotion ? 0 : 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        style={{ willChange: "transform" }}
+      >
         {/* Header */}
         <p className="text-neutral-400 uppercase tracking-[0.3em] text-xs mb-4">
           Education
@@ -75,8 +84,7 @@ export default function Education() {
             </div>
           ))}
         </div>
-
-      </div>
+      </motion.div>
     </section>
   );
 }

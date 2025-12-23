@@ -1,14 +1,23 @@
 import skills from "../data/skills";
 import { FiCode } from "react-icons/fi";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function Skills() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section
       id="skills"
       className="scroll-mt-16 w-full bg-black text-white px-6 sm:px-12 lg:px-24 py-28"
     >
-      <div className="max-w-7xl mx-auto">
-
+      <motion.div
+        className="max-w-7xl mx-auto"
+        initial={{ opacity: 0, y: reduceMotion ? 0 : 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        style={{ willChange: "transform" }}
+      >
         {/* Section Header */}
         <p className="text-neutral-400 uppercase tracking-[0.3em] text-xs mb-4">
           Skills
@@ -43,7 +52,7 @@ export default function Skills() {
                       key={skill.name}
                       className="flex items-center justify-between"
                     >
-                      {/* Left: Icon + Name */}
+                      {/* Left */}
                       <div className="flex items-center gap-3">
                         <span
                           className="
@@ -54,7 +63,7 @@ export default function Skills() {
                             text-neutral-300
                             hover:border-neutral-400
                             hover:text-white
-                            transition-all duration-300
+                            transition-colors duration-200
                           "
                         >
                           {Icon ? (
@@ -69,7 +78,7 @@ export default function Skills() {
                         </span>
                       </div>
 
-                      {/* Right: Percentage */}
+                      {/* Right */}
                       <span
                         className="
                           text-xs
@@ -85,12 +94,10 @@ export default function Skills() {
                   );
                 })}
               </div>
-
             </div>
           ))}
         </div>
-
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -1,14 +1,23 @@
 import projects from "../data/projects";
 import { FiGithub, FiClock } from "react-icons/fi";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function Projects() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section
       id="projects"
       className="scroll-mt-16 w-full bg-black text-white px-6 sm:px-12 lg:px-24 py-28"
     >
-      <div className="max-w-7xl mx-auto">
-
+      <motion.div
+        className="max-w-7xl mx-auto"
+        initial={{ opacity: 0, y: reduceMotion ? 0 : 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        style={{ willChange: "transform" }}
+      >
         {/* Header */}
         <p className="text-neutral-400 uppercase tracking-[0.3em] text-xs mb-4">
           Projects
@@ -20,7 +29,6 @@ export default function Projects() {
 
         {/* Project Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-
           {/* Existing Projects */}
           {projects.map((project) => (
             <div
@@ -81,7 +89,7 @@ export default function Projects() {
                   text-neutral-200
                   hover:border-neutral-500
                   hover:text-white
-                  transition-all
+                  transition-colors
                 "
               >
                 <FiGithub className="text-lg" />
@@ -118,7 +126,7 @@ export default function Projects() {
                   "Machine Learning",
                   "Data Analytics",
                   "Statistics",
-                  "Dashboarding"
+                  "Dashboarding",
                 ].map((item) => (
                   <span
                     key={item}
@@ -155,10 +163,8 @@ export default function Projects() {
               Coming Soon
             </div>
           </div>
-
         </div>
-
-      </div>
+      </motion.div>
     </section>
   );
 }

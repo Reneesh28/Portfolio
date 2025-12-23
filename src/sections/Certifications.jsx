@@ -1,14 +1,23 @@
 import certifications from "../data/certifcations";
 import { FiExternalLink } from "react-icons/fi";
+import { motion, useReducedMotion } from "framer-motion";
 
 export default function Certifications() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section
       id="certifications"
       className="scroll-mt-16 w-full bg-black text-white px-6 sm:px-12 lg:px-24 py-28"
     >
-      <div className="max-w-7xl mx-auto text-center">
-
+      <motion.div
+        className="max-w-7xl mx-auto text-center"
+        initial={{ opacity: 0, y: reduceMotion ? 0 : 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        style={{ willChange: "transform" }}
+      >
         <h2 className="text-3xl sm:text-4xl font-semibold mb-4">
           Certificates & Certifications
         </h2>
@@ -83,8 +92,7 @@ export default function Certifications() {
             </div>
           ))}
         </div>
-
-      </div>
+      </motion.div>
     </section>
   );
 }

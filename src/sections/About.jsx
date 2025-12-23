@@ -1,5 +1,5 @@
-
 import { Linkedin, Github, Mail } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function About() {
   return (
@@ -7,8 +7,13 @@ export default function About() {
       id="about"
       className="w-full bg-black text-white px-6 sm:px-12 lg:px-24 py-28"
     >
-      <div className="max-w-6xl mx-auto">
-
+      <motion.div
+        className="max-w-6xl mx-auto"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
         {/* Section Label */}
         <p className="text-neutral-400 uppercase tracking-[0.3em] text-xs mb-12">
           About
@@ -16,19 +21,19 @@ export default function About() {
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-
           {/* LEFT COLUMN — IMAGE + ICONS */}
           <div className="flex flex-col items-center">
-
-            {/* Profile Image (Circle) */}
-            <div className="
-              w-72 h-72
-              sm:w-80 sm:h-80
-              rounded-full
-              overflow-hidden
-              border border-neutral-700
-              flex items-center justify-center
-            ">
+            {/* Profile Image */}
+            <div
+              className="
+                w-72 h-72
+                sm:w-80 sm:h-80
+                rounded-full
+                overflow-hidden
+                border border-neutral-700
+                flex items-center justify-center
+              "
+            >
               <img
                 src="/profile.png"
                 alt="Balam Reneesh"
@@ -38,8 +43,6 @@ export default function About() {
 
             {/* Social Icons */}
             <div className="mt-8 flex items-center gap-8">
-
-              {/* LinkedIn */}
               <a
                 href="https://www.linkedin.com/in/balam-reneesh"
                 target="_blank"
@@ -59,7 +62,6 @@ export default function About() {
                 <Linkedin size={20} />
               </a>
 
-              {/* GitHub */}
               <a
                 href="https://github.com/Reneesh28"
                 target="_blank"
@@ -79,7 +81,6 @@ export default function About() {
                 <Github size={20} />
               </a>
 
-              {/* Email */}
               <a
                 href="mailto:reneesh3508925@gmail.com"
                 aria-label="Email"
@@ -96,7 +97,6 @@ export default function About() {
               >
                 <Mail size={20} />
               </a>
-
             </div>
           </div>
 
@@ -125,7 +125,7 @@ export default function About() {
               </p>
             </div>
 
-            {/* Resume Download */}
+            {/* Resume */}
             <div className="mt-10">
               <a
                 href="/resume.pdf"
@@ -138,9 +138,8 @@ export default function About() {
               </a>
             </div>
           </div>
-
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

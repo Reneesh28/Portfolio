@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 const navItems = [
   { label: "Home", href: "#hero" },
@@ -13,13 +14,51 @@ const navItems = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  /* =========================
+     SCROLL HANDLER
+  ========================== */
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+
+      // Always show near top
+      if (currentY < 80) {
+        setHidden(false);
+      }
+      // Scroll down → hide
+      else if (currentY > lastScrollY.current && !open) {
+        setHidden(true);
+      }
+      // Scroll up → show
+      else {
+        setHidden(false);
+      }
+
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [open]);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-black/70 backdrop-blur border-b border-neutral-800">
+    <motion.nav
+      initial={{ y: 0 }}
+      animate={{ y: hidden ? "-100%" : "0%" }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className="
+        fixed top-0 left-0 w-full z-50
+        bg-black/70 backdrop-blur
+        border-b border-neutral-800
+      "
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-24 h-16 flex items-center justify-between">
 
         {/* Logo */}
-        <a href="#hero" className="text-lg font-semibold">
+        <a href="#hero" className="text-lg font-semibold text-white">
           Reneesh
         </a>
 
@@ -39,8 +78,9 @@ export default function Navbar() {
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-neutral-300"
+          className="md:hidden text-neutral-300 text-xl"
           onClick={() => setOpen(!open)}
+          aria-label="Toggle Menu"
         >
           ☰
         </button>
@@ -64,6 +104,6 @@ export default function Navbar() {
           </ul>
         </div>
       )}
-    </nav>
+    </motion.nav>
   );
 }
