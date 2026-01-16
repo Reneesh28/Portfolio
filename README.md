@@ -1,16 +1,74 @@
-# React + Vite
+🌐 Portfolio Website
+    A modern, responsive personal portfolio website showcasing my projects, skills, and professional experience with a clean and scalable design.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+📖 About
+    This portfolio website serves as a central place to present my work, technical expertise, and background.
+    It is designed with a strong focus on clarity, performance, and maintainability, making it easy for recruiters and collaborators to explore my profile.
 
-Currently, two official plugins are available:
+✨ Features
+    Responsive design for all screen sizes
+    Clean and modern UI
+    Modular and reusable components
+    Project showcase section
+    Skills and experience overview
+    Contact section for easy communication
+    Optimized assets for fast load times
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🧰 Tech Stack
+    Frontend: HTML, CSS, JavaScript, React
+    Styling: Tailwind CSS
+    Design: Figma
+    Tools: Git, GitHub, npm
 
-## React Compiler
+🏗 Project Structure
+    Portfolio_Website/
+    ├── public/
+    │   ├── images/
+    │   └── icons/
+    ├── src/
+    │   ├── components/
+    │   ├── pages/
+    │   ├── styles/
+    │   └── utils/
+    ├── assets/
+    ├── README.md
+    └── package.json
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+⚙ Installation
+    Prerequisites
+    Node.js (v18 or higher)
+    npm or yarn
 
-## Expanding the ESLint configuration
+Setup   
+    git clone https://github.com/Reneesh28/Portfolio
+    cd Portfolio_Website
+    npm install
+    Run Locally:
+        npm run dev
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+Open in browser:
+    https://balam-reneesh.netlify.app/
+
+🚀 Deployment
+    This project can be deployed on:
+    Netlify
+    Build command:
+        npm run build
+
+🛣 Future Improvements
+    Dark mode support
+    Animations and micro-interactions
+    Blog or article section
+    CMS-based project updates
+    SEO and performance enhancements
+
+📜 License
+    This project is licensed under the MIT License.
+
+📬 Contact
+    Name: Balam Reneesh
+    GitHub: https://github.com/Reneesh28
+    LinkedIn: https://www.linkedin.com/in/balam-reneesh/
+
+⭐ If you find this project useful, feel free to star the repository.
