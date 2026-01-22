@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
-import IntroScene from "./components/Intro";
+import Intro from "./components/Intro";
 
 // Sections
 import Hero from "./sections/Hero";
@@ -18,13 +18,16 @@ function App() {
 
   return (
     <>
-      {!introDone && <IntroScene onFinish={() => setIntroDone(true)} />}
+      {/* GSAP INTRO — blocks everything */}
+      {!introDone && <Intro onFinish={() => setIntroDone(true)} />}
 
+      {/* MAIN CONTENT — loads AFTER intro */}
       {introDone && (
         <>
           <Navbar />
-          <main className="relative z-10">
-            <Hero introDone={introDone} />
+
+          <main className="relative z-10 overflow-hidden">
+            <Hero />
             <About />
             <Skills />
             <Certifications />

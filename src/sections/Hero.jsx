@@ -1,23 +1,49 @@
+import { useEffect, useRef, lazy, Suspense } from "react";
 import { ArrowDown } from "lucide-react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { lazy, Suspense } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const NeuralFieldBackground = lazy(() =>
   import("../components/NeuralFieldBackground")
 );
 
-export default function Hero({ introDone }) {
-  const reduceMotion = useReducedMotion();
+export default function Hero() {
+  const sectionRef = useRef(null);
+  const contentRef = useRef(null);
 
-  // 🔥 Scroll-based exit animation
-  const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const y = useTransform(scrollY, [0, 300], [0, -40]);
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // HERO EXIT — SCROLL CONTROLLED
+      gsap.fromTo(
+        contentRef.current,
+        {
+          opacity: 1,
+          y: 0,
+        },
+        {
+          opacity: 0,
+          y: -60,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+          ease: "none",
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
-      className="relative min-h-screen w-screen overflow-hidden"
+      ref={sectionRef}
       id="hero"
+      className="relative min-h-screen w-screen overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 z-0">
@@ -26,15 +52,12 @@ export default function Hero({ introDone }) {
         </Suspense>
       </div>
 
-      {/* Overlay */}
+      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/65 z-10" />
 
-      {/* Hero Content */}
-      <motion.div
-        style={reduceMotion ? {} : { opacity, y }}
-        initial={{ opacity: 0, y: reduceMotion ? 0 : 24 }}
-        animate={introDone ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+      {/* HERO CONTENT */}
+      <div
+        ref={contentRef}
         className="
           relative z-20
           min-h-screen
@@ -74,10 +97,11 @@ export default function Hero({ introDone }) {
           </a>
         </div>
 
-        <div className="mt-16">
-          <ArrowDown size={22} className="text-neutral-400 animate-bounce" />
+        {/* Scroll Hint — subtle, not animated */}
+        <div className="mt-16 text-neutral-400">
+          <ArrowDown size={22} />
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

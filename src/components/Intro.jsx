@@ -1,95 +1,106 @@
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 
-const name = "Balam Reneesh";
-const tagline = "AI Engineer | Full-Stack Developer";
+const name = "BALAM RENEESH";
+const tagline = "AI ENGINEER · FULL-STACK DEVELOPER";
 
-/* 🔥 Faster stagger */
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.06,
-    },
-  },
-};
+const Intro = ({ onFinish }) => {
+  const containerRef = useRef(null);
+  const lettersRef = useRef([]);
+  const taglineRef = useRef(null);
 
-/* 🔥 Faster letter motion */
-const letterVariants = {
-  hidden: {
-    x: 60,
-    opacity: 0,
-  },
-  visible: {
-    x: 0,
-    opacity: 1,
-    transition: {
-      ease: "easeOut",
-      duration: 0.35,
-    },
-  },
-};
-
-/* 🔥 Faster tagline entry */
-const taglineVariants = {
-  hidden: {
-    y: 16,
-    opacity: 0,
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      delay: name.length * 0.06 + 0.15,
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
-const IntroScene = ({ onFinish }) => {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onFinish();
-    }, 1800); // 🔥 faster exit
+    const tl = gsap.timeline({
+      defaults: { ease: "power4.out" },
+    });
 
-    return () => clearTimeout(timer);
+    /* ===============================
+       1️⃣ TRUCK HIT — LETTER SLAM
+    =============================== */
+    tl.fromTo(
+      lettersRef.current,
+      {
+        y: 220,
+        scale: 1.5,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 0.26,
+        stagger: 0.035,
+      }
+    );
+
+    /* ===============================
+       2️⃣ TAGLINE SNAP
+    =============================== */
+    tl.fromTo(
+      taglineRef.current,
+      {
+        y: 40,
+        opacity: 0,
+      },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.35,
+      },
+      "-=0.2"
+    );
+
+    /* ===============================
+       3️⃣ IMPACT PAUSE (IMPORTANT)
+    =============================== */
+    tl.to({}, { duration: 0.3 });
+
+    /* ===============================
+       4️⃣ CAMERA PUSH — INTO SCREEN
+    =============================== */
+    tl.to(containerRef.current, {
+      scale: 1.6,
+      opacity: 0,
+      duration: 0.6,
+      ease: "power2.in",
+      onComplete: onFinish,
+    });
+
+    return () => tl.kill();
   }, [onFinish]);
 
   return (
-    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black text-white">
+    <div
+      ref={containerRef}
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-black text-white"
+    >
       <div className="text-center overflow-hidden">
-        {/* Name */}
-        <motion.div
-          className="flex justify-center"
+        {/* NAME */}
+        <div
+          className="flex justify-center font-bold tracking-[0.25em]"
           style={{ fontFamily: "Audiowide, sans-serif" }}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
         >
-          {name.split("").map((char, index) => (
-            <motion.span
-              key={index}
-              variants={letterVariants}
-              className="text-4xl md:text-6xl tracking-widest"
+          {name.split("").map((char, i) => (
+            <span
+              key={i}
+              ref={(el) => (lettersRef.current[i] = el)}
+              className="inline-block text-4xl md:text-7xl"
             >
-              {char}
-            </motion.span>
+              {char === " " ? "\u00A0" : char}
+            </span>
           ))}
-        </motion.div>
+        </div>
 
-        {/* Tagline */}
-        <motion.p
-          className="mt-4 text-gray-400 text-lg tracking-wide"
-          variants={taglineVariants}
-          initial="hidden"
-          animate="visible"
+        {/* TAGLINE */}
+        <p
+          ref={taglineRef}
+          className="mt-6 text-gray-400 text-xs md:text-base tracking-widest"
         >
           {tagline}
-        </motion.p>
+        </p>
       </div>
     </div>
   );
 };
 
-export default IntroScene;
+export default Intro;
