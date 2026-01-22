@@ -12,19 +12,64 @@ const NeuralFieldBackground = lazy(() =>
 export default function Hero() {
   const sectionRef = useRef(null);
   const contentRef = useRef(null);
+  const titleRef = useRef(null);
+  const roleRef = useRef(null);
+  const descRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // HERO EXIT — SCROLL CONTROLLED
+      /* ===============================
+         ENTRY — SUBTLE ARRIVAL
+      =============================== */
+      gsap.fromTo(
+        contentRef.current,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+        }
+      );
+
+      gsap.fromTo(
+        roleRef.current,
+        { opacity: 0, y: 12 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          delay: 0.15,
+          ease: "power2.out",
+        }
+      );
+
+      gsap.fromTo(
+        descRef.current,
+        { opacity: 0, y: 8 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          delay: 0.3,
+          ease: "power2.out",
+        }
+      );
+
+      /* ===============================
+         SCROLL EXIT — NATURAL DEPARTURE
+      =============================== */
       gsap.fromTo(
         contentRef.current,
         {
           opacity: 1,
           y: 0,
+          scale: 1,
         },
         {
           opacity: 0,
-          y: -60,
+          y: -40,
+          scale: 0.96,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top top",
@@ -52,7 +97,7 @@ export default function Hero() {
         </Suspense>
       </div>
 
-      {/* Dark Overlay */}
+      {/* Overlay */}
       <div className="absolute inset-0 bg-black/65 z-10" />
 
       {/* HERO CONTENT */}
@@ -69,22 +114,34 @@ export default function Hero() {
           will-change-transform
         "
       >
-        <h1 className="text-white font-extrabold tracking-tight leading-[0.95] text-6xl sm:text-7xl md:text-8xl lg:text-9xl">
+        <h1
+          ref={titleRef}
+          className="text-white font-extrabold tracking-tight leading-[0.95]
+                     text-6xl sm:text-7xl md:text-8xl lg:text-9xl"
+        >
           Balam Reneesh
         </h1>
 
-        <h2 className="mt-4 text-neutral-300 font-extrabold tracking-tight text-2xl sm:text-3xl md:text-4xl">
+        <h2
+          ref={roleRef}
+          className="mt-4 text-neutral-300 font-extrabold tracking-tight
+                     text-2xl sm:text-3xl md:text-4xl"
+        >
           AI Engineer
         </h2>
 
-        <p className="mt-6 text-neutral-300 text-lg sm:text-xl max-w-2xl">
+        <p
+          ref={descRef}
+          className="mt-6 text-neutral-300 text-lg sm:text-xl max-w-2xl"
+        >
           Machine Learning · GenAI · Web Development · Scalable Systems
         </p>
 
         <div className="mt-10 flex gap-8">
           <a
             href="#projects"
-            className="text-white font-medium border-b border-white pb-1 hover:opacity-70 transition"
+            className="text-white font-medium border-b border-white pb-1
+                       hover:opacity-70 transition"
           >
             View Projects
           </a>
@@ -96,11 +153,7 @@ export default function Hero() {
             Contact Me
           </a>
         </div>
-
-        {/* Scroll Hint — subtle, not animated */}
-        <div className="mt-16 text-neutral-400">
-          <ArrowDown size={22} />
-        </div>
+        
       </div>
     </section>
   );
