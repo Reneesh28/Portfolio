@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Intro from "./components/Intro";
@@ -43,4 +44,4 @@ function App() {
   );
 }
 
-export default App;
+export default App
