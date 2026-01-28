@@ -152,7 +152,7 @@ export default function Hero() {
             Contact Me
           </a>
         </div>
-        
+
       </div>
     </section>
   );

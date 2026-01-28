@@ -35,7 +35,7 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="w-full bg-black text-white px-6 sm:px-12 lg:px-24 py-28"
+      className="w-full bg-transparent text-white px-6 sm:px-12 lg:px-24 py-28"
     >
       <div className="max-w-6xl mx-auto">
         {/* Section Label */}

@@ -225,6 +225,9 @@ function setupInputHandlers(canvas) {
 
   const handlePointerMove = (e) => {
     const pointer = e.touches ? e.touches[0] : e;
+    // Map window coordinates to canvas coordinates (0-1)
+    // Since canvas is fixed inset-0, window coords ~ canvas coords
+    // But we use rect to be safe
     const rect = canvas.getBoundingClientRect();
 
     if (!mouseInfos.current) mouseInfos.current = [];
@@ -256,14 +259,15 @@ function setupInputHandlers(canvas) {
     }
   };
 
-  canvas.addEventListener("mousemove", handlePointerMove);
-  canvas.addEventListener("touchmove", (e) => {
-    e.preventDefault();
+  // Attach to window so we get events even if canvas is behind
+  window.addEventListener("mousemove", handlePointerMove);
+  window.addEventListener("touchmove", (e) => {
+    // e.preventDefault(); // Don't prevent default on window, breaks scroll
     handlePointerMove(e);
-  });
-  canvas.addEventListener("touchstart", (e) => {
-    e.preventDefault();
+  }, { passive: true });
+
+  window.addEventListener("touchstart", (e) => {
     handlePointerMove(e);
     mouseInfos.last = [...mouseInfos.current];
-  });
+  }, { passive: true });
 }

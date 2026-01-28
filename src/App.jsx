@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Intro from "./components/Intro";
-
+import FluidBackground from "./components/FluidBackground";
 // Sections
 import Hero from "./sections/Hero";
 import About from "./sections/About";
@@ -19,6 +19,9 @@ function App() {
 
   return (
     <>
+      {/* BACKGROUND */}
+      <FluidBackground />
+
       {/* GSAP INTRO — blocks everything */}
       {!introDone && <Intro onFinish={() => setIntroDone(true)} />}
 

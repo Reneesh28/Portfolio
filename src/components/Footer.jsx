@@ -2,7 +2,7 @@ import { FiGithub, FiLinkedin, FiMail } from "react-icons/fi";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-black border-t border-neutral-800 px-6 sm:px-12 lg:px-24 py-10">
+    <footer className="w-full bg-transparent border-t border-neutral-800 px-6 sm:px-12 lg:px-24 py-10">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
 
         {/* Left */}

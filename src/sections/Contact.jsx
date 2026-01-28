@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import emailjs from "@emailjs/browser";
 import {
   FiPhone,
@@ -8,12 +8,37 @@ import {
   FiGithub,
   FiSend,
 } from "react-icons/fi";
-import { motion, useReducedMotion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
   const formRef = useRef(null);
+  const containerRef = useRef(null);
   const [status, setStatus] = useState("");
-  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        containerRef.current,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const sendEmail = (e) => {
     e.preventDefault();
@@ -40,14 +65,11 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="scroll-mt-16 w-full bg-black text-white px-6 sm:px-12 lg:px-24 py-28"
+      className="scroll-mt-16 w-full bg-transparent text-white px-6 sm:px-12 lg:px-24 py-28"
     >
-      <motion.div
+      <div
+        ref={containerRef}
         className="max-w-7xl mx-auto"
-        initial={{ opacity: 0, y: reduceMotion ? 0 : 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-120px" }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
         style={{ willChange: "transform" }}
       >
         {/* Header */}
@@ -164,7 +186,7 @@ export default function Contact() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
