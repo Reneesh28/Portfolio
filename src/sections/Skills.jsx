@@ -46,10 +46,10 @@ export default function Skills() {
     >
       {/* Background Ambience */}
       <div className="absolute inset-0 bg-transparent flex items-center justify-center pointer-events-none">
-        <div className="w-[500px] h-[500px] bg-neutral-900/20 rounded-full blur-3xl" />
+        <div className="w-125 h-125 bg-neutral-900/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative w-full max-w-5xl aspect-square sm:aspect-auto sm:h-[800px] flex items-center justify-center">
+      <div className="relative w-full max-w-5xl aspect-square sm:aspect-auto sm:h-200px flex items-center justify-center">
 
         {/* CENTER TEXT */}
         <div className="absolute z-20 flex flex-col items-center justify-center text-center pointer-events-none transition-all duration-300">
@@ -65,7 +65,7 @@ export default function Skills() {
               <activeSkill.icon className="text-6xl text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)] mb-2" />
             ) : null}
 
-            <h2 className="text-4xl sm:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-white to-neutral-500 tracking-tight">
+            <h2 className="text-4xl sm:text-6xl font-bold bg-clip-text text-transparent bg-linear-to-br from-white to-neutral-500 tracking-tight">
               {currentDisplay.name}
             </h2>
             <p className="text-neutral-400 text-sm sm:text-lg uppercase tracking-widest">
