@@ -1,19 +1,22 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import skills from "../data/skills";
-import { motion } from "framer-motion";
-import { FiCode } from "react-icons/fi";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { FiCode, FiLayers, FiDatabase, FiCpu, FiGlobe } from "react-icons/fi";
+import FloatingSkillsBackground from "../components/FloatingSkillsBackground";
 
-// Flatten the skills data for the orbits
-// We'll split them into Inner (Important/Core) and Outer (Tools/Libs)
+gsap.registerPlugin(ScrollTrigger);
+
+// Categorize skills for orbits
 const categorizeSkills = () => {
-  const allSkills = skills.flatMap((cat) => cat.items);
+  const allSkills = skills.flatMap((cat) =>
+    cat.items.map(item => ({ ...item, category: cat.category }))
+  );
 
-  // Custom logic to pick core skills for inner ring if desired, 
-  // or just simple interleaving.
-  // Let's put major languages and frameworks in the inner ring.
+  // Inner Ring: Core Languages & Frontend
   const innerKeywords = [
-    "Python", "JavaScript", "React.js", "Node.js", "SQL",
-    "HTML5", "CSS3", "Git", "Docker", "MongoDB"
+    "Python", "JavaScript", "React.js", "Node.js", "Next.js",
+    "HTML5", "CSS3", "TypeScript", "Tailwind CSS"
   ];
 
   const inner = [];
@@ -33,197 +36,232 @@ const categorizeSkills = () => {
 export default function Skills() {
   const { inner, outer } = useMemo(() => categorizeSkills(), []);
   const [activeSkill, setActiveSkill] = useState(null);
-  const [isHovering, setIsHovering] = useState(false);
+  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
 
-  // Default Title to show when not hovering
-  const defaultTitle = { name: "Skills", icon: null, level: "Tech Stack" };
+  // Default Title
+  const defaultTitle = { name: "Skills", level: "Technical Arsenal" };
   const currentDisplay = activeSkill || defaultTitle;
+  const Icon = activeSkill?.icon || FiCode;
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Entrance Animation
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 60%", // Start when section is comfortably in view
+          end: "bottom bottom",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      /*
+      tl.from(".skills-center", {
+        scale: 0.5,
+        opacity: 1, // FORCE VISIBLE for debug
+        duration: 0.8,
+        ease: "back.out(1.7)",
+      })
+      */
+      tl.set(".skills-center", { opacity: 1 }); // Ensure it starts visible
+      tl.from(".orbit-ring-inner", {
+        scale: 0.8,
+        opacity: 0,
+        rotation: -45,
+        duration: 1,
+        ease: "power3.out",
+      }, "-=0.6")
+        .from(".orbit-ring-outer", {
+          scale: 0.8,
+          opacity: 0,
+          rotation: 45,
+          duration: 1,
+          ease: "power3.out",
+        }, "-=0.8")
+        .from(".skill-node-inner", {
+          scale: 0,
+          opacity: 0,
+          duration: 0.4,
+          stagger: 0.05,
+          ease: "back.out(2)",
+        }, "-=0.5")
+        .from(".skill-node-outer", {
+          scale: 0,
+          opacity: 0,
+          duration: 0.4,
+          stagger: 0.03,
+          ease: "back.out(2)",
+        }, "-=0.5");
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section
+      ref={sectionRef}
       id="skills"
       className="w-full min-h-screen bg-transparent text-white flex flex-col items-center justify-center py-24 overflow-hidden relative"
     >
-      {/* Background Ambience */}
-      <div className="absolute inset-0 bg-transparent flex items-center justify-center pointer-events-none">
-        <div className="w-125 h-125 bg-neutral-900/20 rounded-full blur-3xl" />
+      {/* 3D Floating Background - Strict containment */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+        <FloatingSkillsBackground />
       </div>
 
-      <div className="relative w-full max-w-5xl aspect-square sm:aspect-auto sm:h-200px flex items-center justify-center">
+      {/* Radial Gradient overlay to make center readable */}
+      <div className="absolute inset-0 bg-radial-gradient from-transparent via-neutral-950/20 to-neutral-950/80 pointer-events-none z-0" />
 
-        {/* CENTER TEXT */}
-        <div className="absolute z-20 flex flex-col items-center justify-center text-center pointer-events-none transition-all duration-300">
-          <motion.div
-            key={currentDisplay.name}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            className="flex flex-col items-center gap-4"
-          >
-            {/* Large Central Icon for Active Skill */}
-            {activeSkill && activeSkill.icon ? (
-              <activeSkill.icon className="text-6xl text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.5)] mb-2" />
-            ) : null}
-
-            <h2 className="text-4xl sm:text-6xl font-bold bg-clip-text text-transparent bg-linear-to-br from-white to-neutral-500 tracking-tight">
-              {currentDisplay.name}
-            </h2>
-            <p className="text-neutral-400 text-sm sm:text-lg uppercase tracking-widest">
-              {activeSkill ? "Expertise" : "Technical Arsenal"}
-            </p>
-          </motion.div>
-        </div>
+      {/* Main Container */}
+      <div ref={containerRef} className="relative z-10 w-full max-w-6xl aspect-square sm:aspect-auto sm:h-[600px] flex items-center justify-center">
 
         {/* ORBITS CONTAINER */}
-        {/* We rotate the entire rings. Hovering any ring pauses the animation. */}
-        <div
-          className="relative w-full h-full flex items-center justify-center"
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => {
-            setIsHovering(false);
-            setActiveSkill(null);
-          }}
-        >
+        <div className="relative w-full h-full flex items-center justify-center">
+
           {/* INNER ORBIT */}
-          <Orbit
+          <GSAPOrbit
             skills={inner}
-            radius={window.innerWidth < 640 ? 100 : 150}
+            radius={window.innerWidth < 640 ? 110 : 160} // Responsive radius
             duration={40}
             clockwise={true}
-            isPaused={isHovering}
+            className="orbit-ring-inner"
             setActiveSkill={setActiveSkill}
+            nodeClass="skill-node-inner"
           />
 
           {/* OUTER ORBIT */}
-          <Orbit
+          <GSAPOrbit
             skills={outer}
-            radius={window.innerWidth < 640 ? 190 : 280}
-            duration={50}
+            radius={window.innerWidth < 640 ? 190 : 280} // Responsive radius
+            duration={60}
             clockwise={false}
-            isPaused={isHovering}
+            className="orbit-ring-outer"
             setActiveSkill={setActiveSkill}
+            nodeClass="skill-node-outer"
           />
+
+          {/* CENTER DISPLAY - Moved after orbits to ensure stacking on top */}
+          <div className="skills-center absolute inset-0 z-50 flex flex-col items-center justify-center text-center transition-all duration-300 pointer-events-none">
+            {/* DEBUG: Remove in production */}
+            {/* <div className="hidden">{console.log("Render ActiveSkill:", activeSkill)}</div> */}
+
+            <div className={`
+                mb-4 p-4 rounded-2xl bg-neutral-900/80 border border-neutral-700 backdrop-blur-md shadow-2xl
+                transition-all duration-300
+                ${activeSkill ? "scale-110 border-blue-500/50 shadow-blue-500/20" : ""}
+              `}>
+              <Icon className={`text-4xl sm:text-5xl transition-colors duration-300 ${activeSkill ? "text-cyan-400" : "text-neutral-400"}`} />
+            </div>
+
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-2 transition-colors duration-300">
+              {currentDisplay.name}
+            </h2>
+            <p className="text-blue-400 text-sm sm:text-base uppercase tracking-widest font-medium">
+              {currentDisplay.level || currentDisplay.category}
+            </p>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-// Sub-component for a single ring
-function Orbit({ skills, radius, duration, clockwise, isPaused, setActiveSkill }) {
+// GSAP-powered Orbit Component
+function GSAPOrbit({ skills, radius, duration, clockwise, className, setActiveSkill, nodeClass }) {
+  const ringRef = useRef(null);
+  const nodesRef = useRef([]);
+  const ringTween = useRef(null);
+  const nodeTweens = useRef([]);
+
+  useEffect(() => {
+    // 1. Orbit Rotation
+    ringTween.current = gsap.to(ringRef.current, {
+      rotation: clockwise ? 360 : -360,
+      duration: duration,
+      repeat: -1,
+      ease: "none",
+    });
+
+    // 2. Counter-Rotation for Icons (Keep them upright)
+    nodeTweens.current = nodesRef.current.map((node) => {
+      return gsap.to(node, {
+        rotation: clockwise ? -360 : 360,
+        duration: duration,
+        repeat: -1,
+        ease: "none",
+      });
+    });
+
+    return () => {
+      ringTween.current?.kill();
+      nodeTweens.current.forEach(t => t?.kill());
+    };
+  }, [duration, clockwise]);
+
+  // Pause/Play handlers
+  const handleMouseEnter = (skill) => {
+    // console.log("Hovering Skill:", skill); // Debug
+    setActiveSkill(skill);
+    ringTween.current?.pause();
+    nodeTweens.current.forEach(t => t?.pause());
+  };
+
+  const handleMouseLeave = () => {
+    setActiveSkill(null);
+    ringTween.current?.play();
+    nodeTweens.current.forEach(t => t?.play());
+  };
+
   const count = skills.length;
-  // Calculate angle step (degrees)
   const step = 360 / count;
 
   return (
     <div
-      className="absolute rounded-full border border-neutral-800/50 flex items-center justify-center pointer-events-none"
+      ref={ringRef}
+      className={`absolute rounded-full border border-neutral-800/30 flex items-center justify-center pointer-events-none ${className}`}
       style={{
         width: radius * 2,
         height: radius * 2,
-        animation: `orbit ${duration}s linear infinite`,
-        animationPlayState: isPaused ? 'paused' : 'running',
-        animationDirection: clockwise ? 'normal' : 'reverse',
       }}
     >
-      {/* Styles for Orbit Animation */}
-      <style>{`
-        @keyframes orbit {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes counter-orbit {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(-360deg); }
-        }
-      `}</style>
-
       {skills.map((skill, index) => {
         const angle = index * step;
-        // Convert to radians for initial positioning debug if needed, 
-        // but simple transform rotate is easier for distributing on a circle.
-        // We actully place them absolutely at center, then rotate the WRAPPER, then translate OUT.
+        const Icon = skill.icon || FiCode;
 
         return (
           <div
-            key={skill.name}
-            className="absolute flex items-center justify-center group pointer-events-auto"
+            key={index}
+            className={`absolute flex items-center justify-center pointer-events-none ${nodeClass}`}
             style={{
-              transform: `rotate(${angle}deg) translate(${radius}px) rotate(-${angle}deg)`,
-              // Example logic:
-              // 1. rotate(angle) -> points the axis to the slot
-              // 2. translate(radius) -> moves item out to the rim
-              // 3. rotate(-angle) -> un-rotates item so it stands upright initially
-
-              // However, since the PARENT (Orbit) is rotating, the item will tumble.
-              // To keep item upright while parent rotates, we need the item to counter-rotate continually.
+              transform: `rotate(${angle}deg) translate(${radius}px)`,
             }}
           >
-            {/* 
-                COUNTER-ROTATION CONTAINER 
-                This inner container applies the continuous counter-rotation animation 
-                to cancel out the parent's orbit rotation, keeping the icon upright 
-                relative to the screen.
-             */}
+            {/* Counter-Rotating Container */}
             <div
-              style={{
-                animation: `counter-orbit ${duration}s linear infinite`,
-                animationPlayState: isPaused ? 'paused' : 'running',
-                animationDirection: clockwise ? 'reverse' : 'normal', // Opposite to parent
-              }}
+              ref={el => nodesRef.current[index] = el}
+              className="relative group cursor-pointer pointer-events-auto flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16"
+              onMouseEnter={() => handleMouseEnter(skill)}
+              onMouseLeave={handleMouseLeave}
             >
-              <SkillItem skill={skill} index={index} setActiveSkill={setActiveSkill} />
+              <div className="
+                w-10 h-10 sm:w-14 sm:h-14
+                bg-neutral-900/60 backdrop-blur-md
+                border border-neutral-700/50
+                rounded-full
+                flex items-center justify-center
+                transition-all duration-300
+                group-hover:scale-125
+                group-hover:bg-neutral-800
+                group-hover:border-cyan-500/50
+                group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]
+              ">
+                <Icon className="text-xl sm:text-2xl text-neutral-400 group-hover:text-cyan-400 transition-colors" />
+              </div>
             </div>
           </div>
         );
       })}
     </div>
-  );
-}
-
-function SkillItem({ skill, index, setActiveSkill }) {
-  const Icon = skill.icon || FiCode;
-
-  return (
-    <motion.div
-      className="
-        relative
-        w-12 h-12 sm:w-16 sm:h-16
-        bg-neutral-900/80 backdrop-blur-md
-        border border-neutral-700
-        rounded-full
-        flex items-center justify-center
-        cursor-pointer
-        shadow-lg
-      "
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{
-        scale: [1, 1.1, 1],
-        opacity: 1,
-      }}
-      transition={{
-        scale: {
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: Math.random() * 2 // Randomize breathing phase
-        },
-        opacity: {
-          duration: 0.5,
-          delay: index * 0.05 // Stagger entrance
-        }
-      }}
-      whileHover={{
-        scale: 1.5,
-        backgroundColor: "#171717",
-        borderColor: "#fff",
-        boxShadow: "0 0 20px rgba(255,255,255,0.3)",
-        zIndex: 50,
-        rotate: 45
-      }}
-      onMouseEnter={() => setActiveSkill(skill)}
-    >
-      <Icon className="text-2xl sm:text-3xl text-neutral-400 hover:text-white transition-colors" />
-    </motion.div>
   );
 }
