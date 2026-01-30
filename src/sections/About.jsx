@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Linkedin, Github, Mail } from "lucide-react";
+import { Linkedin, Github, Mail, ArrowRight, FileText } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import profileImage from "../assets/profile.jpg";
@@ -8,24 +8,87 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const sectionRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        sectionRef.current,
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            once: true,
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          end: "bottom bottom",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      // 1. Label Reveal
+      tl.from(".about-label", {
+        opacity: 0,
+        y: 20,
+        duration: 0.6,
+        ease: "power3.out",
+      })
+        // 2. Profile Image & Name - Slide Up
+        .from(
+          [".profile-container", ".profile-name"],
+          {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power3.out",
           },
-        }
-      );
+          "-=0.3"
+        )
+        // 3. Social Icons - Staggered Slide Up
+        .fromTo(
+          ".social-icon",
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.1,
+            ease: "back.out(1.7)",
+          },
+          "-=0.5"
+        )
+        // 4. Headline - Reveal
+        .from(
+          ".about-headline",
+          {
+            opacity: 0,
+            x: 30,
+            duration: 0.8,
+            ease: "power3.out",
+          },
+          "-=0.6"
+        )
+        // 5. Paragraphs - Staggered Fade Up
+        .fromTo(
+          ".about-text p",
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.2, // increased stagger for better effect
+            ease: "power2.out",
+          },
+          "-=0.5"
+        )
+        // 6. Resume Button - Slide Up
+        .from(
+          ".resume-btn",
+          {
+            opacity: 0,
+            y: 20,
+            duration: 0.6,
+            ease: "power3.out",
+          },
+          "-=0.2"
+        );
+
     }, sectionRef);
 
     return () => ctx.revert();
@@ -35,106 +98,108 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="w-full bg-transparent text-white px-6 sm:px-12 lg:px-24 py-28"
+      className="w-full bg-transparent text-white px-6 sm:px-12 lg:px-24 py-24 sm:py-32 overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto">
+      <div ref={containerRef} className="max-w-7xl mx-auto">
         {/* Section Label */}
-        <p className="text-neutral-400 uppercase tracking-[0.3em] text-xs mb-12">
-          About
+        <p className="about-label text-blue-400 font-medium uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16">
+          About Me
         </p>
 
         {/* Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-          {/* LEFT — IMAGE + SOCIALS */}
-          <div className="flex flex-col items-center">
-            {/* Profile Image (JPG from assets) */}
-            <div
-              className="
-                w-72 h-72
-                sm:w-80 sm:h-80
-                rounded-full
-                overflow-hidden
-                border border-neutral-700
-              "
-            >
-              <img
-                src={profileImage}
-                alt="Reneesh"
-                className="w-full h-full object-cover object-top"
-              />
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-start">
+
+          {/* LEFT COLUMN — PROFILE (Span 4 cols) */}
+          <div className="md:col-span-5 lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
+            {/* Profile Image with Glow Effect */}
+            <div className="profile-container relative group mb-8">
+              <div
+                className="
+                  absolute -inset-1 bg-gradient-to-tr from-blue-600 to-purple-600 
+                  rounded-full blur opacity-20 group-hover:opacity-40 transition duration-500
+                "
+              ></div>
+              <div
+                className="
+                  relative
+                  w-64 h-64 sm:w-72 sm:h-72
+                  rounded-full
+                  overflow-hidden
+                  border-2 border-neutral-800
+                  group-hover:border-neutral-600
+                  transition duration-500
+                "
+              >
+                <img
+                  src={profileImage}
+                  alt="Reneesh"
+                  className="w-full h-full object-cover object-top scale-100 group-hover:scale-105 transition-transform duration-700"
+                />
+              </div>
             </div>
 
-            {/* Name as TEXT (Branding-safe) */}
-            <p className="mt-4 text-sm tracking-widest text-neutral-400">
-              RENEESH
-            </p>
+            {/* Name & Title */}
+            <div className="profile-name space-y-2">
+              <h3 className="text-3xl font-bold tracking-tight text-white/90">
+                RENEESH
+              </h3>
+              <p className="text-blue-400 font-medium tracking-widest text-sm uppercase">
+                AI Engineer
+              </p>
+            </div>
 
             {/* Social Icons */}
-            <div className="mt-8 flex items-center gap-8">
-              <a
-                href="https://www.linkedin.com/in/balam-reneesh"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="
-                  w-12 h-12
-                  rounded-full
-                  border border-neutral-700
-                  flex items-center justify-center
-                  text-neutral-400
-                  hover:text-white
-                  hover:border-white
-                  transition
-                "
-              >
-                <Linkedin size={20} />
-              </a>
+            <div className="mt-8 flex items-center gap-4 justify-center md:justify-start">
+              {[
+                { href: "https://www.linkedin.com/in/balam-reneesh", icon: Linkedin, label: "LinkedIn" },
+                { href: "https://github.com/Reneesh28", icon: Github, label: "GitHub" },
+                { href: "mailto:reneesh3508925@gmail.com", icon: Mail, label: "Email" },
+              ].map((social, index) => (
+                <a
+                  key={index}
+                  href={social.href}
+                  target={social.label === "Email" ? "_self" : "_blank"}
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="
+                    social-icon
+                    group relative
+                    w-12 h-12
+                    flex items-center justify-center
+                    rounded-full
+                    bg-neutral-900/50
+                    border border-neutral-800
+                    text-neutral-400
+                    hover:text-blue-400 hover:border-blue-500/50 hover:bg-neutral-800
+                    hover:-translate-y-1
+                    transition-all duration-300
+                  "
+                >
+                  <social.icon size={20} className="transition-transform group-hover:scale-110" />
 
-              <a
-                href="https://github.com/Reneesh28"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-                className="
-                  w-12 h-12
-                  rounded-full
-                  border border-neutral-700
-                  flex items-center justify-center
-                  text-neutral-400
-                  hover:text-white
-                  hover:border-white
-                  transition
-                "
-              >
-                <Github size={20} />
-              </a>
-
-              <a
-                href="mailto:reneesh3508925@gmail.com"
-                aria-label="Email"
-                className="
-                  w-12 h-12
-                  rounded-full
-                  border border-neutral-700
-                  flex items-center justify-center
-                  text-neutral-400
-                  hover:text-white
-                  hover:border-white
-                  transition
-                "
-              >
-                <Mail size={20} />
-              </a>
+                  {/* Tooltip */}
+                  <span className="
+                    absolute -top-10 left-1/2 -translate-x-1/2 
+                    px-2.5 py-1 
+                    bg-neutral-800 border border-neutral-700 
+                    text-neutral-300 text-xs font-medium rounded 
+                    opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0
+                    transition-all duration-300 pointer-events-none whitespace-nowrap
+                  ">
+                    {social.label}
+                  </span>
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* RIGHT — TEXT */}
-          <div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-8">
-              Building intelligent systems that scale
+          {/* RIGHT COLUMN — TEXT CONTENT (Span 8 cols) */}
+          <div className="md:col-span-7 lg:col-span-8 flex flex-col justify-center h-full">
+            <h2 className="about-headline text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8 leading-tight text-white/90">
+              Building <span className="text-blue-400">intelligent systems</span> that scale
             </h2>
 
-            <div className="space-y-6 text-neutral-300 text-base sm:text-lg leading-relaxed max-w-xl">
+            <div className="about-text space-y-6 text-neutral-400 text-lg leading-relaxed max-w-2xl">
               <p>
                 I am an AI Engineer focused on designing and building machine
                 learning and generative AI systems that are reliable, scalable,
@@ -143,7 +208,7 @@ export default function About() {
 
               <p>
                 My work spans across model development, data pipelines, and
-                system integration — with a strong emphasis on translating
+                system integration with a strong emphasis on translating
                 complex ideas into production-ready solutions.
               </p>
 
@@ -153,28 +218,33 @@ export default function About() {
               </p>
             </div>
 
-            {/* Resume */}
-            <div className="mt-10">
+            {/* Resume Button */}
+            <div className="resume-btn mt-12">
               <a
                 href="/resume.pdf"
                 download="Reneesh_CV.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
-                  inline-block
-                  text-white
-                  font-medium
-                  border-b
-                  border-white
-                  pb-1
-                  hover:opacity-70
-                  transition
+                  group inline-flex items-center gap-3
+                  px-8 py-4
+                  bg-neutral-900 
+                  border border-neutral-800
+                  rounded-full
+                  hover:bg-neutral-800 hover:border-blue-500/30
+                  transition-all duration-300
                 "
               >
-                Download Resume
+                <FileText size={20} className="text-blue-500 group-hover:text-blue-400 transition-colors" />
+                <span className="text-white font-medium tracking-wide">Download Resume</span>
+                <ArrowRight
+                  size={18}
+                  className="text-neutral-500 group-hover:translate-x-1 group-hover:text-white transition-all"
+                />
               </a>
             </div>
           </div>
+
         </div>
       </div>
     </section>

@@ -34,10 +34,10 @@ function App() {
             <Hero />
             <About />
             <Skills />
-            <Certifications />
-            <Projects />
-            <Education />
             <Experience />
+            <Projects />
+            <Certifications />
+            <Education />
             <Contact />
             <Footer />
           </main>
