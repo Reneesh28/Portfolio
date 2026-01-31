@@ -83,3 +83,7 @@ html {
   scroll-padding-top: 4rem;
   /* matches navbar height */
 }
+
+.perspective-500 {
+  perspective: 500px;
+}

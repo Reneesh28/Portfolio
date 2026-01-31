@@ -1,17 +1,18 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { Float, Stars, Environment } from "@react-three/drei";
 
 /* ---------- Neural Nodes ---------- */
 function NeuralNodes() {
   const group = useRef();
 
   const nodes = useMemo(() => {
-    return Array.from({ length: 140 }, () => ({
+    return Array.from({ length: 150 }, () => ({
       position: new THREE.Vector3(
-        (Math.random() - 0.5) * 7,
-        (Math.random() - 0.5) * 5,
-        (Math.random() - 0.5) * 7
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 8,
+        (Math.random() - 0.5) * 8
       ),
       phase: Math.random() * Math.PI * 2,
     }));
@@ -21,9 +22,9 @@ function NeuralNodes() {
     const t = clock.getElapsedTime();
 
     group.current.children.forEach((mesh, i) => {
-      // subtle breathing motion
-      mesh.position.y += Math.sin(t * 0.6 + nodes[i].phase) * 0.0008;
-      mesh.scale.setScalar(1 + Math.sin(t + nodes[i].phase) * 0.02);
+      // Breathing motion
+      mesh.position.y += Math.sin(t * 1 + nodes[i].phase) * 0.002;
+      mesh.scale.setScalar(1 + Math.sin(t * 1.5 + nodes[i].phase) * 0.1);
     });
   });
 
@@ -31,14 +32,17 @@ function NeuralNodes() {
     <group ref={group}>
       {nodes.map((node, i) => (
         <mesh key={i} position={node.position}>
-          <sphereGeometry args={[0.028, 16, 16]} />
+          <sphereGeometry args={[0.04, 16, 16]} />
           <meshPhysicalMaterial
-            color="#ffffff"
-            roughness={0.15}
-            transmission={0.9}
-            thickness={0.4}
+            color="#88ccff"
+            emissive="#224488"
+            emissiveIntensity={0.5}
+            roughness={0.1}
+            metalness={0.8}
+            transmission={0.5}
+            thickness={0.5}
             transparent
-            opacity={0.6}
+            opacity={0.8}
           />
         </mesh>
       ))}
@@ -51,45 +55,68 @@ function NeuralConnections() {
   const group = useRef();
 
   const curves = useMemo(() => {
-    return Array.from({ length: 90 }, () => {
+    return Array.from({ length: 100 }, () => {
       const start = new THREE.Vector3(
-        (Math.random() - 0.5) * 7,
-        (Math.random() - 0.5) * 5,
-        (Math.random() - 0.5) * 7
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 8,
+        (Math.random() - 0.5) * 8
       );
       const end = start.clone().add(
         new THREE.Vector3(
-          (Math.random() - 0.5) * 2,
-          (Math.random() - 0.5) * 2,
-          (Math.random() - 0.5) * 2
+          (Math.random() - 0.5) * 3,
+          (Math.random() - 0.5) * 3,
+          (Math.random() - 0.5) * 3
         )
       );
       return new THREE.CatmullRomCurve3([start, end]);
     });
   }, []);
 
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    // slow vector-field rotation
-    group.current.rotation.y = t * 0.04;
-    group.current.rotation.x = Math.sin(t * 0.15) * 0.05;
-  });
-
   return (
     <group ref={group}>
       {curves.map((curve, i) => (
         <mesh key={i}>
-          <tubeGeometry args={[curve, 32, 0.01, 8, false]} />
-          <meshPhysicalMaterial
-            color="#ffffff"
-            roughness={0.25}
-            transmission={0.95}
-            thickness={0.5}
+          <tubeGeometry args={[curve, 64, 0.015, 8, false]} />
+          <meshBasicMaterial
+            color="#4488ff"
             transparent
-            opacity={0.25}
+            opacity={0.15}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
           />
         </mesh>
       ))}
+    </group>
+  );
+}
+
+/* ---------- Interactive Scene Container ---------- */
+function SceneContainer() {
+  const group = useRef();
+
+  useFrame(({ pointer, clock }) => {
+    // Gentle rotation based on mouse
+    const t = clock.getElapsedTime();
+
+    // Smooth Look-at / Parallax
+    group.current.rotation.x = THREE.MathUtils.lerp(
+      group.current.rotation.x,
+      pointer.y * 0.2 + Math.sin(t * 0.1) * 0.05,
+      0.05
+    );
+    group.current.rotation.y = THREE.MathUtils.lerp(
+      group.current.rotation.y,
+      pointer.x * 0.2 + t * 0.05, // continuous slow spin + mouse influence
+      0.05
+    );
+  });
+
+  return (
+    <group ref={group}>
+      <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+        <NeuralNodes />
+        <NeuralConnections />
+      </Float>
     </group>
   );
 }
@@ -100,15 +127,21 @@ export default function NeuralFieldBackground() {
     <Canvas
       dpr={[1, 1.5]}
       camera={{ position: [0, 0, 7], fov: 60 }}
-      gl={{ antialias: true }}
+      gl={{ antialias: true, alpha: true }}
     >
-      {/* Lighting */}
-      <ambientLight intensity={0.35} />
-      <directionalLight position={[5, 6, 5]} intensity={0.6} />
-      <directionalLight position={[-5, -4, -5]} intensity={0.25} />
+      <color attach="background" args={["#000000"]} />
 
-      <NeuralNodes />
-      <NeuralConnections />
+      {/* Lighting */}
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={1} color="#4488ff" />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#cc00ff" />
+
+      {/* Stars for depth */}
+      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+
+      <SceneContainer />
+
+      {/* Post-processing could go here, but keeping it simple for perf */}
     </Canvas>
   );
 }
