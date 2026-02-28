@@ -5,7 +5,8 @@ import {
   FaGit,
   FaDocker,
   FaGithub,
-  FaDatabase
+  FaDatabase,
+  FaServer
 } from "react-icons/fa";
 
 import {
@@ -30,7 +31,13 @@ import {
   SiLangchain,
   SiC,
   SiCplusplus,
-  SiExpress
+  SiExpress,
+  SiDjango,
+  SiFlask,
+  SiNetlify,
+  SiThreedotjs,
+  SiCanva,
+  SiPlotly
 } from "react-icons/si";
 
 const skills = [
@@ -52,7 +59,8 @@ const skills = [
       { name: "Bootstrap", icon: SiBootstrap },
       { name: "Chart.js", icon: SiChartdotjs },
       { name: "HTML5", icon: SiHtml5 },
-      { name: "CSS3", icon: SiCss3 }
+      { name: "CSS3", icon: SiCss3 },
+      { name: "Three.js", icon: SiThreedotjs }
     ]
   },
   {
@@ -60,7 +68,10 @@ const skills = [
     items: [
       { name: "FastAPI", icon: SiFastapi },
       { name: "Node.js", icon: FaNodeJs },
-      { name: "Express.js", icon: SiExpress }
+      { name: "Express.js", icon: SiExpress },
+      { name: "Django", icon: SiDjango },
+      { name: "Flask", icon: SiFlask },
+      { name: "REST API", icon: FaServer }
     ]
   },
   {
@@ -71,7 +82,8 @@ const skills = [
       { name: "Scikit-learn", icon: SiScikitlearn },
       { name: "Matplotlib", icon: FaPython }, // Using Python icon as fallback/related
       { name: "Seaborn", icon: FaPython },    // Using Python icon as fallback/related
-      { name: "PyTorch", icon: SiPytorch }
+      { name: "PyTorch", icon: SiPytorch },
+      { name: "Plotly", icon: SiPlotly }
     ]
   },
   {
@@ -99,7 +111,9 @@ const skills = [
       { name: "Postman", icon: SiPostman },
       { name: "Streamlit", icon: SiStreamlit },
       { name: "Render", icon: SiRender },
-      { name: "Hugging Face", icon: SiHuggingface }
+      { name: "Hugging Face", icon: SiHuggingface },
+      { name: "Netlify", icon: SiNetlify },
+      { name: "Canva", icon: SiCanva }
     ]
   }
 ];
