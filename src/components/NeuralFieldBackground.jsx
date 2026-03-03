@@ -3,7 +3,6 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { Float, Stars, Environment } from "@react-three/drei";
 
-/* ---------- Neural Nodes ---------- */
 function NeuralNodes() {
   const group = useRef();
 

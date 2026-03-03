@@ -16,7 +16,8 @@ const categorizeSkills = () => {
   // Inner Ring: Core Languages & Frontend
   const innerKeywords = [
     "Python", "JavaScript", "React.js", "Node.js", "Next.js",
-    "HTML5", "CSS3", "TypeScript", "Tailwind CSS"
+    "HTML5", "CSS3", "TypeScript", "Tailwind CSS",
+    "C++", "SQL", "FastAPI", "MongoDB", "Git", "Docker", "Pandas", "PyTorch", "Django", "NumPy"
   ];
 
   const inner = [];
@@ -122,7 +123,7 @@ export default function Skills() {
           {/* INNER ORBIT */}
           <GSAPOrbit
             skills={inner}
-            radius={window.innerWidth < 640 ? 110 : 160} // Responsive radius
+            radius={window.innerWidth < 640 ? 120 : 180} // Responsive radius
             duration={40}
             clockwise={true}
             className="orbit-ring-inner"
@@ -133,7 +134,7 @@ export default function Skills() {
           {/* OUTER ORBIT */}
           <GSAPOrbit
             skills={outer}
-            radius={window.innerWidth < 640 ? 190 : 280} // Responsive radius
+            radius={window.innerWidth < 640 ? 210 : 310} // Responsive radius
             duration={60}
             clockwise={false}
             className="orbit-ring-outer"
