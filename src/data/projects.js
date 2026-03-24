@@ -40,11 +40,12 @@ const projects = [
     image: img2
   },
   {
-    title: "Interactive Web UI – Top Smart Cities",
+    title: "AETHERION - Real-Time Markets. Intelligent Decisions.",
     description:
-      "A responsive web application showcasing smart city rankings with dynamic charts, filters, and comparisons.",
-    tech: ["HTML", "CSS", "JavaScript", "Bootstrap"],
-    codeLink: "https://github.com/Reneesh28/Smart-cities",
+      "AETHERION is an AI-powered trading intelligence engine that reads the market in real time and adapts strategies instantly.",
+    tech: ["REACT", "TAILWIND", "DJANGO", "FASTAPI", "MONGODB", "FLASK", "MYSQL"],
+    codeLinkBackend: "https://github.com/Reneesh28/AETHERION_BACKEND",
+    codeLinkFrontend: "https://github.com/Reneesh28/AETHERION_FRONTEND",
     status: "completed",
     image: img3
   },
@@ -59,8 +60,8 @@ const projects = [
       "Statistics",
       "Dashboarding"
     ],
-    codeLink: "#",
-    status: "coming-soon",
+    codeLink: "https://github.com/Reneesh28/Project_ML",
+    status: "completed",
     image: img4
   }
 ];

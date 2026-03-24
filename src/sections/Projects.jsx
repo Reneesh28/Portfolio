@@ -75,8 +75,8 @@ export default function Projects() {
       duration: 0.5,
       rotateX: rotateX,
       rotateY: rotateY,
-      y: -10, // Lift sensation
-      scale: 1.02, // Subtle scale up
+      y: -10,
+      scale: 1.02,
       transformPerspective: 1000,
       ease: "power2.out",
       overwrite: "auto",
@@ -118,7 +118,7 @@ export default function Projects() {
           {projects.map((project, index) => {
             // eslint-disable-next-line react-hooks/rules-of-hooks
             const cardRef = useRef(null);
-            const isComingSoon = project.status === "coming-soon";
+            const isComingSoon = project.status?.toLowerCase() === "coming-soon";
 
             return (
               <div
@@ -197,21 +197,59 @@ export default function Projects() {
                   {/* Footer Actions */}
                   <div>
                     {!isComingSoon ? (
-                      <a
-                        href={project.codeLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="
-                          inline-flex items-center gap-2
-                          text-sm font-medium text-white
-                          group/link
-                        "
-                      >
-                        <span className="border-b border-transparent group-hover/link:border-white transition-colors">
-                          View Code
-                        </span>
-                        <FiArrowUpRight className="group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
-                      </a>
+                      <div className="flex flex-wrap gap-5">
+                        {project.codeLink && (
+                          <a
+                            href={project.codeLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="
+                              inline-flex items-center gap-2
+                              text-sm font-medium text-white
+                              group/link
+                            "
+                          >
+                            <span className="border-b border-transparent group-hover/link:border-white transition-colors">
+                              View Code
+                            </span>
+                            <FiArrowUpRight className="group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
+                          </a>
+                        )}
+                        {project.codeLinkFrontend && (
+                          <a
+                            href={project.codeLinkFrontend}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="
+                              inline-flex items-center gap-2
+                              text-sm font-medium text-white
+                              group/link
+                            "
+                          >
+                            <span className="border-b border-transparent group-hover/link:border-white transition-colors">
+                              Frontend Code
+                            </span>
+                            <FiArrowUpRight className="group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
+                          </a>
+                        )}
+                        {project.codeLinkBackend && (
+                          <a
+                            href={project.codeLinkBackend}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="
+                              inline-flex items-center gap-2
+                              text-sm font-medium text-white
+                              group/link
+                            "
+                          >
+                            <span className="border-b border-transparent group-hover/link:border-white transition-colors">
+                              Backend Code
+                            </span>
+                            <FiArrowUpRight className="group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
+                          </a>
+                        )}
+                      </div>
                     ) : (
                       <div className="inline-flex items-center gap-2 text-sm text-neutral-500 cursor-not-allowed">
                         <FiClock />

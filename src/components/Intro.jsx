@@ -14,9 +14,6 @@ const Intro = ({ onFinish }) => {
       defaults: { ease: "power4.out" },
     });
 
-    /* ===============================
-       1️⃣ TRUCK HIT — LETTER SLAM
-    =============================== */
     tl.fromTo(
       lettersRef.current,
       {
