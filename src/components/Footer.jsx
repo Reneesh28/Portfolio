@@ -10,6 +10,7 @@ export default function Footer() {
     });
   };
 
+
   return (
     <footer className="w-full bg-[#0A0A0A] border-t border-white/5 px-6 md:px-12 py-12 relative overflow-hidden">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0">
