@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 const NeuralFieldBackground = lazy(() =>
   import("../components/NeuralFieldBackground")
 );
+import { Button } from "../components/ui/Button";
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -153,7 +154,7 @@ export default function Hero() {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative min-h-screen w-screen overflow-hidden bg-black"
+      className="relative min-h-screen w-screen overflow-hidden bg-[#0A0A0A]"
     >
       {/* Background */}
       <div className="absolute inset-0 z-0">
@@ -162,8 +163,8 @@ export default function Hero() {
         </Suspense>
       </div>
 
-      {/* Overlay - subtle gradient to ensure text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/80 z-10 pointer-events-none" />
+      {/* Overlay - precise gradient to ensure text readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/30 via-[#0A0A0A]/70 to-[#0A0A0A] z-10 pointer-events-none" />
 
       {/* HERO CONTENT */}
       <div
@@ -181,7 +182,7 @@ export default function Hero() {
       >
         <h1
           ref={titleRef}
-          className="text-white font-extrabold tracking-tight leading-[0.95]
+          className="text-[#E0E0E0] font-bold tracking-tight leading-[1.1]
                      text-6xl sm:text-7xl md:text-8xl lg:text-9xl
                      cursor-default select-none perspective-500"
         >
@@ -190,7 +191,7 @@ export default function Hero() {
 
         <h2
           ref={roleRef}
-          className="mt-6 text-blue-400 font-bold tracking-widest uppercase
+          className="mt-6 text-[#00BFA5] font-semibold tracking-[0.2em] uppercase
                      text-xl sm:text-2xl md:text-3xl font-mono"
           onMouseEnter={scrambleText}
         >
@@ -199,26 +200,19 @@ export default function Hero() {
 
         <p
           ref={descRef}
-          className="mt-8 text-neutral-400 text-lg sm:text-xl max-w-2xl font-light"
+          className="mt-8 text-[#A3A3A3] text-lg sm:text-xl max-w-2xl font-normal leading-relaxed"
         >
           Machine Learning · GenAI · Web Development · Scalable Systems
         </p>
 
-        <div className="mt-12 flex gap-8 z-30">
-          <a
-            href="#projects"
-            className="group relative px-6 py-3 overflow-hidden rounded-full bg-white text-black font-semibold shadow-lg shadow-white/20 transition-all hover:scale-105 hover:shadow-white/40"
-          >
-            <span className="relative z-10">View Projects</span>
-            <div className="absolute inset-0 bg-gray-200 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300" />
-          </a>
+        <div className="mt-12 flex gap-6 z-30">
+          <Button as="a" href="#projects" variant="primary" size="md">
+            View Projects
+          </Button>
 
-          <a
-            href="#contact"
-            className="group px-6 py-3 rounded-full border border-neutral-700 text-neutral-300 font-medium hover:border-white hover:text-white transition-all hover:bg-white/5"
-          >
+          <Button as="a" href="#contact" variant="secondary" size="md">
             Contact Me
-          </a>
+          </Button>
         </div>
 
       </div>

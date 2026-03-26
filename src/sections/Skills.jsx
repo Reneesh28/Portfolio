@@ -104,15 +104,14 @@ export default function Skills() {
     <section
       ref={sectionRef}
       id="skills"
-      className="w-full min-h-screen bg-transparent text-white flex flex-col items-center justify-center py-24 overflow-hidden relative"
+      className="w-full min-h-screen bg-[#0A0A0A] text-[#E0E0E0] border-t border-white/5 flex flex-col items-center justify-center py-24 overflow-hidden relative"
     >
       {/* 3D Floating Background - Strict containment */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+      <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
         <FloatingSkillsBackground />
       </div>
 
-      {/* Radial Gradient overlay to make center readable */}
-      <div className="absolute inset-0 bg-radial-gradient from-transparent via-neutral-950/20 to-neutral-950/80 pointer-events-none z-0" />
+      {/* Radial Gradient overlay replaced with simple solid fade or nothing */}
 
       {/* Main Container */}
       <div ref={containerRef} className="relative z-10 w-full max-w-6xl aspect-square sm:aspect-auto sm:h-[600px] flex items-center justify-center">
@@ -144,21 +143,19 @@ export default function Skills() {
 
           {/* CENTER DISPLAY - Moved after orbits to ensure stacking on top */}
           <div className="skills-center absolute inset-0 z-50 flex flex-col items-center justify-center text-center transition-all duration-300 pointer-events-none">
-            {/* DEBUG: Remove in production */}
-            {/* <div className="hidden">{console.log("Render ActiveSkill:", activeSkill)}</div> */}
 
             <div className={`
-                mb-4 p-4 rounded-2xl bg-neutral-900/80 border border-neutral-700 backdrop-blur-md shadow-2xl
+                mb-4 p-4 bg-[#1A1A1A] border border-white/5
                 transition-all duration-300
-                ${activeSkill ? "scale-110 border-blue-500/50 shadow-blue-500/20" : ""}
+                ${activeSkill ? "border-[#00BFA5]/50 scale-105" : ""}
               `}>
-              <Icon className={`text-4xl sm:text-5xl transition-colors duration-300 ${activeSkill ? "text-cyan-400" : "text-neutral-400"}`} />
+              <Icon className={`text-4xl sm:text-5xl transition-colors duration-300 ${activeSkill ? "text-[#00BFA5]" : "text-[#A3A3A3]"}`} />
             </div>
 
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-white mb-2 transition-colors duration-300">
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#E0E0E0] mb-2 transition-colors duration-300">
               {currentDisplay.name}
             </h2>
-            <p className="text-blue-400 text-sm sm:text-base uppercase tracking-widest font-medium">
+            <p className="text-[#00BFA5] text-sm sm:text-base uppercase tracking-widest font-medium">
               {currentDisplay.level || currentDisplay.category}
             </p>
           </div>
@@ -247,17 +244,14 @@ function GSAPOrbit({ skills, radius, duration, clockwise, className, setActiveSk
             >
               <div className="
                 w-10 h-10 sm:w-14 sm:h-14
-                bg-neutral-900/60 backdrop-blur-md
-                border border-neutral-700/50
-                rounded-full
+                bg-[#0A0A0A]
+                border border-white/5
                 flex items-center justify-center
-                transition-all duration-300
-                group-hover:scale-125
-                group-hover:bg-neutral-800
-                group-hover:border-cyan-500/50
-                group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]
+                transition-colors duration-200
+                group-hover:bg-[#1A1A1A]
+                group-hover:border-[#00BFA5]/30
               ">
-                <Icon className="text-xl sm:text-2xl text-neutral-400 group-hover:text-cyan-400 transition-colors" />
+                <Icon className="text-xl sm:text-2xl text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors" />
               </div>
             </div>
           </div>

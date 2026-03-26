@@ -33,8 +33,8 @@ function NeuralNodes() {
         <mesh key={i} position={node.position}>
           <sphereGeometry args={[0.04, 16, 16]} />
           <meshPhysicalMaterial
-            color="#88ccff"
-            emissive="#224488"
+            color="#00BFA5"
+            emissive="#00BFA5"
             emissiveIntensity={0.5}
             roughness={0.1}
             metalness={0.8}
@@ -77,7 +77,7 @@ function NeuralConnections() {
         <mesh key={i}>
           <tubeGeometry args={[curve, 64, 0.015, 8, false]} />
           <meshBasicMaterial
-            color="#4488ff"
+            color="#00BFA5"
             transparent
             opacity={0.15}
             blending={THREE.AdditiveBlending}
@@ -128,12 +128,12 @@ export default function NeuralFieldBackground() {
       camera={{ position: [0, 0, 7], fov: 60 }}
       gl={{ antialias: true, alpha: true }}
     >
-      <color attach="background" args={["#000000"]} />
+      <color attach="background" args={["#0A0A0A"]} />
 
       {/* Lighting */}
       <ambientLight intensity={0.2} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#4488ff" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#cc00ff" />
+      <pointLight position={[10, 10, 10]} intensity={1} color="#00BFA5" />
+      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#A3A3A3" />
 
       {/* Stars for depth */}
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />

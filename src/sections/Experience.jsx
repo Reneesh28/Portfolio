@@ -100,7 +100,7 @@ export default function Experience() {
   return (
     <section
       id="experience"
-      className="relative w-full bg-transparent text-white px-6 sm:px-12 lg:px-24 py-28 overflow-hidden"
+      className="relative w-full bg-transparent text-white px-6 md:px-12 py-24 overflow-hidden"
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto relative z-10">
@@ -141,12 +141,10 @@ export default function Experience() {
                   {/* Icon Node (Center) */}
                   <div
                     className="
-                      absolute left-8 md:left-1/2 transform -translate-x-1/2
-                      w-10 h-10 rounded-full
-                      bg-black border border-neutral-700
+                      w-10 h-10
+                      bg-[#0A0A0A] border border-[#00BFA5]
                       flex items-center justify-center
-                      text-neutral-300 z-10
-                      shadow-[0_0_15px_rgba(255,255,255,0.1)]
+                      text-[#00BFA5] z-10
                     "
                   >
                     {getIcon(item.type)}
@@ -162,12 +160,10 @@ export default function Experience() {
                         group
                         relative
                         p-6 sm:p-8
-                        bg-neutral-900/80
-                        backdrop-blur-xl
-                        border border-white/10
+                        bg-[#1A1A1A]
+                        border border-white/5
                         hover:border-white/20
-                        transition-all duration-300
-                        hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]
+                        transition-colors duration-300
                         will-change-transform
                         ${isEven
                           ? "md:mr-12 text-left md:text-right"
@@ -176,15 +172,11 @@ export default function Experience() {
                       `}
                       style={{ transformStyle: "preserve-3d" }}
                     >
-                      {/* Decoration: Subtle Glow Gradient behind card */}
-                      <div
-                        className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                        style={{ transform: "translateZ(0)" }}
-                      />
+                      {/* Removed Subtle Glow Gradient */}
 
                       {/* Arrow / Connector (Desktop Only) */}
                       <div
-                        className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-neutral-900 border-t border-r border-neutral-800 transform rotate-45 group-hover:border-neutral-700 transition-colors ${isEven
+                        className={`hidden md:block absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-[#1A1A1A] border-t border-r border-white/5 transform rotate-45 group-hover:border-white/20 transition-colors ${isEven
                           ? "-right-2 border-l-0 border-b-0"
                           : "-left-2 border-r-0 border-t-0 border-l border-b"
                           } z-0`}
@@ -193,9 +185,9 @@ export default function Experience() {
                       <span
                         className={`
                           inline-flex items-center gap-2
-                          text-xs font-medium px-3 py-1 rounded-full
-                          bg-white/5 border border-white/10 text-neutral-300 mb-4
-                          group-hover:bg-white/10 transition-colors
+                          text-xs font-medium px-3 py-1
+                          bg-[#0A0A0A] border border-white/5 text-[#A3A3A3] mb-4
+                          transition-colors
                           ${isEven ? "md:flex-row-reverse" : ""}
                         `}
                       >
@@ -203,14 +195,14 @@ export default function Experience() {
                         {item.period}
                       </span>
 
-                      <h3 className="text-xl font-bold mb-1 bg-gradient-to-r from-white via-neutral-100 to-neutral-400 bg-clip-text text-transparent inline-block">
+                      <h3 className="text-xl font-bold mb-1 text-[#E0E0E0]">
                         {item.role}
                       </h3>
-                      <p className="text-sm font-medium text-neutral-400 mb-4 uppercase tracking-wide group-hover:text-white transition-colors">
+                      <p className="text-sm font-medium text-[#00BFA5] mb-4 uppercase tracking-wide">
                         {item.organization}
                       </p>
 
-                      <p className="text-sm text-neutral-400 leading-relaxed">
+                      <p className="text-sm text-[#A3A3A3] leading-relaxed">
                         {item.description}
                       </p>
                     </div>

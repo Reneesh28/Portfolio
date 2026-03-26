@@ -11,6 +11,7 @@ import {
 import { FaXTwitter } from "react-icons/fa6"; // Using Fa6 for X icon
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Button } from "../components/ui/Button";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -112,7 +113,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="w-full bg-transparent text-white px-6 sm:px-12 lg:px-24 py-28 overflow-hidden"
+      className="w-full bg-transparent text-white px-6 md:px-12 py-24 overflow-hidden"
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto relative z-10">
@@ -144,7 +145,7 @@ export default function Contact() {
                     name="from_name"
                     placeholder="Your Name"
                     required
-                    className="w-full bg-transparent border-b border-neutral-700 py-4 text-white placeholder-neutral-500 focus:border-white focus:outline-none transition-colors"
+                    className="w-full bg-[#1A1A1A] border border-white/5 p-4 text-[#E0E0E0] placeholder-[#A3A3A3] focus:border-[#00BFA5] focus:outline-none transition-colors"
                   />
                 </div>
                 <div className="relative group">
@@ -153,7 +154,7 @@ export default function Contact() {
                     name="from_email"
                     placeholder="Your Email"
                     required
-                    className="w-full bg-transparent border-b border-neutral-700 py-4 text-white placeholder-neutral-500 focus:border-white focus:outline-none transition-colors"
+                    className="w-full bg-[#1A1A1A] border border-white/5 p-4 text-[#E0E0E0] placeholder-[#A3A3A3] focus:border-[#00BFA5] focus:outline-none transition-colors"
                   />
                 </div>
               </div>
@@ -164,22 +165,17 @@ export default function Contact() {
                   rows="4"
                   placeholder="Your Message..."
                   required
-                  className="w-full bg-transparent border-b border-neutral-700 py-4 text-white placeholder-neutral-500 focus:border-white focus:outline-none transition-colors resize-none"
+                  className="w-full bg-[#1A1A1A] border border-white/5 p-4 text-[#E0E0E0] placeholder-[#A3A3A3] focus:border-[#00BFA5] focus:outline-none transition-colors resize-none"
                 />
               </div>
 
               <div className="pt-4">
-                <button
+                <Button
                   type="submit"
                   disabled={status === "sending"}
-                  className="
-                      inline-flex items-center gap-2
-                      px-8 py-4 rounded-full
-                      bg-white text-black font-medium
-                      hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]
-                      transition-all duration-300
-                      disabled:opacity-60 disabled:cursor-not-allowed
-                    "
+                  variant="primary"
+                  size="lg"
+                  className="gap-2 border-transparent disabled:opacity-60 disabled:cursor-not-allowed w-full md:w-auto"
                 >
                   {status === "sending" ? (
                     "Sending..."
@@ -188,7 +184,7 @@ export default function Contact() {
                       Send Message <FiSend />
                     </>
                   )}
-                </button>
+                </Button>
               </div>
 
               {status === "success" && (
@@ -209,17 +205,13 @@ export default function Contact() {
           <div className="contact-info opacity-0">
             <div className="
                 relative
-                bg-neutral-900/60
-                backdrop-blur-xl
-                border border-white/10
-                p-10 rounded-3xl
+                bg-[#1A1A1A]
+                border border-white/5
+                p-10
                 h-full
                 flex flex-col justify-between
              ">
-              {/* Glow Effect */}
-              <div
-                className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"
-              />
+              {/* Removed Blur Glow Orb */}
 
               <div className="space-y-12">
                 {/* Contact Details */}
@@ -235,18 +227,18 @@ export default function Contact() {
 
                 {/* Socials */}
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-500 mb-6">Digital Spaces</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-[#A3A3A3] mb-6">Digital Spaces</h4>
                   <div className="flex flex-col gap-4">
-                    <a href="https://github.com/Reneesh28" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-neutral-300 hover:text-white transition-colors group">
-                      <span className="p-2 bg-neutral-800 rounded-full group-hover:bg-white group-hover:text-black transition-colors"><FiGithub size={18} /></span>
+                    <a href="https://github.com/Reneesh28" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[#A3A3A3] hover:text-[#E0E0E0] transition-colors group">
+                      <span className="p-2 bg-[#0A0A0A] border border-white/5 group-hover:bg-[#E0E0E0] group-hover:text-[#0A0A0A] transition-colors"><FiGithub size={18} /></span>
                       Github
                     </a>
-                    <a href="https://www.linkedin.com/in/balam-reneesh" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-neutral-300 hover:text-white transition-colors group">
-                      <span className="p-2 bg-neutral-800 rounded-full group-hover:bg-white group-hover:text-black transition-colors"><FiLinkedin size={18} /></span>
+                    <a href="https://www.linkedin.com/in/balam-reneesh" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[#A3A3A3] hover:text-[#E0E0E0] transition-colors group">
+                      <span className="p-2 bg-[#0A0A0A] border border-white/5 group-hover:bg-[#E0E0E0] group-hover:text-[#0A0A0A] transition-colors"><FiLinkedin size={18} /></span>
                       LinkedIn
                     </a>
-                    <a href="#" className="flex items-center gap-3 text-neutral-300 hover:text-white transition-colors group">
-                      <span className="p-2 bg-neutral-800 rounded-full group-hover:bg-white group-hover:text-black transition-colors"><FaXTwitter size={18} /></span>
+                    <a href="#" className="flex items-center gap-3 text-[#A3A3A3] hover:text-[#E0E0E0] transition-colors group">
+                      <span className="p-2 bg-[#0A0A0A] border border-white/5 group-hover:bg-[#E0E0E0] group-hover:text-[#0A0A0A] transition-colors"><FaXTwitter size={18} /></span>
                       X (Twitter)
                     </a>
                   </div>

@@ -3,6 +3,7 @@ import projects from "../data/projects";
 import { FiGithub, FiClock, FiArrowUpRight } from "react-icons/fi";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Badge } from "../components/ui/Badge";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -99,7 +100,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="w-full bg-transparent text-white px-6 sm:px-12 lg:px-24 py-28 overflow-hidden"
+      className="w-full bg-transparent text-white px-6 md:px-12 py-24 overflow-hidden"
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto relative z-10">
@@ -134,62 +135,34 @@ export default function Projects() {
                     h-full
                     flex flex-col justify-between
                     p-8 md:p-10
-                    rounded-2xl
-                    bg-neutral-900/80
-                    backdrop-blur-xl
-                    border border-white/10
-                    ${!isComingSoon ? "hover:border-white/20 hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]" : "border-dashed opacity-80"}
+                    bg-[#1A1A1A]
+                    border border-white/5
+                    ${!isComingSoon ? "hover:border-white/20" : "border-dashed opacity-50"}
                     transition-colors duration-300
                     will-change-transform
                   `}
                   style={{ transformStyle: "preserve-3d" }}
                 >
-                  {/* Hover Image Background */}
-                  {project.image && !isComingSoon && (
-                    <div
-                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
-                      style={{
-                        backgroundImage: `url(${project.image})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        transform: "translateZ(0)",
-                      }}
-                    />
-                  )}
-
-                  {/* Internal Glow for interactive cards */}
-                  {!isComingSoon && (
-                    <div
-                      className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                      style={{ transform: "translateZ(0)" }}
-                    />
-                  )}
+                  {/* Removed Hover Image Background and Internal Glow to maintain rigid institutional look */}
 
                   <div>
                     {/* Tech Stack Tags */}
                     <div className="flex flex-wrap gap-2 mb-6">
                       {project.tech.map((item) => (
-                        <span
-                          key={item}
-                          className={`
-                            text-[10px] font-medium tracking-wide
-                            px-3 py-1
-                            rounded-full
-                            border
-                            ${isComingSoon ? 'bg-neutral-800/50 border-neutral-700 text-neutral-400' : 'bg-white/5 border-white/10 text-neutral-300 group-hover:bg-white/10'}
-                            transition-colors
-                          `}
+                        <Badge 
+                          key={item} 
+                          variant={isComingSoon ? "default" : "accent"}
                         >
                           {item}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
 
-                    <h3 className={`text-xl font-bold mb-3 ${!isComingSoon ? 'bg-gradient-to-r from-white via-neutral-100 to-neutral-400 bg-clip-text text-transparent inline-block' : 'text-neutral-300'}`}>
+                    <h3 className={`text-xl font-bold mb-3 ${!isComingSoon ? 'text-[#E0E0E0]' : 'text-[#A3A3A3]'}`}>
                       {project.title}
                     </h3>
 
-                    <p className="text-sm text-neutral-400 leading-relaxed mb-8">
+                    <p className="text-sm text-[#A3A3A3] leading-relaxed mb-8">
                       {project.description}
                     </p>
                   </div>

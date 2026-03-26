@@ -3,6 +3,7 @@ import { Linkedin, Github, Mail, ArrowRight, FileText } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import profileImage from "../assets/profile.jpg";
+import { Button } from "../components/ui/Button";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -98,11 +99,11 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="w-full bg-transparent text-white px-6 sm:px-12 lg:px-24 py-24 sm:py-32 overflow-hidden"
+      className="w-full bg-[#0A0A0A] text-[#E0E0E0] px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t border-white/5"
     >
       <div ref={containerRef} className="max-w-7xl mx-auto">
         {/* Section Label */}
-        <p className="about-label text-blue-400 font-medium uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16">
+        <p className="about-label text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16">
           About Me
         </p>
 
@@ -111,39 +112,32 @@ export default function About() {
 
           {/* LEFT COLUMN — PROFILE (Span 4 cols) */}
           <div className="md:col-span-5 lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
-            {/* Profile Image with Glow Effect */}
+            {/* Profile Image (No Glow) */}
             <div className="profile-container relative group mb-8">
-              <div
-                className="
-                  absolute -inset-1 bg-gradient-to-tr from-blue-600 to-purple-600 
-                  rounded-full blur opacity-20 group-hover:opacity-40 transition duration-500
-                "
-              ></div>
               <div
                 className="
                   relative
                   w-64 h-64 sm:w-72 sm:h-72
-                  rounded-full
-                  overflow-hidden
-                  border-2 border-neutral-800
-                  group-hover:border-neutral-600
-                  transition duration-500
+                  border border-white/10
+                  group-hover:border-white/30
+                  transition-colors duration-500
+                  bg-[#1A1A1A] p-2
                 "
               >
                 <img
                   src={profileImage}
                   alt="Reneesh"
-                  className="w-full h-full object-cover object-top scale-100 group-hover:scale-105 transition-transform duration-700"
+                  className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-700"
                 />
               </div>
             </div>
 
             {/* Name & Title */}
             <div className="profile-name space-y-2">
-              <h3 className="text-3xl font-bold tracking-tight text-white/90">
+              <h3 className="text-3xl font-bold tracking-tight text-[#E0E0E0]">
                 RENEESH
               </h3>
-              <p className="text-blue-400 font-medium tracking-widest text-sm uppercase">
+              <p className="text-[#A3A3A3] font-medium tracking-[0.1em] text-sm uppercase">
                 AI Engineer
               </p>
             </div>
@@ -166,16 +160,14 @@ export default function About() {
                     group relative
                     w-12 h-12
                     flex items-center justify-center
-                    rounded-full
-                    bg-neutral-900/50
-                    border border-neutral-800
-                    text-neutral-400
-                    hover:text-blue-400 hover:border-blue-500/50 hover:bg-neutral-800
-                    hover:-translate-y-1
-                    transition-all duration-300
+                    bg-[#1A1A1A]
+                    border border-white/5
+                    text-[#A3A3A3]
+                    hover:text-[#E0E0E0] hover:border-white/20 hover:bg-[#2A2A2A]
+                    transition-colors duration-200
                   "
                 >
-                  <social.icon size={20} className="transition-transform group-hover:scale-110" />
+                  <social.icon size={20} className="transition-transform" />
 
                   {/* Tooltip */}
                   <span className="
@@ -195,11 +187,11 @@ export default function About() {
 
           {/* RIGHT COLUMN — TEXT CONTENT (Span 8 cols) */}
           <div className="md:col-span-7 lg:col-span-8 flex flex-col justify-center h-full">
-            <h2 className="about-headline text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8 leading-tight text-white/90">
-              Building <span className="text-blue-400">intelligent systems</span> that scale
+            <h2 className="about-headline text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8 leading-[1.15] text-[#E0E0E0]">
+              Building <span className="text-[#00BFA5]">intelligent systems</span> that scale
             </h2>
 
-            <div className="about-text space-y-6 text-neutral-400 text-lg leading-relaxed max-w-2xl">
+            <div className="about-text space-y-6 text-[#A3A3A3] text-lg leading-relaxed max-w-2xl">
               <p>
                 I am an AI Engineer focused on designing and building machine
                 learning and generative AI systems that are reliable, scalable,
@@ -220,28 +212,23 @@ export default function About() {
 
             {/* Resume Button */}
             <div className="resume-btn mt-12">
-              <a
+              <Button
+                as="a"
                 href="/resume.pdf"
                 download="Reneesh_CV.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="
-                  group inline-flex items-center gap-3
-                  px-8 py-4
-                  bg-neutral-900 
-                  border border-neutral-800
-                  rounded-full
-                  hover:bg-neutral-800 hover:border-blue-500/30
-                  transition-all duration-300
-                "
+                variant="secondary"
+                size="lg"
+                className="group gap-3 bg-[#0A0A0A]"
               >
-                <FileText size={20} className="text-blue-500 group-hover:text-blue-400 transition-colors" />
-                <span className="text-white font-medium tracking-wide">Download Resume</span>
+                <FileText size={20} className="text-[#A3A3A3] group-hover:text-[#E0E0E0] transition-colors" />
+                <span className="text-[#E0E0E0] tracking-wide">Download Resume</span>
                 <ArrowRight
                   size={18}
-                  className="text-neutral-500 group-hover:translate-x-1 group-hover:text-white transition-all"
+                  className="text-[#A3A3A3] group-hover:text-[#E0E0E0] transition-colors"
                 />
-              </a>
+              </Button>
             </div>
           </div>
 

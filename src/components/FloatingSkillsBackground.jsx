@@ -59,11 +59,8 @@ function FloatingIcon({ skill, index, total }) {
                         className="
               flex items-center justify-center 
               w-12 h-12 
-              bg-neutral-900/40 
-              backdrop-blur-sm 
-              rounded-full 
-              border border-white/10
-              shadow-lg
+              bg-[#0A0A0A]
+              border border-white/5
               transition-opacity duration-1000
             "
                     >

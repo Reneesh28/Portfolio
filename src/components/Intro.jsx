@@ -69,13 +69,12 @@ const Intro = ({ onFinish }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-9999 flex items-center justify-center bg-black text-white"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-[#0A0A0A] text-[#E0E0E0]"
     >
       <div className="text-center overflow-hidden">
         {/* NAME */}
         <div
-          className="flex justify-center font-bold tracking-[0.25em]"
-          style={{ fontFamily: "Audiowide, sans-serif" }}
+          className="flex justify-center font-bold tracking-tight"
         >
           {name.split("").map((char, i) => (
             <span
@@ -91,7 +90,7 @@ const Intro = ({ onFinish }) => {
         {/* TAGLINE */}
         <p
           ref={taglineRef}
-          className="mt-6 text-gray-400 text-xs md:text-base tracking-widest"
+          className="mt-6 text-[#00BFA5] font-semibold text-xs md:text-sm tracking-[0.2em]"
         >
           {tagline}
         </p>

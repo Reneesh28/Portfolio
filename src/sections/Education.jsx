@@ -3,6 +3,7 @@ import education from "../data/education";
 import { FiBookOpen } from "react-icons/fi";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Badge } from "../components/ui/Badge";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -100,7 +101,7 @@ export default function Education() {
   return (
     <section
       id="education"
-      className="w-full bg-transparent text-white px-6 sm:px-12 lg:px-24 py-28 overflow-hidden"
+      className="w-full bg-transparent text-white px-6 md:px-12 py-24 overflow-hidden"
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto relative z-10 text-center">
@@ -137,48 +138,37 @@ export default function Education() {
                     h-full
                     flex flex-col justify-between
                     p-8
-                    rounded-2xl
-                    bg-neutral-900/80
-                    backdrop-blur-xl
-                    border border-white/10
+                    bg-[#1A1A1A]
+                    border border-white/5
                     hover:border-white/20
-                    hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]
                     transition-colors duration-300
                     will-change-transform
                   "
                   style={{ transformStyle: "preserve-3d" }}
                 >
-                  {/* Subtle Glow */}
-                  <div
-                    className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                    style={{ transform: "translateZ(0)" }}
-                  />
+                  {/* Subtle Glow Removed */}
 
                   <div>
                     {/* Badges */}
                     <div className="flex items-center justify-between mb-6">
-                      <div className="p-3 bg-white/5 rounded-xl border border-white/10 text-white group-hover:bg-white/10 transition-colors">
+                      <div className="p-3 bg-[#0A0A0A] border border-white/5 text-[#E0E0E0] group-hover:bg-[#1A1A1A] transition-colors">
                         <FiBookOpen size={20} />
                       </div>
                       <div className="flex gap-2">
-                        <span className="text-xs font-mono text-neutral-400 bg-neutral-800 px-2 py-1 rounded border border-neutral-700">
-                          {edu.period}
-                        </span>
-                        <span className="text-xs font-mono text-emerald-400 bg-emerald-900/20 px-2 py-1 rounded border border-emerald-900/30">
-                          {edu.score}
-                        </span>
+                        <Badge variant="default">{edu.period}</Badge>
+                        <Badge variant="success">{edu.score}</Badge>
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-bold mb-2 text-neutral-100 group-hover:text-white transition-colors">
+                    <h3 className="text-xl font-bold mb-2 text-[#E0E0E0]">
                       {edu.degree}
                     </h3>
 
-                    <p className="text-sm text-neutral-400 mb-6 font-medium uppercase tracking-wide">
+                    <p className="text-sm text-[#00BFA5] mb-6 font-medium uppercase tracking-wide">
                       {edu.institution}
                     </p>
 
-                    <p className="text-sm text-neutral-500 leading-relaxed group-hover:text-neutral-400 transition-colors">
+                    <p className="text-sm text-[#A3A3A3] leading-relaxed">
                       {edu.description}
                     </p>
                   </div>
