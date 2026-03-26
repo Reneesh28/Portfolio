@@ -210,6 +210,7 @@ export default function Contact() {
                            <p className="text-xs font-mono text-neutral-500">RENEESH_CORE // SYSTEM_ARCHITECT</p>
                         </div>
 
+
                         <div className="grid grid-cols-2 gap-8">
                            <div>
                               <h4 className="text-[10px] font-bold uppercase tracking-widest text-neutral-600 mb-4">Networks</h4>
