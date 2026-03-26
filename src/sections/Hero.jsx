@@ -1,15 +1,17 @@
-import { useEffect, useRef, lazy, Suspense, useState } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Button } from "../components/ui/Button";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const NeuralFieldBackground = lazy(() =>
   import("../components/NeuralFieldBackground")
 );
-import { Button } from "../components/ui/Button";
 
-const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const TARGET_TITLE = "Balam Reneesh";
+const TARGET_ROLE = "SYSTEMS ARCHITECT & UI ENGINEER";
+const TARGET_DESC = "Deploying robust machine learning models and scalable structural interfaces.";
 
 export default function Hero() {
   const sectionRef = useRef(null);
@@ -17,88 +19,46 @@ export default function Hero() {
   const titleRef = useRef(null);
   const roleRef = useRef(null);
   const descRef = useRef(null);
+  const actionsRef = useRef(null);
+  const decryptBtnRef = useRef(null);
 
-  const [roleText, setRoleText] = useState("AI Engineer");
-  const originalRole = "AI Engineer";
+  const [isDecrypted, setIsDecrypted] = useState(false);
 
-  // --- Scramble Effect Helper ---
-  const scrambleText = () => {
-    let iterations = 0;
-    const interval = setInterval(() => {
-      setRoleText((prev) =>
-        originalRole
-          .split("")
-          .map((letter, index) => {
-            if (index < iterations) {
-              return originalRole[index];
-            }
-            return LETTERS[Math.floor(Math.random() * 26)];
-          })
-          .join("")
-      );
-
-      if (iterations >= originalRole.length) {
-        clearInterval(interval);
-      }
-      iterations += 1 / 3; // speed of decoding
-    }, 30);
-  };
+  // Initial scrambled states
+  const [titleText, setTitleText] = useState("0x0F82A0F82A0F");
+  const [roleText, setRoleText] = useState("0x000F82A000F82A000F82A");
+  const [descText, setDescText] = useState("0x00000000000000000000000000000000000");
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       /* ===============================
-         TITLE STAGGER ENTRY
+         CINEMATIC ENTRY SEQUENCE (SCRAMBLED)
       =============================== */
-      // Animate letters individually if we split them, but here we treat lines/words
-      // For character staggered, we'd need to map them in JSX. Let's do that below. 
-      // But first, general fade-in
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      const titleChars = titleRef.current.querySelectorAll(".char");
-
-      gsap.fromTo(
-        titleChars,
-        {
-          opacity: 0,
-          y: 100,
-          rotateX: -90,
-          filter: "blur(10px)"
-        },
-        {
-          opacity: 1,
-          y: 0,
-          rotateX: 0,
-          filter: "blur(0px)",
-          duration: 1,
-          stagger: 0.05,
-          ease: "power4.out",
-        }
-      );
-
-      // Role Entry (with scramble trigger potentially)
-      gsap.fromTo(
-        roleRef.current,
-        { opacity: 0, scale: 0.8 },
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          delay: 0.5,
-          ease: "back.out(1.7)",
-          onStart: scrambleText, // Trigger scramble on logic start
-        }
-      );
-
-      gsap.fromTo(
-        descRef.current,
+      tl.fromTo(
+        titleRef.current,
         { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          delay: 0.8,
-          ease: "power2.out",
-        }
-      );
+        { opacity: 1, y: 0, duration: 1.2 }
+      )
+        .fromTo(
+          roleRef.current,
+          { opacity: 0, y: 15 },
+          { opacity: 0.5, y: 0, duration: 0.8 }, // Dimmer until decrypted
+          "-=0.6"
+        )
+        .fromTo(
+          descRef.current,
+          { opacity: 0, y: 10 },
+          { opacity: 0.3, y: 0, duration: 0.8 }, // Very dim until decrypted
+          "-=0.5"
+        )
+        .fromTo(
+          decryptBtnRef.current,
+          { opacity: 0, scale: 0.95 },
+          { opacity: 1, scale: 1, duration: 0.8 },
+          "-=0.2"
+        );
 
       /* ===============================
          SCROLL EXIT — NATURAL DEPARTURE
@@ -121,33 +81,46 @@ export default function Hero() {
     return () => ctx.revert();
   }, []);
 
-  // Split title helper
-  const renderTitle = (text) => {
-    return text.split("").map((char, index) => (
-      <span
-        key={index}
-        className="char inline-block"
-        style={{ minWidth: char === " " ? "0.3em" : "auto" }}
-        onMouseEnter={(e) => {
-          gsap.to(e.target, {
-            color: "#4488ff",
-            y: -10,
-            duration: 0.2,
-            ease: "power2.out"
-          });
-        }}
-        onMouseLeave={(e) => {
-          gsap.to(e.target, {
-            color: "white",
-            y: 0,
-            duration: 0.2,
-            ease: "power2.in"
-          });
-        }}
-      >
-        {char === " " ? "\u00A0" : char}
-      </span>
-    ));
+  const scramble = (target, setText, duration) => {
+    let iterations = 0;
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+    const maxIterations = target.length;
+
+    const interval = setInterval(() => {
+      setText(
+        target.split("").map((char, index) => {
+          if (char === " ") return " ";
+          if (index < iterations) return target[index];
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join("")
+      );
+
+      if (iterations >= maxIterations) {
+        clearInterval(interval);
+      }
+      iterations += duration; // Speed control
+    }, 30);
+  };
+
+  const handleDecrypt = () => {
+    // 1. Hide Decrypt Button
+    gsap.to(decryptBtnRef.current, { opacity: 0, y: 10, duration: 0.4, onComplete: () => setIsDecrypted(true) });
+
+    // 2. Brighten text elements
+    gsap.to([roleRef.current, descRef.current], { opacity: 1, duration: 0.5 });
+    gsap.to(titleRef.current, { color: "#E0E0E0", duration: 1 }); // From muted to bright
+
+    // 3. Run Scramblers
+    scramble(TARGET_TITLE, setTitleText, 1 / 3);
+    setTimeout(() => scramble(TARGET_ROLE, setRoleText, 1 / 2), 200);
+    setTimeout(() => scramble(TARGET_DESC, setDescText, 1 / 2), 400);
+
+    // 4. Reveal actual actions
+    gsap.fromTo(
+      actionsRef.current,
+      { opacity: 0, y: 15 },
+      { opacity: 1, y: 0, duration: 0.8, delay: 1.5, ease: "power3.out", display: "flex" }
+    );
   };
 
   return (
@@ -182,39 +155,48 @@ export default function Hero() {
       >
         <h1
           ref={titleRef}
-          className="text-[#E0E0E0] font-bold tracking-tight leading-[1.1]
-                     text-6xl sm:text-7xl md:text-8xl lg:text-9xl
-                     cursor-default select-none perspective-500"
+          className="text-[#A3A3A3] font-mono font-bold tracking-tight leading-[1.1]
+                     text-4xl sm:text-6xl md:text-8xl lg:text-9xl
+                     cursor-default select-none perspective-500
+                     transition-colors duration-1000"
         >
-          {renderTitle("Balam Reneesh")}
+          {titleText}
         </h1>
 
         <h2
           ref={roleRef}
           className="mt-6 text-[#00BFA5] font-semibold tracking-[0.2em] uppercase
-                     text-xl sm:text-2xl md:text-3xl font-mono"
-          onMouseEnter={scrambleText}
+                     text-sm sm:text-xl md:text-3xl font-mono"
         >
           {roleText}
         </h2>
 
         <p
           ref={descRef}
-          className="mt-8 text-[#A3A3A3] text-lg sm:text-xl max-w-2xl font-normal leading-relaxed"
+          className="mt-8 text-[#A3A3A3] text-sm sm:text-xl max-w-2xl font-mono leading-relaxed"
         >
-          Machine Learning · GenAI · Web Development · Scalable Systems
+          {descText}
         </p>
 
-        <div className="mt-12 flex gap-6 z-30">
+        {/* The Gateway Decryption Button */}
+        {!isDecrypted && (
+          <div ref={decryptBtnRef} className="mt-16 z-30">
+            <Button onClick={handleDecrypt} variant="primary" size="lg" className="animate-pulse">
+              [ DECRYPT PROTOCOLS ]
+            </Button>
+          </div>
+        )}
+
+        {/* Validated Actions (Hidden until decrypted) */}
+        <div ref={actionsRef} className="mt-12 gap-6 z-30 hidden opacity-0">
           <Button as="a" href="#projects" variant="primary" size="md">
-            View Projects
+            ACCESS ARCHIVES
           </Button>
 
           <Button as="a" href="#contact" variant="secondary" size="md">
-            Contact Me
+            ESTABLISH UPLINK
           </Button>
         </div>
-
       </div>
     </section>
   );

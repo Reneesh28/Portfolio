@@ -1,4 +1,4 @@
-import { FiGithub, FiLinkedin, FiMail, FiArrowUp } from "react-icons/fi";
+import { FiGithub, FiLinkedin, FiMail, FiArrowUp, FiTerminal } from "react-icons/fi";
 import { FaXTwitter } from "react-icons/fa6";
 import { Button } from "./ui/Button";
 
@@ -14,13 +14,18 @@ export default function Footer() {
     <footer className="w-full bg-[#0A0A0A] border-t border-white/5 px-6 md:px-12 py-12 relative overflow-hidden">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0">
 
-        {/* Left: Copyright */}
+        {/* Left: Copyright & Status */}
         <div className="text-center md:text-left">
-          <h3 className="text-lg font-semibold text-[#E0E0E0] mb-2">
-            Balam Reneesh
-          </h3>
-          <p className="text-sm text-[#A3A3A3]">
-            © {new Date().getFullYear()} All rights reserved. Built with React & Tailwind.
+          <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+            <h3 className="text-lg font-bold text-[#E0E0E0] tracking-tight">
+              Balam Reneesh
+            </h3>
+            <div className="flex items-center gap-2 px-2 py-0.5 border border-[#00BFA5]/30 bg-[#00BFA5]/5 text-[#00BFA5] text-[9px] font-mono font-bold uppercase tracking-widest animate-pulse">
+              <FiTerminal size={10} /> System_Online
+            </div>
+          </div>
+          <p className="text-[10px] font-mono text-[#A3A3A3] uppercase tracking-wider">
+            © {new Date().getFullYear()} ARCHIVE_V5.0 // Built with React & GSAP.
           </p>
         </div>
 
@@ -53,9 +58,9 @@ export default function Footer() {
           <Button
             onClick={scrollToTop}
             variant="secondary"
-            className="group gap-2"
+            className="group gap-2 font-mono text-[10px] uppercase tracking-widest border-white/5 bg-transparent hover:bg-white/5"
           >
-            Back to Top
+            RETURN_TO_ROOT
             <FiArrowUp className="transform group-hover:-translate-y-0.5 transition-transform duration-200" />
           </Button>
         </div>

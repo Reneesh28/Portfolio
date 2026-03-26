@@ -47,3 +47,27 @@ html {
 .perspective-1000 {
   perspective: 1000px;
 }
+
+/* Custom Terminal Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0D0D0D;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #222;
+  transition: background 0.3s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #00BFA5;
+}
+
+/* Scrollbar Firefox Support */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #222 #0D0D0D;
+}

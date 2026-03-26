@@ -1,100 +1,31 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import skills from "../data/skills";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { FiCode, FiLayers, FiDatabase, FiCpu, FiGlobe } from "react-icons/fi";
-import FloatingSkillsBackground from "../components/FloatingSkillsBackground";
+import { Lock, Unlock, ChevronDown } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Categorize skills for orbits
-const categorizeSkills = () => {
-  const allSkills = skills.flatMap((cat) =>
-    cat.items.map(item => ({ ...item, category: cat.category }))
-  );
-
-  // Inner Ring: Core Languages & Frontend
-  const innerKeywords = [
-    "Python", "JavaScript", "React.js", "Node.js", "Next.js",
-    "HTML5", "CSS3", "TypeScript", "Tailwind CSS",
-    "C++", "SQL", "FastAPI", "MongoDB", "Git", "Docker", "Pandas", "PyTorch", "Django", "NumPy"
-  ];
-
-  const inner = [];
-  const outer = [];
-
-  allSkills.forEach((skill) => {
-    if (innerKeywords.includes(skill.name)) {
-      inner.push(skill);
-    } else {
-      outer.push(skill);
-    }
-  });
-
-  return { inner, outer };
-};
-
 export default function Skills() {
-  const { inner, outer } = useMemo(() => categorizeSkills(), []);
-  const [activeSkill, setActiveSkill] = useState(null);
   const sectionRef = useRef(null);
-  const containerRef = useRef(null);
-
-  // Default Title
-  const defaultTitle = { name: "Skills", level: "Technical Arsenal" };
-  const currentDisplay = activeSkill || defaultTitle;
-  const Icon = activeSkill?.icon || FiCode;
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Entrance Animation
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 60%", // Start when section is comfortably in view
-          end: "bottom bottom",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      /*
-      tl.from(".skills-center", {
-        scale: 0.5,
-        opacity: 1, // FORCE VISIBLE for debug
-        duration: 0.8,
-        ease: "back.out(1.7)",
-      })
-      */
-      tl.set(".skills-center", { opacity: 1 }); // Ensure it starts visible
-      tl.from(".orbit-ring-inner", {
-        scale: 0.8,
-        opacity: 0,
-        rotation: -45,
-        duration: 1,
-        ease: "power3.out",
-      }, "-=0.6")
-        .from(".orbit-ring-outer", {
-          scale: 0.8,
-          opacity: 0,
-          rotation: 45,
-          duration: 1,
+      // Entrance Animation for the Vault bars
+      gsap.fromTo(".vault-bar",
+        { opacity: 0, y: 15 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.6,
+          stagger: 0.1,
           ease: "power3.out",
-        }, "-=0.8")
-        .from(".skill-node-inner", {
-          scale: 0,
-          opacity: 0,
-          duration: 0.4,
-          stagger: 0.05,
-          ease: "back.out(2)",
-        }, "-=0.5")
-        .from(".skill-node-outer", {
-          scale: 0,
-          opacity: 0,
-          duration: 0.4,
-          stagger: 0.03,
-          ease: "back.out(2)",
-        }, "-=0.5");
-
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
     }, sectionRef);
 
     return () => ctx.revert();
@@ -104,159 +35,98 @@ export default function Skills() {
     <section
       ref={sectionRef}
       id="skills"
-      className="w-full min-h-screen bg-[#0A0A0A] text-[#E0E0E0] border-t border-white/5 flex flex-col items-center justify-center py-24 overflow-hidden relative"
+      className="w-full min-h-screen bg-[#0A0A0A] text-[#E0E0E0] border-t border-white/5 py-24 sm:py-32 px-6 md:px-12 relative overflow-hidden flex flex-col items-center"
     >
-      {/* 3D Floating Background - Strict containment */}
-      <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
-        <FloatingSkillsBackground />
-      </div>
+      <div className="w-full max-w-4xl relative z-10 flex flex-col">
+        {/* Section Label */}
+        <p className="vault-bar text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16">
+          CAPABILITY MATRIX
+        </p>
 
-      {/* Radial Gradient overlay replaced with simple solid fade or nothing */}
-
-      {/* Main Container */}
-      <div ref={containerRef} className="relative z-10 w-full max-w-6xl aspect-square sm:aspect-auto sm:h-[600px] flex items-center justify-center">
-
-        {/* ORBITS CONTAINER */}
-        <div className="relative w-full h-full flex items-center justify-center">
-
-          {/* INNER ORBIT */}
-          <GSAPOrbit
-            skills={inner}
-            radius={window.innerWidth < 640 ? 120 : 180} // Responsive radius
-            duration={40}
-            clockwise={true}
-            className="orbit-ring-inner"
-            setActiveSkill={setActiveSkill}
-            nodeClass="skill-node-inner"
-          />
-
-          {/* OUTER ORBIT */}
-          <GSAPOrbit
-            skills={outer}
-            radius={window.innerWidth < 640 ? 210 : 310} // Responsive radius
-            duration={60}
-            clockwise={false}
-            className="orbit-ring-outer"
-            setActiveSkill={setActiveSkill}
-            nodeClass="skill-node-outer"
-          />
-
-          {/* CENTER DISPLAY - Moved after orbits to ensure stacking on top */}
-          <div className="skills-center absolute inset-0 z-50 flex flex-col items-center justify-center text-center transition-all duration-300 pointer-events-none">
-
-            <div className={`
-                mb-4 p-4 bg-[#1A1A1A] border border-white/5
-                transition-all duration-300
-                ${activeSkill ? "border-[#00BFA5]/50 scale-105" : ""}
-              `}>
-              <Icon className={`text-4xl sm:text-5xl transition-colors duration-300 ${activeSkill ? "text-[#00BFA5]" : "text-[#A3A3A3]"}`} />
-            </div>
-
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-[#E0E0E0] mb-2 transition-colors duration-300">
-              {currentDisplay.name}
-            </h2>
-            <p className="text-[#00BFA5] text-sm sm:text-base uppercase tracking-widest font-medium">
-              {currentDisplay.level || currentDisplay.category}
-            </p>
-          </div>
+        {/* Encrypted Category Vaults */}
+        <div className="flex flex-col gap-4">
+          {skills.map((categoryData, idx) => (
+            <SkillVault key={idx} data={categoryData} />
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-// GSAP-powered Orbit Component
-function GSAPOrbit({ skills, radius, duration, clockwise, className, setActiveSkill, nodeClass }) {
-  const ringRef = useRef(null);
-  const nodesRef = useRef([]);
-  const ringTween = useRef(null);
-  const nodeTweens = useRef([]);
+function SkillVault({ data }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const itemsRef = useRef([]);
 
   useEffect(() => {
-    // 1. Orbit Rotation
-    ringTween.current = gsap.to(ringRef.current, {
-      rotation: clockwise ? 360 : -360,
-      duration: duration,
-      repeat: -1,
-      ease: "none",
-    });
-
-    // 2. Counter-Rotation for Icons (Keep them upright)
-    nodeTweens.current = nodesRef.current.map((node) => {
-      return gsap.to(node, {
-        rotation: clockwise ? -360 : 360,
-        duration: duration,
-        repeat: -1,
-        ease: "none",
-      });
-    });
-
-    return () => {
-      ringTween.current?.kill();
-      nodeTweens.current.forEach(t => t?.kill());
-    };
-  }, [duration, clockwise]);
-
-  // Pause/Play handlers
-  const handleMouseEnter = (skill) => {
-    // console.log("Hovering Skill:", skill); // Debug
-    setActiveSkill(skill);
-    ringTween.current?.pause();
-    nodeTweens.current.forEach(t => t?.pause());
-  };
-
-  const handleMouseLeave = () => {
-    setActiveSkill(null);
-    ringTween.current?.play();
-    nodeTweens.current.forEach(t => t?.play());
-  };
-
-  const count = skills.length;
-  const step = 360 / count;
+    if (isOpen) {
+      // Wait for the accordion to slightly open before staggering items
+      gsap.fromTo(itemsRef.current,
+        { opacity: 0, y: -10 },
+        { opacity: 1, y: 0, duration: 0.3, stagger: 0.03, ease: "power3.out", delay: 0.1 }
+      );
+    }
+  }, [isOpen]);
 
   return (
-    <div
-      ref={ringRef}
-      className={`absolute rounded-full border border-neutral-800/30 flex items-center justify-center pointer-events-none ${className}`}
-      style={{
-        width: radius * 2,
-        height: radius * 2,
-      }}
-    >
-      {skills.map((skill, index) => {
-        const angle = index * step;
-        const Icon = skill.icon || FiCode;
+    <div className="vault-bar border border-white/10 bg-[#111111] overflow-hidden transition-colors duration-300 hover:border-[#00BFA5]/30">
 
-        return (
-          <div
-            key={index}
-            className={`absolute flex items-center justify-center pointer-events-none ${nodeClass}`}
-            style={{
-              transform: `rotate(${angle}deg) translate(${radius}px)`,
-            }}
-          >
-            {/* Counter-Rotating Container */}
-            <div
-              ref={el => nodesRef.current[index] = el}
-              className="relative group cursor-pointer pointer-events-auto flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16"
-              onMouseEnter={() => handleMouseEnter(skill)}
-              onMouseLeave={handleMouseLeave}
-            >
-              <div className="
-                w-10 h-10 sm:w-14 sm:h-14
-                bg-[#0A0A0A]
-                border border-white/5
-                flex items-center justify-center
-                transition-colors duration-200
-                group-hover:bg-[#1A1A1A]
-                group-hover:border-[#00BFA5]/30
-              ">
-                <Icon className="text-xl sm:text-2xl text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors" />
-              </div>
-            </div>
+      {/* Vault Header Bar */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-5 sm:p-6 text-left focus:outline-none group"
+      >
+        <div className="flex items-center gap-4">
+          {isOpen ? (
+            <Unlock size={18} className="text-[#00BFA5]" />
+          ) : (
+            <Lock size={18} className="text-[#A3A3A3] group-hover:text-[#E0E0E0] transition-colors" />
+          )}
+          <h3 className={`font-mono tracking-widest text-sm sm:text-base transition-colors ${isOpen ? 'text-[#00BFA5]' : 'text-[#A3A3A3] group-hover:text-[#E0E0E0]'}`}>
+            {isOpen ? `[ UNLOCKED: ${data.category.toUpperCase()} ]` : `[ ENCRYPTED: ${data.category.toUpperCase()} ]`}
+          </h3>
+        </div>
+
+        <div className="flex items-center gap-4 text-[#A3A3A3]">
+          <span className="font-mono text-xs opacity-50 hidden sm:block">
+            {data.items.length} MODULES
+          </span>
+          <span className="w-px h-4 bg-white/10 hidden sm:block"></span>
+          <ChevronDown
+            size={18}
+            className={`transition-all duration-300 ease-out ${isOpen ? "rotate-180 text-[#00BFA5]" : "rotate-0 text-[#A3A3A3]"}`}
+          />
+        </div>
+      </button>
+
+      {/* Vault Content (Accordion) */}
+      <div
+        className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}
+      >
+        <div className="p-5 sm:p-6 pt-0 bg-[#111111]">
+          {/* Subtle separator inside the open vault */}
+          <div className="w-full h-px bg-white/5 mb-6" />
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {data.items.map((skill, idx) => {
+              const Icon = skill.icon;
+              return (
+                <div
+                  key={idx}
+                  ref={el => itemsRef.current[idx] = el}
+                  className="flex items-center gap-3 p-3 bg-[#1A1A1A] border border-white/5 hover:border-[#00BFA5]/40 hover:bg-[#222222] transition-colors group cursor-default"
+                >
+                  <Icon className="text-xl text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors" />
+                  <span className="font-mono text-xs sm:text-sm tracking-wide text-[#E0E0E0] truncate">
+                    {skill.name}
+                  </span>
+                </div>
+              );
+            })}
           </div>
-        );
-      })}
+        </div>
+      </div>
+
     </div>
   );
 }
