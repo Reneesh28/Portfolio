@@ -101,7 +101,7 @@ export default function Hero() {
         clearInterval(interval);
       }
       iterations += duration; // Speed control
-    }, 30);
+    }, 60);
   };
   const handleDecrypt = () => {
     // 0. System Flash
