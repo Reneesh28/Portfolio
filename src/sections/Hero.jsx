@@ -2,11 +2,12 @@ import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "../components/ui/Button";
+import HeroHUD from "../components/HeroHUD";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const NeuralFieldBackground = lazy(() =>
-  import("../components/NeuralFieldBackground")
+const LatticeBackground = lazy(() =>
+  import("../components/LatticeBackground")
 );
 
 const TARGET_TITLE = "Balam Reneesh";
@@ -21,6 +22,7 @@ export default function Hero() {
   const descRef = useRef(null);
   const actionsRef = useRef(null);
   const decryptBtnRef = useRef(null);
+  const flashRef = useRef(null);
 
   const [isDecrypted, setIsDecrypted] = useState(false);
 
@@ -101,8 +103,13 @@ export default function Hero() {
       iterations += duration; // Speed control
     }, 30);
   };
-
   const handleDecrypt = () => {
+    // 0. System Flash
+    gsap.fromTo(flashRef.current,
+      { opacity: 0 },
+      { opacity: 0.4, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.inOut" }
+    );
+
     // 1. Hide Decrypt Button
     gsap.to(decryptBtnRef.current, { opacity: 0, y: 10, duration: 0.4, onComplete: () => setIsDecrypted(true) });
 
@@ -132,9 +139,15 @@ export default function Hero() {
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <Suspense fallback={null}>
-          <NeuralFieldBackground />
+          <LatticeBackground isDecrypted={isDecrypted} />
         </Suspense>
       </div>
+
+      {/* Cinematic Interface Layer */}
+      <HeroHUD isDecrypted={isDecrypted} />
+
+      {/* Decryption Flash Overlay */}
+      <div ref={flashRef} className="absolute inset-0 bg-[#00E5FF] z-40 pointer-events-none opacity-0" />
 
       {/* Overlay - precise gradient to ensure text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/30 via-[#0A0A0A]/70 to-[#0A0A0A] z-10 pointer-events-none" />
