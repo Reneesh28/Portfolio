@@ -11,7 +11,7 @@ const experience = [
     type: "Work Experience",
     role: "Co-CEO",
     organization: "AniCos Student Organization",
-    period: "Aug 2025 – Dec 2025",
+    period: "Aug 2023 – Dec 2025",
     description:
       "Advanced from Volunteer to Board Member to Co-CEO, leading organizational operations, managing events, coordinating teams, and driving community engagement initiatives."
   },
