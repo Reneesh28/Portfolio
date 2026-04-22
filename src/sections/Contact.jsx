@@ -33,9 +33,9 @@ const InkConsole = ({ status, progress, logs }) => {
          <div className="space-y-2 opacity-80">
             {logs.map((log, i) => (
                <div
-                 key={i}
-                 className={i === logs.length - 1 ? "animate-pulse" : ""}
-                 style={{ color: i === logs.length - 1 ? "var(--accent)" : "var(--text-ink)" }}
+                  key={i}
+                  className={i === logs.length - 1 ? "animate-pulse" : ""}
+                  style={{ color: i === logs.length - 1 ? "var(--accent)" : "var(--text-ink)" }}
                >
                   <span className="mr-2 opacity-50">[{new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]</span>
                   {log}
@@ -115,188 +115,133 @@ export default function Contact() {
    };
 
    return (
-      <section
-         id="contact"
-         className="w-full px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t"
-         style={{
-            backgroundColor: "var(--bg-void)",
-            color: "var(--text-main)",
-            borderColor: "var(--border-subtle)"
-         }}
-         ref={containerRef}
-      >
-         <div className="max-w-7xl mx-auto relative z-10">
-            <div className="contact-header mb-16 opacity-0">
-               <p
-                  className="font-accent font-bold uppercase tracking-[0.3em] text-[10px] mb-4 opacity-70"
-                  style={{ color: "var(--accent)" }}
-               >
-                  SEND WORD
-               </p>
-               <h2
-                  className="text-3xl sm:text-4xl lg:text-6xl font-display font-extrabold tracking-tight mb-6"
-                  style={{ color: "var(--text-main)" }}
-               >
-                  Summon the Craftsman.
-               </h2>
-            </div>
+    <section
+      id="contact"
+      className="w-full px-6 md:px-12 py-32 overflow-hidden border-t washi-texture"
+      style={{
+        backgroundColor: "var(--bg-void)",
+        borderColor: "var(--border-subtle)"
+      }}
+      ref={containerRef}
+    >
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Header */}
+        <div className="contact-header mb-24 flex flex-col items-center gap-4 text-center opacity-0">
+          <div className="flex items-center gap-4">
+             <div className="w-12 h-[1px] bg-[var(--accent)]" />
+             <p className="font-accent font-semibold uppercase tracking-[0.4em] text-xs text-[var(--accent)]">
+               The Summoning
+             </p>
+             <div className="w-12 h-[1px] bg-[var(--accent)]" />
+          </div>
+          <h2 className="font-display text-4xl md:text-7xl font-bold text-[var(--text-main)] leading-tight">
+            Summon the <span className="italic text-[var(--text-muted)]">Craftsman</span>.
+          </h2>
+        </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
-               {/* Left: Form */}
-               <div className="contact-grid-item opacity-0">
-                  <InkConsole status={status} progress={progress} logs={logs} />
-
-                  <form ref={formRef} onSubmit={sendEmail} className="space-y-6">
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="relative group">
-                           <input
-                              type="text"
-                              name="from_name"
-                              placeholder="Your Name"
-                              required
-                              className="w-full border p-4 text-xs font-body placeholder-opacity-40 focus:outline-none transition-all rounded-md"
-                              style={{
-                                 backgroundColor: "var(--bg-panel)",
-                                 borderColor: "var(--border-subtle)",
-                                 color: "var(--text-main)"
-                              }}
-                              onFocus={(e) => e.currentTarget.style.borderColor = "var(--border-hover)"}
-                              onBlur={(e) => e.currentTarget.style.borderColor = "var(--border-subtle)"}
-                           />
-                        </div>
-                        <div className="relative group">
-                           <input
-                              type="email"
-                              name="from_email"
-                              placeholder="Your Email"
-                              required
-                              className="w-full border p-4 text-xs font-body placeholder-opacity-40 focus:outline-none transition-all rounded-md"
-                              style={{
-                                 backgroundColor: "var(--bg-panel)",
-                                 borderColor: "var(--border-subtle)",
-                                 color: "var(--text-main)"
-                              }}
-                              onFocus={(e) => e.currentTarget.style.borderColor = "var(--border-hover)"}
-                              onBlur={(e) => e.currentTarget.style.borderColor = "var(--border-subtle)"}
-                           />
-                        </div>
-                     </div>
-
-                     <div className="relative group">
-                        <textarea
-                           name="message"
-                           rows="5"
-                           placeholder="Your Message..."
-                           required
-                           className="w-full border p-4 text-xs font-body placeholder-opacity-40 focus:outline-none transition-all resize-none rounded-md"
-                           style={{
-                              backgroundColor: "var(--bg-panel)",
-                              borderColor: "var(--border-subtle)",
-                              color: "var(--text-main)"
-                           }}
-                           onFocus={(e) => e.currentTarget.style.borderColor = "var(--border-hover)"}
-                           onBlur={(e) => e.currentTarget.style.borderColor = "var(--border-subtle)"}
-                        />
-                     </div>
-
-                     <button
-                        type="submit"
-                        disabled={status === "sending"}
-                        className="
-                  group relative w-full md:w-auto px-10 py-4 
-                  border
-                  transition-all active:scale-[0.98]
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                  flex items-center justify-center gap-3
-                  rounded-md
-                "
-                        style={{
-                           backgroundColor: "var(--bg-panel)",
-                           borderColor: "var(--border-subtle)"
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--border-hover)"}
-                        onMouseLeave={(e) => e.currentTarget.style.borderColor = "var(--border-subtle)"}
-                     >
-                        <span
-                           className="text-xs font-accent font-bold tracking-widest uppercase transition-colors"
-                           style={{ color: "var(--text-muted)" }}
-                        >
-                           {status === "sending" ? "Sending..." : "Send Message"}
-                        </span>
-                        <FiSend
-                           className={`transition-transform duration-500 ${status === "sending" ? "translate-x-12 opacity-0" : "group-hover:translate-x-1"}`}
-                           style={{ color: "var(--accent)" }}
-                        />
-                     </button>
-                  </form>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+          
+          {/* Left: Tactical Info */}
+          <div className="lg:col-span-4 contact-grid-item opacity-0 space-y-12">
+            <div className="bg-[var(--bg-panel)] p-10 border border-[var(--border-subtle)] rounded-sm relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-12 h-12 bg-[var(--accent)]/5 flex items-center justify-center font-display text-xl text-[var(--accent)] opacity-40">
+                 召
                </div>
-
-               {/* Right: Info */}
-               <div className="contact-grid-item opacity-0">
-                  <div
-                     className="border p-8 md:p-12 h-full flex flex-col justify-between rounded-md"
-                     style={{ backgroundColor: "var(--bg-panel)", borderColor: "var(--border-subtle)" }}
-                  >
-                     <div className="space-y-12">
-                        <div>
-                           <h4
-                              className="text-[10px] font-accent font-bold uppercase tracking-widest mb-6 opacity-60"
-                              style={{ color: "var(--accent)" }}
-                           >
-                              The Craftsman
-                           </h4>
-                           <p className="text-xl md:text-2xl font-display font-bold mb-2" style={{ color: "var(--text-main)" }}>reneesh3508925@gmail.com</p>
-                           <p className="text-xs font-body" style={{ color: "var(--text-ink)" }}>Reneesh · Master Craftsman</p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-8">
-                           <div>
-                              <h4 className="text-[10px] font-accent font-bold uppercase tracking-widest mb-4" style={{ color: "var(--text-ink)" }}>Paths</h4>
-                              <div className="flex flex-col gap-3 font-body text-xs">
-                                 <a href="https://github.com/Reneesh28" className="flex items-center gap-2 transition-colors" style={{ color: "var(--text-muted)" }}
-                                    onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent)"}
-                                    onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
-                                 >
-                                    <FiGithub /> GitHub
-                                 </a>
-                                 <a href="https://www.linkedin.com/in/balam-reneesh" className="flex items-center gap-2 transition-colors" style={{ color: "var(--text-muted)" }}
-                                    onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent)"}
-                                    onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
-                                 >
-                                    <FiLinkedin /> LinkedIn
-                                 </a>
-                                 <span className="flex items-center gap-2 text-[10px] opacity-40 italic cursor-not-allowed" style={{ color: "var(--text-ink)" }}>
-                                    <FaXTwitter /> X (Coming soon)
-                                 </span>
-                              </div>
-                           </div>
-                           <div className="text-right">
-                              <h4 className="text-[10px] font-accent font-bold uppercase tracking-widest mb-4" style={{ color: "var(--text-ink)" }}>Location</h4>
-                              <p className="text-xs font-body flex items-center justify-end gap-2" style={{ color: "var(--text-muted)" }}>
-                                 Phagwara, IN <FiMapPin style={{ color: "var(--accent)" }} />
-                              </p>
-                           </div>
-                        </div>
-                     </div>
-
-                     <div className="mt-20 pt-8 border-t flex items-end justify-between" style={{ borderColor: "var(--border-subtle)" }}>
-                        <div className="space-y-1 font-body">
-                           <p className="text-[9px] uppercase tracking-widest" style={{ color: "var(--text-ink)" }}>Message Status</p>
-                           <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                              {status === "success" ? "Delivered" : status === "error" ? "Failed" : "Ready"}
-                           </p>
-                        </div>
-                        <div className="text-right font-body">
-                           <div className="text-2xl font-medium tabular-nums" style={{ color: "var(--text-main)" }}>
-                              {time}
-                           </div>
-                           <p className="text-[9px] uppercase tracking-widest mt-1" style={{ color: "var(--text-ink)" }}>Local Time</p>
-                        </div>
-                     </div>
+               <h4 className="font-accent text-[10px] tracking-[0.4em] uppercase text-[var(--accent)] mb-8">Communications</h4>
+               <div className="space-y-8">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-ink)] mb-2">Primary Link</p>
+                    <a href="mailto:reneesh3508925@gmail.com" className="text-xl font-display font-bold text-[var(--text-main)] hover:text-[var(--accent)] transition-colors">
+                      reneesh3508925@gmail.com
+                    </a>
+                  </div>
+                  <div className="flex gap-6">
+                    <a href="https://github.com/Reneesh28" className="text-[var(--text-ink)] hover:text-[var(--accent)] transition-colors">
+                      <FiGithub size={20} />
+                    </a>
+                    <a href="https://www.linkedin.com/in/balam-reneesh" className="text-[var(--text-ink)] hover:text-[var(--accent)] transition-colors">
+                      <FiLinkedin size={20} />
+                    </a>
                   </div>
                </div>
             </div>
-         </div>
-      </section>
-   );
+
+            <div className="bg-[var(--bg-panel)] p-10 border border-[var(--border-subtle)] rounded-sm">
+               <h4 className="font-accent text-[10px] tracking-[0.4em] uppercase text-[var(--text-ink)] mb-6">Current Location</h4>
+               <p className="text-sm text-[var(--text-muted)] flex items-center gap-3">
+                 <FiMapPin className="text-[var(--accent)]" /> Phagwara, IN
+               </p>
+               <div className="mt-8 pt-8 border-t border-[var(--border-subtle)] flex justify-between items-end">
+                  <div className="font-body">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-ink)]">Local Time</p>
+                    <p className="text-2xl font-bold text-[var(--text-main)] tabular-nums">{time}</p>
+                  </div>
+                  <div className="w-8 h-8 border border-[var(--border-subtle)] flex items-center justify-center">
+                     <div className="w-1.5 h-1.5 bg-[var(--accent)] animate-ping" />
+                  </div>
+               </div>
+            </div>
+          </div>
+
+          {/* Right: The Console & Form */}
+          <div className="lg:col-span-8 contact-grid-item opacity-0">
+            <InkConsole status={status} progress={progress} logs={logs} />
+
+            <form ref={formRef} onSubmit={sendEmail} className="space-y-8">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <label className="font-accent text-[9px] uppercase tracking-[0.3em] text-[var(--text-ink)] ml-1">Identity</label>
+                  <input
+                    type="text"
+                    name="from_name"
+                    placeholder="Your Name"
+                    required
+                    className="w-full bg-[var(--bg-panel)] border border-[var(--border-subtle)] p-5 text-sm font-body text-[var(--text-main)] focus:outline-none focus:border-[var(--accent)] transition-all rounded-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="font-accent text-[9px] uppercase tracking-[0.3em] text-[var(--text-ink)] ml-1">Frequency</label>
+                  <input
+                    type="email"
+                    name="from_email"
+                    placeholder="Your Email"
+                    required
+                    className="w-full bg-[var(--bg-panel)] border border-[var(--border-subtle)] p-5 text-sm font-body text-[var(--text-main)] focus:outline-none focus:border-[var(--accent)] transition-all rounded-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="font-accent text-[9px] uppercase tracking-[0.3em] text-[var(--text-ink)] ml-1">Message</label>
+                <textarea
+                  name="message"
+                  rows="6"
+                  placeholder="Inscribe your message..."
+                  required
+                  className="w-full bg-[var(--bg-panel)] border border-[var(--border-subtle)] p-5 text-sm font-body text-[var(--text-main)] focus:outline-none focus:border-[var(--accent)] transition-all rounded-sm resize-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={status === "sending"}
+                className="group relative w-full md:w-auto px-16 py-5 bg-[var(--bg-panel)] border border-[var(--border-subtle)] hover:border-[var(--accent)] transition-all rounded-sm overflow-hidden"
+              >
+                <div className="relative z-10 flex items-center justify-center gap-4">
+                  <span className="font-accent text-xs font-bold tracking-[0.4em] uppercase text-[var(--text-main)]">
+                    {status === "sending" ? "Processing..." : "Summon"}
+                  </span>
+                  <FiSend className={`text-[var(--accent)] transition-transform duration-500 ${status === "sending" ? "translate-x-20 opacity-0" : "group-hover:translate-x-1"}`} />
+                </div>
+                
+                {/* Stamp Effect on Hover */}
+                <div className="absolute inset-0 bg-[var(--accent)]/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
 }

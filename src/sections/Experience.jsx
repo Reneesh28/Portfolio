@@ -61,40 +61,41 @@ export default function Experience() {
   return (
     <section
       id="experience"
-      className="relative w-full px-6 md:px-12 py-24 overflow-hidden"
-      style={{ backgroundColor: "transparent", color: "var(--text-main)" }}
+      className="relative w-full px-6 md:px-12 py-32 overflow-hidden washi-texture border-t"
+      style={{
+        backgroundColor: "var(--bg-void)",
+        borderColor: "var(--border-subtle)"
+      }}
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div className="mb-20 text-center">
-          <p
-            className="font-accent font-semibold uppercase tracking-[0.2em] text-sm mb-4"
-            style={{ color: "var(--accent)" }}
-          >
-            THE JOURNEY
-          </p>
-          <h2
-            className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight"
-            style={{ color: "var(--text-main)" }}
-          >
-            Chapters Walked
+        <div className="mb-32 flex flex-col items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-[1px] bg-[var(--accent)]" />
+            <p className="font-accent font-semibold uppercase tracking-[0.4em] text-xs text-[var(--accent)]">
+              The Journey
+            </p>
+            <div className="w-12 h-[1px] bg-[var(--accent)]" />
+          </div>
+          <h2 className="font-display text-4xl md:text-7xl font-bold text-[var(--text-main)] text-center leading-tight">
+            Chapters of <span className="italic text-[var(--text-muted)]">Growth</span>.
           </h2>
         </div>
 
         {/* Timeline Container */}
         <div className="relative mt-12">
-          {/* Vertical Line — ink brush stroke */}
+          {/* Vertical Line — The Blade Path */}
           <div
             ref={lineRef}
             className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-[1px] origin-top z-0"
             style={{
-              background: "linear-gradient(to bottom, var(--border-subtle), rgba(194,65,12,0.2), transparent)"
+              background: "linear-gradient(to bottom, var(--accent), var(--border-subtle), transparent)"
             }}
           />
 
           {/* Timeline Items */}
-          <div className="space-y-12">
+          <div className="space-y-32">
             {experience.map((item, index) => {
               const isEven = index % 2 === 0;
 
@@ -107,24 +108,24 @@ export default function Experience() {
                   {/* Spacer */}
                   <div className="hidden md:block w-1/2" />
 
-                  {/* Icon Node */}
+                  {/* Icon Node (The Seal) */}
                   <div
                     className="
                       absolute left-8 md:left-1/2 transform -translate-x-1/2 
-                      w-8 h-8 md:w-10 md:h-10
-                      border
+                      w-10 h-10
+                      border-2
                       flex items-center justify-center
                       z-10
-                      transition-colors duration-300
-                      rounded-full
+                      transition-all duration-500
+                      rounded-sm rotate-45
                     "
                     style={{
-                      backgroundColor: "var(--bg-void)",
+                      backgroundColor: "var(--bg-panel)",
                       borderColor: "var(--border-subtle)",
-                      color: "var(--text-muted)"
+                      color: "var(--accent)"
                     }}
                   >
-                    <div className="opacity-80">
+                    <div className="-rotate-45">
                       {getIcon(item.type)}
                     </div>
                   </div>
@@ -135,103 +136,71 @@ export default function Experience() {
                       className={`
                         group
                         relative
-                        p-6 sm:p-8
-                        border
-                        transition-all duration-300
-                        rounded-md
+                        p-8
+                        border bg-[var(--bg-panel)]
+                        transition-all duration-500
+                        rounded-sm
                         ${isEven
-                          ? "md:mr-12 text-left md:text-right"
-                          : "md:ml-12 text-left"
+                          ? "md:mr-16 text-left md:text-right"
+                          : "md:ml-16 text-left"
                         }
                       `}
                       style={{
-                        backgroundColor: "var(--bg-panel)",
                         borderColor: "var(--border-subtle)"
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = "var(--border-hover)";
-                        e.currentTarget.style.backgroundColor = "#1f1b19";
+                        e.currentTarget.style.borderColor = "var(--accent)";
+                        e.currentTarget.style.transform = "translateY(-4px)";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.borderColor = "var(--border-subtle)";
-                        e.currentTarget.style.backgroundColor = "var(--bg-panel)";
+                        e.currentTarget.style.transform = "translateY(0)";
                       }}
                     >
                       {/* Period Badge */}
-                      <span
-                        className={`
-                          inline-flex items-center gap-2
-                          text-xs font-accent px-3 py-1
-                          border mb-4
-                          transition-colors rounded-sm
-                          ${isEven ? "md:flex-row-reverse" : ""}
-                        `}
-                        style={{
-                          backgroundColor: "var(--bg-void)",
-                          borderColor: "var(--border-subtle)",
-                          color: "var(--text-muted)"
-                        }}
-                      >
-                        <Calendar size={12} />
-                        {item.period}
-                      </span>
+                      <div className={`flex items-center gap-3 mb-6 ${isEven ? "md:flex-row-reverse" : ""}`}>
+                        <div className="w-2 h-2 bg-[var(--accent)]" />
+                        <span className="font-accent text-[10px] tracking-[0.3em] uppercase text-[var(--text-ink)]">
+                          {item.period}
+                        </span>
+                      </div>
 
                       {/* Role & Organization */}
-                      <h3
-                        className="text-xl font-display font-bold mb-1 tracking-tight"
-                        style={{ color: "var(--text-main)" }}
-                      >
+                      <h3 className="text-2xl font-display font-bold mb-2 tracking-tight text-[var(--text-main)]">
                         {item.role}
                       </h3>
-                      <p
-                        className="text-sm font-accent mb-6 uppercase tracking-widest opacity-80"
-                        style={{ color: "var(--accent)" }}
-                      >
+                      <p className="font-accent text-xs mb-8 uppercase tracking-[0.2em] text-[var(--accent)]">
                         {item.organization}
                       </p>
 
-                      {/* Sealed Description — hover to reveal */}
-                      <div className="relative overflow-hidden pt-4 border-t cursor-crosshair" style={{ borderColor: "var(--border-subtle)" }}>
+                      {/* Sealed Description */}
+                      <div className="relative overflow-hidden pt-6 border-t" style={{ borderColor: "var(--border-subtle)" }}>
                         {/* Seal Overlay */}
                         <div className={`
                           absolute inset-0 z-10
                           flex items-center ${isEven ? "md:justify-end" : "justify-start"}
-                          border
-                          transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]
-                          group-hover:scale-x-0
-                          ${isEven ? "origin-left md:origin-right" : "origin-left"}
-                          rounded-sm
+                          transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)]
+                          group-hover:-translate-y-full
                         `}
                           style={{
-                            backgroundColor: "var(--bg-void)",
-                            borderColor: "var(--border-subtle)"
+                            backgroundColor: "var(--bg-panel)"
                           }}
                         >
-                          <div className={`px-4 flex items-center gap-3 opacity-60 ${isEven ? "md:flex-row-reverse" : ""}`}>
-                            <span
-                              className="w-1.5 h-1.5 rounded-full"
-                              style={{ backgroundColor: "var(--accent)" }}
-                            />
-                            <span
-                              className="font-accent text-xs tracking-widest font-bold"
-                              style={{ color: "var(--accent)" }}
-                            >
-                              [ SEALED: HOVER TO READ ]
+                          <div className={`px-4 flex items-center gap-3 opacity-40 ${isEven ? "md:flex-row-reverse" : ""}`}>
+                            <span className="font-display text-xs tracking-widest text-[var(--text-ink)] group-hover:text-[var(--accent)] transition-colors">
+                              印 — UNSEAL
                             </span>
                           </div>
                         </div>
 
                         {/* Description Text */}
-                        <p className="
-                          relative z-0 text-sm leading-relaxed font-body
-                          transition-all duration-700
-                          blur-md opacity-20 group-hover:blur-none group-hover:opacity-100
-                        "
-                          style={{ color: "var(--text-muted)" }}
-                        >
+                        <p className="relative z-0 text-sm leading-relaxed font-body text-[var(--text-muted)]">
                           {item.description}
                         </p>
                       </div>
+
+                      {/* Corner Accent */}
+                      <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[var(--accent)] opacity-0 group-hover:opacity-40 transition-opacity" />
                     </div>
                   </div>
                 </div>

@@ -85,58 +85,52 @@ const UnsealModal = ({ cert, onComplete, onClose }) => {
 
 const CertCard = memo(({ cert, index, isVerified, onVerify }) => {
   return (
-    <div className="cert-card relative group">
+    <div className="cert-card relative group h-full">
       <div
-        className="relative h-full flex flex-col justify-between p-8 border transition-all duration-500 rounded-md"
+        className="relative h-full flex flex-col justify-between p-10 border bg-[var(--bg-panel)] rounded-sm transition-all duration-500"
         style={{
-          backgroundColor: "var(--bg-panel)",
-          borderColor: isVerified ? "var(--border-hover)" : "var(--border-subtle)"
+          borderColor: isVerified ? "var(--accent)" : "var(--border-subtle)"
         }}
       >
+        {/* Tactical Corners */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity" />
+
         <div>
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-10">
             <div
-              className="p-3 border transition-colors duration-500 rounded-md"
+              className="w-12 h-12 border flex items-center justify-center transition-all duration-500 rounded-sm"
               style={{
-                backgroundColor: isVerified ? "rgba(194,65,12,0.05)" : "var(--bg-void)",
-                borderColor: isVerified ? "var(--border-hover)" : "var(--border-subtle)",
-                color: isVerified ? "var(--accent)" : "var(--text-ink)"
+                backgroundColor: isVerified ? "var(--accent)" : "var(--bg-void)",
+                borderColor: isVerified ? "var(--accent)" : "var(--border-subtle)",
+                color: isVerified ? "white" : "var(--text-ink)"
               }}
             >
-              <FiAward size={20} />
+              <FiAward size={24} />
             </div>
             <div className="text-right">
-              <p
-                className="text-[10px] font-accent font-bold uppercase tracking-[0.2em] mb-1"
-                style={{ color: isVerified ? "var(--accent)" : "var(--text-ink)" }}
-              >
-                {isVerified ? "[ HONORED ]" : "[ UNSEALED ]"}
-              </p>
-              <Badge variant="default" className="text-[10px] opacity-60" style={{ backgroundColor: "var(--bg-surface)", borderColor: "var(--border-subtle)" }}>
+              <p className="font-accent text-[9px] tracking-[0.3em] uppercase text-[var(--text-ink)] mb-1">
                 {cert.year}
-              </Badge>
+              </p>
+              <span className={`font-display text-lg ${isVerified ? 'text-[var(--accent)]' : 'text-[var(--text-ink)] opacity-20'}`}>
+                印
+              </span>
             </div>
           </div>
 
-          <h3
-            className="text-lg font-display font-bold mb-2 tracking-tight transition-colors duration-500"
-            style={{ color: isVerified ? "var(--text-main)" : "var(--text-ink)" }}
-          >
+          <h3 className="text-xl font-display font-bold mb-3 tracking-tight text-[var(--text-main)]">
             {cert.title}
           </h3>
 
-          <p
-            className="text-sm font-accent font-bold mb-6 uppercase tracking-widest opacity-80"
-            style={{ color: "var(--accent)" }}
-          >
+          <p className="font-accent text-[10px] mb-8 uppercase tracking-[0.2em] text-[var(--accent)]">
             {cert.issuer}
           </p>
 
-          <div className={`flex flex-wrap gap-2 mb-8 transition-opacity duration-500 ${isVerified ? "opacity-100" : "opacity-30"}`}>
+          <div className={`flex flex-wrap gap-2 mb-12 transition-opacity duration-500 ${isVerified ? "opacity-100" : "opacity-30"}`}>
             {cert.tags.map((tag) => (
-              <Badge key={tag} variant="default" className="text-[10px]" style={{ backgroundColor: "var(--bg-surface)", borderColor: "var(--border-subtle)" }}>
+              <span key={tag} className="font-accent text-[9px] tracking-widest uppercase px-2 py-1 border border-[var(--border-subtle)] text-[var(--text-ink)] bg-[var(--bg-void)]">
                 {tag}
-              </Badge>
+              </span>
             ))}
           </div>
         </div>
@@ -146,21 +140,17 @@ const CertCard = memo(({ cert, index, isVerified, onVerify }) => {
             href={cert.file}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-accent font-bold transition-all transform hover:translate-x-1"
-            style={{ color: "var(--accent)" }}
+            className="inline-flex items-center gap-3 text-[10px] font-accent font-bold tracking-[0.3em] uppercase text-[var(--accent)] hover:translate-x-2 transition-transform"
           >
-            View Scroll <FiExternalLink />
+            Examine Scroll <FiExternalLink />
           </a>
         ) : (
           <button
             onClick={() => onVerify(cert)}
-            className="inline-flex items-center gap-3 text-xs font-accent font-bold transition-colors uppercase tracking-[0.2em] group/btn"
-            style={{ color: "var(--text-ink)" }}
-            onMouseEnter={(e) => e.currentTarget.style.color = "var(--text-main)"}
-            onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-ink)"}
+            className="flex items-center gap-3 text-[10px] font-accent font-bold tracking-[0.3em] uppercase text-[var(--text-ink)] hover:text-[var(--text-main)] transition-colors"
           >
-            <FiLoader className="group-hover/btn:animate-spin" />
-            Unseal this Honor
+            <FiLoader className="animate-spin-slow" />
+            Unseal Honor
           </button>
         )}
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Linkedin, Github, Mail, ArrowRight, FileText } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
 import profileImage from "../assets/profile.jpg";
 import { Button } from "../components/ui/Button";
 
@@ -83,238 +84,149 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative w-full px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t min-h-[600px]"
+      className="relative w-full px-6 md:px-12 py-32 overflow-hidden border-t min-h-screen washi-texture"
       style={{
         backgroundColor: "var(--bg-void)",
-        color: "var(--text-main)",
         borderColor: "var(--border-subtle)"
       }}
     >
       <div ref={containerRef} className="max-w-7xl mx-auto relative">
 
-        {/* --- GATE OVERLAY — "Hold to Reveal" --- */}
+        {/* --- THE SHOJI GATE — "Hold to Unveil" --- */}
         {!isUnlocked && (
           <div className="absolute inset-0 z-50 flex items-center justify-center">
-            <div className="absolute inset-0" style={{ backgroundColor: "rgba(12,10,9,0.3)" }} />
+            <div className="absolute inset-0 bg-[#0C0A09]/40 backdrop-blur-sm" />
 
-            <div
+            <motion.div
               onMouseDown={startHold}
               onMouseUp={stopHold}
               onMouseLeave={stopHold}
               onTouchStart={startHold}
               onTouchEnd={stopHold}
+              whileTap={{ scale: 0.98 }}
               className="
-                 relative px-8 py-5
-                 border backdrop-blur-md
-                 font-accent tracking-widest text-sm
+                 relative px-12 py-8
+                 border bg-[var(--bg-panel)]
+                 font-accent tracking-[0.4em] text-xs uppercase
                  cursor-pointer select-none
                  overflow-hidden group
-                 transition-transform active:scale-95 duration-100
-                 rounded-md
+                 transition-all duration-500
+                 rounded-sm
                "
               style={{
-                borderColor: progress > 0 ? "var(--border-hover)" : "var(--border-subtle)",
-                backgroundColor: "rgba(28, 25, 23, 0.95)",
+                borderColor: progress > 0 ? "var(--accent)" : "var(--border-subtle)",
                 color: "var(--text-main)",
-                boxShadow: progress > 0 ? "0 0 30px rgba(194,65,12,0.1)" : "none"
+                boxShadow: progress > 0 ? "0 0 40px rgba(194,65,12,0.15)" : "none"
               }}
             >
-              {/* Progress Fill — ink wash */}
+              {/* Ink Progress */}
               <div
-                className="absolute inset-y-0 left-0 pointer-events-none"
+                className="absolute inset-0 pointer-events-none opacity-20"
                 style={{
                   width: `${progress}%`,
-                  backgroundColor: "rgba(194,65,12,0.15)",
-                  transition: progress < 100 ? "width 0.05s linear" : "none"
+                  backgroundColor: "var(--accent)",
+                  transition: progress < 100 ? "width 0.1s linear" : "none"
                 }}
               />
 
-              {/* Label & Indicator */}
-              <span className="relative z-10 flex items-center gap-4">
-                <div
-                  className={`w-2 h-2 rounded-full transition-colors ${progress > 0 ? 'animate-pulse' : ''}`}
-                  style={{
-                    backgroundColor: progress > 0 ? "var(--accent)" : "var(--text-ink)",
-                    boxShadow: progress > 0 ? "0 0 8px var(--accent)" : "none"
-                  }}
-                />
-                {progress >= 100
-                  ? "PATH REVEALED"
-                  : progress > 0
-                    ? `UNVEILING... ${Math.floor(progress)}%`
-                    : "HOLD TO REVEAL"}
+              <span className="relative z-10 flex flex-col items-center gap-4">
+                <span className="text-[var(--text-ink)] group-hover:text-[var(--accent)] transition-colors">
+                  {progress >= 100 ? "UNVEILED" : "Hold to Meditate"}
+                </span>
+                <div className="w-32 h-[1px] bg-[var(--border-subtle)] relative">
+                   <div className="absolute inset-0 bg-[var(--accent)]" style={{ width: `${progress}%` }} />
+                </div>
               </span>
-            </div>
+            </motion.div>
           </div>
         )}
 
-        {/* --- MAIN CONTENT (BLURRED UNTIL UNLOCKED) --- */}
-        <div className={`transition-all duration-[1.5s] ease-out ${isUnlocked ? "blur-0 opacity-100" : "blur-[16px] opacity-30 pointer-events-none select-none"}`}>
+        {/* --- MAIN CONTENT --- */}
+        <div className={`transition-all duration-[2s] ease-out ${isUnlocked ? "blur-0 opacity-100 translate-y-0" : "blur-[20px] opacity-0 translate-y-10 pointer-events-none"}`}>
 
-          {/* Section Label */}
-          <p
-            className="about-label font-accent font-semibold uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16"
-            style={{ color: "var(--accent)" }}
-          >
-            THE CRAFTSMAN
-          </p>
+          <div className="flex flex-col lg:flex-row gap-20 items-start">
+            
+            {/* LEFT COLUMN — THE IMAGE & SOCIALS */}
+            <div className="w-full lg:w-1/3 flex flex-col items-center lg:items-start">
+              <div className="relative mb-12">
+                {/* Decorative Frame */}
+                <div className="absolute -inset-4 border border-[var(--border-subtle)] rounded-sm pointer-events-none" />
+                <div className="absolute -top-4 -left-4 w-8 h-8 border-t border-l border-[var(--accent)]" />
+                <div className="absolute -bottom-4 -right-4 w-8 h-8 border-b border-r border-[var(--accent)]" />
 
-          {/* Content Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-start">
-
-            {/* LEFT COLUMN — PROFILE */}
-            <div className="md:col-span-5 lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
-              {/* Profile Image */}
-              <div className="profile-container relative group mb-8">
-                <div
-                  className="
-                    relative
-                    w-64 h-64 sm:w-72 sm:h-72
-                    border
-                    group-hover:border-[var(--border-hover)]
-                    transition-colors duration-500
-                    p-2 rounded-md
-                  "
-                  style={{
-                    borderColor: "var(--border-subtle)",
-                    backgroundColor: "var(--bg-panel)"
-                  }}
-                >
-                  <img
+                <div className="w-64 h-80 bg-[var(--bg-panel)] overflow-hidden rounded-sm border border-[var(--border-subtle)]">
+                   <img
                     src={profileImage}
                     alt="Reneesh"
-                    className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-700 rounded-sm"
+                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-1000"
                   />
                 </div>
               </div>
 
-              {/* Name & Title */}
-              <div className="profile-name space-y-2">
-                <h3
-                  className="text-3xl font-display font-bold tracking-tight"
-                  style={{ color: "var(--text-main)" }}
-                >
-                  RENEESH
-                </h3>
-                <p
-                  className="font-accent font-medium tracking-[0.1em] text-sm uppercase"
-                  style={{ color: "var(--text-muted)" }}
-                >
-                  MASTER CRAFTSMAN
-                </p>
-              </div>
-
-              {/* Social Icons */}
-              <div className="mt-8 flex items-center gap-4 justify-center md:justify-start">
-                {[
-                  { href: "https://www.linkedin.com/in/balam-reneesh", icon: Linkedin, label: "LinkedIn" },
-                  { href: "https://github.com/Reneesh28", icon: Github, label: "GitHub" },
-                  { href: "mailto:reneesh3508925@gmail.com", icon: Mail, label: "Email" },
-                ].map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.href}
-                    target={social.label === "Email" ? "_self" : "_blank"}
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="
-                      social-icon
-                      group relative
-                      w-12 h-12
-                      flex items-center justify-center
-                      border
-                      transition-all duration-300
-                      rounded-md
-                    "
-                    style={{
-                      backgroundColor: "var(--bg-panel)",
-                      borderColor: "var(--border-subtle)",
-                      color: "var(--text-muted)"
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "var(--border-hover)";
-                      e.currentTarget.style.color = "var(--text-main)";
-                      e.currentTarget.style.backgroundColor = "var(--bg-surface)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "var(--border-subtle)";
-                      e.currentTarget.style.color = "var(--text-muted)";
-                      e.currentTarget.style.backgroundColor = "var(--bg-panel)";
-                    }}
-                  >
-                    <social.icon size={20} className="transition-transform" />
-
-                    {/* Tooltip */}
-                    <span
-                      className="
-                        absolute -top-10 left-1/2 -translate-x-1/2 
-                        px-2.5 py-1 
-                        border 
-                        text-xs font-accent tracking-widest rounded-sm 
-                        opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0
-                        transition-all duration-300 pointer-events-none whitespace-nowrap
-                      "
-                      style={{
-                        backgroundColor: "var(--bg-void)",
-                        borderColor: "var(--border-subtle)",
-                        color: "var(--text-main)"
-                      }}
-                    >
-                      {social.label.toUpperCase()}
-                    </span>
-                  </a>
-                ))}
+              <div className="space-y-6 text-center lg:text-left">
+                <h3 className="font-display text-4xl font-bold tracking-tight text-[var(--text-main)]">Reneesh</h3>
+                <p className="font-accent text-xs tracking-[0.3em] uppercase text-[var(--accent)]">Master Craftsman</p>
+                
+                <div className="flex gap-4 justify-center lg:justify-start">
+                  {[
+                    { href: "https://www.linkedin.com/in/balam-reneesh", icon: Linkedin },
+                    { href: "https://github.com/Reneesh28", icon: Github },
+                    { href: "mailto:reneesh3508925@gmail.com", icon: Mail },
+                  ].map((social, i) => (
+                    <Button key={i} as="a" href={social.href} variant="icon" size="icon">
+                      <social.icon size={18} />
+                    </Button>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* RIGHT COLUMN — TEXT CONTENT */}
-            <div className="md:col-span-7 lg:col-span-8 flex flex-col justify-center h-full">
-              <h2
-                className="about-headline text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight mb-8 leading-[1.15]"
-                style={{ color: "var(--text-main)" }}
-              >
-                Forging <span style={{ color: "var(--accent)" }}>intelligent systems</span> with discipline
+            {/* RIGHT COLUMN — THE BIO & PRINCIPLES */}
+            <div className="w-full lg:w-2/3">
+              <h2 className="font-display text-4xl md:text-6xl font-bold leading-[1.1] text-[var(--text-main)] mb-12">
+                Forging <span className="text-[var(--accent)] italic">Intelligence</span> <br />
+                With Single-Minded Focus.
               </h2>
 
-              <div className="about-text space-y-6 text-lg leading-relaxed max-w-2xl font-body text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
-                <p>
-                  I am an AI Engineer focused on designing and building machine
-                  learning and generative AI systems that are reliable, scalable,
-                  and grounded in real-world use cases.
-                </p>
-
-                <p>
-                  My work spans across model development, data pipelines, and
-                  system integration with a strong emphasis on translating
-                  complex ideas into production-ready solutions.
-                </p>
-
-                <p>
-                  I enjoy working at the intersection of research and engineering,
-                  where experimentation meets disciplined system design.
-                </p>
+              <div className="grid md:grid-cols-2 gap-12 text-[var(--text-muted)] font-body leading-relaxed">
+                <div className="space-y-6">
+                  <p>
+                    I am an AI Engineer dedicated to the craft of building autonomous and generative systems that transcend simple automation.
+                  </p>
+                  <p>
+                    My philosophy is rooted in the intersection of mathematical precision and creative experimentation—treating code not just as logic, but as an art form.
+                  </p>
+                </div>
+                
+                <div className="bg-[var(--bg-panel)] p-8 border border-[var(--border-subtle)] relative overflow-hidden rounded-sm">
+                  {/* Decorative corner */}
+                  <div className="absolute top-0 right-0 w-12 h-12 bg-[var(--accent)]/5 flex items-center justify-center font-display text-xl text-[var(--accent)] opacity-40">
+                    道
+                  </div>
+                  
+                  <h4 className="font-accent text-[10px] tracking-[0.3em] uppercase text-[var(--accent)] mb-4">The Bushido of Code</h4>
+                  <ul className="space-y-4 font-accent text-xs tracking-widest leading-loose">
+                    <li className="flex items-center gap-3">
+                      <span className="w-1 h-1 bg-[var(--accent)]" /> 
+                      Purity of Architecture
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <span className="w-1 h-1 bg-[var(--accent)]" /> 
+                      Discipline in Implementation
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <span className="w-1 h-1 bg-[var(--accent)]" /> 
+                      Fearless Experimentation
+                    </li>
+                  </ul>
+                </div>
               </div>
 
-              {/* Resume Button */}
-              <div className="resume-btn mt-12">
-                <Button
-                  as="a"
-                  href="/resume.pdf"
-                  download="Reneesh_CV.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="secondary"
-                  size="lg"
-                  className="group gap-3"
-                  style={{ backgroundColor: "var(--bg-void)" }}
-                >
-                  <FileText size={20} style={{ color: "var(--text-muted)" }} className="group-hover:text-[var(--text-main)] transition-colors" />
-                  <span className="font-accent tracking-wide" style={{ color: "var(--text-main)" }}>View the Scroll</span>
-                  <ArrowRight
-                    size={18}
-                    style={{ color: "var(--accent)" }}
-                    className="group-hover:translate-x-1 transition-transform"
-                  />
+              <div className="mt-16">
+                <Button as="a" href="/resume.pdf" variant="secondary" size="lg" className="group">
+                  <FileText size={18} className="mr-2 text-[var(--text-ink)] group-hover:text-[var(--accent)] transition-colors" />
+                  <span className="font-accent tracking-widest uppercase text-xs">View the Scroll</span>
+                  <ArrowRight size={16} className="ml-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
                 </Button>
               </div>
             </div>

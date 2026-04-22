@@ -5,9 +5,6 @@ import { Button } from "../components/ui/Button";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const LatticeBackground = lazy(() =>
-  import("../components/LatticeBackground")
-);
 
 export default function Hero() {
   const sectionRef = useRef(null);
@@ -138,16 +135,8 @@ export default function Hero() {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative min-h-screen w-screen overflow-hidden"
-      style={{ backgroundColor: "var(--bg-void)" }}
+      className="relative min-h-screen w-screen overflow-hidden washi-texture"
     >
-      {/* Three.js Background — Sakura + Embers + Fog */}
-      <div className="absolute inset-0 z-0">
-        <Suspense fallback={null}>
-          <LatticeBackground isDecrypted={isRevealed} />
-        </Suspense>
-      </div>
-
       {/* Background Kanji Watermark — 侍 (Samurai) */}
       <div
         ref={kanjiRef}
@@ -155,23 +144,18 @@ export default function Hero() {
       >
         <span
           className="font-display text-[30vw] md:text-[25vw] font-bold"
-          style={{ color: "var(--text-muted)" }}
+          style={{ color: "var(--text-ink)" }}
         >
           侍
         </span>
       </div>
 
-      {/* Gradient overlay for text readability */}
-      <div
-        className="absolute inset-0 z-10 pointer-events-none"
-        style={{
-          background: `linear-gradient(to bottom, 
-            rgba(12,10,9,0.2) 0%, 
-            rgba(12,10,9,0.6) 50%, 
-            rgba(12,10,9,0.95) 100%
-          )`
-        }}
-      />
+      {/* Vertical Japanese Name (Far Left) */}
+      <div className="absolute left-12 top-1/2 -translate-y-1/2 z-20 hidden xl:flex flex-col items-center opacity-40">
+        <span className="font-display text-4xl tracking-[1em]" style={{ writingMode: 'vertical-rl' }}>
+          バラム・レニッシュ
+        </span>
+      </div>
 
       {/* HERO CONTENT */}
       <div
@@ -189,16 +173,13 @@ export default function Hero() {
       >
         {/* Decorative brush line above title */}
         <div
-          className="w-16 h-[2px] mb-8 opacity-40"
-          style={{
-            background: "linear-gradient(90deg, transparent, var(--accent), transparent)"
-          }}
+          className="w-24 h-[1px] mb-12 opacity-30 bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent"
         />
 
         <h1
           ref={titleRef}
           className="font-display font-bold tracking-tight leading-[1.1]
-                     text-4xl sm:text-6xl md:text-8xl lg:text-9xl
+                     text-5xl sm:text-7xl md:text-9xl
                      cursor-default select-none
                      transition-colors duration-1000"
           style={{ color: "var(--text-muted)", filter: "blur(4px)" }}
@@ -208,54 +189,53 @@ export default function Hero() {
 
         <h2
           ref={roleRef}
-          className="mt-6 font-accent font-medium tracking-[0.15em] uppercase
-                     text-sm sm:text-lg md:text-2xl"
+          className="mt-8 font-accent font-medium tracking-[0.2em] uppercase
+                     text-xs sm:text-base md:text-xl"
           style={{ color: "var(--accent)", filter: "blur(3px)" }}
         >
-          Craftsman of Code · Architect of Systems
+          Craftsman of Code <span className="mx-4 text-[var(--text-ink)]">/</span> Architect of Systems
         </h2>
 
         <p
           ref={descRef}
-          className="mt-8 text-sm sm:text-lg max-w-2xl font-body leading-relaxed"
+          className="mt-10 text-sm sm:text-lg max-w-2xl font-body leading-relaxed opacity-60"
           style={{ color: "var(--text-muted)", filter: "blur(3px)" }}
         >
-          Forging intelligent systems with discipline and precision.
+          Forging high-precision digital artifacts with discipline and focus.
         </p>
 
         {/* The Gateway — Unsheathe Button */}
         {!isRevealed && (
-          <div ref={revealBtnRef} className="mt-16 z-30">
+          <div ref={revealBtnRef} className="mt-20 z-30">
             <Button
               onClick={handleReveal}
               variant="primary"
               size="lg"
-              className="group relative overflow-hidden"
+              className="group relative px-12"
             >
-              <span className="relative z-10 font-accent tracking-[0.2em] uppercase text-sm">
+              <span className="relative z-10 font-accent tracking-[0.4em] uppercase text-xs">
                 Unsheathe
               </span>
+              {/* Button inner highlight */}
+              <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
             </Button>
           </div>
         )}
 
         {/* Revealed Actions */}
-        <div ref={actionsRef} className="mt-12 gap-6 z-30 hidden opacity-0">
-          <Button as="a" href="#projects" variant="primary" size="md">
-            <span className="font-accent tracking-wide">View My Works</span>
+        <div ref={actionsRef} className="mt-16 gap-8 z-30 hidden opacity-0">
+          <Button as="a" href="#projects" variant="primary" size="md" className="min-w-[200px]">
+            <span className="font-accent tracking-widest uppercase text-xs">The Armory</span>
           </Button>
 
-          <Button as="a" href="#contact" variant="secondary" size="md">
-            <span className="font-accent tracking-wide">Summon Me</span>
+          <Button as="a" href="#contact" variant="secondary" size="md" className="min-w-[200px]">
+            <span className="font-accent tracking-widest uppercase text-xs">Summon</span>
           </Button>
         </div>
 
         {/* Decorative brush line below content */}
         <div
-          className="w-12 h-[1px] mt-16 opacity-20"
-          style={{
-            background: "linear-gradient(90deg, transparent, var(--accent-warm), transparent)"
-          }}
+          className="w-16 h-[1px] mt-20 opacity-20 bg-gradient-to-r from-transparent via-[var(--text-ink)] to-transparent"
         />
       </div>
     </section>

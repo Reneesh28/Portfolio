@@ -28,36 +28,66 @@
   -moz-osx-font-smoothing: grayscale;
 
   /* ═══════════════════════════════════════════
-     🎨 Samurai Color Tokens — "Moonlit Dojo"
+     🎨 Samurai Color Tokens — Theme System
      ═══════════════════════════════════════════ */
 
-  /* Backgrounds */
+  /* DEFAULT (NIGHT MODE) */
   --bg-void: #0C0A09;
-  /* Deep ink black — sumi (墨) */
   --bg-panel: #1C1917;
-  /* Aged wood — panels, cards */
   --bg-surface: #292524;
-  /* Charcoal stone — elevated surfaces */
-
-  /* Accents */
   --accent: #C2410C;
-  /* Vermillion — torii gates, seals (朱) */
   --accent-warm: #D97706;
-  /* Amber flame — lanterns, gold leaf */
   --accent-sakura: #F9A8D4;
-  /* Sakura blush — cherry blossom */
-
-  /* Text */
   --text-main: #E7E5E4;
-  /* Washi white — aged paper tone */
   --text-muted: #A8A29E;
-  /* Stone gray */
   --text-ink: #78716C;
-  /* Faded ink — metadata */
-
-  /* Borders */
   --border-subtle: rgba(168, 162, 158, 0.1);
   --border-hover: rgba(194, 65, 12, 0.3);
+}
+
+/* DAY MODE (The Morning Training) */
+[data-theme='day'] {
+  --bg-void: #F2F2EB;
+  --bg-panel: #E7E5E4;
+  --bg-surface: #D6D3D1;
+  --accent: #92400E;
+  --accent-warm: #B45309;
+  --accent-sakura: #F472B6;
+  --text-main: #1C1917;
+  --text-muted: #44403C;
+  --text-ink: #78716C;
+  --border-subtle: rgba(120, 113, 108, 0.1);
+  --border-hover: rgba(146, 64, 14, 0.3);
+}
+
+/* WAR MODE (The Battlefield) */
+[data-theme='war'] {
+  --bg-void: #0C0A09;
+  --bg-panel: #1A0B05;
+  --bg-surface: #2D1108;
+  --accent: #EF4444;
+  --accent-warm: #DC2626;
+  --accent-sakura: #FCA5A5;
+  --text-main: #FEE2E2;
+  --text-muted: #991B1B;
+  --text-ink: #7F1D1D;
+  --border-subtle: rgba(239, 68, 68, 0.1);
+  --border-hover: rgba(239, 68, 68, 0.5);
+}
+
+/* ZEN MODE (The Meditation) */
+[data-theme='zen'] {
+  --bg-void: #121212;
+  --bg-panel: #1A1A1A;
+  --bg-surface: #222222;
+  --accent: #57534E;
+  --accent-warm: #78716C;
+  --accent-sakura: #A8A29E;
+  --text-main: #D6D3D1;
+  --text-muted: #57534E;
+  --text-ink: #44403C;
+  --border-subtle: rgba(87, 83, 78, 0.2);
+  --border-hover: rgba(168, 162, 158, 0.4);
 }
 
 body {

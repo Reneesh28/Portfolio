@@ -1,8 +1,9 @@
 
 import { useState } from "react";
-import Navbar from "./components/Navbar";
+import CompassNav from "./components/CompassNav";
+import JourneyMap from "./components/JourneyMap";
 import Intro from "./components/Intro";
-import FluidBackground from "./components/FluidBackground";
+import SamuraiWorld from "./components/SamuraiWorld";
 // Sections
 import Hero from "./sections/Hero";
 import About from "./sections/About";
@@ -12,15 +13,22 @@ import Projects from "./sections/Projects";
 import Education from "./sections/Education";
 import Experience from "./sections/Experience";
 import Contact from "./sections/Contact";
+import { NarrativeProvider } from "./context/NarrativeContext";
+import { ThemeProvider } from "./context/ThemeContext";
+import ChapterMarkers from "./components/ChapterMarkers";
+import SamuraiCursor from "./components/SamuraiCursor";
 import Footer from "./components/Footer";
 
 function App() {
   const [introDone, setIntroDone] = useState(false);
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
   return (
-    <>
+    <NarrativeProvider>
+      <ThemeProvider>
+        <SamuraiCursor />
       {/* BACKGROUND */}
-      <FluidBackground />
+      <SamuraiWorld />
 
       {/* GSAP INTRO — blocks everything */}
       {!introDone && <Intro onFinish={() => setIntroDone(true)} />}
@@ -28,7 +36,9 @@ function App() {
       {/* MAIN CONTENT — loads AFTER intro */}
       {introDone && (
         <>
-          <Navbar />
+          <CompassNav isOpen={isMapOpen} onOpenMap={() => setIsMapOpen(!isMapOpen)} />
+          <JourneyMap isOpen={isMapOpen} onClose={() => setIsMapOpen(false)} />
+          <ChapterMarkers />
 
           <main className="relative z-10 overflow-hidden">
             <Hero />
@@ -43,7 +53,8 @@ function App() {
           </main>
         </>
       )}
-    </>
+      </ThemeProvider>
+    </NarrativeProvider>
   );
 }
 
