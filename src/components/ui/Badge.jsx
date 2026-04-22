@@ -1,12 +1,12 @@
 import React from "react";
 
 export function Badge({ children, variant = "default", className = "" }) {
-  const baseStyles = "inline-flex items-center text-[10px] sm:text-xs font-mono tracking-wide px-2 sm:px-3 py-1 border transition-colors";
-  
+  const baseStyles = "inline-flex items-center text-[10px] sm:text-xs font-accent tracking-wide px-2.5 sm:px-3 py-1 border rounded-sm transition-colors";
+
   const variants = {
-    default: "bg-[#0A0A0A] border-white/5 text-[#A3A3A3]",
-    success: "bg-[#0A0A0A] border-[#00C853]/20 text-[#00C853]",
-    accent: "bg-[#0A0A0A] border-white/5 text-[#00BFA5]"
+    default: "bg-[var(--bg-void)] border-[var(--border-subtle)] text-[var(--text-muted)]",
+    success: "bg-[var(--bg-void)] border-emerald-800/30 text-emerald-400",
+    accent: "bg-[var(--bg-void)] border-[var(--border-subtle)] text-[var(--accent)]"
   };
 
   return (

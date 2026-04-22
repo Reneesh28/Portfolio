@@ -1,36 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════
+   🏯 SAMURAI DESIGN SYSTEM — Global Tokens
+   Theme: "Moonlit Dojo"
+   ═══════════════════════════════════════════════════ */
+
 :root {
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.5;
+  /* ── Typography ── */
+  --font-display: "Noto Serif JP", "Georgia", serif;
+  --font-body: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-accent: "Zen Kaku Gothic New", "Inter", sans-serif;
+
+  font-family: var(--font-body);
+  line-height: 1.6;
   font-weight: 400;
 
+  /* ── Color Scheme ── */
   color-scheme: dark;
-  color: #E0E0E0;
-  background-color: #0A0A0A;
+  color: #E7E5E4;
+  background-color: #0C0A09;
 
+  /* ── Rendering ── */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "tnum";
-  /* Tabular numerals for institutional data alignment */
 
-  /* Structural Tokens */
-  --bg-main: #0A0A0A;
-  --bg-panel: #1A1A1A;
-  --accent: #00BFA5;
-  --text-main: #E0E0E0;
-  --text-muted: #A3A3A3;
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-hover: rgba(255, 255, 255, 0.2);
+  /* ═══════════════════════════════════════════
+     🎨 Samurai Color Tokens — "Moonlit Dojo"
+     ═══════════════════════════════════════════ */
+
+  /* Backgrounds */
+  --bg-void: #0C0A09;
+  /* Deep ink black — sumi (墨) */
+  --bg-panel: #1C1917;
+  /* Aged wood — panels, cards */
+  --bg-surface: #292524;
+  /* Charcoal stone — elevated surfaces */
+
+  /* Accents */
+  --accent: #C2410C;
+  /* Vermillion — torii gates, seals (朱) */
+  --accent-warm: #D97706;
+  /* Amber flame — lanterns, gold leaf */
+  --accent-sakura: #F9A8D4;
+  /* Sakura blush — cherry blossom */
+
+  /* Text */
+  --text-main: #E7E5E4;
+  /* Washi white — aged paper tone */
+  --text-muted: #A8A29E;
+  /* Stone gray */
+  --text-ink: #78716C;
+  /* Faded ink — metadata */
+
+  /* Borders */
+  --border-subtle: rgba(168, 162, 158, 0.1);
+  --border-hover: rgba(194, 65, 12, 0.3);
 }
 
 body {
   margin: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: #0A0A0A;
+  background-color: var(--bg-void);
   overflow-x: hidden;
 }
 
@@ -40,6 +74,29 @@ html {
   scroll-padding-top: 5rem;
 }
 
+/* ═══════════════════════════════════════════
+   🏯 Typography Utility Classes
+   ═══════════════════════════════════════════ */
+
+/* Display headings — Noto Serif JP */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Body text — Inter */
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* Labels, badges, section markers — Zen Kaku Gothic New */
+.font-accent {
+  font-family: var(--font-accent);
+}
+
+/* ═══════════════════════════════════════════
+   🎨 Perspective Utilities
+   ═══════════════════════════════════════════ */
+
 .perspective-500 {
   perspective: 500px;
 }
@@ -48,26 +105,62 @@ html {
   perspective: 1000px;
 }
 
-/* Custom Terminal Scrollbar */
+/* ═══════════════════════════════════════════
+   📜 Custom Scrollbar — Ink & Stone
+   ═══════════════════════════════════════════ */
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #0D0D0D;
+  background: var(--bg-void);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #222;
+  background: var(--bg-surface);
   transition: background 0.3s;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #00BFA5;
+  background: var(--accent);
 }
 
-/* Scrollbar Firefox Support */
+/* Firefox */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #222 #0D0D0D;
+  scrollbar-color: var(--bg-surface) var(--bg-void);
+}
+
+/* ═══════════════════════════════════════════
+   🌸 Samurai Decorative Utilities
+   ═══════════════════════════════════════════ */
+
+/* Ink-wash gradient overlay for sections */
+.ink-wash-top {
+  background: linear-gradient(to bottom,
+      var(--bg-void) 0%,
+      transparent 100%);
+}
+
+.ink-wash-bottom {
+  background: linear-gradient(to top,
+      var(--bg-void) 0%,
+      transparent 100%);
+}
+
+/* Warm vignette for depth */
+.warm-vignette {
+  box-shadow: inset 0 0 120px 40px rgba(12, 10, 9, 0.8);
+}
+
+/* Subtle texture overlay — simulates washi paper grain */
+.washi-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
 }

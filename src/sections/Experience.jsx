@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import experience from "../data/experience";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Briefcase, GraduationCap, Calendar, Lock } from "lucide-react";
+import { Briefcase, GraduationCap, Calendar } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,14 +22,14 @@ export default function Experience() {
           ease: "power3.out",
           scrollTrigger: {
             trigger: containerRef.current,
-            start: "top 60%", // Start animating when section is near center
+            start: "top 60%",
             end: "bottom 80%",
             scrub: 1,
           },
         }
       );
 
-      // 2. Linear Timeline Sequential Load
+      // 2. Sequential card reveal
       const items = gsap.utils.toArray(".timeline-item");
       gsap.fromTo(items,
         { opacity: 0, y: 15 },
@@ -61,26 +61,36 @@ export default function Experience() {
   return (
     <section
       id="experience"
-      className="relative w-full bg-transparent text-white px-6 md:px-12 py-24 overflow-hidden"
+      className="relative w-full px-6 md:px-12 py-24 overflow-hidden"
+      style={{ backgroundColor: "transparent", color: "var(--text-main)" }}
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <div className="mb-20 text-center">
-          <p className="text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-4">
-            OPERATIONAL HISTORY
+          <p
+            className="font-accent font-semibold uppercase tracking-[0.2em] text-sm mb-4"
+            style={{ color: "var(--accent)" }}
+          >
+            THE JOURNEY
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#E0E0E0]">
-            Service Records
+          <h2
+            className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight"
+            style={{ color: "var(--text-main)" }}
+          >
+            Chapters Walked
           </h2>
         </div>
 
         {/* Timeline Container */}
         <div className="relative mt-12">
-          {/* Vertical Line */}
+          {/* Vertical Line — ink brush stroke */}
           <div
             ref={lineRef}
-            className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-white/20 via-[#00BFA5]/20 to-transparent origin-top z-0"
+            className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-[1px] origin-top z-0"
+            style={{
+              background: "linear-gradient(to bottom, var(--border-subtle), rgba(194,65,12,0.2), transparent)"
+            }}
           />
 
           {/* Timeline Items */}
@@ -94,19 +104,25 @@ export default function Experience() {
                   className={`timeline-item flex flex-col md:flex-row items-start md:items-center relative ${isEven ? "md:flex-row-reverse" : ""
                     }`}
                 >
-                  {/* Spacer for Desktop (occupies 50% width) */}
+                  {/* Spacer */}
                   <div className="hidden md:block w-1/2" />
 
-                  {/* Icon Node (Center) */}
+                  {/* Icon Node */}
                   <div
                     className="
                       absolute left-8 md:left-1/2 transform -translate-x-1/2 
                       w-8 h-8 md:w-10 md:h-10
-                      bg-[#0A0A0A] border border-white/20
+                      border
                       flex items-center justify-center
-                      text-[#A3A3A3] z-10
+                      z-10
                       transition-colors duration-300
+                      rounded-full
                     "
+                    style={{
+                      backgroundColor: "var(--bg-void)",
+                      borderColor: "var(--border-subtle)",
+                      color: "var(--text-muted)"
+                    }}
                   >
                     <div className="opacity-80">
                       {getIcon(item.type)}
@@ -120,68 +136,102 @@ export default function Experience() {
                         group
                         relative
                         p-6 sm:p-8
-                        bg-[#111111]
-                        border border-white/5
-                        hover:border-[#00BFA5]/30 hover:bg-[#161616]
+                        border
                         transition-all duration-300
+                        rounded-md
                         ${isEven
                           ? "md:mr-12 text-left md:text-right"
                           : "md:ml-12 text-left"
                         }
                       `}
+                      style={{
+                        backgroundColor: "var(--bg-panel)",
+                        borderColor: "var(--border-subtle)"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = "var(--border-hover)";
+                        e.currentTarget.style.backgroundColor = "#1f1b19";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = "var(--border-subtle)";
+                        e.currentTarget.style.backgroundColor = "var(--bg-panel)";
+                      }}
                     >
-                      {/* Sub-Metadata */}
+                      {/* Period Badge */}
                       <span
                         className={`
                           inline-flex items-center gap-2
-                          text-xs font-mono px-3 py-1
-                          bg-[#0A0A0A] border border-white/5 text-[#A3A3A3] mb-4
-                          transition-colors
+                          text-xs font-accent px-3 py-1
+                          border mb-4
+                          transition-colors rounded-sm
                           ${isEven ? "md:flex-row-reverse" : ""}
                         `}
+                        style={{
+                          backgroundColor: "var(--bg-void)",
+                          borderColor: "var(--border-subtle)",
+                          color: "var(--text-muted)"
+                        }}
                       >
                         <Calendar size={12} />
                         {item.period}
                       </span>
 
-                      {/* Header Data */}
-                      <h3 className="text-xl font-bold mb-1 text-[#E0E0E0] tracking-tight">
+                      {/* Role & Organization */}
+                      <h3
+                        className="text-xl font-display font-bold mb-1 tracking-tight"
+                        style={{ color: "var(--text-main)" }}
+                      >
                         {item.role}
                       </h3>
-                      <p className="text-sm font-mono text-[#00BFA5] mb-6 uppercase tracking-widest opacity-80">
+                      <p
+                        className="text-sm font-accent mb-6 uppercase tracking-widest opacity-80"
+                        style={{ color: "var(--accent)" }}
+                      >
                         {item.organization}
                       </p>
 
-                      {/* REDACTED DESCRIPTION BLOCK (Option C) */}
-                      <div className="relative overflow-hidden pt-4 border-t border-white/5 cursor-crosshair">
-
-                        {/* Redaction Scanner Overlay */}
+                      {/* Sealed Description — hover to reveal */}
+                      <div className="relative overflow-hidden pt-4 border-t cursor-crosshair" style={{ borderColor: "var(--border-subtle)" }}>
+                        {/* Seal Overlay */}
                         <div className={`
                           absolute inset-0 z-10
                           flex items-center ${isEven ? "md:justify-end" : "justify-start"}
-                          bg-[#0A0A0A] border border-white/5
+                          border
                           transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]
                           group-hover:scale-x-0
                           ${isEven ? "origin-left md:origin-right" : "origin-left"}
-                        `}>
+                          rounded-sm
+                        `}
+                          style={{
+                            backgroundColor: "var(--bg-void)",
+                            borderColor: "var(--border-subtle)"
+                          }}
+                        >
                           <div className={`px-4 flex items-center gap-3 opacity-60 ${isEven ? "md:flex-row-reverse" : ""}`}>
-                            <Lock size={14} className="text-red-500" />
-                            <span className="text-red-500 font-mono text-xs tracking-widest font-bold">
-                              [ RESTRICTED: HOVER TO CLEAR ]
+                            <span
+                              className="w-1.5 h-1.5 rounded-full"
+                              style={{ backgroundColor: "var(--accent)" }}
+                            />
+                            <span
+                              className="font-accent text-xs tracking-widest font-bold"
+                              style={{ color: "var(--accent)" }}
+                            >
+                              [ SEALED: HOVER TO READ ]
                             </span>
                           </div>
                         </div>
 
-                        {/* Payload Text */}
+                        {/* Description Text */}
                         <p className="
-                          relative z-0 text-sm text-[#A3A3A3] leading-relaxed 
-                          transition-all duration-700 font-mono
+                          relative z-0 text-sm leading-relaxed font-body
+                          transition-all duration-700
                           blur-md opacity-20 group-hover:blur-none group-hover:opacity-100
-                        ">
+                        "
+                          style={{ color: "var(--text-muted)" }}
+                        >
                           {item.description}
                         </p>
                       </div>
-
                     </div>
                   </div>
                 </div>

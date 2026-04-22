@@ -29,11 +29,14 @@ export default function FluidBackground() {
     <>
       <canvas
         ref={canvasRef}
-        className={`fixed inset-0 w-full h-full bg-[#0A0A0A] -z-10 ${!isSupported ? "hidden" : ""}`}
-        style={{ pointerEvents: 'none' }}
+        className={`fixed inset-0 w-full h-full -z-10 ${!isSupported ? "hidden" : ""}`}
+        style={{ pointerEvents: 'none', backgroundColor: 'var(--bg-void)' }}
       />
       {!isSupported && (
-        <div className="fixed inset-0 w-full h-full -z-20 bg-[#0A0A0A]" />
+        <div
+          className="fixed inset-0 w-full h-full -z-20"
+          style={{ backgroundColor: 'var(--bg-void)' }}
+        />
       )}
     </>
   );

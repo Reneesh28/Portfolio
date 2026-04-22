@@ -1,207 +1,214 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useMemo, useRef, memo } from "react";
 import * as THREE from "three";
-import { Stars, PerspectiveCamera } from "@react-three/drei";
-import { EffectComposer, Bloom, Noise, Vignette, ChromaticAberration } from "@react-three/postprocessing";
+import { PerspectiveCamera } from "@react-three/drei";
+import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
 
-/* ---------- ARCHITECTURAL GRID LAYER ---------- */
-const GridLattice = memo(({ isDecrypted }) => {
+/* ---------- CHERRY BLOSSOM PARTICLES ---------- */
+const SakuraParticles = memo(({ count = 300, isRevealed }) => {
   const meshRef = useRef();
-  const divisions = 14;
-  const size = 16;
-  
-  const lines = useMemo(() => {
-    const step = size / divisions;
-    const linePoints = [];
-    for (let i = -divisions / 2; i <= divisions / 2; i++) {
-        const coord = i * step;
-        linePoints.push(new THREE.Vector3(-size/2, coord, coord), new THREE.Vector3(size/2, coord, coord));
-        linePoints.push(new THREE.Vector3(coord, -size/2, coord), new THREE.Vector3(coord, size/2, coord));
-        linePoints.push(new THREE.Vector3(coord, coord, -size/2), new THREE.Vector3(coord, coord, size/2));
-    }
-    return linePoints;
-  }, [divisions, size]);
-
   const materialRef = useRef();
 
+  const { positions, velocities, rotations, scales } = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const velocities = new Float32Array(count * 3);
+    const rotations = new Float32Array(count);
+    const scales = new Float32Array(count);
+
+    for (let i = 0; i < count; i++) {
+      // Spread across a wide area
+      positions[i * 3] = (Math.random() - 0.5) * 30;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 20 + 5;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+
+      // Gentle drift velocities
+      velocities[i * 3] = (Math.random() - 0.3) * 0.01;     // slight rightward drift
+      velocities[i * 3 + 1] = -(Math.random() * 0.008 + 0.003); // fall down
+      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.005;
+
+      rotations[i] = Math.random() * Math.PI * 2;
+      scales[i] = Math.random() * 0.08 + 0.03;
+    }
+    return { positions, velocities, rotations, scales };
+  }, [count]);
+
   useFrame((state) => {
+    if (!meshRef.current) return;
+    const time = state.clock.getElapsedTime();
+    const posArray = meshRef.current.geometry.attributes.position.array;
+
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+
+      // Apply velocity + gentle wind sway
+      posArray[i3] += velocities[i3] + Math.sin(time * 0.3 + i) * 0.002;
+      posArray[i3 + 1] += velocities[i3 + 1];
+      posArray[i3 + 2] += velocities[i3 + 2] + Math.cos(time * 0.2 + i) * 0.001;
+
+      // Reset petal when it falls below view
+      if (posArray[i3 + 1] < -12) {
+        posArray[i3] = (Math.random() - 0.5) * 30;
+        posArray[i3 + 1] = 12 + Math.random() * 5;
+        posArray[i3 + 2] = (Math.random() - 0.5) * 20;
+      }
+    }
+
+    meshRef.current.geometry.attributes.position.needsUpdate = true;
+
+    // Fade in opacity when revealed
     if (materialRef.current) {
-      const targetOpacity = isDecrypted ? 0.6 : 0.25;
-      materialRef.current.opacity = THREE.MathUtils.lerp(materialRef.current.opacity, targetOpacity, 0.05);
-      
-      const targetColor = isDecrypted ? new THREE.Color("#00E5FF") : new THREE.Color("#00BFA5");
-      materialRef.current.color.lerp(targetColor, 0.05);
-      
-      const s = 1 + Math.sin(state.clock.getElapsedTime() * 0.5) * 0.01;
-      meshRef.current.scale.set(s, s, s);
+      const target = isRevealed ? 0.7 : 0.35;
+      materialRef.current.opacity = THREE.MathUtils.lerp(materialRef.current.opacity, target, 0.03);
     }
   });
 
   return (
-    <lineSegments ref={meshRef}>
+    <points ref={meshRef}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={lines.length}
-          array={new Float32Array(lines.flatMap(v => [v.x, v.y, v.z]))}
+          count={count}
+          array={positions}
           itemSize={3}
         />
       </bufferGeometry>
-      <lineBasicMaterial ref={materialRef} transparent opacity={0.2} color="#00BFA5" blending={THREE.AdditiveBlending} />
-    </lineSegments>
+      <pointsMaterial
+        ref={materialRef}
+        size={0.12}
+        color="#F9A8D4"
+        transparent
+        opacity={0.35}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        sizeAttenuation
+      />
+    </points>
   );
 });
 
-/* ---------- GPU-ACCELERATED DATA STREAKS ---------- */
-const DataStreaks = memo(({ count = 200, isDecrypted }) => {
+/* ---------- ASH / EMBER PARTICLES ---------- */
+const EmberParticles = memo(({ count = 120, isRevealed }) => {
   const meshRef = useRef();
   const materialRef = useRef();
 
-  // Create attributes once
-  const { offsets, axes, speeds, scales, flickers } = useMemo(() => {
-    const offsets = new Float32Array(count * 3);
-    const axes = new Float32Array(count);
-    const speeds = new Float32Array(count);
-    const scales = new Float32Array(count);
-    const flickers = new Float32Array(count);
-
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      offsets[i * 3] = (Math.random() - 0.5) * 16;
-      offsets[i * 3 + 1] = (Math.random() - 0.5) * 16;
-      offsets[i * 3 + 2] = (Math.random() - 0.5) * 16;
-      
-      axes[i] = Math.floor(Math.random() * 3);
-      speeds[i] = (Math.random() * 0.03 + 0.015) * (Math.random() > 0.5 ? 1 : -1);
-      scales[i] = Math.random() * 1.5 + 0.5;
-      flickers[i] = Math.random() * Math.PI;
+      arr[i * 3] = (Math.random() - 0.5) * 24;
+      arr[i * 3 + 1] = (Math.random() - 0.5) * 16;
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 16;
     }
-    return { offsets, axes, speeds, scales, flickers };
+    return arr;
   }, [count]);
 
-  const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
-    uPointer: { value: new THREE.Vector2(0, 0) },
-    uSpeedMult: { value: 1.2 },
-    uColor: { value: new THREE.Color("#00E5FF") }
-  }), []);
-
   useFrame((state) => {
+    if (!meshRef.current) return;
+    const time = state.clock.getElapsedTime();
+    const posArray = meshRef.current.geometry.attributes.position.array;
+
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      // Slow upward drift like rising embers
+      posArray[i3] += Math.sin(time * 0.5 + i * 0.7) * 0.003;
+      posArray[i3 + 1] += 0.005 + Math.sin(time + i) * 0.002;
+      posArray[i3 + 2] += Math.cos(time * 0.3 + i * 0.5) * 0.002;
+
+      // Reset when too high
+      if (posArray[i3 + 1] > 12) {
+        posArray[i3 + 1] = -10;
+        posArray[i3] = (Math.random() - 0.5) * 24;
+      }
+    }
+    meshRef.current.geometry.attributes.position.needsUpdate = true;
+
     if (materialRef.current) {
-      materialRef.current.uniforms.uTime.value = state.clock.getElapsedTime();
-      materialRef.current.uniforms.uPointer.value.lerp(state.pointer, 0.1);
-      materialRef.current.uniforms.uSpeedMult.value = THREE.MathUtils.lerp(
-        materialRef.current.uniforms.uSpeedMult.value, 
-        isDecrypted ? 5.0 : 1.2, 
-        0.05
-      );
+      const target = isRevealed ? 0.5 : 0.2;
+      materialRef.current.opacity = THREE.MathUtils.lerp(materialRef.current.opacity, target, 0.03);
     }
   });
 
-  const vertexShader = `
-    uniform float uTime;
-    uniform vec2 uPointer;
-    uniform float uSpeedMult;
-    
-    attribute vec3 aOffset;
-    attribute float aAxis;
-    attribute float aSpeed;
-    attribute float aScale;
-    attribute float aFlicker;
+  return (
+    <points ref={meshRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        ref={materialRef}
+        size={0.06}
+        color="#D97706"
+        transparent
+        opacity={0.2}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        sizeAttenuation
+      />
+    </points>
+  );
+});
 
-    varying float vFlicker;
+/* ---------- FOG / MIST PLANE ---------- */
+const FogPlane = memo(({ isRevealed }) => {
+  const meshRef = useRef();
+  const materialRef = useRef();
 
-    void main() {
-      vec3 pos = aOffset;
-      float move = aSpeed * uSpeedMult * uTime;
-      
-      // Infinite Loop movement
-      if (aAxis < 0.5) {
-        pos.x = mod(pos.x + move + 8.0, 16.0) - 8.0;
-      } else if (aAxis < 1.5) {
-        pos.y = mod(pos.y + move + 8.0, 16.0) - 8.0;
-      } else {
-        pos.z = mod(pos.z + move + 8.0, 16.0) - 8.0;
-      }
+  useFrame((state) => {
+    if (!meshRef.current) return;
+    const time = state.clock.getElapsedTime();
+    // Gentle undulating motion
+    meshRef.current.position.y = Math.sin(time * 0.15) * 0.5 - 2;
+    meshRef.current.rotation.z = Math.sin(time * 0.08) * 0.02;
 
-      // Interaction
-      float dist = distance(uPointer, pos.xy / 8.0);
-      float force = max(0.0, 1.0 - dist * 1.5) * 0.5;
-      pos.xy += (pos.xy + 0.5) * force * 0.2;
-
-      // Scaling
-      vec3 s = vec3(0.05);
-      if (aAxis < 0.5) s.x = aScale * 3.0;
-      else if (aAxis < 1.5) s.y = aScale * 3.0;
-      else s.z = aScale * 3.0;
-
-      float f = 1.0 + sin(uTime * 10.0 + aFlicker) * 0.3;
-      s *= f;
-      vFlicker = f;
-
-      vec4 mvPosition = modelViewMatrix * vec4(pos + position * s, 1.0);
-      gl_Position = projectionMatrix * mvPosition;
+    if (materialRef.current) {
+      const target = isRevealed ? 0.12 : 0.06;
+      materialRef.current.opacity = THREE.MathUtils.lerp(materialRef.current.opacity, target, 0.02);
     }
-  `;
-
-  const fragmentShader = `
-    uniform vec3 uColor;
-    varying float vFlicker;
-    void main() {
-      gl_FragColor = vec4(uColor, 0.8 * vFlicker);
-    }
-  `;
+  });
 
   return (
-    <instancedMesh args={[null, null, count]}>
-      <boxGeometry args={[1, 1, 1]}>
-        <instancedBufferAttribute attach="attributes-aOffset" args={[offsets, 3]} />
-        <instancedBufferAttribute attach="attributes-aAxis" args={[axes, 1]} />
-        <instancedBufferAttribute attach="attributes-aSpeed" args={[speeds, 1]} />
-        <instancedBufferAttribute attach="attributes-aScale" args={[scales, 1]} />
-        <instancedBufferAttribute attach="attributes-aFlicker" args={[flickers, 1]} />
-      </boxGeometry>
-      <shaderMaterial
+    <mesh ref={meshRef} position={[0, -2, -3]} rotation={[-0.2, 0, 0]}>
+      <planeGeometry args={[40, 12]} />
+      <meshBasicMaterial
         ref={materialRef}
-        uniforms={uniforms}
-        vertexShader={vertexShader}
-        fragmentShader={fragmentShader}
+        color="#A8A29E"
         transparent
+        opacity={0.06}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />
-    </instancedMesh>
+    </mesh>
   );
 });
 
 /* ---------- INTERACTIVE SCENE CONTAINER ---------- */
-const SceneContainer = memo(({ isDecrypted }) => {
+const SceneContainer = memo(({ isRevealed }) => {
   const group = useRef();
 
   useFrame(({ pointer, clock }) => {
     const t = clock.getElapsedTime();
-    const rotationSpeed = isDecrypted ? 0.4 : 0.08;
 
+    // Very gentle, contemplative rotation
     group.current.rotation.x = THREE.MathUtils.lerp(
       group.current.rotation.x,
-      pointer.y * 0.2 + Math.sin(t * 0.15) * 0.03,
-      0.04
+      pointer.y * 0.05 + Math.sin(t * 0.1) * 0.02,
+      0.02
     );
     group.current.rotation.y = THREE.MathUtils.lerp(
       group.current.rotation.y,
-      -pointer.x * 0.2 + t * rotationSpeed,
-      0.04
+      -pointer.x * 0.05 + t * 0.02,
+      0.02
     );
   });
 
   return (
     <group ref={group}>
-      <GridLattice isDecrypted={isDecrypted} />
-      <DataStreaks isDecrypted={isDecrypted} count={isDecrypted ? 350 : 150} />
-      
-      <mesh scale={16}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial wireframe color="#00BFA5" transparent opacity={0.03} />
-      </mesh>
+      <SakuraParticles isRevealed={isRevealed} count={isRevealed ? 400 : 200} />
+      <EmberParticles isRevealed={isRevealed} count={isRevealed ? 150 : 80} />
+      <FogPlane isRevealed={isRevealed} />
     </group>
   );
 });
@@ -211,38 +218,29 @@ const LatticeBackground = memo(({ isDecrypted }) => {
     <div className="w-full h-full">
       <Canvas
         gl={{ antialias: false, stencil: false, depth: true, alpha: true, powerPreference: "high-performance" }}
-        dpr={1} // Static DPR for performance consistency
+        dpr={1}
       >
-        <color attach="background" args={["#030303"]} />
+        <color attach="background" args={["#0C0A09"]} />
         <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={45} />
-        
-        <fogExp2 attach="fog" args={["#030303", 0.08]} />
-        
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={2} color="#00E5FF" />
-        
-        <Stars 
-          radius={120} 
-          depth={60} 
-          count={isDecrypted ? 8000 : 3000} 
-          factor={4} 
-          saturation={0} 
-          fade 
-          speed={isDecrypted ? 2 : 0.8} 
-        />
-        
-        <SceneContainer isDecrypted={isDecrypted} />
+
+        <fogExp2 attach="fog" args={["#0C0A09", 0.04]} />
+
+        <ambientLight intensity={0.3} />
+        {/* Warm lantern-like lights */}
+        <pointLight position={[8, 6, 5]} intensity={1.5} color="#D97706" distance={30} decay={2} />
+        <pointLight position={[-6, -3, 4]} intensity={0.8} color="#C2410C" distance={20} decay={2} />
+
+        <SceneContainer isRevealed={isDecrypted} />
 
         <EffectComposer disableNormalPass multisampling={0}>
-            <Bloom 
-                intensity={isDecrypted ? 2.0 : 1.0} 
-                luminanceThreshold={0.2} 
-                luminanceSmoothing={0.9} 
-                mipmapBlur 
-            />
-            <Noise opacity={0.04} />
-            <Vignette eskil={false} offset={0.1} darkness={1.1} />
-            {isDecrypted && <ChromaticAberration offset={[0.0015, 0.0015]} />}
+          <Bloom
+            intensity={isDecrypted ? 1.2 : 0.6}
+            luminanceThreshold={0.3}
+            luminanceSmoothing={0.9}
+            mipmapBlur
+          />
+          <Noise opacity={0.035} />
+          <Vignette eskil={false} offset={0.1} darkness={1.2} />
         </EffectComposer>
       </Canvas>
     </div>
@@ -250,4 +248,3 @@ const LatticeBackground = memo(({ isDecrypted }) => {
 });
 
 export default LatticeBackground;
-

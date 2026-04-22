@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState, useMemo, memo } from "react";
 import projects from "../data/projects";
-import { FiClock, FiArrowUpRight, FiSearch, FiX, FiTerminal } from "react-icons/fi";
+import { FiClock, FiArrowUpRight, FiSearch, FiX } from "react-icons/fi";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Badge } from "../components/ui/Badge";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Memoized Tech Badge to prevent redundant renders
+// Memoized Tech Badge
 const TechBadge = memo(({ item }) => (
-  <Badge variant="accent" className="bg-[#1A1A1A] text-[10px] py-0 px-2 border-white/5 whitespace-nowrap">
+  <Badge variant="accent" className="text-[10px] py-0 px-2 whitespace-nowrap" style={{ backgroundColor: "var(--bg-panel)", borderColor: "var(--border-subtle)" }}>
     {item}
   </Badge>
 ));
@@ -18,10 +18,6 @@ TechBadge.displayName = "TechBadge";
 // Memoized Project Card
 const ProjectCard = memo(({ project, onAccess }) => {
   const isComingSoon = project.status?.toLowerCase() === "coming-soon";
-  const hexId = useMemo(() => 
-    `0x${Math.floor(Math.random() * 0xFFFFFF).toString(16).toUpperCase()}`, 
-    []
-  );
 
   return (
     <button
@@ -30,12 +26,18 @@ const ProjectCard = memo(({ project, onAccess }) => {
         project-card relative group text-left
         h-full flex flex-col justify-between
         p-8 md:p-10
-        bg-[#111111]
-        border border-white/5
-        ${!isComingSoon ? "hover:border-[#00BFA5]/30 cursor-pointer active:scale-[0.98]" : "border-dashed opacity-50 cursor-not-allowed"}
+        border
+        rounded-md
+        ${!isComingSoon ? "cursor-pointer active:scale-[0.98]" : "border-dashed opacity-50 cursor-not-allowed"}
         transition-all duration-300 ease-out
       `}
-      style={{ transform: "translateZ(0)" }}
+      style={{
+        backgroundColor: "var(--bg-panel)",
+        borderColor: isComingSoon ? "var(--border-subtle)" : "var(--border-subtle)",
+        transform: "translateZ(0)"
+      }}
+      onMouseEnter={(e) => { if (!isComingSoon) e.currentTarget.style.borderColor = "var(--border-hover)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border-subtle)"; }}
     >
       <div>
         <div className="flex items-center justify-between mb-6">
@@ -45,33 +47,39 @@ const ProjectCard = memo(({ project, onAccess }) => {
             ))}
           </div>
           {!isComingSoon && (
-            <FiSearch className="text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors" />
+            <FiSearch style={{ color: "var(--text-muted)" }} className="group-hover:text-[var(--accent)] transition-colors" />
           )}
         </div>
 
-        <h3 className={`text-xl font-bold mb-4 tracking-tight ${!isComingSoon ? 'text-[#E0E0E0]' : 'text-[#A3A3A3]'}`}>
+        <h3
+          className="text-xl font-display font-bold mb-4 tracking-tight"
+          style={{ color: !isComingSoon ? "var(--text-main)" : "var(--text-muted)" }}
+        >
           {project.title}
         </h3>
 
-        <p className="text-sm text-[#A3A3A3] leading-relaxed mb-8 line-clamp-3 font-mono opacity-80 group-hover:opacity-100 transition-opacity">
+        <p
+          className="text-sm leading-relaxed mb-8 line-clamp-3 font-body opacity-80 group-hover:opacity-100 transition-opacity"
+          style={{ color: "var(--text-muted)" }}
+        >
           {project.description}
         </p>
       </div>
 
-      <div className="flex items-center justify-between border-t border-white/5 pt-6">
+      <div className="flex items-center justify-between border-t pt-6" style={{ borderColor: "var(--border-subtle)" }}>
         {isComingSoon ? (
-          <div className="flex items-center gap-2 text-[10px] font-mono text-neutral-500">
+          <div className="flex items-center gap-2 text-[10px] font-accent" style={{ color: "var(--text-ink)" }}>
             <FiClock />
-            <span>[ INITIALIZING... ]</span>
+            <span>[ FORGING... ]</span>
           </div>
         ) : (
-          <span className="text-[10px] font-mono text-[#00BFA5] tracking-widest uppercase font-bold">
-            [ ACCESS DEPLOYMENT ]
+          <span
+            className="text-[10px] font-accent tracking-widest uppercase font-bold"
+            style={{ color: "var(--accent)" }}
+          >
+            [ EXAMINE CRAFT ]
           </span>
         )}
-        <span className="text-[10px] font-mono text-[#333] group-hover:text-[#666] transition-colors">
-          {hexId}
-        </span>
       </div>
     </button>
   );
@@ -96,11 +104,11 @@ export default function Projects() {
         { opacity: 0, y: 10 },
         { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
       )
-      .fromTo(".project-card",
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power3.out" },
-        "-=0.4"
-      );
+        .fromTo(".project-card",
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power3.out" },
+          "-=0.4"
+        );
     }, containerRef);
 
     return () => ctx.revert();
@@ -109,16 +117,27 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="w-full bg-[#0A0A0A] text-white px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t border-white/5"
+      className="w-full px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t"
+      style={{
+        backgroundColor: "var(--bg-void)",
+        color: "var(--text-main)",
+        borderColor: "var(--border-subtle)"
+      }}
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="projects-header mb-20 text-center md:text-left">
-          <p className="text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-4">
-            SYSTEM ARCHIVES
+          <p
+            className="font-accent font-semibold uppercase tracking-[0.2em] text-sm mb-4"
+            style={{ color: "var(--accent)" }}
+          >
+            FORGED WORKS
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-[#E0E0E0]">
-            Deployed Modules
+          <h2
+            className="text-3xl sm:text-4xl lg:text-6xl font-display font-extrabold tracking-tight"
+            style={{ color: "var(--text-main)" }}
+          >
+            Crafted Creations
           </h2>
         </div>
 
@@ -134,7 +153,7 @@ export default function Projects() {
       </div>
 
       {selectedProject && (
-        <MainframeModal
+        <ScrollModal
           project={selectedProject}
           onClose={() => setSelectedProject(null)}
         />
@@ -143,18 +162,19 @@ export default function Projects() {
   );
 }
 
-function MainframeModal({ project, onClose }) {
+/* ── Scroll Modal (replaces Mainframe Terminal) ── */
+function ScrollModal({ project, onClose }) {
   const [displayText, setDisplayText] = useState("");
   const [isTypingComplete, setIsTypingComplete] = useState(false);
   const modalRef = useRef(null);
   const backdropRef = useRef(null);
 
   useEffect(() => {
-    // 1. Unified GSAP Entrance (Backdrop + Modal)
+    // Entrance animation
     const tl = gsap.timeline();
-    
-    tl.fromTo(backdropRef.current, 
-      { opacity: 0 }, 
+
+    tl.fromTo(backdropRef.current,
+      { opacity: 0 },
       { opacity: 1, duration: 0.3, ease: "none" }
     ).fromTo(modalRef.current,
       { opacity: 0, scale: 0.98, y: 20 },
@@ -162,13 +182,13 @@ function MainframeModal({ project, onClose }) {
       "-=0.1"
     );
 
-    // 2. High-Frequency GSAP Typing Engine (Smooth 120Hz compatible)
+    // Typing effect — ink flowing onto paper
     const typingProxy = { length: 0 };
     const fullText = project.description;
-    
+
     gsap.to(typingProxy, {
       length: fullText.length,
-      duration: fullText.length * 0.012, // Dynamic speed based on length
+      duration: fullText.length * 0.012,
       ease: "none",
       onUpdate: () => {
         setDisplayText(fullText.substring(0, Math.round(typingProxy.length)));
@@ -185,28 +205,46 @@ function MainframeModal({ project, onClose }) {
   }, [project]);
 
   return (
-    <div 
+    <div
       ref={backdropRef}
-      className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-8 lg:p-12 bg-black/95 transition-none"
+      className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-8 lg:p-12 transition-none"
+      style={{ backgroundColor: "rgba(12,10,9,0.95)" }}
       onClick={onClose}
     >
-      <div 
+      <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-5xl bg-[#0D0D0D] border border-white/10 flex flex-col shadow-[0_0_50px_rgba(0,0,0,1)]"
-        style={{ transform: "translateZ(0)" }}
+        className="relative w-full max-w-5xl border flex flex-col rounded-lg overflow-hidden"
+        style={{
+          backgroundColor: "var(--bg-panel)",
+          borderColor: "var(--border-subtle)",
+          boxShadow: "0 0 60px rgba(0,0,0,0.8)",
+          transform: "translateZ(0)"
+        }}
       >
         {/* Header bar */}
-        <div className="flex items-center justify-between p-4 bg-[#161616] border-b border-white/5">
+        <div
+          className="flex items-center justify-between p-4 border-b"
+          style={{ backgroundColor: "var(--bg-surface)", borderColor: "var(--border-subtle)" }}
+        >
           <div className="flex items-center gap-3">
-            <FiTerminal className="text-[#00BFA5] animate-pulse" />
-            <span className="font-mono text-[10px] text-[#A3A3A3] tracking-[0.3em] font-bold">
-              [ ACCESSING_FILE: {project.title.substring(0, 15).toUpperCase()}... ]
+            <div
+              className="w-2 h-2 rounded-full animate-pulse"
+              style={{ backgroundColor: "var(--accent)" }}
+            />
+            <span
+              className="font-accent text-[10px] tracking-[0.3em] font-bold uppercase"
+              style={{ color: "var(--text-muted)" }}
+            >
+              [ READING SCROLL: {project.title.substring(0, 20).toUpperCase()}... ]
             </span>
           </div>
-          <button 
+          <button
             onClick={onClose}
-            className="text-[#A3A3A3] hover:text-[#00BFA5] transition-colors p-1"
+            className="transition-colors p-1 rounded"
+            style={{ color: "var(--text-muted)" }}
+            onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent)"}
+            onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
           >
             <FiX size={20} />
           </button>
@@ -214,21 +252,17 @@ function MainframeModal({ project, onClose }) {
 
         {/* Scrollable Body */}
         <div className="p-6 md:p-12 overflow-y-auto max-h-[85vh] custom-scrollbar">
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 px-2">
             <div className="space-y-6">
               <div>
-                <p className="text-[#00BFA5] font-mono text-[10px] uppercase tracking-widest mb-3 opacity-60 font-bold">[ IDENTIFIER ]</p>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#E0E0E0] tracking-tight leading-tight">{project.title}</h3>
-              </div>
-              <div>
-                <p className="text-[#00BFA5] font-mono text-[10px] uppercase tracking-wider mb-1 opacity-60 font-bold">[ ASSET_TYPE ]</p>
-                <p className="text-white/90 font-mono text-sm tracking-wider uppercase">ARCHIVE_NODE // PRODUCTION</p>
+                <p className="font-accent text-[10px] uppercase tracking-widest mb-3 opacity-60 font-bold" style={{ color: "var(--accent)" }}>[ TITLE ]</p>
+                <h3 className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight leading-tight" style={{ color: "var(--text-main)" }}>{project.title}</h3>
               </div>
             </div>
 
             <div>
-              <p className="text-[#00BFA5] font-mono text-[10px] uppercase tracking-widest mb-4 opacity-60 font-bold">[ SYSTEM_PROTOCOLS ]</p>
+              <p className="font-accent text-[10px] uppercase tracking-widest mb-4 opacity-60 font-bold" style={{ color: "var(--accent)" }}>[ DISCIPLINES USED ]</p>
               <div className="flex flex-wrap gap-2 pt-1">
                 {project.tech.map(t => (
                   <TechBadge key={t} item={t} />
@@ -237,33 +271,34 @@ function MainframeModal({ project, onClose }) {
             </div>
           </div>
 
-          {/* Console Area */}
-          <div className="bg-[#050505] border border-white/5 p-6 md:p-10 font-mono text-sm leading-8 relative min-h-[120px]">
-            <div className="absolute top-4 right-6 text-[10px] text-[#222] select-none uppercase tracking-widest">ENCRYPTION: 256_BIT</div>
-            
+          {/* Description Area */}
+          <div
+            className="border p-6 md:p-10 font-body text-sm leading-8 relative min-h-[120px] rounded-md"
+            style={{ backgroundColor: "var(--bg-void)", borderColor: "var(--border-subtle)" }}
+          >
             <div className="flex items-start gap-5">
-              <span className="text-[#00BFA5] select-none text-xs font-bold pt-1">{">"}</span>
-              <div className="text-[#A3A3A3] flex-1 whitespace-pre-wrap">
+              <span className="select-none text-xs font-bold pt-1" style={{ color: "var(--accent)" }}>{">"}</span>
+              <div className="flex-1 whitespace-pre-wrap" style={{ color: "var(--text-muted)" }}>
                 {displayText}
-                {!isTypingComplete && <span className="inline-block w-2.5 h-5 bg-[#00BFA5] animate-pulse ml-2 align-middle" />}
+                {!isTypingComplete && <span className="inline-block w-2.5 h-5 animate-pulse ml-2 align-middle rounded-sm" style={{ backgroundColor: "var(--accent)" }} />}
               </div>
             </div>
 
             {isTypingComplete && (
-              <div className="mt-16 border-t border-white/5 pt-10">
-                <p className="text-[#00BFA5] font-mono text-[10px] uppercase tracking-widest mb-8 font-bold opacity-60">[ EXTERNAL_UPLINKS ]</p>
+              <div className="mt-16 border-t pt-10" style={{ borderColor: "var(--border-subtle)" }}>
+                <p className="font-accent text-[10px] uppercase tracking-widest mb-8 font-bold opacity-60" style={{ color: "var(--accent)" }}>[ PATHS ]</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {project.codeLink && <TerminalLink label="RECON SOURCE CODE" href={project.codeLink} />}
-                  {project.codeLinkFrontend && <TerminalLink label="ACCESS INTERFACE" href={project.codeLinkFrontend} />}
-                  {project.codeLinkBackend && <TerminalLink label="ACCESS SERVICES" href={project.codeLinkBackend} />}
+                  {project.codeLink && <ScrollLink label="View the Blueprint" href={project.codeLink} />}
+                  {project.codeLinkFrontend && <ScrollLink label="View the Interface" href={project.codeLinkFrontend} />}
+                  {project.codeLinkBackend && <ScrollLink label="View the Foundation" href={project.codeLinkBackend} />}
                 </div>
               </div>
             )}
           </div>
 
           <div className="mt-12 text-center opacity-20 transition-opacity">
-            <p className="text-[10px] font-mono text-[#444] tracking-[0.5em] uppercase">
-              END OF FILE // SECURE_LOG_EXIT
+            <p className="text-[10px] font-accent tracking-[0.5em] uppercase" style={{ color: "var(--text-ink)" }}>
+              — End of Scroll —
             </p>
           </div>
         </div>
@@ -272,18 +307,34 @@ function MainframeModal({ project, onClose }) {
   );
 }
 
-function TerminalLink({ label, href }) {
+function ScrollLink({ label, href }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-center justify-between p-5 bg-[#0F0F0F] border border-white/5 hover:border-[#00BFA5]/40 hover:bg-[#151515] transition-all duration-300"
+      className="group flex items-center justify-between p-5 border transition-all duration-300 rounded-md"
+      style={{
+        backgroundColor: "var(--bg-void)",
+        borderColor: "var(--border-subtle)"
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = "var(--border-hover)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "var(--border-subtle)";
+      }}
     >
-      <span className="text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors font-mono text-[10px] tracking-widest uppercase font-bold">
+      <span
+        className="font-accent text-[10px] tracking-widest uppercase font-bold transition-colors"
+        style={{ color: "var(--text-muted)" }}
+      >
         {label}
       </span>
-      <FiArrowUpRight className="text-[#333] group-hover:text-[#00BFA5] transition-all transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+      <FiArrowUpRight
+        className="transition-all transform group-hover:translate-x-1 group-hover:-translate-y-1"
+        style={{ color: "var(--text-ink)" }}
+      />
     </a>
   );
 }

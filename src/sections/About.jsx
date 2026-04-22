@@ -11,18 +11,18 @@ export default function About() {
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Authentication State
+  // Gate State — "Hold to Reveal"
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [progress, setProgress] = useState(0);
   const holdIntervalRef = useRef(null);
   const drainIntervalRef = useRef(null);
 
-  const HOLD_DURATION = 250; // 250 milli-seconds holding time
+  const HOLD_DURATION = 250;
   const INTERVAL_TIME = 20;
 
   const startHold = () => {
     if (isUnlocked) return;
-    clearInterval(drainIntervalRef.current); // Stop draining if pressed again
+    clearInterval(drainIntervalRef.current);
 
     holdIntervalRef.current = setInterval(() => {
       setProgress((prev) => {
@@ -40,20 +40,18 @@ export default function About() {
     if (isUnlocked) return;
     clearInterval(holdIntervalRef.current);
 
-    // Smoothly drain the progress bar when let go early
     drainIntervalRef.current = setInterval(() => {
       setProgress((prev) => {
         if (prev <= 0) {
           clearInterval(drainIntervalRef.current);
           return 0;
         }
-        return prev - 2; // drain speed
+        return prev - 2;
       });
     }, 10);
   };
 
   useEffect(() => {
-    // Structural Entrance Animation still fires on scroll so the blurry shell slides into place
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -64,7 +62,7 @@ export default function About() {
         },
       });
 
-      // CINEMATIC STAGGERED REVEAL (applies structurally even when blurred)
+      // Staggered reveal
       tl.fromTo(".about-label", { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" })
         .fromTo([".profile-container", ".profile-name", ".social-icon"],
           { opacity: 0, y: 15 },
@@ -85,15 +83,19 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative w-full bg-[#0A0A0A] text-[#E0E0E0] px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t border-white/5 min-h-[600px]"
+      className="relative w-full px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t min-h-[600px]"
+      style={{
+        backgroundColor: "var(--bg-void)",
+        color: "var(--text-main)",
+        borderColor: "var(--border-subtle)"
+      }}
     >
       <div ref={containerRef} className="max-w-7xl mx-auto relative">
 
-        {/* --- AUTHENTICATION OVERLAY --- */}
+        {/* --- GATE OVERLAY — "Hold to Reveal" --- */}
         {!isUnlocked && (
           <div className="absolute inset-0 z-50 flex items-center justify-center">
-            {/* Dimmer backdrop distinct from standard blur to lock focus on button */}
-            <div className="absolute inset-0 bg-[#0A0A0A]/30"></div>
+            <div className="absolute inset-0" style={{ backgroundColor: "rgba(12,10,9,0.3)" }} />
 
             <div
               onMouseDown={startHold}
@@ -103,51 +105,64 @@ export default function About() {
               onTouchEnd={stopHold}
               className="
                  relative px-8 py-5
-                 border border-white/10 hover:border-[#00BFA5]/50
-                 bg-[#1A1A1A]/95 backdrop-blur-md
-                 text-[#E0E0E0] 
-                 font-mono tracking-widest text-sm
+                 border backdrop-blur-md
+                 font-accent tracking-widest text-sm
                  cursor-pointer select-none
                  overflow-hidden group
                  transition-transform active:scale-95 duration-100
-                 shadow-[0_0_30px_rgba(0,191,165,0.05)]
+                 rounded-md
                "
+              style={{
+                borderColor: progress > 0 ? "var(--border-hover)" : "var(--border-subtle)",
+                backgroundColor: "rgba(28, 25, 23, 0.95)",
+                color: "var(--text-main)",
+                boxShadow: progress > 0 ? "0 0 30px rgba(194,65,12,0.1)" : "none"
+              }}
             >
-              {/* Progress Fill Matrix */}
+              {/* Progress Fill — ink wash */}
               <div
-                className="absolute inset-y-0 left-0 bg-[#00BFA5]/20 pointer-events-none"
-                style={{ width: `${progress}%`, transition: progress < 100 ? "width 0.05s linear" : "none" }}
+                className="absolute inset-y-0 left-0 pointer-events-none"
+                style={{
+                  width: `${progress}%`,
+                  backgroundColor: "rgba(194,65,12,0.15)",
+                  transition: progress < 100 ? "width 0.05s linear" : "none"
+                }}
               />
 
               {/* Label & Indicator */}
               <span className="relative z-10 flex items-center gap-4">
-                <div className={`w-2 h-2 ${progress > 0 ? 'bg-[#00BFA5] animate-pulse shadow-[0_0_8px_#00BFA5]' : 'bg-[#A3A3A3]'} transition-colors`} />
+                <div
+                  className={`w-2 h-2 rounded-full transition-colors ${progress > 0 ? 'animate-pulse' : ''}`}
+                  style={{
+                    backgroundColor: progress > 0 ? "var(--accent)" : "var(--text-ink)",
+                    boxShadow: progress > 0 ? "0 0 8px var(--accent)" : "none"
+                  }}
+                />
                 {progress >= 100
-                  ? "ACCESS GRANTED"
+                  ? "PATH REVEALED"
                   : progress > 0
-                    ? `DECRYPTING... ${Math.floor(progress)}%`
-                    : "HOLD TO AUTHENTICATE"}
+                    ? `UNVEILING... ${Math.floor(progress)}%`
+                    : "HOLD TO REVEAL"}
               </span>
-
-              {/* Scanline visual during hold */}
-              {progress > 0 && progress < 100 && (
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-[#00BFA5]/50 animate-[scan_2s_linear_infinite]" />
-              )}
             </div>
           </div>
         )}
 
         {/* --- MAIN CONTENT (BLURRED UNTIL UNLOCKED) --- */}
         <div className={`transition-all duration-[1.5s] ease-out ${isUnlocked ? "blur-0 opacity-100" : "blur-[16px] opacity-30 pointer-events-none select-none"}`}>
+
           {/* Section Label */}
-          <p className="about-label text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16">
-            OPERATOR PROFILE
+          <p
+            className="about-label font-accent font-semibold uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16"
+            style={{ color: "var(--accent)" }}
+          >
+            THE CRAFTSMAN
           </p>
 
           {/* Content Grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-start">
 
-            {/* LEFT COLUMN — PROFILE (Span 4 cols) */}
+            {/* LEFT COLUMN — PROFILE */}
             <div className="md:col-span-5 lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
               {/* Profile Image */}
               <div className="profile-container relative group mb-8">
@@ -155,27 +170,37 @@ export default function About() {
                   className="
                     relative
                     w-64 h-64 sm:w-72 sm:h-72
-                    border border-white/10
-                    group-hover:border-[#00BFA5]/30
+                    border
+                    group-hover:border-[var(--border-hover)]
                     transition-colors duration-500
-                    bg-[#1A1A1A] p-2
+                    p-2 rounded-md
                   "
+                  style={{
+                    borderColor: "var(--border-subtle)",
+                    backgroundColor: "var(--bg-panel)"
+                  }}
                 >
                   <img
                     src={profileImage}
                     alt="Reneesh"
-                    className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-700"
+                    className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-700 rounded-sm"
                   />
                 </div>
               </div>
 
               {/* Name & Title */}
               <div className="profile-name space-y-2">
-                <h3 className="text-3xl font-bold tracking-tight text-[#E0E0E0]">
+                <h3
+                  className="text-3xl font-display font-bold tracking-tight"
+                  style={{ color: "var(--text-main)" }}
+                >
                   RENEESH
                 </h3>
-                <p className="text-[#A3A3A3] font-medium tracking-[0.1em] text-sm uppercase">
-                  SYSTEMS ARCHITECT
+                <p
+                  className="font-accent font-medium tracking-[0.1em] text-sm uppercase"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  MASTER CRAFTSMAN
                 </p>
               </div>
 
@@ -197,24 +222,44 @@ export default function About() {
                       group relative
                       w-12 h-12
                       flex items-center justify-center
-                      bg-[#1A1A1A]
-                      border border-white/5
-                      text-[#A3A3A3]
-                      hover:text-[#E0E0E0] hover:border-[#00BFA5]/30 hover:bg-[#2A2A2A]
-                      transition-colors duration-200
+                      border
+                      transition-all duration-300
+                      rounded-md
                     "
+                    style={{
+                      backgroundColor: "var(--bg-panel)",
+                      borderColor: "var(--border-subtle)",
+                      color: "var(--text-muted)"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "var(--border-hover)";
+                      e.currentTarget.style.color = "var(--text-main)";
+                      e.currentTarget.style.backgroundColor = "var(--bg-surface)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "var(--border-subtle)";
+                      e.currentTarget.style.color = "var(--text-muted)";
+                      e.currentTarget.style.backgroundColor = "var(--bg-panel)";
+                    }}
                   >
                     <social.icon size={20} className="transition-transform" />
 
                     {/* Tooltip */}
-                    <span className="
-                      absolute -top-10 left-1/2 -translate-x-1/2 
-                      px-2.5 py-1 
-                      bg-[#0A0A0A] border border-white/5 
-                      text-[#E0E0E0] text-xs font-mono tracking-widest rounded 
-                      opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0
-                      transition-all duration-300 pointer-events-none whitespace-nowrap
-                    ">
+                    <span
+                      className="
+                        absolute -top-10 left-1/2 -translate-x-1/2 
+                        px-2.5 py-1 
+                        border 
+                        text-xs font-accent tracking-widest rounded-sm 
+                        opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0
+                        transition-all duration-300 pointer-events-none whitespace-nowrap
+                      "
+                      style={{
+                        backgroundColor: "var(--bg-void)",
+                        borderColor: "var(--border-subtle)",
+                        color: "var(--text-main)"
+                      }}
+                    >
                       {social.label.toUpperCase()}
                     </span>
                   </a>
@@ -222,13 +267,16 @@ export default function About() {
               </div>
             </div>
 
-            {/* RIGHT COLUMN — TEXT CONTENT (Span 8 cols) */}
+            {/* RIGHT COLUMN — TEXT CONTENT */}
             <div className="md:col-span-7 lg:col-span-8 flex flex-col justify-center h-full">
-              <h2 className="about-headline text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8 leading-[1.15] text-[#E0E0E0]">
-                Building <span className="text-[#00BFA5]">intelligent systems</span> that scale
+              <h2
+                className="about-headline text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight mb-8 leading-[1.15]"
+                style={{ color: "var(--text-main)" }}
+              >
+                Forging <span style={{ color: "var(--accent)" }}>intelligent systems</span> with discipline
               </h2>
 
-              <div className="about-text space-y-6 text-[#A3A3A3] text-lg leading-relaxed max-w-2xl font-mono text-sm sm:text-base">
+              <div className="about-text space-y-6 text-lg leading-relaxed max-w-2xl font-body text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
                 <p>
                   I am an AI Engineer focused on designing and building machine
                   learning and generative AI systems that are reliable, scalable,
@@ -257,13 +305,15 @@ export default function About() {
                   rel="noopener noreferrer"
                   variant="secondary"
                   size="lg"
-                  className="group gap-3 bg-[#0A0A0A]"
+                  className="group gap-3"
+                  style={{ backgroundColor: "var(--bg-void)" }}
                 >
-                  <FileText size={20} className="text-[#A3A3A3] group-hover:text-[#E0E0E0] transition-colors" />
-                  <span className="text-[#E0E0E0] tracking-wide font-mono">EXTRACT DOCUMENTATION</span>
+                  <FileText size={20} style={{ color: "var(--text-muted)" }} className="group-hover:text-[var(--text-main)] transition-colors" />
+                  <span className="font-accent tracking-wide" style={{ color: "var(--text-main)" }}>View the Scroll</span>
                   <ArrowRight
                     size={18}
-                    className="text-[#00BFA5] group-hover:translate-x-1 transition-transform"
+                    style={{ color: "var(--accent)" }}
+                    className="group-hover:translate-x-1 transition-transform"
                   />
                 </Button>
               </div>
