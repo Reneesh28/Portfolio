@@ -5,23 +5,29 @@ import freeCodeCampRWD from "../assets/images/freecodecamp-responsive-web-design
 const certifications = [
   {
     title: "The Bits and Bytes of Computer Networking",
-    issuer: "Google (Coursera)",
+    house: "House_of_Google",
+    id: "GNET-2024-X1",
+    hash: "0x7F2A...9C11",
     year: "2024",
-    tags: ["Computer Networks", "TCP/IP", "DNS", "OSI Model"],
+    tags: ["TCP/IP", "DNS", "OSI"],
     file: googleNetworking
   },
   {
     title: "Fundamentals of Network Communication",
-    issuer: "University of Colorado (Coursera)",
+    house: "House_of_Colorado",
+    id: "CNET-2024-V2",
+    hash: "0x3D1B...8E42",
     year: "2024",
-    tags: ["Networking", "Protocols", "Communication Models"],
+    tags: ["Protocols", "Communication"],
     file: coloradoNetworking
   },
   {
-    title: "Legacy Responsive Web Design",
-    issuer: "freeCodeCamp",
+    title: "Responsive Web Design",
+    house: "House_of_CodeCamp",
+    id: "FCC-2023-RWD",
+    hash: "0x1A8D...7B00",
     year: "2023",
-    tags: ["HTML", "CSS", "Responsive Design"],
+    tags: ["HTML", "CSS", "UI/UX"],
     file: freeCodeCampRWD
   }
 ];

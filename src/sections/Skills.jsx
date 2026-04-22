@@ -1,132 +1,129 @@
-import { useState, useEffect, useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import skills from "../data/skills";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Lock, Unlock, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Skills() {
-  const sectionRef = useRef(null);
+const ScrollChapter = ({ cat, index }) => {
+  const containerRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Entrance Animation for the Vault bars
-      gsap.fromTo(".vault-bar",
-        { opacity: 0, y: 15 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-            toggleActions: "play none none reverse"
-          }
-        }
-      );
-    }, sectionRef);
+    const trigger = ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top 60%",
+      end: "bottom 40%",
+      onToggle: (self) => setIsOpen(self.isActive)
+    });
 
-    return () => ctx.revert();
+    return () => trigger.kill();
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="skills"
-      className="w-full min-h-screen bg-[#0A0A0A] text-[#E0E0E0] border-t border-white/5 py-24 sm:py-32 px-6 md:px-12 relative overflow-hidden flex flex-col items-center"
-    >
-      <div className="w-full max-w-4xl relative z-10 flex flex-col">
-        {/* Section Label */}
-        <p className="vault-bar text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16">
-          CAPABILITY MATRIX
-        </p>
+    <div ref={containerRef} className="relative w-full min-h-[60vh] flex items-center justify-center py-20">
+      <div className="relative flex items-center justify-center">
+        {/* Left Handle */}
+        <motion.div
+          animate={{ x: isOpen ? "-45vw" : "0px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="w-2 h-64 md:h-80 bg-[#111] border-x border-[#D4AF37]/20 z-30 flex items-center justify-center"
+        >
+          <div className="w-[1px] h-1/2 bg-[#D4AF37]/10" />
+        </motion.div>
 
-        {/* Encrypted Category Vaults */}
-        <div className="flex flex-col gap-4">
-          {skills.map((categoryData, idx) => (
-            <SkillVault key={idx} data={categoryData} />
+        {/* The Paper / Content */}
+        <motion.div
+          initial={{ width: 0, opacity: 0 }}
+          animate={{
+            width: isOpen ? "90vw" : "0px",
+            opacity: isOpen ? 1 : 0
+          }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="h-64 md:h-80 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent overflow-hidden border-y border-[#D4AF37]/5 flex items-center justify-center relative"
+        >
+          <div className="max-w-6xl w-full px-12 md:px-20 flex flex-col md:flex-row items-center justify-between gap-16">
+            {/* TEXT CONTENT */}
+            <div className="flex flex-col gap-6 text-left md:w-1/3">
+              <div className="space-y-1">
+                <span className="font-mono text-[10px] tracking-[0.8em] text-[#D4AF37]/40 uppercase">Chapter_0{index + 1}</span>
+                <h3 className="font-shippori text-3xl md:text-5xl text-white tracking-[0.2em] uppercase leading-tight">{cat.category}</h3>
+              </div>
+              <p className="font-shippori text-[#888] text-sm md:text-md italic leading-relaxed border-l border-[#D4AF37]/20 pl-6">
+                "{cat.description}"
+              </p>
+            </div>
+
+            {/* ICONS GRID */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-12 gap-y-8 md:w-1/2 justify-items-center">
+              {cat.items.map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <div key={idx} className="flex flex-col items-center gap-3 group w-20">
+                    <div className="w-14 h-14 rounded-full border border-white/5 flex items-center justify-center group-hover:border-[#D4AF37]/40 transition-all duration-500 bg-[#0A0A0A] shadow-inner">
+                      <Icon size={28} className="text-[#333] group-hover:text-[#D4AF37] transition-colors" />
+                    </div>
+                    <span className="font-mono text-[10px] tracking-[0.3em] text-[#222] group-hover:text-[#888] uppercase text-center transition-colors">
+                      {item.name}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Right Handle */}
+        <motion.div
+          animate={{ x: isOpen ? "45vw" : "0px" }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="w-2 h-64 md:h-80 bg-[#111] border-x border-[#D4AF37]/20 z-30 flex items-center justify-center"
+        >
+          <div className="w-[1px] h-1/2 bg-[#D4AF37]/10" />
+        </motion.div>
+
+        {/* Closed Label (Visible when scroll is closed) */}
+        {!isOpen && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span className="font-shippori text-xs tracking-[1em] text-[#D4AF37]/60 rotate-90 whitespace-nowrap uppercase">
+              {cat.category}
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default function Skills() {
+  return (
+    <section
+      id="skills"
+      className="relative w-full bg-[#050505] py-20"
+    >
+      {/* Background Depth */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_#111_0%,_#050505_100%)] opacity-30 pointer-events-none" />
+
+      <div className="relative z-20 w-full flex flex-col items-center px-4">
+        {/* Narrative Header */}
+        <div className="mb-40 flex flex-col items-center gap-4">
+          <p className="font-mono text-[10px] tracking-[1em] text-[#D4AF37] uppercase">The_Technical_Archives</p>
+          <h2 className="font-shippori text-white text-5xl md:text-8xl tracking-widest uppercase opacity-20">Arsenal</h2>
+        </div>
+
+        {/* THE SCROLLS STACK */}
+        <div className="w-full flex flex-col">
+          {skills.map((cat, i) => (
+            <ScrollChapter key={i} cat={cat} index={i} />
           ))}
         </div>
       </div>
-    </section>
-  );
-}
 
-function SkillVault({ data }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const itemsRef = useRef([]);
-
-  useEffect(() => {
-    if (isOpen) {
-      // Wait for the accordion to slightly open before staggering items
-      gsap.fromTo(itemsRef.current,
-        { opacity: 0, y: -10 },
-        { opacity: 1, y: 0, duration: 0.3, stagger: 0.03, ease: "power3.out", delay: 0.1 }
-      );
-    }
-  }, [isOpen]);
-
-  return (
-    <div className="vault-bar border border-white/10 bg-[#111111] overflow-hidden transition-colors duration-300 hover:border-[#00BFA5]/30">
-
-      {/* Vault Header Bar */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 sm:p-6 text-left focus:outline-none group"
-      >
-        <div className="flex items-center gap-4">
-          {isOpen ? (
-            <Unlock size={18} className="text-[#00BFA5]" />
-          ) : (
-            <Lock size={18} className="text-[#A3A3A3] group-hover:text-[#E0E0E0] transition-colors" />
-          )}
-          <h3 className={`font-mono tracking-widest text-sm sm:text-base transition-colors ${isOpen ? 'text-[#00BFA5]' : 'text-[#A3A3A3] group-hover:text-[#E0E0E0]'}`}>
-            {isOpen ? `[ UNLOCKED: ${data.category.toUpperCase()} ]` : `[ ENCRYPTED: ${data.category.toUpperCase()} ]`}
-          </h3>
-        </div>
-
-        <div className="flex items-center gap-4 text-[#A3A3A3]">
-          <span className="font-mono text-xs opacity-50 hidden sm:block">
-            {data.items.length} MODULES
-          </span>
-          <span className="w-px h-4 bg-white/10 hidden sm:block"></span>
-          <ChevronDown
-            size={18}
-            className={`transition-all duration-300 ease-out ${isOpen ? "rotate-180 text-[#00BFA5]" : "rotate-0 text-[#A3A3A3]"}`}
-          />
-        </div>
-      </button>
-
-      {/* Vault Content (Accordion) */}
-      <div
-        className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}
-      >
-        <div className="p-5 sm:p-6 pt-0 bg-[#111111]">
-          {/* Subtle separator inside the open vault */}
-          <div className="w-full h-px bg-white/5 mb-6" />
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {data.items.map((skill, idx) => {
-              const Icon = skill.icon;
-              return (
-                <div
-                  key={idx}
-                  ref={el => itemsRef.current[idx] = el}
-                  className="flex items-center gap-3 p-3 bg-[#1A1A1A] border border-white/5 hover:border-[#00BFA5]/40 hover:bg-[#222222] transition-colors group cursor-default"
-                >
-                  <Icon className="text-xl text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors" />
-                  <span className="font-mono text-xs sm:text-sm tracking-wide text-[#E0E0E0] truncate">
-                    {skill.name}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      <div className="mt-40 flex flex-col items-center gap-2 opacity-20">
+        <div className="w-px h-24 bg-gradient-to-b from-[#D4AF37] to-transparent" />
+        <p className="font-mono text-[10px] tracking-[0.5em] text-white">END_OF_ARCHIVE</p>
       </div>
-
-    </div>
+    </section>
   );
 }

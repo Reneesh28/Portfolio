@@ -2,9 +2,15 @@ import { useEffect, useRef } from "react";
 import experience from "../data/experience";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Briefcase, GraduationCap, Calendar, Lock } from "lucide-react";
+import { Swords, Shield, Scroll, MapPin } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const CAMPAIGN_ICONS = {
+  work: <Swords size={20} />,
+  education: <Scroll size={20} />,
+  training: <Shield size={20} />
+};
 
 export default function Experience() {
   const containerRef = useRef(null);
@@ -12,176 +18,118 @@ export default function Experience() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Line draws down
+      // 1. The Blade Cut (Vertical Line)
       gsap.fromTo(
         lineRef.current,
         { scaleY: 0 },
         {
           scaleY: 1,
           duration: 1.5,
-          ease: "power3.out",
+          ease: "power3.inOut",
           scrollTrigger: {
             trigger: containerRef.current,
-            start: "top 60%", // Start animating when section is near center
+            start: "top 40%",
             end: "bottom 80%",
-            scrub: 1,
+            scrub: true,
           },
         }
       );
 
-      // 2. Linear Timeline Sequential Load
-      const items = gsap.utils.toArray(".timeline-item");
-      gsap.fromTo(items,
-        { opacity: 0, y: 15 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 75%",
+      // 2. Banner Sequential Entry
+      const items = gsap.utils.toArray(".campaign-item");
+      items.forEach((item, i) => {
+        gsap.fromTo(item,
+          { opacity: 0, x: i % 2 === 0 ? -40 : 40 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 1,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: item,
+              start: "top 85%",
+            }
           }
-        }
-      );
+        );
+      });
     }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
-  const getIcon = (type) => {
-    const lower = type.toLowerCase();
-    if (lower.includes("training") || lower.includes("education")) {
-      return <GraduationCap size={18} />;
-    }
-    return <Briefcase size={18} />;
-  };
-
   return (
     <section
       id="experience"
-      className="relative w-full bg-transparent text-white px-6 md:px-12 py-24 overflow-hidden"
+      className="relative w-full bg-[#050505] text-white py-40 overflow-hidden"
       ref={containerRef}
     >
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 px-6">
         {/* Header */}
-        <div className="mb-20 text-center">
-          <p className="text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-4">
-            OPERATIONAL HISTORY
+        <div className="mb-32 flex flex-col items-center text-center">
+          <p className="font-mono text-[10px] tracking-[1em] text-[#D4AF37] uppercase mb-4">
+            CHRONICLES_OF_CAMPAIGN
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#E0E0E0]">
-            Service Records
+          <h2 className="font-shippori text-5xl md:text-8xl tracking-widest text-white uppercase opacity-20">
+            Pathways
           </h2>
         </div>
 
         {/* Timeline Container */}
-        <div className="relative mt-12">
-          {/* Vertical Line */}
+        <div className="relative">
+          {/* The Blade Cut (Vertical Line) */}
           <div
             ref={lineRef}
-            className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-white/20 via-[#00BFA5]/20 to-transparent origin-top z-0"
+            className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-[#D4AF37]/40 via-[#D4AF37]/10 to-transparent origin-top z-0"
           />
 
-          {/* Timeline Items */}
-          <div className="space-y-12">
+          {/* Campaign Items */}
+          <div className="space-y-40">
             {experience.map((item, index) => {
               const isEven = index % 2 === 0;
+              const icon = CAMPAIGN_ICONS[item.type.toLowerCase()] || <Swords size={20} />;
 
               return (
                 <div
                   key={index}
-                  className={`timeline-item flex flex-col md:flex-row items-start md:items-center relative ${isEven ? "md:flex-row-reverse" : ""
+                  className={`campaign-item flex flex-col md:flex-row items-start md:items-center relative ${isEven ? "md:flex-row-reverse" : ""
                     }`}
                 >
-                  {/* Spacer for Desktop (occupies 50% width) */}
+                  {/* Spacer for Desktop */}
                   <div className="hidden md:block w-1/2" />
 
-                  {/* Icon Node (Center) */}
-                  <div
-                    className="
-                      absolute left-8 md:left-1/2 transform -translate-x-1/2 
-                      w-8 h-8 md:w-10 md:h-10
-                      bg-[#0A0A0A] border border-white/20
-                      flex items-center justify-center
-                      text-[#A3A3A3] z-10
-                      transition-colors duration-300
-                    "
-                  >
-                    <div className="opacity-80">
-                      {getIcon(item.type)}
+                  {/* The Banner Post (Center Node) */}
+                  <div className="absolute left-8 md:left-1/2 transform -translate-x-1/2 w-10 h-10 bg-[#050505] border border-[#D4AF37]/30 rotate-45 flex items-center justify-center z-10">
+                    <div className="rotate-[-45deg] text-[#D4AF37]">
+                      {icon}
                     </div>
                   </div>
 
-                  {/* Content Card */}
-                  <div className="w-full md:w-1/2 pl-24 md:pl-0 perspective-1000">
-                    <div
-                      className={`
-                        group
-                        relative
-                        p-6 sm:p-8
-                        bg-[#111111]
-                        border border-white/5
-                        hover:border-[#00BFA5]/30 hover:bg-[#161616]
-                        transition-all duration-300
-                        ${isEven
-                          ? "md:mr-12 text-left md:text-right"
-                          : "md:ml-12 text-left"
-                        }
-                      `}
-                    >
-                      {/* Sub-Metadata */}
-                      <span
-                        className={`
-                          inline-flex items-center gap-2
-                          text-xs font-mono px-3 py-1
-                          bg-[#0A0A0A] border border-white/5 text-[#A3A3A3] mb-4
-                          transition-colors
-                          ${isEven ? "md:flex-row-reverse" : ""}
-                        `}
-                      >
-                        <Calendar size={12} />
+                  {/* Content Card (Sashimono Style) */}
+                  <div className="w-full md:w-1/2 pl-24 md:pl-0">
+                    <div className={`relative ${isEven ? "md:pr-20 text-left md:text-right" : "md:pl-20 text-left"}`}>
+                      {/* Campaign Duration Tag */}
+                      <div className={`flex items-center gap-3 font-mono text-[9px] tracking-widest text-[#D4AF37]/60 mb-4 ${isEven ? "md:justify-end" : ""}`}>
+                        <div className="w-8 h-[1px] bg-[#D4AF37]/20" />
                         {item.period}
-                      </span>
+                      </div>
 
-                      {/* Header Data */}
-                      <h3 className="text-xl font-bold mb-1 text-[#E0E0E0] tracking-tight">
+                      {/* Rank and Great House */}
+                      <h3 className="font-shippori text-2xl md:text-4xl text-white tracking-widest uppercase mb-1">
                         {item.role}
                       </h3>
-                      <p className="text-sm font-mono text-[#00BFA5] mb-6 uppercase tracking-widest opacity-80">
+                      <p className="font-mono text-[10px] tracking-[0.5em] text-[#D4AF37] mb-8 uppercase opacity-80">
                         {item.organization}
                       </p>
 
-                      {/* REDACTED DESCRIPTION BLOCK (Option C) */}
-                      <div className="relative overflow-hidden pt-4 border-t border-white/5 cursor-crosshair">
-
-                        {/* Redaction Scanner Overlay */}
-                        <div className={`
-                          absolute inset-0 z-10
-                          flex items-center ${isEven ? "md:justify-end" : "justify-start"}
-                          bg-[#0A0A0A] border border-white/5
-                          transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]
-                          group-hover:scale-x-0
-                          ${isEven ? "origin-left md:origin-right" : "origin-left"}
-                        `}>
-                          <div className={`px-4 flex items-center gap-3 opacity-60 ${isEven ? "md:flex-row-reverse" : ""}`}>
-                            <Lock size={14} className="text-red-500" />
-                            <span className="text-red-500 font-mono text-xs tracking-widest font-bold">
-                              [ RESTRICTED: HOVER TO CLEAR ]
-                            </span>
-                          </div>
+                      {/* Strategic Victories */}
+                      <div className={`flex flex-col gap-4 ${isEven ? "md:items-end" : "items-start"}`}>
+                        <div className="flex items-center gap-3 text-[#D4AF37]/40 text-[10px] tracking-[0.4em] uppercase font-mono">
+                          <MapPin size={12} /> Strategic_Victories
                         </div>
-
-                        {/* Payload Text */}
-                        <p className="
-                          relative z-0 text-sm text-[#A3A3A3] leading-relaxed 
-                          transition-all duration-700 font-mono
-                          blur-md opacity-20 group-hover:blur-none group-hover:opacity-100
-                        ">
-                          {item.description}
+                        <p className="font-shippori text-[#888] text-sm md:text-lg leading-relaxed italic border-l-2 md:border-l-0 border-[#D4AF37]/10 pl-6 md:pl-0 md:max-w-md">
+                          "{item.description}"
                         </p>
                       </div>
-
                     </div>
                   </div>
                 </div>
@@ -189,6 +137,12 @@ export default function Experience() {
             })}
           </div>
         </div>
+      </div>
+
+      {/* Narrative Footer */}
+      <div className="mt-40 flex flex-col items-center gap-6 opacity-20">
+        <div className="w-px h-32 bg-gradient-to-b from-[#D4AF37] to-transparent" />
+        <p className="font-mono text-[10px] tracking-[0.8em] text-white">RECORD_OF_HONOR</p>
       </div>
     </section>
   );
