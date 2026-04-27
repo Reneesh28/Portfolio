@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import AnimatedLogo from "./AnimatedLogo";
 
 const navItems = [
   { label: "Home", href: "#hero" },
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Certifications", href: "#certifications" },
-  { label: "Projects", href: "#projects" },
-  { label: "Education", href: "#education" },
-  { label: "Work Experience", href: "#experience" },
-  { label: "Contact", href: "#contact" }
+  { label: "Legend", href: "#about" },
+  { label: "Arts", href: "#skills" },
+  { label: "Seals", href: "#certifications" },
+  { label: "Battles", href: "#projects" },
+  { label: "Lineage", href: "#education" },
+  { label: "Journey", href: "#experience" },
+  { label: "Messenger", href: "#contact" }
 ];
 
 export default function Navbar() {
@@ -17,29 +18,14 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
 
-  /* =========================
-     SCROLL HANDLER
-  ========================== */
   useEffect(() => {
     const handleScroll = () => {
       const currentY = window.scrollY;
-
-      // Always show near top
-      if (currentY < 80) {
-        setHidden(false);
-      }
-      // Scroll down → hide
-      else if (currentY > lastScrollY.current && !open) {
-        setHidden(true);
-      }
-      // Scroll up → show
-      else {
-        setHidden(false);
-      }
-
+      if (currentY < 80) setHidden(false);
+      else if (currentY > lastScrollY.current && !open) setHidden(true);
+      else setHidden(false);
       lastScrollY.current = currentY;
     };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [open]);
@@ -48,62 +34,62 @@ export default function Navbar() {
     <motion.nav
       initial={{ y: 0 }}
       animate={{ y: hidden ? "-100%" : "0%" }}
-      transition={{ duration: 0.35, ease: "easeOut" }}
-      className="
-        fixed top-0 left-0 w-full z-50
-        bg-[#0A0A0A]
-        border-b border-white/5
-      "
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="fixed top-0 left-0 w-full z-50 bg-[#0D0D0D]/80 backdrop-blur-md border-b border-white/5"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
-
         {/* Logo */}
-        <a href="#hero" className="text-lg font-semibold text-[#E0E0E0] tracking-tight">
-          Reneesh
+        <a href="#hero">
+          <AnimatedLogo text="RENEESH" />
         </a>
 
         {/* Desktop Nav */}
-        <ul className="hidden md:flex items-center gap-8 text-sm text-[#A3A3A3]">
+        <ul className="hidden md:flex items-center gap-10 text-[10px] font-serif uppercase tracking-[0.3em] text-[#A3A3A3]">
           {navItems.map((item) => (
-            <li key={item.label}>
-              <a
-                href={item.href}
-                className="hover:text-[#E0E0E0] transition-colors"
-              >
+            <li key={item.label} className="relative group">
+              <a href={item.href} className="hover:text-[#F5F5F5] transition-colors duration-300">
                 {item.label}
               </a>
+              <div className="absolute -bottom-1 left-0 w-0 h-px bg-[#C5A059] transition-all duration-300 group-hover:w-full" />
             </li>
           ))}
         </ul>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-[#A3A3A3] text-xl"
+          className="md:hidden text-[#C5A059] text-2xl"
           onClick={() => setOpen(!open)}
           aria-label="Toggle Menu"
         >
-          ☰
+          {open ? "✕" : "☰"}
         </button>
       </div>
 
       {/* Mobile Menu */}
-      {open && (
-        <div className="md:hidden bg-[#0A0A0A] border-t border-white/5">
-          <ul className="flex flex-col px-6 py-4 gap-4 text-sm text-[#A3A3A3]">
-            {navItems.map((item) => (
-              <li key={item.label}>
-                <a
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className="block hover:text-[#E0E0E0]"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-[#0D0D0D] border-t border-white/5 overflow-hidden"
+          >
+            <ul className="flex flex-col px-8 py-8 gap-6 text-sm font-serif uppercase tracking-[0.4em] text-[#A3A3A3]">
+              {navItems.map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className="block hover:text-[#C5A059] transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }

@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Intro from "./components/Intro";
-import FluidBackground from "./components/FluidBackground";
+import AtmosphericBackground from "./components/AtmosphericBackground";
 // Sections
 import Hero from "./sections/Hero";
 import About from "./sections/About";
@@ -18,9 +17,11 @@ function App() {
   const [introDone, setIntroDone] = useState(false);
 
   return (
-    <>
+    <div className="film-grain">
+      <div className="vignette" />
+
       {/* BACKGROUND */}
-      <FluidBackground />
+      <AtmosphericBackground />
 
       {/* GSAP INTRO — blocks everything */}
       {!introDone && <Intro onFinish={() => setIntroDone(true)} />}
@@ -43,7 +44,7 @@ function App() {
           </main>
         </>
       )}
-    </>
+    </div>
   );
 }
 

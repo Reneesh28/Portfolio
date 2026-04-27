@@ -2,131 +2,162 @@ import { useState, useEffect, useRef } from "react";
 import skills from "../data/skills";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Lock, Unlock, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { StoneIcon, WaterIcon, WindIcon, MoonIcon } from "../components/StanceIcons";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const STANCES = [
+  { id: "stone", name: "STONE", label: "The Foundation", color: "#C5A059", icon: StoneIcon, categories: ["Programming Languages", "Databases"] },
+  { id: "water", name: "WATER", label: "The Flow", color: "#F5F5F5", icon: WaterIcon, categories: ["Frontend"] },
+  { id: "wind", name: "WIND", label: "The Unseen", color: "#A3A3A3", icon: WindIcon, categories: ["Backend", "Tools & Forge"] },
+  { id: "moon", name: "MOON", label: "The Visionary", color: "#8B0000", icon: MoonIcon, categories: ["Data Science", "Generative AI"] },
+];
+
 export default function Skills() {
   const sectionRef = useRef(null);
+  const [activeStance, setActiveStance] = useState(STANCES[0]);
+  const flashRef = useRef(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Entrance Animation for the Vault bars
-      gsap.fromTo(".vault-bar",
-        { opacity: 0, y: 15 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-            toggleActions: "play none none reverse"
-          }
-        }
-      );
-    }, sectionRef);
+  const handleStanceChange = (stance) => {
+    if (stance.id === activeStance.id) return;
 
-    return () => ctx.revert();
-  }, []);
+    // Blade Flash Animation
+    gsap.fromTo(flashRef.current,
+      { scaleX: 0, opacity: 1, left: "0%" },
+      { scaleX: 1, opacity: 0, left: "100%", duration: 0.6, ease: "power4.inOut" }
+    );
+
+    setActiveStance(stance);
+  };
+
+  const activeData = skills.filter(cat => activeStance.categories.includes(cat.category));
 
   return (
     <section
       ref={sectionRef}
       id="skills"
-      className="w-full min-h-screen bg-[#0A0A0A] text-[#E0E0E0] border-t border-white/5 py-24 sm:py-32 px-6 md:px-12 relative overflow-hidden flex flex-col items-center"
+      className="w-full min-h-screen bg-[#0D0D0D] text-[#F5F5F5] py-24 sm:py-32 px-6 md:px-12 relative overflow-hidden"
     >
-      <div className="w-full max-w-4xl relative z-10 flex flex-col">
-        {/* Section Label */}
-        <p className="vault-bar text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16">
-          CAPABILITY MATRIX
-        </p>
+      {/* Blade Flash Overlay */}
+      <div ref={flashRef} className="absolute top-1/2 left-0 w-full h-[2px] bg-white z-50 opacity-0 pointer-events-none origin-left" />
 
-        {/* Encrypted Category Vaults */}
-        <div className="flex flex-col gap-4">
-          {skills.map((categoryData, idx) => (
-            <SkillVault key={idx} data={categoryData} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 md:gap-24">
 
-function SkillVault({ data }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const itemsRef = useRef([]);
+        {/* LEFT: STANCE SELECTOR (CIRCULAR ASSETS) */}
+        <div className="md:w-1/3 flex flex-col gap-12">
+          <div>
+            <p className="text-[#C5A059] uppercase tracking-[0.4em] text-[10px] mb-4 font-bold">
+              Combat Mastery
+            </p>
+            <h2 className="text-4xl md:text-6xl font-serif font-bold tracking-tight mb-4">
+              The Arts
+            </h2>
+          </div>
 
-  useEffect(() => {
-    if (isOpen) {
-      // Wait for the accordion to slightly open before staggering items
-      gsap.fromTo(itemsRef.current,
-        { opacity: 0, y: -10 },
-        { opacity: 1, y: 0, duration: 0.3, stagger: 0.03, ease: "power3.out", delay: 0.1 }
-      );
-    }
-  }, [isOpen]);
+          <nav className="grid grid-cols-2 gap-8 md:flex md:flex-col md:gap-10">
+            {STANCES.map((stance) => {
+              const Icon = stance.icon;
+              const isActive = activeStance.id === stance.id;
 
-  return (
-    <div className="vault-bar border border-white/10 bg-[#111111] overflow-hidden transition-colors duration-300 hover:border-[#00BFA5]/30">
-
-      {/* Vault Header Bar */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 sm:p-6 text-left focus:outline-none group"
-      >
-        <div className="flex items-center gap-4">
-          {isOpen ? (
-            <Unlock size={18} className="text-[#00BFA5]" />
-          ) : (
-            <Lock size={18} className="text-[#A3A3A3] group-hover:text-[#E0E0E0] transition-colors" />
-          )}
-          <h3 className={`font-mono tracking-widest text-sm sm:text-base transition-colors ${isOpen ? 'text-[#00BFA5]' : 'text-[#A3A3A3] group-hover:text-[#E0E0E0]'}`}>
-            {isOpen ? `[ UNLOCKED: ${data.category.toUpperCase()} ]` : `[ ENCRYPTED: ${data.category.toUpperCase()} ]`}
-          </h3>
-        </div>
-
-        <div className="flex items-center gap-4 text-[#A3A3A3]">
-          <span className="font-mono text-xs opacity-50 hidden sm:block">
-            {data.items.length} MODULES
-          </span>
-          <span className="w-px h-4 bg-white/10 hidden sm:block"></span>
-          <ChevronDown
-            size={18}
-            className={`transition-all duration-300 ease-out ${isOpen ? "rotate-180 text-[#00BFA5]" : "rotate-0 text-[#A3A3A3]"}`}
-          />
-        </div>
-      </button>
-
-      {/* Vault Content (Accordion) */}
-      <div
-        className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}
-      >
-        <div className="p-5 sm:p-6 pt-0 bg-[#111111]">
-          {/* Subtle separator inside the open vault */}
-          <div className="w-full h-px bg-white/5 mb-6" />
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {data.items.map((skill, idx) => {
-              const Icon = skill.icon;
               return (
-                <div
-                  key={idx}
-                  ref={el => itemsRef.current[idx] = el}
-                  className="flex items-center gap-3 p-3 bg-[#1A1A1A] border border-white/5 hover:border-[#00BFA5]/40 hover:bg-[#222222] transition-colors group cursor-default"
+                <button
+                  key={stance.id}
+                  onClick={() => handleStanceChange(stance)}
+                  className={`
+                    group relative flex items-center gap-6 text-left transition-all duration-500
+                    ${isActive ? "opacity-100" : "opacity-30 hover:opacity-60"}
+                  `}
                 >
-                  <Icon className="text-xl text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors" />
-                  <span className="font-mono text-xs sm:text-sm tracking-wide text-[#E0E0E0] truncate">
-                    {skill.name}
-                  </span>
-                </div>
+                  {/* Circular Icon Container */}
+                  <div className={`
+                    relative w-16 h-16 flex items-center justify-center rounded-full border transition-all duration-500
+                    ${isActive ? 'border-[#C5A059] scale-110 shadow-[0_0_20px_rgba(197,160,89,0.2)]' : 'border-white/10'}
+                  `}>
+                    <Icon active={isActive} />
+
+                    {/* Active Indicator Dots (Mastery) */}
+                    {isActive && (
+                      <div className="absolute inset-0 border-2 border-transparent border-t-[#C5A059] rounded-full animate-[spin_4s_linear_infinite]" />
+                    )}
+                  </div>
+
+                  <div className="hidden md:block">
+                    <div className="flex overflow-hidden">
+                      {stance.name.split("").map((char, i) => (
+                        <motion.span
+                          key={i}
+                          initial={{ y: 10, opacity: 0 }}
+                          animate={isActive ? { y: 0, opacity: 1 } : { y: 0, opacity: 0.4 }}
+                          transition={{ delay: i * 0.03, duration: 0.5 }}
+                          className={`font-serif text-2xl tracking-[0.2em] transition-colors ${isActive ? 'text-[#C5A059]' : 'text-white'}`}
+                        >
+                          {char}
+                        </motion.span>
+                      ))}
+                    </div>
+                    <p className="text-[9px] uppercase tracking-[0.3em] opacity-40">{stance.label}</p>
+                  </div>
+                </button>
               );
             })}
-          </div>
+          </nav>
         </div>
-      </div>
 
-    </div>
+        {/* RIGHT: SKILLS DISPLAY (CHARM STYLE) */}
+        <div className="md:w-2/3">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeStance.id}
+              initial={{ opacity: 0, filter: "blur(10px)" }}
+              animate={{ opacity: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, filter: "blur(10px)" }}
+              transition={{ duration: 0.4 }}
+              className="space-y-20"
+            >
+              {activeData.map((category) => (
+                <div key={category.category} className="space-y-10">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <div className="h-px w-8 bg-[#C5A059]" />
+                      <h4 className="text-[#C5A059] font-serif text-3xl tracking-tight uppercase">
+                        {category.category}
+                      </h4>
+                    </div>
+                    <p className="text-[#A3A3A3] font-serif text-lg leading-relaxed max-w-xl italic opacity-70">
+                      "{category.description}"
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                    {category.items.map((skill) => {
+                      const SkillIcon = skill.icon;
+                      return (
+                        <div
+                          key={skill.name}
+                          className="
+                            relative flex flex-col items-center justify-center p-6 
+                            bg-[#111111] border border-white/5 
+                            hover:border-[#C5A059]/40 hover:bg-[#161616] 
+                            transition-all duration-300 group cursor-default
+                            before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_center,rgba(197,160,89,0.05)_0%,transparent_70%)] before:opacity-0 hover:before:opacity-100
+                          "
+                        >
+                          <SkillIcon size={32} className="text-[#A3A3A3] group-hover:text-[#C5A059] transition-all duration-500 mb-4 group-hover:scale-110" />
+                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-60 group-hover:opacity-100 text-center">
+                            {skill.name}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+      </div>
+    </section>
   );
 }

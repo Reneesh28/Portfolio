@@ -89,11 +89,10 @@ export default function About() {
     >
       <div ref={containerRef} className="max-w-7xl mx-auto relative">
 
-        {/* --- AUTHENTICATION OVERLAY --- */}
+        {/* --- MEDITATION OVERLAY --- */}
         {!isUnlocked && (
           <div className="absolute inset-0 z-50 flex items-center justify-center">
-            {/* Dimmer backdrop distinct from standard blur to lock focus on button */}
-            <div className="absolute inset-0 bg-[#0A0A0A]/30"></div>
+            <div className="absolute inset-0 bg-[#0D0D0D]/40 backdrop-blur-sm"></div>
 
             <div
               onMouseDown={startHold}
@@ -102,46 +101,41 @@ export default function About() {
               onTouchStart={startHold}
               onTouchEnd={stopHold}
               className="
-                 relative px-8 py-5
-                 border border-white/10 hover:border-[#00BFA5]/50
-                 bg-[#1A1A1A]/95 backdrop-blur-md
-                 text-[#E0E0E0] 
-                 font-mono tracking-widest text-sm
+                 relative px-10 py-6
+                 border border-[#C5A059]/20 hover:border-[#C5A059]/60
+                 bg-[#0D0D0D]/90 backdrop-blur-md
+                 text-[#F5F5F5] 
+                 font-serif tracking-widest text-lg
                  cursor-pointer select-none
                  overflow-hidden group
-                 transition-transform active:scale-95 duration-100
-                 shadow-[0_0_30px_rgba(0,191,165,0.05)]
+                 transition-all active:scale-95 duration-300
+                 shadow-[0_0_50px_rgba(197,160,89,0.05)]
                "
             >
-              {/* Progress Fill Matrix */}
+              {/* Progress Fill (Gold Glow) */}
               <div
-                className="absolute inset-y-0 left-0 bg-[#00BFA5]/20 pointer-events-none"
+                className="absolute inset-y-0 left-0 bg-[#C5A059]/10 pointer-events-none"
                 style={{ width: `${progress}%`, transition: progress < 100 ? "width 0.05s linear" : "none" }}
               />
 
               {/* Label & Indicator */}
-              <span className="relative z-10 flex items-center gap-4">
-                <div className={`w-2 h-2 ${progress > 0 ? 'bg-[#00BFA5] animate-pulse shadow-[0_0_8px_#00BFA5]' : 'bg-[#A3A3A3]'} transition-colors`} />
+              <span className="relative z-10 flex items-center gap-6">
+                <div className={`w-3 h-3 rounded-full ${progress > 0 ? 'bg-[#C5A059] animate-ping shadow-[0_0_15px_#C5A059]' : 'bg-[#444]'} transition-colors`} />
                 {progress >= 100
-                  ? "ACCESS GRANTED"
+                  ? "ASCENDED"
                   : progress > 0
-                    ? `DECRYPTING... ${Math.floor(progress)}%`
-                    : "HOLD TO AUTHENTICATE"}
+                    ? `FOCUSING... ${Math.floor(progress)}%`
+                    : "HOLD TO MEDITATE"}
               </span>
-
-              {/* Scanline visual during hold */}
-              {progress > 0 && progress < 100 && (
-                <div className="absolute top-0 left-0 w-full h-[1px] bg-[#00BFA5]/50 animate-[scan_2s_linear_infinite]" />
-              )}
             </div>
           </div>
         )}
 
-        {/* --- MAIN CONTENT (BLURRED UNTIL UNLOCKED) --- */}
-        <div className={`transition-all duration-[1.5s] ease-out ${isUnlocked ? "blur-0 opacity-100" : "blur-[16px] opacity-30 pointer-events-none select-none"}`}>
+        {/* --- MAIN CONTENT (SOFT GLOW REVEAL) --- */}
+        <div className={`transition-all duration-[2.5s] ease-in-out ${isUnlocked ? "blur-0 opacity-100 scale-100" : "blur-[40px] opacity-0 scale-95 pointer-events-none select-none"}`}>
           {/* Section Label */}
-          <p className="about-label text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16">
-            OPERATOR PROFILE
+          <p className="about-label text-[#C5A059] font-medium uppercase tracking-[0.4em] text-xs mb-16">
+            THE LEGEND
           </p>
 
           {/* Content Grid */}
@@ -155,27 +149,31 @@ export default function About() {
                   className="
                     relative
                     w-64 h-64 sm:w-72 sm:h-72
-                    border border-white/10
-                    group-hover:border-[#00BFA5]/30
+                    border border-[#C5A059]/10
+                    group-hover:border-[#C5A059]/40
                     transition-colors duration-500
-                    bg-[#1A1A1A] p-2
+                    bg-[#111111] p-2
                   "
                 >
                   <img
                     src={profileImage}
                     alt="Reneesh"
-                    className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-700"
+                    className="w-full h-full object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-1000 contrast-125"
                   />
+                  {/* Decorative Corner Seal */}
+                  <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-[#8B0000] flex items-center justify-center text-[10px] font-serif text-[#F5F5F5] border border-white/10 shadow-lg">
+                    RENE
+                  </div>
                 </div>
               </div>
 
               {/* Name & Title */}
               <div className="profile-name space-y-2">
-                <h3 className="text-3xl font-bold tracking-tight text-[#E0E0E0]">
+                <h3 className="text-4xl font-serif font-bold tracking-tight text-[#F5F5F5]">
                   RENEESH
                 </h3>
-                <p className="text-[#A3A3A3] font-medium tracking-[0.1em] text-sm uppercase">
-                  SYSTEMS ARCHITECT
+                <p className="text-[#C5A059] font-medium tracking-[0.2em] text-xs uppercase">
+                  WARRIOR - ENGINEER
                 </p>
               </div>
 
@@ -224,8 +222,8 @@ export default function About() {
 
             {/* RIGHT COLUMN — TEXT CONTENT (Span 8 cols) */}
             <div className="md:col-span-7 lg:col-span-8 flex flex-col justify-center h-full">
-              <h2 className="about-headline text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-8 leading-[1.15] text-[#E0E0E0]">
-                Building <span className="text-[#00BFA5]">intelligent systems</span> that scale
+              <h2 className="about-headline text-4xl sm:text-5xl lg:text-7xl font-serif font-bold tracking-tight mb-8 leading-[1.1] text-[#F5F5F5]">
+                Mastering <span className="text-[#C5A059]">ancient arts</span> of code
               </h2>
 
               <div className="about-text space-y-6 text-[#A3A3A3] text-lg leading-relaxed max-w-2xl font-mono text-sm sm:text-base">
@@ -257,13 +255,13 @@ export default function About() {
                   rel="noopener noreferrer"
                   variant="secondary"
                   size="lg"
-                  className="group gap-3 bg-[#0A0A0A]"
+                  className="group gap-3 bg-transparent border-[#C5A059]/40 hover:border-[#C5A059]"
                 >
-                  <FileText size={20} className="text-[#A3A3A3] group-hover:text-[#E0E0E0] transition-colors" />
-                  <span className="text-[#E0E0E0] tracking-wide font-mono">EXTRACT DOCUMENTATION</span>
+                  <FileText size={20} className="text-[#C5A059] group-hover:text-[#F5F5F5] transition-colors" />
+                  <span className="text-[#F5F5F5] tracking-widest font-serif uppercase text-sm">Review Credentials</span>
                   <ArrowRight
                     size={18}
-                    className="text-[#00BFA5] group-hover:translate-x-1 transition-transform"
+                    className="text-[#C5A059] group-hover:translate-x-1 transition-transform"
                   />
                 </Button>
               </div>

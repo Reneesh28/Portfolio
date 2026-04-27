@@ -1,256 +1,182 @@
-import { useRef, useState, useEffect, memo } from "react";
-import emailjs from "@emailjs/browser";
-import {
-   FiMapPin,
-   FiLinkedin,
-   FiGithub,
-   FiSend,
-   FiClock,
-   FiArrowUpRight,
-   FiTerminal,
-   FiShield,
-   FiCpu
-} from "react-icons/fi";
-import { FaXTwitter } from "react-icons/fa6";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "../components/ui/Button";
+import { Send, MapPin, Mail, ChevronRight } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
+const WhistlingArrow = ({ loading, success }) => {
+  return (
+    <div className="relative w-full h-14 flex items-center overflow-hidden bg-[#111111] border border-white/10 group cursor-pointer">
+      {/* The Arrow Body */}
+      <motion.div 
+        className="absolute inset-0 flex items-center px-6"
+        animate={success ? { x: "200%", opacity: 0 } : { x: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="flex items-center gap-4 w-full">
+          {/* Arrowhead */}
+          <div className="w-4 h-4 border-t-2 border-r-2 border-[#C5A059] rotate-45 flex-shrink-0" />
+          
+          {/* Shaft & Text */}
+          <div className="flex-1 flex items-center gap-4">
+             <div className="h-px flex-1 bg-[#C5A059]/40 group-hover:bg-[#C5A059] transition-colors" />
+             <span className="font-serif text-[10px] uppercase tracking-[0.5em] text-[#F5F5F5] whitespace-nowrap">
+                {loading ? "Preparing Messenger..." : success ? "Messenger Dispatched" : "Despatch Whistling Arrow"}
+             </span>
+             <div className="h-px w-12 bg-[#C5A059]/40 group-hover:bg-[#C5A059] transition-colors" />
+          </div>
 
-const UplinkTerminal = ({ status, progress, logs }) => {
-   return (
-      <div className="bg-[#050505] border border-white/10 p-6 md:p-8 font-mono text-xs mb-8 relative overflow-hidden h-48 flex flex-col justify-end shadow-inner">
-         <div className="absolute top-0 left-0 w-full h-1 bg-white/5 overflow-hidden">
-            <div
-               className="h-full bg-[#00BFA5] transition-all duration-300 ease-out"
-               style={{ width: `${progress}%` }}
-            />
-         </div>
+          {/* Fletching (Feathers) */}
+          <div className="flex gap-1">
+             <div className="w-1 h-4 bg-[#8B0000] -skew-x-[20deg]" />
+             <div className="w-1 h-4 bg-[#8B0000] -skew-x-[20deg]" />
+          </div>
+        </div>
+      </motion.div>
 
-         <div className="space-y-2 opacity-80">
-            {logs.map((log, i) => (
-               <div key={i} className={i === logs.length - 1 ? "text-[#00BFA5] animate-pulse" : "text-neutral-500"}>
-                  <span className="mr-2 opacity-50">[{new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]</span>
-                  {log}
-               </div>
-            ))}
-            {status === "sending" && logs.length < 3 && <div className="text-[#00BFA5]/60 animate-pulse">{">"} _</div>}
-         </div>
-
-         <div className="absolute top-4 right-6 text-[10px] text-neutral-800 uppercase tracking-widest pointer-events-none">
-            Secure_COMMS_V4.2
-         </div>
-      </div>
-   );
+      {/* Whistling Visual Effect (Hover) */}
+      <motion.div 
+        className="absolute left-6 pointer-events-none"
+        animate={!success && !loading ? { scale: [1, 1.5, 1], opacity: [0, 0.5, 0] } : { opacity: 0 }}
+        transition={{ duration: 1.5, repeat: Infinity }}
+      >
+        <div className="w-8 h-8 border border-[#C5A059] rounded-full" />
+      </motion.div>
+    </div>
+  );
 };
 
 export default function Contact() {
-   const formRef = useRef(null);
-   const containerRef = useRef(null);
-   const [status, setStatus] = useState("idle"); // idle, sending, success, error
-   const [progress, setProgress] = useState(0);
-   const [logs, setLogs] = useState(["SYSTEM_READY // AWAITING_PAYLOAD"]);
-   const [time, setTime] = useState("");
+  const formRef = useRef();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-   useEffect(() => {
-      const updateTime = () => {
-         const now = new Date();
-         setTime(now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
-      };
-      updateTime();
-      const interval = setInterval(updateTime, 1000);
-      return () => clearInterval(interval);
-   }, []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-   useEffect(() => {
-      const ctx = gsap.context(() => {
-         gsap.fromTo(".contact-header",
-            { opacity: 0, y: 15 },
-            { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", scrollTrigger: { trigger: containerRef.current, start: "top 80%" } }
-         );
+    // Simulated Dispatch
+    setTimeout(() => {
+      setLoading(false);
+      setSuccess(true);
+      formRef.current.reset();
+    }, 1500);
+  };
 
-         gsap.fromTo(".contact-grid-item",
-            { opacity: 0, y: 15 },
-            { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: "power2.out", scrollTrigger: { trigger: containerRef.current, start: "top 70%" } }
-         );
-      }, containerRef);
-      return () => ctx.revert();
-   }, []);
+  return (
+    <section
+      id="contact"
+      className="w-full bg-[#0D0D0D] text-[#F5F5F5] px-6 md:px-12 py-24 sm:py-32 border-t border-white/5 relative overflow-hidden"
+    >
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-20">
+        
+        {/* LEFT: INFO */}
+        <div className="lg:w-1/3 space-y-16">
+          <div>
+            <p className="text-[#8B0000] uppercase tracking-[0.6em] text-xs mb-4 font-bold">
+              Establish Path
+            </p>
+            <h2 className="text-5xl md:text-8xl font-serif font-bold text-[#F5F5F5]">
+              Contact
+            </h2>
+          </div>
 
-   const sendEmail = async (e) => {
-      e.preventDefault();
-      if (status === "sending") return;
-
-      setStatus("sending");
-      setProgress(0);
-      setLogs(["INITIATING_HANDSHAKE..."]);
-
-      // Phase 1: Compile
-      await new Promise(r => setTimeout(r, 800));
-      setProgress(33);
-      setLogs(prev => [...prev, "COMPILING_PAYLOAD... OK"]);
-
-      // Phase 2: Encrypt
-      await new Promise(r => setTimeout(r, 1000));
-      setProgress(66);
-      setLogs(prev => [...prev, "ENCRYPTING_PACKET_RSA_4096... DONE"]);
-
-      // Phase 3: Transmit
-      setLogs(prev => [...prev, "TRANSMITTING_UPLINK..."]);
-
-      try {
-         await emailjs.sendForm(
-            import.meta.env.VITE_EMAILJS_SERVICE_ID,
-            import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-            formRef.current,
-            import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-         );
-
-         setProgress(100);
-         setLogs(prev => [...prev, "HANDSHAKE_COMPLETE // DATA_STORED"]);
-         setStatus("success");
-         formRef.current.reset();
-      } catch (err) {
-         setLogs(prev => [...prev, "CRITICAL_ERROR // UPLINK_REJECTED"]);
-         setStatus("error");
-      }
-   };
-
-   return (
-      <section
-         id="contact"
-         className="w-full bg-[#0A0A0A] text-white px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t border-white/5"
-         ref={containerRef}
-      >
-         <div className="max-w-7xl mx-auto relative z-10">
-            <div className="contact-header mb-16 opacity-0">
-               <p className="text-[#00BFA5] font-bold uppercase tracking-[0.3em] text-[10px] mb-4 opacity-70">
-                  ESTABLISH_UPLINK
-               </p>
-               <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-[#E0E0E0] mb-6">
-                  Initiate Contact.
-               </h2>
+          <div className="space-y-10">
+            <div className="group cursor-pointer">
+              <p className="text-[10px] uppercase tracking-[0.4em] text-[#C5A059] mb-2 group-hover:text-[#F5F5F5] transition-colors">Coordinates</p>
+              <div className="flex items-center gap-4">
+                <MapPin size={18} className="text-[#8B0000]" />
+                <p className="text-xl font-serif">Phagwara, Punjab, India</p>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
-               {/* Left: Uplink Console Form */}
-               <div className="contact-grid-item opacity-0">
-                  <UplinkTerminal status={status} progress={progress} logs={logs} />
-
-                  <form ref={formRef} onSubmit={sendEmail} className="space-y-6">
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="relative group">
-                           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600 transition-colors group-focus-within:text-[#00BFA5]">
-                              <FiTerminal size={14} />
-                           </div>
-                           <input
-                              type="text"
-                              name="from_name"
-                              placeholder="IDENTIFIER"
-                              required
-                              className="w-full bg-[#0D0D0D] border border-white/5 pl-12 p-4 text-xs font-mono text-[#E0E0E0] placeholder-neutral-700 focus:border-[#00BFA5]/30 focus:outline-none transition-all"
-                           />
-                        </div>
-                        <div className="relative group">
-                           <div className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600 transition-colors group-focus-within:text-[#00BFA5]">
-                              <FiShield size={14} />
-                           </div>
-                           <input
-                              type="email"
-                              name="from_email"
-                              placeholder="CHANNEL_ADDR"
-                              required
-                              className="w-full bg-[#0D0D0D] border border-white/5 pl-12 p-4 text-xs font-mono text-[#E0E0E0] placeholder-neutral-700 focus:border-[#00BFA5]/30 focus:outline-none transition-all"
-                           />
-                        </div>
-                     </div>
-
-                     <div className="relative group">
-                        <div className="absolute left-4 top-5 text-neutral-600 transition-colors group-focus-within:text-[#00BFA5]">
-                           <FiCpu size={14} />
-                        </div>
-                        <textarea
-                           name="message"
-                           rows="5"
-                           placeholder="TRANSMISSION_PAYLOAD..."
-                           required
-                           className="w-full bg-[#0D0D0D] border border-white/5 pl-12 p-4 text-xs font-mono text-[#E0E0E0] placeholder-neutral-700 focus:border-[#00BFA5]/30 focus:outline-none transition-all resize-none"
-                        />
-                     </div>
-
-                     <button
-                        type="submit"
-                        disabled={status === "sending"}
-                        className="
-                  group relative w-full md:w-auto px-10 py-4 
-                  bg-[#111111] border border-white/5
-                  hover:border-[#00BFA5]/40 transition-all active:scale-[0.98]
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                  flex items-center justify-center gap-3
-                "
-                     >
-                        <span className="text-xs font-bold font-mono tracking-widest uppercase text-neutral-400 group-hover:text-white transition-colors">
-                           {status === "sending" ? "TRANSMITTING..." : "EXECUTE_UPLINK"}
-                        </span>
-                        <FiSend className={`transition-transform duration-500 ${status === "sending" ? "translate-x-12 opacity-0" : "group-hover:translate-x-1"}`} />
-
-                        {/* Visual Scanner effect on button hover */}
-                        <div className="absolute inset-0 bg-white/5 w-0 group-hover:w-full transition-all duration-300 pointer-events-none opacity-20" />
-                     </button>
-                  </form>
-               </div>
-
-               {/* Right: Info Dashboard */}
-               <div className="contact-grid-item opacity-0">
-                  <div className="bg-[#0D0D0D] border border-white/5 p-8 md:p-12 h-full flex flex-col justify-between">
-                     <div className="space-y-12">
-                        <div>
-                           <h4 className="text-[10px] font-bold uppercase tracking-widest text-[#00BFA5] mb-6 opacity-60">System Operator</h4>
-                           <p className="text-xl md:text-2xl font-bold text-white mb-2">reneesh3508925@gmail.com</p>
-                           <p className="text-xs font-mono text-neutral-500">RENEESH_CORE // SYSTEM_ARCHITECT</p>
-                        </div>
-
-
-                        <div className="grid grid-cols-2 gap-8">
-                           <div>
-                              <h4 className="text-[10px] font-bold uppercase tracking-widest text-neutral-600 mb-4">Networks</h4>
-                              <div className="flex flex-col gap-3 font-mono text-xs">
-                                 <a href="https://github.com/Reneesh28" className="text-neutral-500 hover:text-[#00BFA5] transition-colors flex items-center gap-2">
-                                    <FiGithub /> GITHUB
-                                 </a>
-                                 <a href="https://www.linkedin.com/in/balam-reneesh" className="text-neutral-500 hover:text-[#00BFA5] transition-colors flex items-center gap-2">
-                                    <FiLinkedin /> LINKEDIN
-                                 </a>
-                                 <a href="#" className="text-neutral-500 hover:text-[#00BFA5] transition-colors flex items-center gap-2 text-[10px] opacity-40 italic cursor-not-allowed">
-                                    <FaXTwitter /> X_ARCHIVED
-                                 </a>
-                              </div>
-                           </div>
-                           <div className="text-right">
-                              <h4 className="text-[10px] font-bold uppercase tracking-widest text-neutral-600 mb-4">Coordinates</h4>
-                              <p className="text-xs font-mono text-neutral-400 flex items-center justify-end gap-2">
-                                 PHAGWARA, IN <FiMapPin className="text-[#00BFA5]" />
-                              </p>
-                           </div>
-                        </div>
-                     </div>
-
-                     <div className="mt-20 pt-8 border-t border-white/5 flex items-end justify-between">
-                        <div className="space-y-1 font-mono">
-                           <p className="text-[9px] text-neutral-600 uppercase tracking-widest">Protocol Stored</p>
-                           <p className="text-xs text-neutral-400">DATA_CLEARANCE_PASSED</p>
-                        </div>
-                        <div className="text-right font-mono">
-                           <div className="text-2xl font-medium text-[#E0E0E0] tabular-nums">
-                              {time}
-                           </div>
-                           <p className="text-[9px] text-neutral-600 uppercase tracking-widest mt-1">NODE_LOCAL_TIME</p>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+            <div className="group cursor-pointer">
+              <p className="text-[10px] uppercase tracking-[0.4em] text-[#C5A059] mb-2 group-hover:text-[#F5F5F5] transition-colors">Scroll Address</p>
+              <div className="flex items-center gap-4">
+                <Mail size={18} className="text-[#8B0000]" />
+                <p className="text-xl font-serif">reneesh3508925@gmail.com</p>
+              </div>
             </div>
-         </div>
-      </section>
-   );
+          </div>
+        </div>
+
+        {/* RIGHT: THE FORM (WAR PAPER) */}
+        <div className="lg:w-2/3 bg-[#111111] border border-white/5 p-8 md:p-16 relative">
+          {/* Decorative Corner Seal */}
+          <div className="absolute -top-4 -right-4 w-12 h-12 bg-[#8B0000] flex items-center justify-center text-[10px] font-serif text-[#F5F5F5] shadow-2xl z-10">
+            信
+          </div>
+
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-12 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="space-y-2 group">
+                <label className="text-[10px] uppercase tracking-[0.4em] text-[#C5A059] group-focus-within:text-[#F5F5F5] transition-colors">The Sender</label>
+                <input
+                  required
+                  type="text"
+                  name="name"
+                  placeholder="Enter your name..."
+                  className="w-full bg-transparent border-b border-white/10 py-4 focus:border-[#C5A059] outline-none transition-all font-serif text-lg"
+                />
+              </div>
+              <div className="space-y-2 group">
+                <label className="text-[10px] uppercase tracking-[0.4em] text-[#C5A059] group-focus-within:text-[#F5F5F5] transition-colors">The Uplink</label>
+                <input
+                  required
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email..."
+                  className="w-full bg-transparent border-b border-white/10 py-4 focus:border-[#C5A059] outline-none transition-all font-serif text-lg"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2 group">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-[#C5A059] group-focus-within:text-[#F5F5F5] transition-colors">The Message</label>
+              <textarea
+                required
+                name="message"
+                rows="5"
+                placeholder="Write your request upon this scroll..."
+                className="w-full bg-transparent border-b border-white/10 py-4 focus:border-[#C5A059] outline-none transition-all font-serif text-lg resize-none"
+              />
+            </div>
+
+            <button type="submit" disabled={loading || success} className="w-full group outline-none">
+              <WhistlingArrow loading={loading} success={success} />
+            </button>
+          </form>
+
+          <AnimatePresence>
+            {success && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#111111]/95 backdrop-blur-sm"
+              >
+                <div className="w-20 h-20 bg-[#8B0000] flex items-center justify-center text-white mb-6 shadow-[0_0_30px_rgba(139,0,0,0.4)]">
+                   <Send size={40} />
+                </div>
+                <h4 className="text-3xl font-serif font-bold text-[#F5F5F5] mb-2">Messenger Dispatched</h4>
+                <p className="text-[#C5A059] font-serif italic text-center px-8">
+                  "Your arrow has flown true. I shall witness your request soon."
+                </p>
+                <button 
+                  onClick={() => setSuccess(false)}
+                  className="mt-8 text-[10px] uppercase tracking-[0.4em] text-[#A3A3A3] hover:text-[#F5F5F5] transition-colors"
+                >
+                  Send another scroll
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+      </div>
+
+      {/* Decorative Large Kanji Background */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 text-[40rem] font-serif text-white/[0.01] pointer-events-none select-none">
+        道
+      </div>
+    </section>
+  );
 }

@@ -1,67 +1,46 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import AtmosphericBackground from "./AtmosphericBackground";
 
 const name = "BALAM RENEESH";
-const tagline = "AI ENGINEER · FULL-STACK DEVELOPER";
+const tagline = "THE WARRIOR-ENGINEER";
 
 const Intro = ({ onFinish }) => {
   const containerRef = useRef(null);
-  const lettersRef = useRef([]);
+  const contentRef = useRef(null);
+  const nameRef = useRef(null);
   const taglineRef = useRef(null);
 
   useEffect(() => {
     const tl = gsap.timeline({
-      defaults: { ease: "power4.out" },
+      defaults: { ease: "power2.out" },
     });
 
-    tl.fromTo(
-      lettersRef.current,
-      {
-        y: 220,
-        scale: 1.5,
+    // Initial state: Blurred and dark
+    gsap.set(contentRef.current, { filter: "blur(20px)", opacity: 0 });
+
+    tl.to(contentRef.current, {
+      filter: "blur(0px)",
+      opacity: 1,
+      duration: 2.5,
+      ease: "power1.inOut"
+    })
+      .fromTo(nameRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 1.5, ease: "power3.out" },
+        "-=1.5"
+      )
+      .fromTo(taglineRef.current,
+        { opacity: 0, letterSpacing: "1em" },
+        { opacity: 0.6, letterSpacing: "0.4em", duration: 2, ease: "power2.out" },
+        "-=1.0"
+      )
+      .to(containerRef.current, {
         opacity: 0,
-      },
-      {
-        y: 0,
-        scale: 1,
-        opacity: 1,
-        duration: 0.26,
-        stagger: 0.035,
-      }
-    );
-
-    /* ===============================
-       2️⃣ TAGLINE SNAP
-    =============================== */
-    tl.fromTo(
-      taglineRef.current,
-      {
-        y: 40,
-        opacity: 0,
-      },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.35,
-      },
-      "-=0.2"
-    );
-
-    /* ===============================
-       3️⃣ IMPACT PAUSE (IMPORTANT)
-    =============================== */
-    tl.to({}, { duration: 0.3 });
-
-    /* ===============================
-       4️⃣ CAMERA PUSH — INTO SCREEN
-    =============================== */
-    tl.to(containerRef.current, {
-      scale: 1.6,
-      opacity: 0,
-      duration: 0.6,
-      ease: "power2.in",
-      onComplete: onFinish,
-    });
+        duration: 1.2,
+        delay: 0.5,
+        onComplete: onFinish
+      });
 
     return () => tl.kill();
   }, [onFinish]);
@@ -69,28 +48,22 @@ const Intro = ({ onFinish }) => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-9999 flex items-center justify-center bg-[#0A0A0A] text-[#E0E0E0]"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0D0D0D]"
     >
-      <div className="text-center overflow-hidden">
-        {/* NAME */}
-        <div
-          className="flex justify-center font-bold tracking-tight"
-        >
-          {name.split("").map((char, i) => (
-            <span
-              key={i}
-              ref={(el) => (lettersRef.current[i] = el)}
-              className="inline-block text-4xl md:text-7xl"
-            >
-              {char === " " ? "\u00A0" : char}
-            </span>
-          ))}
-        </div>
+      <div className="absolute inset-0 opacity-40">
+        <AtmosphericBackground />
+      </div>
 
-        {/* TAGLINE */}
+      <div ref={contentRef} className="relative z-10 text-center">
+        <h1
+          ref={nameRef}
+          className="text-5xl md:text-8xl font-serif text-[#F5F5F5] tracking-tight mb-4"
+        >
+          {name}
+        </h1>
         <p
           ref={taglineRef}
-          className="mt-6 text-[#00BFA5] font-semibold text-xs md:text-sm tracking-[0.2em]"
+          className="text-[#C5A059] font-medium text-xs md:text-sm uppercase"
         >
           {tagline}
         </p>

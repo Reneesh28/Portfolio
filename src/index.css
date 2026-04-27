@@ -1,73 +1,108 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Ten Mincho';
+  src: url('https://fonts.googleapis.com/css2?family=Ten+Mincho&display=swap');
+}
+
 :root {
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Tsushima Palette */
+  --charcoal-ink: #0D0D0D;
+  --sakai-white: #F5F5F5;
+  --withered-gold: #C5A059;
+  --blood-red: #8B0000;
+  --text-muted: #A3A3A3;
+
+  /* System Defaults */
+  --bg-main: var(--charcoal-ink);
+  --accent: var(--withered-gold);
+  --text-main: var(--sakai-white);
+
+  font-family: "Outfit", system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: dark;
-  color: #E0E0E0;
-  background-color: #0A0A0A;
+  color: var(--text-main);
+  background-color: var(--bg-main);
 
-  font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "tnum";
-  /* Tabular numerals for institutional data alignment */
+}
 
-  /* Structural Tokens */
-  --bg-main: #0A0A0A;
-  --bg-panel: #1A1A1A;
-  --accent: #00BFA5;
-  --text-main: #E0E0E0;
-  --text-muted: #A3A3A3;
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-hover: rgba(255, 255, 255, 0.2);
+/* Headings - Cinematic Serif */
+h1,
+h2,
+h3,
+.font-serif {
+  font-family: 'Ten Mincho', serif;
+  letter-spacing: -0.02em;
 }
 
 body {
   margin: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: #0A0A0A;
+  background-color: var(--charcoal-ink);
   overflow-x: hidden;
 }
 
 html {
   overflow-x: hidden;
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
 }
 
-.perspective-500 {
-  perspective: 500px;
+/* --- FILM GRAIN OVERLAY --- */
+.film-grain::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  filter: contrast(150%) brightness(100%);
 }
 
-.perspective-1000 {
-  perspective: 1000px;
+/* --- VIGNETTE --- */
+.vignette {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+  pointer-events: none;
+  z-index: 9998;
 }
 
-/* Custom Terminal Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+/* --- BRUSH STROKE TRANSITION (Utility) --- */
+.brush-reveal {
+  mask-image: linear-gradient(to right, black 50%, transparent 100%);
+  mask-size: 200% 100%;
+  mask-position: 100% 0;
+  transition: mask-position 1s ease-in-out;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #0D0D0D;
+.brush-reveal:hover {
+  mask-position: 0 0;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #222;
-  transition: background 0.3s;
+/* Custom Scrollbar - Minimalist Wood/Ink */
+::-webkit-scrollbar {
+  width: 3px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #00BFA5;
+::-webkit-scrollbar-track {
+  background: var(--charcoal-ink);
 }
 
-/* Scrollbar Firefox Support */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #222 #0D0D0D;
+::-webkit-scrollbar-thumb {
+  background: var(--withered-gold);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--blood-red);
 }

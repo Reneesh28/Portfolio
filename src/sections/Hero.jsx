@@ -1,81 +1,44 @@
-import { useEffect, useRef, useState, lazy, Suspense } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "../components/ui/Button";
-import HeroHUD from "../components/HeroHUD";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const LatticeBackground = lazy(() =>
-  import("../components/LatticeBackground")
-);
-
-const TARGET_TITLE = "Balam Reneesh";
-const TARGET_ROLE = "SYSTEMS ARCHITECT & UI ENGINEER";
-const TARGET_DESC = "Deploying robust machine learning models and scalable structural interfaces.";
-
 export default function Hero() {
   const sectionRef = useRef(null);
-  const contentRef = useRef(null);
-  const titleRef = useRef(null);
-  const roleRef = useRef(null);
-  const descRef = useRef(null);
-  const actionsRef = useRef(null);
-  const decryptBtnRef = useRef(null);
-  const flashRef = useRef(null);
-
-  const [isDecrypted, setIsDecrypted] = useState(false);
-
-  // Initial scrambled states
-  const [titleText, setTitleText] = useState("0x0F82A0F82A0F");
-  const [roleText, setRoleText] = useState("0x000F82A000F82A000F82A");
-  const [descText, setDescText] = useState("0x00000000000000000000000000000000000");
+  const leftRef = useRef(null);
+  const rightRef = useRef(null);
+  const centerRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      /* ===============================
-         CINEMATIC ENTRY SEQUENCE (SCRAMBLED)
-      =============================== */
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      tl.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1.2 }
-      )
-        .fromTo(
-          roleRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 0.5, y: 0, duration: 0.8 }, // Dimmer until decrypted
-          "-=0.6"
-        )
-        .fromTo(
-          descRef.current,
-          { opacity: 0, y: 10 },
-          { opacity: 0.3, y: 0, duration: 0.8 }, // Very dim until decrypted
-          "-=0.5"
-        )
-        .fromTo(
-          decryptBtnRef.current,
-          { opacity: 0, scale: 0.95 },
-          { opacity: 1, scale: 1, duration: 0.8 },
-          "-=0.2"
-        );
+      // Entrance: The Slice
+      tl.fromTo(leftRef.current, { x: "-100%" }, { x: "0%", duration: 1.5 })
+        .fromTo(rightRef.current, { x: "100%" }, { x: "0%", duration: 1.5 }, "-=1.5")
+        .fromTo(centerRef.current, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 1 }, "-=0.5");
 
-      /* ===============================
-         SCROLL EXIT — NATURAL DEPARTURE
-      =============================== */
-      gsap.to(contentRef.current, {
-        opacity: 0,
+      // Scroll Parallax
+      gsap.to(leftRef.current, {
         y: -100,
-        scale: 0.9,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
           end: "bottom top",
           scrub: true,
-        },
-        ease: "none",
+        }
+      });
+
+      gsap.to(rightRef.current, {
+        y: 100,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        }
       });
 
     }, sectionRef);
@@ -83,134 +46,70 @@ export default function Hero() {
     return () => ctx.revert();
   }, []);
 
-  const scramble = (target, setText, duration) => {
-    let iterations = 0;
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
-    const maxIterations = target.length;
-
-    const interval = setInterval(() => {
-      setText(
-        target.split("").map((char, index) => {
-          if (char === " ") return " ";
-          if (index < iterations) return target[index];
-          return chars[Math.floor(Math.random() * chars.length)];
-        }).join("")
-      );
-
-      if (iterations >= maxIterations) {
-        clearInterval(interval);
-      }
-      iterations += duration; // Speed control
-    }, 60);
-  };
-  const handleDecrypt = () => {
-    // 0. System Flash
-    gsap.fromTo(flashRef.current,
-      { opacity: 0 },
-      { opacity: 0.4, duration: 0.1, yoyo: true, repeat: 1, ease: "power2.inOut" }
-    );
-
-    // 1. Hide Decrypt Button
-    gsap.to(decryptBtnRef.current, { opacity: 0, y: 10, duration: 0.4, onComplete: () => setIsDecrypted(true) });
-
-    // 2. Brighten text elements
-    gsap.to([roleRef.current, descRef.current], { opacity: 1, duration: 0.5 });
-    gsap.to(titleRef.current, { color: "#E0E0E0", duration: 1 }); // From muted to bright
-
-    // 3. Run Scramblers
-    scramble(TARGET_TITLE, setTitleText, 1 / 3);
-    setTimeout(() => scramble(TARGET_ROLE, setRoleText, 1 / 2), 200);
-    setTimeout(() => scramble(TARGET_DESC, setDescText, 1 / 2), 400);
-
-    // 4. Reveal actual actions
-    gsap.fromTo(
-      actionsRef.current,
-      { opacity: 0, y: 15 },
-      { opacity: 1, y: 0, duration: 0.8, delay: 1.5, ease: "power3.out", display: "flex" }
-    );
-  };
-
   return (
     <section
       ref={sectionRef}
       id="hero"
-      className="relative min-h-screen w-screen overflow-hidden bg-[#0A0A0A]"
+      className="relative min-h-screen w-full overflow-hidden bg-[#0D0D0D] flex"
     >
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <Suspense fallback={null}>
-          <LatticeBackground isDecrypted={isDecrypted} />
-        </Suspense>
+      {/* THE WARRIOR (LEFT) */}
+      <div
+        ref={leftRef}
+        className="relative flex-1 bg-[#121212] flex items-center justify-center overflow-hidden border-r border-[#C5A059]/20"
+      >
+        {/* Subtle Traditional Motif Background */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/seigaiha.png')]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0D0D0D] to-transparent opacity-40" />
       </div>
 
-      {/* Cinematic Interface Layer */}
-      <HeroHUD isDecrypted={isDecrypted} />
-
-      {/* Decryption Flash Overlay */}
-      <div ref={flashRef} className="absolute inset-0 bg-[#00E5FF] z-40 pointer-events-none opacity-0" />
-
-      {/* Overlay - precise gradient to ensure text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/30 via-[#0A0A0A]/70 to-[#0A0A0A] z-10 pointer-events-none" />
-
-      {/* HERO CONTENT */}
+      {/* THE MACHINE (RIGHT) */}
       <div
-        ref={contentRef}
-        className="
-          relative z-20
-          min-h-screen
-          flex flex-col
-          items-center
-          justify-center
-          text-center
-          px-6
-          will-change-transform
-        "
+        ref={rightRef}
+        className="relative flex-1 bg-[#0A0A0A] flex items-center justify-center overflow-hidden"
       >
-        <h1
-          ref={titleRef}
-          className="text-[#A3A3A3] font-mono font-bold tracking-tight leading-[1.1]
-                     text-4xl sm:text-6xl md:text-8xl lg:text-9xl
-                     cursor-default select-none perspective-500
-                     transition-colors duration-1000"
-        >
-          {titleText}
-        </h1>
+        {/* Subtle Data Stream Background */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none font-mono text-[10px] text-[#F5F5F5] overflow-hidden whitespace-pre leading-none select-none">
+          {Array.from({ length: 50 }).map((_, i) => (
+            <div key={i} className="opacity-[0.1]">
+              {"01".repeat(100)}
+            </div>
+          ))}
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-l from-[#0D0D0D] to-transparent opacity-40" />
+      </div>
 
-        <h2
-          ref={roleRef}
-          className="mt-6 text-[#00BFA5] font-semibold tracking-[0.2em] uppercase
-                     text-sm sm:text-xl md:text-3xl font-mono"
-        >
-          {roleText}
-        </h2>
-
-        <p
-          ref={descRef}
-          className="mt-8 text-[#A3A3A3] text-sm sm:text-xl max-w-2xl font-mono leading-relaxed"
-        >
-          {descText}
+      {/* CENTER CONTENT (THE DUEL) */}
+      <div
+        ref={centerRef}
+        className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-6 pointer-events-none"
+      >
+        <p className="text-[#C5A059] uppercase tracking-[0.5em] text-xs mb-4 font-medium animate-pulse">
+          Establish Path
         </p>
 
-        {/* The Gateway Decryption Button */}
-        {!isDecrypted && (
-          <div ref={decryptBtnRef} className="mt-16 z-30">
-            <Button onClick={handleDecrypt} variant="primary" size="lg" className="animate-pulse">
-              [ DECRYPT PROTOCOLS ]
-            </Button>
-          </div>
-        )}
+        <h1 className="text-6xl md:text-9xl font-serif text-[#F5F5F5] leading-none mb-6">
+          BALAM RENEESH
+        </h1>
 
-        {/* Validated Actions (Hidden until decrypted) */}
-        <div ref={actionsRef} className="mt-12 gap-6 z-30 hidden opacity-0">
-          <Button as="a" href="#projects" variant="primary" size="md">
-            ACCESS ARCHIVES
+        <div className="h-px w-24 bg-[#C5A059] mb-8" />
+
+        <h2 className="text-[#A3A3A3] text-xl md:text-3xl tracking-widest font-light mb-12">
+          THE <span className="text-[#F5F5F5] font-serif">WARRIOR</span> - ENGINEER
+        </h2>
+
+        <div className="flex gap-8 pointer-events-auto">
+          <Button as="a" href="#projects" variant="primary" size="lg" className="bg-[#8B0000] border-none text-[#F5F5F5] hover:bg-[#A30000] transition-all">
+            ENTER THE JOURNEY
           </Button>
-
-          <Button as="a" href="#contact" variant="secondary" size="md">
-            ESTABLISH UPLINK
+          <Button as="a" href="#about" variant="secondary" size="lg" className="border-[#C5A059] text-[#C5A059] hover:bg-[#C5A059]/10">
+            KNOW THE LEGEND
           </Button>
         </div>
       </div>
+
+      {/* Cinematic Letterboxing */}
+      <div className="absolute top-0 left-0 w-full h-12 bg-black/40 z-30 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full h-12 bg-black/40 z-30 pointer-events-none" />
     </section>
   );
 }
