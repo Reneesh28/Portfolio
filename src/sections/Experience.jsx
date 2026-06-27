@@ -1,185 +1,269 @@
-import React, { useRef, useEffect, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import experienceData from '../data/experience';
-import ComicSpread from '../components/comic/ComicSpread';
-import ComicPanel from '../components/comic/ComicPanel';
-import InkButton from '../components/comic/InkButton';
+import { useState } from "react";
+import experienceData from "../data/experience";
+import ComicSpread from "../components/comic/ComicSpread";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const getPaletteClasses = (palette) => {
-  switch (palette) {
-    case 'cyan': return { bg: 'bg-[var(--color-portal-cyan)]', text: 'text-[var(--color-portal-cyan)]', border: 'border-[var(--color-portal-cyan)]' };
-    case 'red': return { bg: 'bg-[var(--color-signal-red)]', text: 'text-[var(--color-signal-red)]', border: 'border-[var(--color-signal-red)]' };
-    case 'magenta': return { bg: 'bg-[var(--color-dimension-magenta)]', text: 'text-[var(--color-dimension-magenta)]', border: 'border-[var(--color-dimension-magenta)]' };
-    default: return { bg: 'bg-[var(--color-comic-yellow)]', text: 'text-[var(--color-comic-yellow)]', border: 'border-[var(--color-comic-yellow)]' };
-  }
+const palettes = {
+  cyan: {
+    accent: "var(--color-portal-cyan)",
+    accentClass: "bg-[var(--color-portal-cyan)]",
+    textClass: "text-[var(--color-portal-cyan)]",
+  },
+  red: {
+    accent: "var(--color-signal-red)",
+    accentClass: "bg-[var(--color-signal-red)]",
+    textClass: "text-[var(--color-signal-red)]",
+  },
+  magenta: {
+    accent: "var(--color-dimension-magenta)",
+    accentClass: "bg-[var(--color-dimension-magenta)]",
+    textClass: "text-[var(--color-dimension-magenta)]",
+  },
 };
 
-const Experience = () => {
-  const sectionRef = useRef(null);
-  const timelineRef = useRef(null);
-  const [activeIssue, setActiveIssue] = useState(0);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'timeline'
+const getPalette = (palette) => palettes[palette] ?? palettes.cyan;
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Timeline draw animation
-      gsap.fromTo(timelineRef.current, 
-        { scaleY: 0 }, 
-        {
-          scaleY: 1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top center",
-            end: "bottom bottom",
-            scrub: true
-          }
-        }
-      );
+function IssueNumber({ index }) {
+  return `ISSUE #${String(experienceData.length - index).padStart(2, "0")}`;
+}
 
-      // Issues stagger entrance
-      gsap.from('.issue-cover', {
-        y: 100,
-        opacity: 0,
-        rotation: (i) => i % 2 === 0 ? -2 : 2,
-        duration: 0.8,
-        stagger: 0.3,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          once: true
-        }
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+function StatusStamp({ status }) {
+  const active = status.toLowerCase() === "active";
 
   return (
-    <ComicSpread id="experience" className="bg-[var(--color-paper-light)] text-[var(--color-ink-black)] relative z-20" ref={sectionRef}>
-      
-      {/* Texture Layer */}
-      <div className="absolute inset-0 bg-halftone-light opacity-30 mix-blend-multiply pointer-events-none"></div>
-      <div className="absolute inset-0 bg-halftone-dark opacity-20 pointer-events-none mix-blend-overlay"></div>
+    <span
+      className={`shrink-0 border-2 border-[var(--color-ink-black)] px-2 py-1 font-label text-[10px] font-bold uppercase tracking-wider ${
+        active
+          ? "bg-[var(--color-comic-yellow)] text-[var(--color-ink-black)]"
+          : "bg-[var(--color-ink-black)] text-white"
+      }`}
+    >
+      {active ? "ONGOING" : status}
+    </span>
+  );
+}
 
-      <div className="relative z-10 w-full max-w-[1920px] mx-auto flex flex-col items-center">
-        
-        <div className="text-center mb-12 relative flex flex-col items-center">
-          <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-pencil-gray)] mb-2">OPERATIONAL HISTORY</p>
-          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-ink-black)] relative z-10">
-            PREVIOUS ISSUES
-          </h2>
-          {/* Scratchy pencil underline */}
-          <svg className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-4 text-[var(--color-dimension-magenta)]" viewBox="0 0 200 10" preserveAspectRatio="none">
-            <path d="M0,5 Q50,0 100,6 T200,4" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-          </svg>
-          
-          <div className="mt-8 flex gap-4 bg-[var(--color-ink-black)] p-1 rounded-sm">
-            <button 
-              onClick={() => setViewMode('grid')}
-              className={`px-4 py-2 font-label font-bold text-sm uppercase transition-colors ${viewMode === 'grid' ? 'bg-[var(--color-comic-yellow)] text-[var(--color-ink-black)]' : 'text-white hover:text-[var(--color-comic-yellow)]'}`}
-            >
-              Issue Covers
-            </button>
-            <button 
-              onClick={() => setViewMode('timeline')}
-              className={`px-4 py-2 font-label font-bold text-sm uppercase transition-colors ${viewMode === 'timeline' ? 'bg-[var(--color-comic-yellow)] text-[var(--color-ink-black)]' : 'text-white hover:text-[var(--color-comic-yellow)]'}`}
-            >
-              Timeline
-            </button>
+function IssueSummary({ item, index, selected, controls, onSelect }) {
+  const palette = getPalette(item.palette);
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-expanded={selected}
+      aria-controls={controls}
+      className={`comic-focus relative w-full border-4 border-[var(--color-ink-black)] p-0 text-left transition-[transform,box-shadow,opacity] duration-300 ${
+        selected
+          ? "translate-x-2 opacity-100 shadow-[8px_8px_0_var(--color-ink-black)]"
+          : "opacity-75 hover:translate-x-1 hover:opacity-100"
+      }`}
+    >
+      <span className={`block h-3 w-full ${palette.accentClass}`} aria-hidden="true" />
+      <span className="block bg-[var(--color-paper-light)] p-4 text-[var(--color-ink-black)]">
+        <span className="mb-3 flex items-start justify-between gap-3">
+          <span className="font-display text-2xl leading-none">
+            <IssueNumber index={index} />
+          </span>
+          <StatusStamp status={item.status} />
+        </span>
+        <span className="block font-label text-lg font-bold uppercase leading-tight">
+          {item.role}
+        </span>
+        <span className="mt-1 block font-body text-sm font-semibold">
+          {item.organization}
+        </span>
+        <span className="mt-3 block border-t-2 border-dashed border-[var(--color-pencil-gray)] pt-2 font-label text-xs font-bold text-[var(--color-pencil-gray)]">
+          {item.period}
+        </span>
+      </span>
+    </button>
+  );
+}
+
+function IssueDetails({ item, index, id }) {
+  const palette = getPalette(item.palette);
+  const progression = item.role === "CEO"
+    ? ["Volunteer", "Board Member", "Co-CEO", "CEO"]
+    : null;
+
+  return (
+    <article
+      id={id}
+      className="relative overflow-hidden border-4 border-[var(--color-ink-black)] bg-[var(--color-paper-light)] text-[var(--color-ink-black)] shadow-[12px_12px_0_var(--color-ink-black)]"
+      aria-live="polite"
+    >
+      <div className={`h-4 w-full ${palette.accentClass}`} aria-hidden="true" />
+      <div className="relative border-b-4 border-[var(--color-ink-black)] p-6 md:p-8">
+        <div className="absolute inset-0 bg-halftone-light opacity-40" aria-hidden="true" />
+        <div className="relative z-10">
+          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+            <p className="font-display text-3xl md:text-4xl">
+              <IssueNumber index={index} />
+            </p>
+            <StatusStamp status={item.status} />
+          </div>
+          <p className={`mb-2 font-label text-xs font-bold uppercase tracking-[0.25em] ${palette.textClass}`}>
+            {item.type}
+          </p>
+          <h3 className="font-display text-4xl leading-none md:text-6xl">{item.role}</h3>
+          <p className="mt-3 font-label text-lg font-bold uppercase md:text-xl">
+            {item.organization}
+          </p>
+          <p className="mt-2 font-body text-sm font-semibold text-[var(--color-text-muted-paper)]">
+            {item.period}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-6 p-6 md:grid-cols-2 md:p-8">
+        <StoryPanel label="Mission" color={palette.textClass}>
+          {item.mission}
+        </StoryPanel>
+        <StoryPanel label="Action" color={palette.textClass}>
+          {item.action}
+        </StoryPanel>
+        <StoryPanel label="Impact" color={palette.textClass}>
+          {item.impact}
+        </StoryPanel>
+        <div className="border-l-4 border-[var(--color-ink-black)] bg-[var(--color-paper)] p-4">
+          <p className={`mb-3 font-label text-xs font-bold uppercase tracking-[0.2em] ${palette.textClass}`}>
+            Tools & Methods
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {item.tools.map((tool) => (
+              <span
+                key={tool}
+                className="border-2 border-[var(--color-ink-black)] bg-white px-2 py-1 font-mono text-xs font-bold"
+              >
+                {tool}
+              </span>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Desktop View: Horizontal Covers, Mobile View: Vertical Stack */}
-        <div className={`relative w-full px-4 md:px-12 ${viewMode === 'timeline' ? 'max-w-4xl' : ''}`}>
-          
-          {/* Horizontal Timeline Ink Line (Desktop) */}
-          <div className={`hidden lg:block absolute top-1/2 left-0 w-full h-2 bg-[var(--color-ink-black)] z-0 transform -translate-y-1/2 ${viewMode === 'timeline' ? 'hidden' : ''}`}></div>
-          {/* Vertical Timeline Ink Line */}
-          <div ref={timelineRef} className={`absolute top-0 left-8 md:left-12 w-2 h-full bg-[var(--color-ink-black)] z-0 transform origin-top ${viewMode === 'timeline' ? 'block' : 'block lg:hidden'}`}></div>
+      {progression && (
+        <div className="border-t-4 border-[var(--color-ink-black)] bg-[var(--color-ink-black)] p-6 text-white md:p-8">
+          <p className="mb-4 font-label text-xs font-bold uppercase tracking-[0.25em] text-[var(--color-comic-yellow)]">
+            Leadership Progression
+          </p>
+          <ol className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            {progression.map((step, stepIndex) => (
+              <li key={step} className="relative border-2 border-white/40 p-3 font-label text-sm font-bold uppercase">
+                <span className="mr-2 text-[var(--color-comic-yellow)]">0{stepIndex + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+    </article>
+  );
+}
 
-          <div className={`grid relative z-10 ${viewMode === 'grid' ? 'grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8' : 'grid-cols-1 gap-12'}`}>
-            {experienceData.map((item, index) => {
-              const colors = getPaletteClasses(item.palette);
-              const isActive = activeIssue === index;
-              
-              return (
-                <div 
-                  key={index} 
-                  className={`issue-cover relative group cursor-pointer transition-all duration-500 pl-16 ${viewMode === 'timeline' ? '' : 'lg:pl-0'} ${isActive && viewMode === 'grid' ? 'lg:scale-105 z-20' : (viewMode === 'grid' ? 'lg:scale-95 z-10 lg:opacity-70 lg:hover:opacity-100' : 'z-20')}`}
-                  onClick={() => setActiveIssue(index)}
-                >
-                  {/* Timeline Node */}
-                  <div className={`absolute left-[-8px] top-8 w-6 h-6 rounded-full border-4 border-[var(--color-ink-black)] bg-[var(--color-paper)] z-10 ${viewMode === 'timeline' ? 'block' : 'lg:hidden'}`}></div>
-                  
-                  {/* Issue Cover Panel */}
-                  <ComicPanel 
-                    theme={isActive ? 'dark' : 'light'} 
-                    rotation={isActive ? '0deg' : (index % 2 === 0 ? '-2deg' : '2deg')}
-                    className={`h-full flex flex-col p-0 overflow-hidden shadow-2xl transition-all duration-300 ${isActive ? `shadow-[12px_12px_0_var(--color-ink-black)]` : ''}`}
-                    style={{ borderColor: 'var(--color-ink-black)' }}
-                  >
-                    {/* Cover Header */}
-                    <div className={`${colors.bg} text-[var(--color-ink-black)] border-b-4 border-[var(--color-ink-black)] p-4 relative`}>
-                      <div className="absolute top-0 right-0 p-2 opacity-20 pointer-events-none">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
-                          <circle cx="12" cy="12" r="10" />
-                        </svg>
-                      </div>
-                      <div className="flex justify-between items-start mb-2 relative z-10">
-                        <span className="font-display text-3xl">ISSUE #{String(experienceData.length - index).padStart(2, '0')}</span>
-                        <span className="font-label uppercase font-bold text-xs bg-[var(--color-ink-black)] text-white px-2 py-1 transform rotate-3">{item.status}</span>
-                      </div>
-                      <h3 className="font-label uppercase font-bold text-xl md:text-2xl leading-tight relative z-10">{item.role}</h3>
-                      <h4 className="font-body font-bold text-sm opacity-90 mt-1 relative z-10">{item.organization}</h4>
-                    </div>
+function StoryPanel({ label, color, children }) {
+  return (
+    <div className="border-l-4 border-[var(--color-ink-black)] bg-[var(--color-paper)] p-4">
+      <p className={`mb-2 font-label text-xs font-bold uppercase tracking-[0.2em] ${color}`}>
+        {label}
+      </p>
+      <p className="font-body text-sm font-medium leading-relaxed md:text-base">{children}</p>
+    </div>
+  );
+}
 
-                    {/* Cover Body / Metadata */}
-                    <div className="p-6 flex-grow flex flex-col bg-[var(--color-paper-light)] text-[var(--color-ink-black)]">
-                      <div className="font-label font-bold text-sm text-[var(--color-pencil-gray)] mb-4 pb-2 border-b-2 border-dashed border-[var(--color-pencil-gray)]">
-                        {item.period}
-                      </div>
+export default function Experience() {
+  const [activeIssue, setActiveIssue] = useState(0);
 
-                      <div className={`space-y-4 mb-6 transition-all duration-300 ${isActive || viewMode === 'timeline' ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:h-0 lg:overflow-hidden'}`}>
-                        <div>
-                          <span className={`font-label uppercase font-bold text-xs block mb-1 ${colors.text}`}>Mission</span>
-                          <p className="font-body text-sm font-bold leading-tight">{item.mission}</p>
-                        </div>
-                        <div>
-                          <span className={`font-label uppercase font-bold text-xs block mb-1 ${colors.text}`}>Action</span>
-                          <p className="font-body text-sm leading-tight">{item.action}</p>
-                        </div>
-                        <div>
-                          <span className={`font-label uppercase font-bold text-xs block mb-1 ${colors.text}`}>Impact</span>
-                          <p className="font-body text-sm italic font-medium leading-tight border-l-4 pl-2" style={{ borderColor: 'currentColor' }}>{item.impact}</p>
-                        </div>
-                      </div>
+  const selectMobileIssue = (index) => {
+    setActiveIssue((current) => (current === index ? -1 : index));
+  };
 
-                      <div className="mt-auto">
-                        <div className="flex flex-wrap gap-2">
-                          {item.tools.slice(0, 3).map((tool, i) => (
-                            <span key={i} className="font-mono text-xs font-bold border-2 border-[var(--color-ink-black)] px-2 py-1 bg-white">
-                              {tool}
-                            </span>
-                          ))}
-                          {item.tools.length > 3 && <span className="font-mono text-xs font-bold border-2 border-transparent px-2 py-1 opacity-50">+{item.tools.length - 3}</span>}
-                        </div>
-                      </div>
-                    </div>
-                  </ComicPanel>
-                </div>
-              );
-            })}
+  return (
+    <ComicSpread
+      id="experience"
+      className="relative z-20 overflow-visible bg-[var(--color-paper-light)] text-[var(--color-ink-black)]"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-halftone-light opacity-30 mix-blend-multiply" aria-hidden="true" />
+
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
+        <header className="relative mb-14 text-center">
+          <p className="mb-2 font-label font-bold uppercase tracking-[0.3em] text-[var(--color-pencil-gray)]">
+            Operational History
+          </p>
+          <h2 className="font-display text-5xl tracking-wider md:text-7xl lg:text-8xl">
+            Previous Issues
+          </h2>
+          <svg
+            className="mx-auto mt-3 h-4 w-2/3 max-w-md text-[var(--color-dimension-magenta)]"
+            viewBox="0 0 200 10"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path d="M0,5 Q50,0 100,6 T200,4" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+          </svg>
+        </header>
+
+        {/* Desktop: stable selector and persistent detail spread. */}
+        <div className="hidden gap-12 lg:grid lg:grid-cols-[minmax(280px,0.8fr)_minmax(0,2fr)]">
+          <div className="relative space-y-8 pl-8">
+            <div className="absolute bottom-4 left-[11px] top-4 w-2 bg-[var(--color-ink-black)]" aria-hidden="true" />
+            {experienceData.map((item, index) => (
+              <div key={`${item.organization}-${item.role}`} className="relative">
+                <span
+                  className="absolute -left-[29px] top-8 z-10 h-6 w-6 rounded-full border-4 border-[var(--color-ink-black)]"
+                  style={{ backgroundColor: getPalette(item.palette).accent }}
+                  aria-hidden="true"
+                />
+                <IssueSummary
+                  item={item}
+                  index={index}
+                  selected={activeIssue === index}
+                  controls="experience-desktop-detail"
+                  onSelect={() => setActiveIssue(index)}
+                />
+              </div>
+            ))}
           </div>
 
+          <IssueDetails
+            key={activeIssue}
+            item={experienceData[activeIssue < 0 ? 0 : activeIssue]}
+            index={activeIssue < 0 ? 0 : activeIssue}
+            id="experience-desktop-detail"
+          />
+        </div>
+
+        {/* Mobile/tablet: one accessible issue accordion at a time. */}
+        <div className="relative space-y-8 pl-8 lg:hidden">
+          <div className="absolute bottom-4 left-[11px] top-4 w-2 bg-[var(--color-ink-black)]" aria-hidden="true" />
+          {experienceData.map((item, index) => {
+            const selected = activeIssue === index;
+            const detailId = `experience-mobile-detail-${index}`;
+
+            return (
+              <div key={`${item.organization}-${item.role}`} className="relative">
+                <span
+                  className="absolute -left-[29px] top-8 z-10 h-6 w-6 rounded-full border-4 border-[var(--color-ink-black)]"
+                  style={{ backgroundColor: getPalette(item.palette).accent }}
+                  aria-hidden="true"
+                />
+                <IssueSummary
+                  item={item}
+                  index={index}
+                  selected={selected}
+                  controls={detailId}
+                  onSelect={() => selectMobileIssue(index)}
+                />
+                {selected && (
+                  <div className="mt-6">
+                    <IssueDetails item={item} index={index} id={detailId} />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </ComicSpread>
   );
-};
-
-export default Experience;
+}

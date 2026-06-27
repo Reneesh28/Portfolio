@@ -151,7 +151,7 @@ const Contact = () => {
                     </select>
                     {/* Custom caret */}
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none text-[var(--color-portal-cyan)]">
-                      ▼
+                      &#9660;
                     </div>
                   </div>
                 </div>

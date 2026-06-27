@@ -5,7 +5,7 @@ import profileData from '../data/profile';
 import ComicSpread from '../components/comic/ComicSpread';
 import ComicPanel from '../components/comic/ComicPanel';
 import InkButton from '../components/comic/InkButton';
-import profileImg from '../assets/codewalker.png';
+import codewalkerImg from "../assets/images/codewalker.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,7 +49,7 @@ const About = () => {
           <div className="about-panel lg:col-span-4">
             <ComicPanel theme="light" rotation="-2deg" className="h-full p-4 flex flex-col bg-white">
               <div className="flex-grow bg-[var(--color-ink-black)] relative overflow-hidden border-4 border-[var(--color-ink-black)] shadow-inner">
-                <img src={profileImg} alt="Reneesh Balam" className="w-full h-full object-cover grayscale contrast-125 hover:grayscale-0 transition-all duration-500" />
+                <img src={codewalkerImg} alt="The Codewalker Desk Variant" className="w-full h-auto object-cover opacity-80 mix-blend-screen" />
               </div>
               <div className="mt-4 border-t-4 border-[var(--color-ink-black)] pt-2 flex justify-between font-label uppercase font-bold text-sm">
                 <span>IDENTITY_FILE_01</span>

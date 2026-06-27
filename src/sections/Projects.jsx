@@ -98,7 +98,7 @@ const Projects = () => {
                   <span className="font-label uppercase font-bold text-sm bg-white text-[var(--color-ink-black)] px-2 py-1 transform rotate-2">{project.category}</span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-fr">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   
                   {/* Panel 1: Cover Image (Spans 2 cols on tablet, 1 on desktop) */}
                   <div className="md:col-span-2 lg:col-span-1 border-4 border-[var(--color-ink-black)] relative overflow-hidden group min-h-[250px]">

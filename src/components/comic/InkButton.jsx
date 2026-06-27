@@ -5,6 +5,7 @@ const InkButton = ({ children, onClick, disabled, className = '', type = 'button
     switch (variant) {
       case 'magenta': return "bg-dimension-magenta text-ink-black hover:print-offset-magenta";
       case 'yellow': return "bg-comic-yellow text-ink-black hover:print-offset-both";
+      case 'white': return "bg-white text-ink-black hover:print-offset-both";
       case 'cyan':
       default: return "bg-portal-cyan text-ink-black hover:print-offset-cyan";
     }

@@ -1,6 +1,6 @@
-import googleNetworking from "../assets/images/google-computer-networking.jpg";
-import coloradoNetworking from "../assets/images/colorado-network-communication.jpg";
-import freeCodeCampRWD from "../assets/images/freecodecamp-responsive-web-design.png";
+import googleNetworking from "../assets/images/google-computer-networking.webp";
+import coloradoNetworking from "../assets/images/colorado-network-communication.webp";
+import freeCodeCampRWD from "../assets/images/freecodecamp-responsive-web-design.webp";
 
 const certifications = [
   {

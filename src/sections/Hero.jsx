@@ -2,7 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import InkButton from '../components/comic/InkButton';
-import profileImg from '../assets/codewalker.png'; // Generated Codewalker art
+import codewalkerImg from '../assets/images/codewalker.png'; // Generated Codewalker art
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -133,7 +133,7 @@ const Hero = () => {
           {/* Character breaking out of panel */}
           <div className="hero-character relative z-10 w-2/3 max-w-sm lg:max-w-md parallax-layer transform -rotate-1">
             <img 
-              src={profileImg} 
+              src={codewalkerImg} 
               alt="The Codewalker" 
               className="w-full h-auto object-cover rounded-sm border-4 border-[var(--color-ink-black)] shadow-[8px_8px_0_var(--color-dimension-magenta)] grayscale contrast-125"
             />

@@ -1,20 +1,19 @@
-import img1 from "../assets/images/nutrifit_ai.png";
-import img2 from "../assets/images/game_stats_dashboard.png";
-import img3 from "../assets/images/smart_cities.png";
-import img4 from "../assets/images/sales_analytics.png";
+import img1 from "../assets/images/nutrifit_ai.webp";
+import img2 from "../assets/images/game_stats_dashboard.webp";
+import img3 from "../assets/images/smart_cities.webp";
+import img4 from "../assets/images/sales_analytics.webp";
 
-const placeholderImg = img1; // Using existing image as placeholder for new projects
 
 const projects = [
   {
     title: "NeuroPlay Engine",
-    description: "⚠️ ARCHIVE CORRUPTED: Awaiting dimensional sync for full generative AI engine architecture details.",
+    description: "An advanced Generative AI engine designed for dynamic interactive experiences, utilizing robust architecture for rapid processing.",
     category: "Generative AI",
     tech: ["Python", "LangChain", "Generative AI", "React"],
-    codeLink: "#syncing",
-    liveLink: "#syncing",
+    codeLink: "https://github.com/Reneesh28/NeuroPlay",
+    liveLink: "https://neuroplay.vercel.app",
     status: "In Development",
-    image: placeholderImg,
+    image: img4,
     featured: true,
     palette: "cyan"
   },
@@ -31,7 +30,7 @@ const projects = [
     palette: "red"
   },
   {
-    title: "NutriFit AI – Personalized Fitness & Nutrition Assistant",
+    title: "NutriFit AI - Personalized Fitness & Nutrition Assistant",
     description: "An AI-powered assistant that delivers personalized fitness and nutrition recommendations using health data. Built with multi-turn conversational memory and Retrieval-Augmented Generation (RAG).",
     category: "Generative AI",
     tech: ["Python", "LangChain", "FAISS", "Streamlit", "FastAPI", "Sentence Transformers", "Groq API"],
@@ -43,23 +42,23 @@ const projects = [
   },
   {
     title: "FinLit AI",
-    description: "⚠️ ARCHIVE CORRUPTED: AI-driven financial literacy platform records pending restoration.",
+    description: "An AI-driven financial literacy and advisory platform leveraging LLMs to simplify complex economic principles into personalized advice.",
     category: "Machine Learning",
     tech: ["Python", "Pandas", "LLMs", "FastAPI"],
-    codeLink: "#syncing",
+    codeLink: "https://github.com/Reneesh28/FinLit-AI",
     status: "In Development",
-    image: placeholderImg,
+    image: img3,
     featured: false,
     palette: "yellow"
   },
   {
     title: "PARAS System",
-    description: "⚠️ ARCHIVE CORRUPTED: Real-time safety intelligence platform details currently classified.",
+    description: "A real-time safety and behavioral intelligence platform that processes live video feeds using computer vision to detect anomalies.",
     category: "Machine Learning",
     tech: ["Python", "Computer Vision", "Real-Time Processing"],
-    codeLink: "#syncing",
+    codeLink: "https://github.com/Reneesh28/PARAS",
     status: "Prototype",
-    image: placeholderImg,
+    image: img2,
     featured: false,
     palette: "red"
   },
@@ -76,7 +75,7 @@ const projects = [
   },
   {
     title: "Sales Performance Analytics Engine (SPAE)",
-    description: "An advanced Machine Learning–powered statistics dashboard designed to analyze sales performance, uncover trends, and generate predictive insights using large-scale datasets.",
+    description: "An advanced Machine Learning-powered statistics dashboard designed to analyze sales performance, uncover trends, and generate predictive insights using large-scale datasets.",
     category: "Data",
     tech: ["Python", "Machine Learning", "Data Analytics", "Statistics", "Dashboarding"],
     codeLink: "https://github.com/Reneesh28/Project_ML",
