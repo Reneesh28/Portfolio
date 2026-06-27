@@ -1,145 +1,152 @@
-import { useEffect, useRef, useState, memo } from "react";
-import education from "../data/education";
-import { FiBookOpen, FiTerminal } from "react-icons/fi";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Badge } from "../components/ui/Badge";
+import React, { useRef, useEffect, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import educationData from '../data/education';
+import ComicSpread from '../components/comic/ComicSpread';
+import PaperTexture from '../components/comic/PaperTexture';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const MaterializingCard = memo(({ edu, index }) => {
-  const [isMaterialized, setIsMaterialized] = useState(false);
-  const cardRef = useRef(null);
-  const contentRef = useRef(null);
-
-  useEffect(() => {
-    const trigger = ScrollTrigger.create({
-      trigger: cardRef.current,
-      start: "top 85%",
-      onEnter: () => {
-        setIsMaterialized(true);
-        // Glitchy Entrance Animation
-        const tl = gsap.timeline();
-        tl.fromTo(contentRef.current, 
-          { opacity: 0, x: -10, filter: "brightness(2) contrast(2)" },
-          { opacity: 1, x: 0, filter: "brightness(1) contrast(1)", duration: 0.6, ease: "power2.out" }
-        ).to(contentRef.current, {
-           skewX: 10, duration: 0.05, repeat: 3, yoyo: true, ease: "none"
-        }).to(contentRef.current, {
-           skewX: 0, duration: 0.05
-        });
-      }
-    });
-
-    return () => trigger.kill();
-  }, []);
-
-  return (
-    <div
-      ref={cardRef}
-      className="edu-card relative h-64 md:h-72"
-    >
-      {/* Wireframe Buffer State */}
-      <div className={`
-        absolute inset-0 border transition-all duration-700 ease-in-out
-        ${isMaterialized ? "border-white/10 bg-[#111111]" : "border-dashed border-white/5 bg-transparent"}
-      `}>
-         {!isMaterialized && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-               <FiTerminal className="text-white/5 animate-pulse" size={24} />
-               <span className="text-[10px] font-mono text-white/10 uppercase tracking-[0.4em] animate-pulse">
-                  BUFFERING_SCHEMA_{index}...
-               </span>
-            </div>
-         )}
-      </div>
-
-      {/* Materialized Content */}
-      <div 
-        ref={contentRef}
-        className={`relative h-full p-8 flex flex-col justify-between transition-opacity duration-300 ${isMaterialized ? "opacity-100" : "opacity-0"}`}
-      >
-        <div>
-          <div className="flex items-center justify-between mb-6">
-            <div className="p-3 bg-[#0A0A0A] border border-white/10 text-[#00BFA5]">
-              <FiBookOpen size={20} />
-            </div>
-            <div className="flex gap-2">
-              <Badge variant="default" className="text-[10px] bg-[#1A1A1A] border-white/5 lowercase font-mono">
-                {edu.period}
-              </Badge>
-              <Badge variant="accent" className="text-[10px] border-[#00BFA5]/20 text-[#00BFA5]">
-                {edu.score}
-              </Badge>
-            </div>
-          </div>
-
-          <h3 className="text-xl font-bold mb-2 text-[#E0E0E0] tracking-tight">
-            {edu.degree}
-          </h3>
-
-          <p className="text-sm text-[#00BFA5] mb-6 font-bold uppercase tracking-widest font-mono">
-            {edu.institution}
-          </p>
-
-          <p className="text-sm text-neutral-400 leading-relaxed line-clamp-3 font-mono opacity-80">
-            {edu.description}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-});
-MaterializingCard.displayName = "MaterializingCard";
-
-export default function Education() {
-  const containerRef = useRef(null);
+const Education = () => {
+  const sectionRef = useRef(null);
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo(".edu-header", 
-        { opacity: 0, y: 15 }, 
-        { 
-          opacity: 1, y: 0, duration: 0.8, ease: "power3.out",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 80%",
-          }
+      // Entrance animation
+      gsap.from('.folder-container', {
+        y: 100,
+        opacity: 0,
+        rotation: -2,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          once: true
         }
-      );
-    }, containerRef);
-
+      });
+    }, sectionRef);
     return () => ctx.revert();
   }, []);
 
+  // When tab changes, animate the content
+  useEffect(() => {
+    gsap.fromTo('.dossier-content', 
+      { opacity: 0, x: -20 }, 
+      { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
+    );
+    gsap.fromTo('.approved-stamp',
+      { scale: 3, opacity: 0, rotation: 15 },
+      { scale: 1, opacity: 0.8, rotation: -10, duration: 0.5, ease: "back.out(2)", delay: 0.2 }
+    );
+  }, [activeTab]);
+
   return (
-    <section
-      id="education"
-      className="w-full bg-[#0A0A0A] text-white px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t border-white/5"
-      ref={containerRef}
-    >
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="edu-header mb-20 text-center md:text-left">
-          <p className="text-[#00BFA5] uppercase tracking-[0.3em] text-[10px] font-bold mb-4 opacity-70">
-            CORE_DIRECTIVES
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-[#E0E0E0] mb-6">
-            Foundational Algorithms
+    <ComicSpread id="education" className="bg-[var(--color-deep-navy)] z-10" ref={sectionRef}>
+      
+      {/* Background Texture */}
+      <div className="absolute inset-0 bg-halftone-cyan opacity-20 mix-blend-screen pointer-events-none"></div>
+
+      <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center">
+        
+        <div className="text-center mb-16 relative">
+          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-cyan print-offset-magenta">
+            ORIGIN RECORDS
           </h2>
-          <p className="text-neutral-500 max-w-2xl font-mono text-sm leading-relaxed uppercase tracking-wider">
-            Academic data ingestion and structural formatting of base-level logic systems.
-          </p>
         </div>
 
-        {/* Grid */}
-        <div className="edu-grid grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {education.map((edu, index) => (
-             <MaterializingCard key={edu.degree + index} edu={edu} index={index} />
-          ))}
+        {/* Dossier Folder */}
+        <div className="folder-container w-full relative pt-12">
+          
+          {/* File Tabs */}
+          <div className="absolute top-0 left-4 md:left-8 flex gap-2 z-0">
+            {educationData.map((edu, idx) => (
+              <button 
+                key={idx}
+                onClick={() => setActiveTab(idx)}
+                className={`font-label uppercase font-bold text-sm md:text-base px-6 py-3 rounded-t-lg transition-all duration-300 transform origin-bottom border-t-2 border-l-2 border-r-2 ${
+                  activeTab === idx 
+                    ? 'bg-[var(--color-paper)] text-[var(--color-ink-black)] z-20 scale-110 border-[var(--color-ink-black)] shadow-[4px_0_0_rgba(0,0,0,0.1)]' 
+                    : 'bg-[#b8a99a] text-[var(--color-ink-black)]/60 z-10 hover:bg-[#c9bba9] hover:text-[var(--color-ink-black)]/80 border-[var(--color-ink-black)]/30 translate-y-2'
+                }`}
+              >
+                {edu.degree.split(' ')[0]} {edu.degree.includes('High') ? 'School' : ''}
+              </button>
+            ))}
+          </div>
+
+          {/* Folder Body */}
+          <div className="relative z-10 bg-[var(--color-paper)] border-4 border-[var(--color-ink-black)] min-h-[500px] shadow-[16px_16px_0_var(--color-dimension-magenta)] transform rotate-1 overflow-hidden">
+            <PaperTexture theme="light" />
+            
+            {/* Folder crease lines */}
+            <div className="absolute left-10 top-0 bottom-0 w-px bg-[var(--color-ink-black)]/20"></div>
+            <div className="absolute left-12 top-0 bottom-0 w-px bg-[var(--color-ink-black)]/10"></div>
+            
+            {/* Top secret label */}
+            <div className="absolute top-6 right-6 border-2 border-[var(--color-signal-red)] text-[var(--color-signal-red)] font-label font-bold uppercase tracking-widest px-2 py-1 text-xs transform rotate-2 opacity-80">
+              CLASSIFIED // LEVEL 5
+            </div>
+
+            <div className="dossier-content p-8 md:p-12 lg:p-16 pl-16 md:pl-20 text-[var(--color-ink-black)] h-full flex flex-col">
+              
+              <div className="mb-8 border-b-2 border-dashed border-[var(--color-ink-black)]/30 pb-6 relative">
+                
+                {/* The "APPROVED" stamp */}
+                <div className="approved-stamp absolute -top-4 right-4 md:right-12 lg:right-24 border-4 border-[var(--color-success-green)] text-[var(--color-success-green)] font-display text-4xl md:text-5xl lg:text-6xl px-4 py-2 transform -rotate-12 opacity-80 mix-blend-multiply pointer-events-none z-20" style={{ filter: 'url(#rough-stamp)' }}>
+                  APPROVED
+                </div>
+                
+                <h3 className="font-mono font-bold text-2xl md:text-3xl lg:text-4xl uppercase tracking-tight mb-2 max-w-[80%]">
+                  {educationData[activeTab].degree}
+                </h3>
+                <p className="font-label text-[var(--color-pencil-gray)] font-bold uppercase tracking-widest text-lg">
+                  {educationData[activeTab].institution}
+                </p>
+              </div>
+
+              <div className="flex-grow">
+                <p className="font-mono text-base md:text-lg leading-relaxed whitespace-pre-line opacity-90 max-w-2xl">
+                  {/* Typewriter style text */}
+                  {">"} EXTRACTING RECORD...
+                  <br/><br/>
+                  {educationData[activeTab].description}
+                </p>
+              </div>
+
+              <div className="mt-12 flex flex-wrap gap-8 font-mono border-t-2 border-[var(--color-ink-black)] pt-6">
+                <div>
+                  <span className="block text-[var(--color-pencil-gray)] text-xs uppercase tracking-widest mb-1">TIMEFRAME</span>
+                  <span className="font-bold border border-[var(--color-ink-black)] px-2 py-1 inline-block">{educationData[activeTab].period}</span>
+                </div>
+                <div>
+                  <span className="block text-[var(--color-pencil-gray)] text-xs uppercase tracking-widest mb-1">PERFORMANCE METRIC</span>
+                  <span className="font-bold border border-[var(--color-ink-black)] px-2 py-1 inline-block">{educationData[activeTab].score}</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
         </div>
       </div>
-    </section>
+      
+      {/* SVG Filter for realistic stamp effect */}
+      <svg style={{ height: 0, width: 0, position: 'absolute' }}>
+        <filter id="rough-stamp">
+          <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
+      
+      <style dangerouslySetInnerHTML={{__html: `
+        .text-shadow-cyan {
+          text-shadow: 4px 4px 0 var(--color-portal-cyan);
+        }
+      `}} />
+    </ComicSpread>
   );
-}
+};
 
+export default Education;

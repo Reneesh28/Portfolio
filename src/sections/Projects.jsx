@@ -1,289 +1,215 @@
-import { useEffect, useRef, useState, useMemo, memo } from "react";
-import projects from "../data/projects";
-import { FiClock, FiArrowUpRight, FiSearch, FiX, FiTerminal } from "react-icons/fi";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Badge } from "../components/ui/Badge";
+import React, { useRef, useState, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import projectsData from '../data/projects';
+import ComicSpread from '../components/comic/ComicSpread';
+import ComicPanel from '../components/comic/ComicPanel';
+import InkButton from '../components/comic/InkButton';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Memoized Tech Badge to prevent redundant renders
-const TechBadge = memo(({ item }) => (
-  <Badge variant="accent" className="bg-[#1A1A1A] text-[10px] py-0 px-2 border-white/5 whitespace-nowrap">
-    {item}
-  </Badge>
-));
-TechBadge.displayName = "TechBadge";
-
-// Memoized Project Card
-const ProjectCard = memo(({ project, onAccess }) => {
-  const isComingSoon = project.status?.toLowerCase() === "coming-soon";
-  const hexId = useMemo(() => 
-    `0x${Math.floor(Math.random() * 0xFFFFFF).toString(16).toUpperCase()}`, 
-    []
-  );
-
-  return (
-    <button
-      onClick={() => !isComingSoon && onAccess(project)}
-      className={`
-        project-card relative group text-left
-        h-full flex flex-col justify-between
-        p-8 md:p-10
-        bg-[#111111]
-        border border-white/5
-        ${!isComingSoon ? "hover:border-[#00BFA5]/30 cursor-pointer active:scale-[0.98]" : "border-dashed opacity-50 cursor-not-allowed"}
-        transition-all duration-300 ease-out
-      `}
-      style={{ transform: "translateZ(0)" }}
-    >
-      <div>
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex flex-wrap gap-2">
-            {project.tech.slice(0, 3).map((item) => (
-              <TechBadge key={item} item={item} />
-            ))}
-          </div>
-          {!isComingSoon && (
-            <FiSearch className="text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors" />
-          )}
-        </div>
-
-        <h3 className={`text-xl font-bold mb-4 tracking-tight ${!isComingSoon ? 'text-[#E0E0E0]' : 'text-[#A3A3A3]'}`}>
-          {project.title}
-        </h3>
-
-        <p className="text-sm text-[#A3A3A3] leading-relaxed mb-8 line-clamp-3 font-mono opacity-80 group-hover:opacity-100 transition-opacity">
-          {project.description}
-        </p>
-      </div>
-
-      <div className="flex items-center justify-between border-t border-white/5 pt-6">
-        {isComingSoon ? (
-          <div className="flex items-center gap-2 text-[10px] font-mono text-neutral-500">
-            <FiClock />
-            <span>[ INITIALIZING... ]</span>
-          </div>
-        ) : (
-          <span className="text-[10px] font-mono text-[#00BFA5] tracking-widest uppercase font-bold">
-            [ ACCESS DEPLOYMENT ]
-          </span>
-        )}
-        <span className="text-[10px] font-mono text-[#333] group-hover:text-[#666] transition-colors">
-          {hexId}
-        </span>
-      </div>
-    </button>
-  );
-});
-ProjectCard.displayName = "ProjectCard";
-
-export default function Projects() {
-  const containerRef = useRef(null);
-  const [selectedProject, setSelectedProject] = useState(null);
+const Projects = () => {
+  const sectionRef = useRef(null);
+  const [filter, setFilter] = useState('All');
+  
+  // Extract unique categories
+  const categories = ['All', ...new Set(projectsData.map(p => p.category))];
+  
+  const filteredProjects = filter === 'All' 
+    ? projectsData 
+    : projectsData.filter(p => p.category === filter);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
+      // Entrance animation
+      gsap.from('.project-card', {
+        y: 100,
+        opacity: 0,
+        rotation: () => (Math.random() - 0.5) * 10,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power2.out",
         scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-          toggleActions: "play none none reverse"
+          trigger: sectionRef.current,
+          start: "top 70%",
+          once: true
         }
       });
-
-      tl.fromTo(".projects-header",
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
-      )
-      .fromTo(".project-card",
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power3.out" },
-        "-=0.4"
-      );
-    }, containerRef);
-
+    }, sectionRef);
     return () => ctx.revert();
   }, []);
 
+  // Re-animate when filter changes
+  useEffect(() => {
+    gsap.fromTo('.project-card', 
+      { scale: 0.8, opacity: 0 }, 
+      { scale: 1, opacity: 1, duration: 0.4, stagger: 0.05, ease: "back.out(1.5)" }
+    );
+  }, [filter]);
+
   return (
-    <section
-      id="projects"
-      className="w-full bg-[#0A0A0A] text-white px-6 md:px-12 py-24 sm:py-32 overflow-hidden border-t border-white/5"
-      ref={containerRef}
-    >
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="projects-header mb-20 text-center md:text-left">
-          <p className="text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-4">
-            SYSTEM ARCHIVES
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight text-[#E0E0E0]">
-            Deployed Modules
+    <ComicSpread id="projects" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] border-t-8 border-b-8 border-[var(--color-paper)] z-30" ref={sectionRef}>
+      
+      {/* Background Texture */}
+      <div className="absolute inset-0 bg-halftone-cyan opacity-10 pointer-events-none mix-blend-screen"></div>
+
+      <div className="relative z-10 w-full max-w-[1920px] mx-auto flex flex-col items-center">
+        
+        <div className="text-center mb-8 relative">
+          <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-dimension-magenta)] mb-2">EXPLORE THE MULTIVERSE</p>
+          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-magenta">
+            THE UNIVERSES
           </h2>
         </div>
 
-        <div className="project-grid grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.title + index}
-              project={project}
-              onAccess={setSelectedProject}
-            />
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap justify-center gap-4 mb-16 px-4">
+          {categories.map((cat, idx) => (
+            <button
+              key={idx}
+              onClick={() => setFilter(cat)}
+              className={`font-label uppercase font-bold tracking-widest text-sm md:text-base px-4 py-2 border-4 transition-all duration-200 comic-focus ${
+                filter === cat 
+                  ? 'bg-[var(--color-comic-yellow)] border-[var(--color-comic-yellow)] text-[var(--color-ink-black)] transform -translate-y-1 shadow-[4px_4px_0_var(--color-portal-cyan)]' 
+                  : 'bg-transparent border-[var(--color-text-muted-dark)] text-[var(--color-text-on-dark)] hover:border-[var(--color-portal-cyan)] hover:text-[var(--color-portal-cyan)]'
+              }`}
+            >
+              {cat}
+            </button>
           ))}
         </div>
-      </div>
 
-      {selectedProject && (
-        <MainframeModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
-      )}
-    </section>
-  );
-}
-
-function MainframeModal({ project, onClose }) {
-  const [displayText, setDisplayText] = useState("");
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
-  const modalRef = useRef(null);
-  const backdropRef = useRef(null);
-
-  useEffect(() => {
-    // 1. Unified GSAP Entrance (Backdrop + Modal)
-    const tl = gsap.timeline();
-    
-    tl.fromTo(backdropRef.current, 
-      { opacity: 0 }, 
-      { opacity: 1, duration: 0.3, ease: "none" }
-    ).fromTo(modalRef.current,
-      { opacity: 0, scale: 0.98, y: 20 },
-      { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "power4.out" },
-      "-=0.1"
-    );
-
-    // 2. High-Frequency GSAP Typing Engine (Smooth 120Hz compatible)
-    const typingProxy = { length: 0 };
-    const fullText = project.description;
-    
-    gsap.to(typingProxy, {
-      length: fullText.length,
-      duration: fullText.length * 0.012, // Dynamic speed based on length
-      ease: "none",
-      onUpdate: () => {
-        setDisplayText(fullText.substring(0, Math.round(typingProxy.length)));
-      },
-      onComplete: () => setIsTypingComplete(true)
-    });
-
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = 'auto';
-      gsap.killTweensOf(typingProxy);
-    };
-  }, [project]);
-
-  return (
-    <div 
-      ref={backdropRef}
-      className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-8 lg:p-12 bg-black/95 transition-none"
-      onClick={onClose}
-    >
-      <div 
-        ref={modalRef}
-        onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-5xl bg-[#0D0D0D] border border-white/10 flex flex-col shadow-[0_0_50px_rgba(0,0,0,1)]"
-        style={{ transform: "translateZ(0)" }}
-      >
-        {/* Header bar */}
-        <div className="flex items-center justify-between p-4 bg-[#161616] border-b border-white/5">
-          <div className="flex items-center gap-3">
-            <FiTerminal className="text-[#00BFA5] animate-pulse" />
-            <span className="font-mono text-[10px] text-[#A3A3A3] tracking-[0.3em] font-bold">
-              [ ACCESSING_FILE: {project.title.substring(0, 15).toUpperCase()}... ]
-            </span>
-          </div>
-          <button 
-            onClick={onClose}
-            className="text-[#A3A3A3] hover:text-[#00BFA5] transition-colors p-1"
-          >
-            <FiX size={20} />
-          </button>
-        </div>
-
-        {/* Scrollable Body */}
-        <div className="p-6 md:p-12 overflow-y-auto max-h-[85vh] custom-scrollbar">
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 px-2">
-            <div className="space-y-6">
-              <div>
-                <p className="text-[#00BFA5] font-mono text-[10px] uppercase tracking-widest mb-3 opacity-60 font-bold">[ IDENTIFIER ]</p>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#E0E0E0] tracking-tight leading-tight">{project.title}</h3>
-              </div>
-              <div>
-                <p className="text-[#00BFA5] font-mono text-[10px] uppercase tracking-wider mb-1 opacity-60 font-bold">[ ASSET_TYPE ]</p>
-                <p className="text-white/90 font-mono text-sm tracking-wider uppercase">ARCHIVE_NODE // PRODUCTION</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-[#00BFA5] font-mono text-[10px] uppercase tracking-widest mb-4 opacity-60 font-bold">[ SYSTEM_PROTOCOLS ]</p>
-              <div className="flex flex-wrap gap-2 pt-1">
-                {project.tech.map(t => (
-                  <TechBadge key={t} item={t} />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Console Area */}
-          <div className="bg-[#050505] border border-white/5 p-6 md:p-10 font-mono text-sm leading-8 relative min-h-[120px]">
-            <div className="absolute top-4 right-6 text-[10px] text-[#222] select-none uppercase tracking-widest">ENCRYPTION: 256_BIT</div>
+        {/* Projects Grid / Splash Page */}
+        <div className="w-full px-4 md:px-8 lg:px-12">
+          {/* Asymmetrical Grid layout simulating a comic page */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 auto-rows-min">
             
-            <div className="flex items-start gap-5">
-              <span className="text-[#00BFA5] select-none text-xs font-bold pt-1">{">"}</span>
-              <div className="text-[#A3A3A3] flex-1 whitespace-pre-wrap">
-                {displayText}
-                {!isTypingComplete && <span className="inline-block w-2.5 h-5 bg-[#00BFA5] animate-pulse ml-2 align-middle" />}
-              </div>
-            </div>
+            {filteredProjects.map((project, index) => {
+              // Determine size based on featured status and index for asymmetrical look
+              const isLarge = project.featured;
+              const colSpan = isLarge ? 'lg:col-span-8 md:col-span-2' : 'lg:col-span-4';
+              const rowSpan = isLarge ? 'lg:row-span-2' : 'lg:row-span-1';
+              
+              // Get color theme
+              let themeColor = 'var(--color-comic-yellow)';
+              if (project.palette === 'cyan') themeColor = 'var(--color-portal-cyan)';
+              if (project.palette === 'red') themeColor = 'var(--color-signal-red)';
+              if (project.palette === 'magenta') themeColor = 'var(--color-dimension-magenta)';
+              if (project.palette === 'acid') themeColor = 'var(--color-acid-green)';
 
-            {isTypingComplete && (
-              <div className="mt-16 border-t border-white/5 pt-10">
-                <p className="text-[#00BFA5] font-mono text-[10px] uppercase tracking-widest mb-8 font-bold opacity-60">[ EXTERNAL_UPLINKS ]</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {project.codeLink && <TerminalLink label="RECON SOURCE CODE" href={project.codeLink} />}
-                  {project.codeLinkFrontend && <TerminalLink label="ACCESS INTERFACE" href={project.codeLinkFrontend} />}
-                  {project.codeLinkBackend && <TerminalLink label="ACCESS SERVICES" href={project.codeLinkBackend} />}
+              return (
+                <div key={index} className={`project-card ${colSpan} ${rowSpan} h-full flex`}>
+                  <ComicPanel 
+                    theme="dark" 
+                    className="w-full h-full flex flex-col p-0 overflow-hidden group cursor-pointer border-4 hover:border-8 transition-all duration-300 relative bg-[var(--color-deep-navy)]"
+                    style={{ borderColor: 'var(--color-ink-black)' }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = themeColor;
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                      e.currentTarget.style.zIndex = 10;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--color-ink-black)';
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.zIndex = 1;
+                    }}
+                  >
+                    {/* Image Header with Halftone Filter */}
+                    <div className={`relative ${isLarge ? 'h-64 lg:h-96' : 'h-48'} overflow-hidden border-b-4 border-[var(--color-ink-black)]`}>
+                      <img 
+                        src={project.image} 
+                        alt={project.title} 
+                        className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105 origin-center"
+                      />
+                      <div className="absolute inset-0 bg-halftone-cyan opacity-40 mix-blend-overlay pointer-events-none group-hover:opacity-20 transition-opacity"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-ink-black)] to-transparent opacity-90"></div>
+                      
+                      {/* Project Type Badge */}
+                      <div className="absolute top-4 left-4 bg-[var(--color-ink-black)] text-white font-label font-bold text-xs uppercase px-3 py-1 border-2 border-white transform -rotate-3">
+                        {project.category}
+                      </div>
+
+                      {/* Status Badge */}
+                      <div className="absolute top-4 right-4 bg-white text-[var(--color-ink-black)] font-label font-bold text-xs uppercase px-3 py-1 transform rotate-2">
+                        {project.status}
+                      </div>
+
+                      {/* Title Overlay */}
+                      <div className="absolute bottom-4 left-4 right-4 z-10">
+                        <h3 className={`font-display text-3xl ${isLarge ? 'md:text-5xl lg:text-6xl' : 'md:text-4xl'} leading-tight`} style={{ color: themeColor }}>
+                          {project.title}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Content Area */}
+                    <div className="p-6 flex-grow flex flex-col justify-between">
+                      <p className="font-body text-base md:text-lg text-[var(--color-text-on-dark)] opacity-90 mb-6 line-clamp-3">
+                        {project.description}
+                      </p>
+                      
+                      <div>
+                        {/* Powers / Tech */}
+                        <div className="mb-6">
+                          <p className="font-label uppercase font-bold text-xs text-[var(--color-text-muted-dark)] mb-2">POWERS EXTRACTED</p>
+                          <div className="flex flex-wrap gap-2">
+                            {project.tech.map((t, i) => (
+                              <span key={i} className="font-mono text-xs font-bold text-[var(--color-ink-black)] px-2 py-1" style={{ backgroundColor: themeColor }}>
+                                [{t.toUpperCase()}]
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex flex-wrap gap-4 pt-4 border-t-2 border-dashed border-[var(--color-ink-black)]/50">
+                          {(project.codeLink && project.codeLink !== "#") && (
+                            <a href={project.codeLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px]">
+                              <InkButton variant="white" className="w-full text-xs md:text-sm py-2">
+                                READ SOURCE
+                              </InkButton>
+                            </a>
+                          )}
+                          {(project.codeLinkBackend && project.codeLinkFrontend) && (
+                            <>
+                              <a href={project.codeLinkBackend} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px]">
+                                <InkButton variant="white" className="w-full text-xs md:text-sm py-2">
+                                  BACKEND LOG
+                                </InkButton>
+                              </a>
+                              <a href={project.codeLinkFrontend} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px]">
+                                <InkButton variant="cyan" className="w-full text-xs md:text-sm py-2">
+                                  FRONTEND LOG
+                                </InkButton>
+                              </a>
+                            </>
+                          )}
+                          {(project.liveLink && project.liveLink !== "#") && (
+                            <a href={project.liveLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px]">
+                              <InkButton variant="yellow" className="w-full text-xs md:text-sm py-2">
+                                ENTER UNIVERSE
+                              </InkButton>
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </ComicPanel>
                 </div>
-              </div>
-            )}
-          </div>
+              );
+            })}
 
-          <div className="mt-12 text-center opacity-20 transition-opacity">
-            <p className="text-[10px] font-mono text-[#444] tracking-[0.5em] uppercase">
-              END OF FILE // SECURE_LOG_EXIT
-            </p>
           </div>
         </div>
       </div>
-    </div>
+      
+      <style dangerouslySetInnerHTML={{__html: `
+        .text-shadow-magenta {
+          text-shadow: 4px 4px 0 var(--color-dimension-magenta);
+        }
+      `}} />
+    </ComicSpread>
   );
-}
+};
 
-function TerminalLink({ label, href }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex items-center justify-between p-5 bg-[#0F0F0F] border border-white/5 hover:border-[#00BFA5]/40 hover:bg-[#151515] transition-all duration-300"
-    >
-      <span className="text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors font-mono text-[10px] tracking-widest uppercase font-bold">
-        {label}
-      </span>
-      <FiArrowUpRight className="text-[#333] group-hover:text-[#00BFA5] transition-all transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-    </a>
-  );
-}
+export default Projects;

@@ -1,0 +1,65 @@
+/* Texture and Graphic Styles */
+
+/* Halftone Patterns */
+.bg-halftone-dark {
+  background-image: radial-gradient(circle, var(--color-ink-black) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+.bg-halftone-light {
+  background-image: radial-gradient(circle, var(--color-paper-muted) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+.bg-halftone-cyan {
+  background-image: radial-gradient(circle, var(--color-portal-cyan) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+/* Paper Grain Texture */
+.paper-grain {
+  position: relative;
+}
+.paper-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJub2lzZUZpbHRlciI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuOCIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNub2lzZUZpbHRlcikiLz48L3N2Zz4=');
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  z-index: 10;
+}
+
+.paper-grain-dark::before {
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+}
+
+/* Chromatic Print Offsets */
+.print-offset-magenta {
+  text-shadow: 2px 2px 0 var(--color-dimension-magenta);
+}
+
+.print-offset-cyan {
+  text-shadow: -2px -2px 0 var(--color-portal-cyan);
+}
+
+.print-offset-both {
+  text-shadow: 2px 2px 0 var(--color-dimension-magenta), -2px -2px 0 var(--color-portal-cyan);
+}
+
+/* Decorative UI */
+.comic-focus:focus-visible {
+  outline: 3px solid var(--color-comic-yellow);
+  outline-offset: 4px;
+}
+
+.rough-border {
+  border: 4px solid var(--color-ink-black);
+  border-radius: 2px 255px 3px 25px / 255px 5px 225px 3px;
+}
+
+.torn-edge-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), 95% 100%, 90% calc(100% - 10px), 85% 100%, 80% calc(100% - 10px), 75% 100%, 70% calc(100% - 10px), 65% 100%, 60% calc(100% - 10px), 55% 100%, 50% calc(100% - 10px), 45% 100%, 40% calc(100% - 10px), 35% 100%, 30% calc(100% - 10px), 25% 100%, 20% calc(100% - 10px), 15% 100%, 10% calc(100% - 10px), 5% 100%, 0 calc(100% - 10px));
+}

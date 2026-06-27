@@ -1,195 +1,169 @@
-import { useEffect, useRef } from "react";
-import experience from "../data/experience";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Briefcase, GraduationCap, Calendar, Lock } from "lucide-react";
+import React, { useRef, useEffect, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import experienceData from '../data/experience';
+import ComicSpread from '../components/comic/ComicSpread';
+import ComicPanel from '../components/comic/ComicPanel';
+import InkButton from '../components/comic/InkButton';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Experience() {
-  const containerRef = useRef(null);
-  const lineRef = useRef(null);
+const getPaletteClasses = (palette) => {
+  switch (palette) {
+    case 'cyan': return { bg: 'bg-[var(--color-portal-cyan)]', text: 'text-[var(--color-portal-cyan)]', border: 'border-[var(--color-portal-cyan)]' };
+    case 'red': return { bg: 'bg-[var(--color-signal-red)]', text: 'text-[var(--color-signal-red)]', border: 'border-[var(--color-signal-red)]' };
+    case 'magenta': return { bg: 'bg-[var(--color-dimension-magenta)]', text: 'text-[var(--color-dimension-magenta)]', border: 'border-[var(--color-dimension-magenta)]' };
+    default: return { bg: 'bg-[var(--color-comic-yellow)]', text: 'text-[var(--color-comic-yellow)]', border: 'border-[var(--color-comic-yellow)]' };
+  }
+};
+
+const Experience = () => {
+  const sectionRef = useRef(null);
+  const timelineRef = useRef(null);
+  const [activeIssue, setActiveIssue] = useState(0);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Line draws down
-      gsap.fromTo(
-        lineRef.current,
-        { scaleY: 0 },
+      // Timeline draw animation
+      gsap.fromTo(timelineRef.current, 
+        { scaleY: 0 }, 
         {
           scaleY: 1,
-          duration: 1.5,
-          ease: "power3.out",
+          ease: "none",
           scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 60%", // Start animating when section is near center
-            end: "bottom 80%",
-            scrub: 1,
-          },
-        }
-      );
-
-      // 2. Linear Timeline Sequential Load
-      const items = gsap.utils.toArray(".timeline-item");
-      gsap.fromTo(items,
-        { opacity: 0, y: 15 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 75%",
+            trigger: sectionRef.current,
+            start: "top center",
+            end: "bottom bottom",
+            scrub: true
           }
         }
       );
-    }, containerRef);
+
+      // Issues stagger entrance
+      gsap.from('.issue-cover', {
+        y: 100,
+        opacity: 0,
+        rotation: (i) => i % 2 === 0 ? -2 : 2,
+        duration: 0.8,
+        stagger: 0.3,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          once: true
+        }
+      });
+    }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
-  const getIcon = (type) => {
-    const lower = type.toLowerCase();
-    if (lower.includes("training") || lower.includes("education")) {
-      return <GraduationCap size={18} />;
-    }
-    return <Briefcase size={18} />;
-  };
-
   return (
-    <section
-      id="experience"
-      className="relative w-full bg-transparent text-white px-6 md:px-12 py-24 overflow-hidden"
-      ref={containerRef}
-    >
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="mb-20 text-center">
-          <p className="text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-4">
-            OPERATIONAL HISTORY
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#E0E0E0]">
-            Service Records
+    <ComicSpread id="experience" className="bg-[var(--color-paper-light)] text-[var(--color-ink-black)] relative z-20" ref={sectionRef}>
+      
+      {/* Texture Layer */}
+      <div className="absolute inset-0 bg-halftone-light opacity-30 mix-blend-multiply pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay"></div>
+
+      <div className="relative z-10 w-full max-w-[1920px] mx-auto flex flex-col items-center">
+        
+        <div className="text-center mb-16 relative">
+          <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-pencil-gray)] mb-2">OPERATIONAL HISTORY</p>
+          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-ink-black)] relative z-10">
+            PREVIOUS ISSUES
           </h2>
+          {/* Scratchy pencil underline */}
+          <svg className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-4 text-[var(--color-dimension-magenta)]" viewBox="0 0 200 10" preserveAspectRatio="none">
+            <path d="M0,5 Q50,0 100,6 T200,4" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+          </svg>
         </div>
 
-        {/* Timeline Container */}
-        <div className="relative mt-12">
-          {/* Vertical Line */}
-          <div
-            ref={lineRef}
-            className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-white/20 via-[#00BFA5]/20 to-transparent origin-top z-0"
-          />
+        {/* Desktop View: Horizontal Covers, Mobile View: Vertical Stack */}
+        <div className="relative w-full px-4 md:px-12">
+          
+          {/* Horizontal Timeline Ink Line (Desktop) */}
+          <div className="hidden lg:block absolute top-1/2 left-0 w-full h-2 bg-[var(--color-ink-black)] z-0 transform -translate-y-1/2"></div>
+          {/* Vertical Timeline Ink Line (Mobile) */}
+          <div ref={timelineRef} className="block lg:hidden absolute top-0 left-8 md:left-12 w-2 h-full bg-[var(--color-ink-black)] z-0 transform origin-top"></div>
 
-          {/* Timeline Items */}
-          <div className="space-y-12">
-            {experience.map((item, index) => {
-              const isEven = index % 2 === 0;
-
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8 relative z-10">
+            {experienceData.map((item, index) => {
+              const colors = getPaletteClasses(item.palette);
+              const isActive = activeIssue === index;
+              
               return (
-                <div
-                  key={index}
-                  className={`timeline-item flex flex-col md:flex-row items-start md:items-center relative ${isEven ? "md:flex-row-reverse" : ""
-                    }`}
+                <div 
+                  key={index} 
+                  className={`issue-cover relative group cursor-pointer transition-all duration-500 pl-16 lg:pl-0 ${isActive ? 'lg:scale-105 z-20' : 'lg:scale-95 z-10 lg:opacity-70 lg:hover:opacity-100'}`}
+                  onClick={() => setActiveIssue(index)}
                 >
-                  {/* Spacer for Desktop (occupies 50% width) */}
-                  <div className="hidden md:block w-1/2" />
-
-                  {/* Icon Node (Center) */}
-                  <div
-                    className="
-                      absolute left-8 md:left-1/2 transform -translate-x-1/2 
-                      w-8 h-8 md:w-10 md:h-10
-                      bg-[#0A0A0A] border border-white/20
-                      flex items-center justify-center
-                      text-[#A3A3A3] z-10
-                      transition-colors duration-300
-                    "
+                  {/* Timeline Node (Mobile) */}
+                  <div className="lg:hidden absolute left-[-8px] top-8 w-6 h-6 rounded-full border-4 border-[var(--color-ink-black)] bg-[var(--color-paper)] z-10"></div>
+                  
+                  {/* Issue Cover Panel */}
+                  <ComicPanel 
+                    theme={isActive ? 'dark' : 'light'} 
+                    rotation={isActive ? '0deg' : (index % 2 === 0 ? '-2deg' : '2deg')}
+                    className={`h-full flex flex-col p-0 overflow-hidden shadow-2xl transition-all duration-300 ${isActive ? `shadow-[12px_12px_0_var(--color-ink-black)]` : ''}`}
+                    style={{ borderColor: 'var(--color-ink-black)' }}
                   >
-                    <div className="opacity-80">
-                      {getIcon(item.type)}
+                    {/* Cover Header */}
+                    <div className={`${colors.bg} text-[var(--color-ink-black)] border-b-4 border-[var(--color-ink-black)] p-4 relative`}>
+                      <div className="absolute top-0 right-0 p-2 opacity-20 pointer-events-none">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                          <circle cx="12" cy="12" r="10" />
+                        </svg>
+                      </div>
+                      <div className="flex justify-between items-start mb-2 relative z-10">
+                        <span className="font-display text-3xl">ISSUE #{String(experienceData.length - index).padStart(2, '0')}</span>
+                        <span className="font-label uppercase font-bold text-xs bg-[var(--color-ink-black)] text-white px-2 py-1 transform rotate-3">{item.status}</span>
+                      </div>
+                      <h3 className="font-label uppercase font-bold text-xl md:text-2xl leading-tight relative z-10">{item.role}</h3>
+                      <h4 className="font-body font-bold text-sm opacity-90 mt-1 relative z-10">{item.organization}</h4>
                     </div>
-                  </div>
 
-                  {/* Content Card */}
-                  <div className="w-full md:w-1/2 pl-24 md:pl-0 perspective-1000">
-                    <div
-                      className={`
-                        group
-                        relative
-                        p-6 sm:p-8
-                        bg-[#111111]
-                        border border-white/5
-                        hover:border-[#00BFA5]/30 hover:bg-[#161616]
-                        transition-all duration-300
-                        ${isEven
-                          ? "md:mr-12 text-left md:text-right"
-                          : "md:ml-12 text-left"
-                        }
-                      `}
-                    >
-                      {/* Sub-Metadata */}
-                      <span
-                        className={`
-                          inline-flex items-center gap-2
-                          text-xs font-mono px-3 py-1
-                          bg-[#0A0A0A] border border-white/5 text-[#A3A3A3] mb-4
-                          transition-colors
-                          ${isEven ? "md:flex-row-reverse" : ""}
-                        `}
-                      >
-                        <Calendar size={12} />
+                    {/* Cover Body / Metadata */}
+                    <div className="p-6 flex-grow flex flex-col bg-[var(--color-paper-light)] text-[var(--color-ink-black)]">
+                      <div className="font-label font-bold text-sm text-[var(--color-pencil-gray)] mb-4 pb-2 border-b-2 border-dashed border-[var(--color-pencil-gray)]">
                         {item.period}
-                      </span>
-
-                      {/* Header Data */}
-                      <h3 className="text-xl font-bold mb-1 text-[#E0E0E0] tracking-tight">
-                        {item.role}
-                      </h3>
-                      <p className="text-sm font-mono text-[#00BFA5] mb-6 uppercase tracking-widest opacity-80">
-                        {item.organization}
-                      </p>
-
-                      {/* REDACTED DESCRIPTION BLOCK (Option C) */}
-                      <div className="relative overflow-hidden pt-4 border-t border-white/5 cursor-crosshair">
-
-                        {/* Redaction Scanner Overlay */}
-                        <div className={`
-                          absolute inset-0 z-10
-                          flex items-center ${isEven ? "md:justify-end" : "justify-start"}
-                          bg-[#0A0A0A] border border-white/5
-                          transition-transform duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]
-                          group-hover:scale-x-0
-                          ${isEven ? "origin-left md:origin-right" : "origin-left"}
-                        `}>
-                          <div className={`px-4 flex items-center gap-3 opacity-60 ${isEven ? "md:flex-row-reverse" : ""}`}>
-                            <Lock size={14} className="text-red-500" />
-                            <span className="text-red-500 font-mono text-xs tracking-widest font-bold">
-                              [ RESTRICTED: HOVER TO CLEAR ]
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Payload Text */}
-                        <p className="
-                          relative z-0 text-sm text-[#A3A3A3] leading-relaxed 
-                          transition-all duration-700 font-mono
-                          blur-md opacity-20 group-hover:blur-none group-hover:opacity-100
-                        ">
-                          {item.description}
-                        </p>
                       </div>
 
+                      <div className={`space-y-4 mb-6 transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:h-0 lg:overflow-hidden'}`}>
+                        <div>
+                          <span className={`font-label uppercase font-bold text-xs block mb-1 ${colors.text}`}>Mission</span>
+                          <p className="font-body text-sm font-bold leading-tight">{item.mission}</p>
+                        </div>
+                        <div>
+                          <span className={`font-label uppercase font-bold text-xs block mb-1 ${colors.text}`}>Action</span>
+                          <p className="font-body text-sm leading-tight">{item.action}</p>
+                        </div>
+                        <div>
+                          <span className={`font-label uppercase font-bold text-xs block mb-1 ${colors.text}`}>Impact</span>
+                          <p className="font-body text-sm italic font-medium leading-tight border-l-4 pl-2" style={{ borderColor: 'currentColor' }}>{item.impact}</p>
+                        </div>
+                      </div>
+
+                      <div className="mt-auto">
+                        <div className="flex flex-wrap gap-2">
+                          {item.tools.slice(0, 3).map((tool, i) => (
+                            <span key={i} className="font-mono text-xs font-bold border-2 border-[var(--color-ink-black)] px-2 py-1 bg-white">
+                              {tool}
+                            </span>
+                          ))}
+                          {item.tools.length > 3 && <span className="font-mono text-xs font-bold border-2 border-transparent px-2 py-1 opacity-50">+{item.tools.length - 3}</span>}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </ComicPanel>
                 </div>
               );
             })}
           </div>
+
         </div>
       </div>
-    </section>
+    </ComicSpread>
   );
-}
+};
+
+export default Experience;

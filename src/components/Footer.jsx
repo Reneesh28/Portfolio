@@ -1,6 +1,7 @@
-import { FiGithub, FiLinkedin, FiMail, FiArrowUp, FiTerminal } from "react-icons/fi";
+import React from "react";
+import { FiGithub, FiLinkedin, FiMail, FiArrowUp } from "react-icons/fi";
 import { FaXTwitter } from "react-icons/fa6";
-import { Button } from "./ui/Button";
+import InkButton from "./comic/InkButton";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -10,61 +11,71 @@ export default function Footer() {
     });
   };
 
-
   return (
-    <footer className="w-full bg-[#0A0A0A] border-t border-white/5 px-6 md:px-12 py-12 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0">
+    <footer className="w-full bg-[var(--color-paper-light)] border-t-8 border-[var(--color-ink-black)] px-6 md:px-12 py-16 relative overflow-hidden z-20">
+      
+      {/* Background Texture */}
+      <div className="absolute inset-0 bg-halftone-light opacity-50 mix-blend-multiply pointer-events-none"></div>
 
-        {/* Left: Copyright & Status */}
-        <div className="text-center md:text-left">
-          <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-            <h3 className="text-lg font-bold text-[#E0E0E0] tracking-tight">
-              Balam Reneesh
+      <div className="max-w-7xl mx-auto flex flex-col items-center justify-between gap-12 relative z-10">
+        
+        {/* Top: Issue Code and Barcode */}
+        <div className="w-full flex justify-between items-start border-b-4 border-[var(--color-ink-black)] pb-8">
+          <div className="text-left">
+            <h3 className="font-display text-4xl text-[var(--color-ink-black)] tracking-wider">
+              ACROSS THE CODEVERSE
             </h3>
-            <div className="flex items-center gap-2 px-2 py-0.5 border border-[#00BFA5]/30 bg-[#00BFA5]/5 text-[#00BFA5] text-[9px] font-mono font-bold uppercase tracking-widest animate-pulse">
-              <FiTerminal size={10} /> System_Online
+            <p className="font-label uppercase font-bold text-[var(--color-pencil-gray)] tracking-widest mt-1">
+              ISSUE #01 · PUBLISHED EARTH-28
+            </p>
+          </div>
+          
+          <div className="hidden md:flex flex-col items-end">
+            <div className="flex gap-[2px] h-12 bg-white p-2 border-2 border-[var(--color-ink-black)]">
+              {/* Fake Barcode */}
+              {[1, 3, 1, 2, 4, 1, 1, 3, 2, 5, 1, 2, 1, 3].map((w, i) => (
+                <div key={i} className="bg-[var(--color-ink-black)] h-full" style={{ width: `${w * 2}px` }}></div>
+              ))}
             </div>
+            <p className="font-mono text-xs font-bold mt-1 text-[var(--color-ink-black)]">9 780982 342115</p>
           </div>
-          <p className="text-[10px] font-mono text-[#A3A3A3] uppercase tracking-wider">
-            © {new Date().getFullYear()} ARCHIVE_V5.0 // Built with React & GSAP.
-          </p>
         </div>
 
-        {/* Right: Actions */}
-        <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
-          {/* Social Icons */}
+        {/* Middle: Actions and Links */}
+        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-4">
-            {[
-              { icon: FiMail, href: "mailto:reneesh3508925@gmail.com", label: "Email" },
-              { icon: FiLinkedin, href: "https://www.linkedin.com/in/balam-reneesh", label: "LinkedIn" },
-              { icon: FiGithub, href: "https://github.com/Reneesh28", label: "GitHub" },
-              { icon: FaXTwitter, href: "#", label: "Twitter" },
-            ].map((social, index) => (
-              <Button
-                as="a"
-                key={index}
-                href={social.href}
-                variant="icon"
-                size="icon"
-                target={social.href.startsWith("mailto") ? undefined : "_blank"}
-                rel={social.href.startsWith("mailto") ? undefined : "noopener noreferrer"}
-                aria-label={social.label}
-              >
-                <social.icon size={18} />
-              </Button>
-            ))}
+            <a href="mailto:reneesh3508925@gmail.com" className="w-12 h-12 flex items-center justify-center bg-[var(--color-ink-black)] text-white hover:bg-[var(--color-portal-cyan)] hover:text-[var(--color-ink-black)] border-4 border-transparent hover:border-[var(--color-ink-black)] transition-all comic-focus group">
+              <FiMail size={20} className="group-hover:scale-110 transition-transform" />
+            </a>
+            <a href="https://www.linkedin.com/in/balam-reneesh" target="_blank" rel="noreferrer" className="w-12 h-12 flex items-center justify-center bg-[var(--color-ink-black)] text-white hover:bg-[var(--color-comic-yellow)] hover:text-[var(--color-ink-black)] border-4 border-transparent hover:border-[var(--color-ink-black)] transition-all comic-focus group">
+              <FiLinkedin size={20} className="group-hover:scale-110 transition-transform" />
+            </a>
+            <a href="https://github.com/Reneesh28" target="_blank" rel="noreferrer" className="w-12 h-12 flex items-center justify-center bg-[var(--color-ink-black)] text-white hover:bg-[var(--color-dimension-magenta)] hover:text-[var(--color-ink-black)] border-4 border-transparent hover:border-[var(--color-ink-black)] transition-all comic-focus group">
+              <FiGithub size={20} className="group-hover:scale-110 transition-transform" />
+            </a>
+            <a href="#" className="w-12 h-12 flex items-center justify-center bg-[var(--color-ink-black)] text-white opacity-50 cursor-not-allowed border-4 border-transparent">
+              <FaXTwitter size={20} />
+            </a>
           </div>
 
-          {/* Scroll To Top Button */}
-          <Button
-            onClick={scrollToTop}
-            variant="secondary"
-            className="group gap-2 font-mono text-[10px] uppercase tracking-widest border-white/5 bg-transparent hover:bg-white/5"
-          >
-            RETURN_TO_ROOT
-            <FiArrowUp className="transform group-hover:-translate-y-0.5 transition-transform duration-200" />
-          </Button>
+          <InkButton variant="yellow" onClick={scrollToTop} className="flex items-center gap-2 group">
+            RETURN TO COVER
+            <FiArrowUp className="group-hover:-translate-y-1 transition-transform" />
+          </InkButton>
         </div>
+
+        {/* Bottom: Copyright */}
+        <div className="w-full text-center mt-8">
+          <p className="font-mono text-xs font-bold text-[var(--color-pencil-gray)]">
+            © {new Date().getFullYear()} BALAM RENEESH. ALL RIGHTS RESERVED IN THIS UNIVERSE.
+          </p>
+          <div className="mt-4 flex justify-center gap-1">
+            <div className="w-4 h-4 bg-[var(--color-portal-cyan)] rounded-full mix-blend-multiply opacity-70"></div>
+            <div className="w-4 h-4 bg-[var(--color-dimension-magenta)] rounded-full mix-blend-multiply opacity-70 -ml-2"></div>
+            <div className="w-4 h-4 bg-[var(--color-comic-yellow)] rounded-full mix-blend-multiply opacity-70 -ml-2"></div>
+          </div>
+        </div>
+
       </div>
     </footer>
   );

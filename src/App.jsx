@@ -1,8 +1,7 @@
-
-import { useState } from "react";
-import Navbar from "./components/Navbar";
-import Intro from "./components/Intro";
-import FluidBackground from "./components/FluidBackground";
+import { useState, useEffect } from "react";
+import Intro from "./sections/Intro"; // We will create this as a section instead of component soon
+import IssueIndex from "./components/navigation/IssueIndex";
+import PaperTexture from "./components/comic/PaperTexture";
 // Sections
 import Hero from "./sections/Hero";
 import About from "./sections/About";
@@ -15,22 +14,29 @@ import Contact from "./sections/Contact";
 import Footer from "./components/Footer";
 
 function App() {
-  const [introDone, setIntroDone] = useState(false);
+  const [introDone, setIntroDone] = useState(() => {
+    // Check session storage to play intro only once per session
+    return sessionStorage.getItem('codeverse_intro_done') === 'true';
+  });
+
+  const handleIntroFinish = () => {
+    setIntroDone(true);
+    sessionStorage.setItem('codeverse_intro_done', 'true');
+  };
 
   return (
-    <>
-      {/* BACKGROUND */}
-      <FluidBackground />
-
+    <div className="bg-[var(--color-ink-black)] min-h-screen text-[var(--color-text-on-dark)] font-body">
+      {/* Global Textures */}
+      <PaperTexture theme="dark" />
+      
       {/* GSAP INTRO — blocks everything */}
-      {!introDone && <Intro onFinish={() => setIntroDone(true)} />}
+      {!introDone && <Intro onFinish={handleIntroFinish} />}
 
       {/* MAIN CONTENT — loads AFTER intro */}
       {introDone && (
         <>
-          <Navbar />
-
-          <main className="relative z-10 overflow-hidden">
+          <IssueIndex />
+          <main className="relative z-10">
             <Hero />
             <About />
             <Skills />
@@ -43,8 +49,8 @@ function App() {
           </main>
         </>
       )}
-    </>
+    </div>
   );
 }
 
-export default App
+export default App;

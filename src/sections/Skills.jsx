@@ -1,132 +1,101 @@
-import { useState, useEffect, useRef } from "react";
-import skills from "../data/skills";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Lock, Unlock, ChevronDown } from "lucide-react";
+import React, { useRef, useEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import skillsData from '../data/skills';
+import ComicSpread from '../components/comic/ComicSpread';
+import ComicPanel from '../components/comic/ComicPanel';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Skills() {
+// Map categories to colors based on prompt
+const getCategoryColor = (catName) => {
+  if (catName.includes('Generative')) return 'var(--color-portal-cyan)';
+  if (catName.includes('Machine Learning') || catName.includes('Data Science')) return 'var(--color-comic-yellow)';
+  if (catName.includes('Frontend')) return 'var(--color-dimension-magenta)';
+  if (catName.includes('Backend') || catName.includes('Programming')) return 'var(--color-signal-red)';
+  return 'var(--color-acid-green)'; // Databases, Tools
+};
+
+const Skills = () => {
   const sectionRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Entrance Animation for the Vault bars
-      gsap.fromTo(".vault-bar",
-        { opacity: 0, y: 15 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-            toggleActions: "play none none reverse"
-          }
+      gsap.from('.skill-category-panel', {
+        y: 50,
+        opacity: 0,
+        rotation: () => (Math.random() - 0.5) * 4,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+          once: true
         }
-      );
+      });
     }, sectionRef);
-
     return () => ctx.revert();
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="skills"
-      className="w-full min-h-screen bg-[#0A0A0A] text-[#E0E0E0] border-t border-white/5 py-24 sm:py-32 px-6 md:px-12 relative overflow-hidden flex flex-col items-center"
-    >
-      <div className="w-full max-w-4xl relative z-10 flex flex-col">
-        {/* Section Label */}
-        <p className="vault-bar text-[#00BFA5] font-semibold uppercase tracking-[0.2em] text-sm mb-12 sm:mb-16">
-          CAPABILITY MATRIX
-        </p>
+    <ComicSpread id="skills" className="bg-[var(--color-deep-navy)] z-10" ref={sectionRef}>
 
-        {/* Encrypted Category Vaults */}
-        <div className="flex flex-col gap-4">
-          {skills.map((categoryData, idx) => (
-            <SkillVault key={idx} data={categoryData} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+      <div className="absolute inset-0 bg-halftone-dark opacity-20 pointer-events-none"></div>
 
-function SkillVault({ data }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const itemsRef = useRef([]);
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center">
+        <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-[var(--color-text-on-dark)] mb-12 tracking-wider text-center print-offset-cyan">
+          POWERS & TOOLS
+        </h2>
 
-  useEffect(() => {
-    if (isOpen) {
-      // Wait for the accordion to slightly open before staggering items
-      gsap.fromTo(itemsRef.current,
-        { opacity: 0, y: -10 },
-        { opacity: 1, y: 0, duration: 0.3, stagger: 0.03, ease: "power3.out", delay: 0.1 }
-      );
-    }
-  }, [isOpen]);
+        {/* Capability Matrix - Masonry Layout */}
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 w-full px-4 md:px-0">
 
-  return (
-    <div className="vault-bar border border-white/10 bg-[#111111] overflow-hidden transition-colors duration-300 hover:border-[#00BFA5]/30">
-
-      {/* Vault Header Bar */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 sm:p-6 text-left focus:outline-none group"
-      >
-        <div className="flex items-center gap-4">
-          {isOpen ? (
-            <Unlock size={18} className="text-[#00BFA5]" />
-          ) : (
-            <Lock size={18} className="text-[#A3A3A3] group-hover:text-[#E0E0E0] transition-colors" />
-          )}
-          <h3 className={`font-mono tracking-widest text-sm sm:text-base transition-colors ${isOpen ? 'text-[#00BFA5]' : 'text-[#A3A3A3] group-hover:text-[#E0E0E0]'}`}>
-            {isOpen ? `[ UNLOCKED: ${data.category.toUpperCase()} ]` : `[ ENCRYPTED: ${data.category.toUpperCase()} ]`}
-          </h3>
-        </div>
-
-        <div className="flex items-center gap-4 text-[#A3A3A3]">
-          <span className="font-mono text-xs opacity-50 hidden sm:block">
-            {data.items.length} MODULES
-          </span>
-          <span className="w-px h-4 bg-white/10 hidden sm:block"></span>
-          <ChevronDown
-            size={18}
-            className={`transition-all duration-300 ease-out ${isOpen ? "rotate-180 text-[#00BFA5]" : "rotate-0 text-[#A3A3A3]"}`}
-          />
-        </div>
-      </button>
-
-      {/* Vault Content (Accordion) */}
-      <div
-        className={`transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}`}
-      >
-        <div className="p-5 sm:p-6 pt-0 bg-[#111111]">
-          {/* Subtle separator inside the open vault */}
-          <div className="w-full h-px bg-white/5 mb-6" />
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {data.items.map((skill, idx) => {
-              const Icon = skill.icon;
-              return (
-                <div
-                  key={idx}
-                  ref={el => itemsRef.current[idx] = el}
-                  className="flex items-center gap-3 p-3 bg-[#1A1A1A] border border-white/5 hover:border-[#00BFA5]/40 hover:bg-[#222222] transition-colors group cursor-default"
+          {skillsData.map((cat, idx) => {
+            const catColor = getCategoryColor(cat.category);
+            return (
+              <div key={idx} className="skill-category-panel break-inside-avoid">
+                <ComicPanel
+                  theme="dark"
+                  className="p-6 relative bg-[var(--color-ink-black)] group hover:scale-[1.02] transition-transform duration-300"
+                  style={{ borderColor: catColor }}
                 >
-                  <Icon className="text-xl text-[#A3A3A3] group-hover:text-[#00BFA5] transition-colors" />
-                  <span className="font-mono text-xs sm:text-sm tracking-wide text-[#E0E0E0] truncate">
-                    {skill.name}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+                  <div className="border-b-4 pb-3 mb-6 flex justify-between items-end relative z-10" style={{ borderBottomColor: catColor }}>
+                    <h3 className="font-display text-3xl tracking-widest uppercase" style={{ color: catColor }}>
+                      {cat.category}
+                    </h3>
+                  </div>
+
+                  {/* Decorative background blast on hover */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-10 blur-2xl pointer-events-none transition-opacity duration-500"
+                    style={{ backgroundColor: catColor }}
+                  ></div>
+
+                  <div className="flex flex-wrap gap-3 relative z-10">
+                    {cat.items.map((skill, sIdx) => {
+                      const Icon = skill.icon;
+                      return (
+                        <div
+                          key={sIdx}
+                          className="flex items-center gap-2 bg-[var(--color-deep-navy)] border-2 px-3 py-2 hover:-translate-y-1 transition-transform shadow-[4px_4px_0_rgba(0,0,0,0.5)]"
+                          style={{ borderColor: catColor }}
+                        >
+                          <Icon className="text-xl" style={{ color: catColor }} />
+                          <span className="font-label uppercase font-bold text-sm text-[var(--color-text-on-dark)]">{skill.name}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ComicPanel>
+              </div>
+            );
+          })}
+
         </div>
       </div>
-
-    </div>
+    </ComicSpread>
   );
-}
+};
+
+export default Skills;
