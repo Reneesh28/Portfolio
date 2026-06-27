@@ -16,14 +16,13 @@ const experience = [
     type: "Work Experience",
     role: "CEO",
     organization: "AniCos Student Organization",
-    period: "Aug 2023 – Dec 2025",
-    progression: "Volunteer → Board Member → Co-CEO → CEO",
-    description: "Advanced from Volunteer to Board Member to Co-CEO, leading organizational operations, managing events, coordinating teams, and driving community engagement initiatives.",
+    period: "Aug 2023 – Present",
+    description: "Advanced from Volunteer to Board Member, Co-CEO, and ultimately CEO. Leading organizational operations, managing events, coordinating teams, and driving community engagement initiatives.",
     mission: "Lead a large student community, fostering engagement and organizational growth.",
     action: "Orchestrated large-scale events, managed cross-functional teams, and established strategic operational frameworks.",
     tools: ["Leadership", "Event Management", "Strategic Planning", "Team Coordination"],
     impact: "Significantly increased community engagement and streamlined organizational operations.",
-    status: "Archived",
+    status: "Active",
     palette: "red"
   },
   {

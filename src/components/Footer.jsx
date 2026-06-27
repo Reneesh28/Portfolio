@@ -26,7 +26,7 @@ export default function Footer() {
               ACROSS THE CODEVERSE
             </h3>
             <p className="font-label uppercase font-bold text-[var(--color-pencil-gray)] tracking-widest mt-1">
-              ISSUE #01 · PUBLISHED EARTH-28
+              ISSUE #01 &middot; PUBLISHED EARTH-28
             </p>
           </div>
           
@@ -67,7 +67,7 @@ export default function Footer() {
         {/* Bottom: Copyright */}
         <div className="w-full text-center mt-8">
           <p className="font-mono text-xs font-bold text-[var(--color-pencil-gray)]">
-            © {new Date().getFullYear()} BALAM RENEESH. ALL RIGHTS RESERVED IN THIS UNIVERSE.
+            &copy; {new Date().getFullYear()} BALAM RENEESH. ALL RIGHTS RESERVED IN THIS UNIVERSE.
           </p>
           <div className="mt-4 flex justify-center gap-1">
             <div className="w-4 h-4 bg-[var(--color-portal-cyan)] rounded-full mix-blend-multiply opacity-70"></div>

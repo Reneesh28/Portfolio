@@ -1,15 +1,17 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import certificationsData from '../data/certifications';
 import ComicSpread from '../components/comic/ComicSpread';
 import ComicPanel from '../components/comic/ComicPanel';
 import InkButton from '../components/comic/InkButton';
+import { X, ExternalLink } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Certifications = () => {
   const sectionRef = useRef(null);
+  const [previewCert, setPreviewCert] = useState(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -30,6 +32,26 @@ const Certifications = () => {
     }, sectionRef);
     return () => ctx.revert();
   }, []);
+
+  // Modal handlers
+  const openPreview = (cert) => {
+    setPreviewCert(cert);
+  };
+
+  const closePreview = () => {
+    setPreviewCert(null);
+  };
+
+  useEffect(() => {
+    if (previewCert) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [previewCert]);
 
   return (
     <ComicSpread id="certifications" className="bg-[var(--color-paper-light)] text-[var(--color-ink-black)] z-20" ref={sectionRef}>
@@ -61,24 +83,24 @@ const Certifications = () => {
               <ComicPanel 
                 theme="light"
                 rotation={index % 2 === 0 ? '1deg' : '-1deg'}
-                className="h-full flex flex-col p-0 bg-white group hover:z-10 transition-transform duration-300 hover:scale-105"
+                className="h-full flex flex-col p-0 bg-white group hover:z-10 transition-transform duration-300 hover:scale-105 cursor-pointer"
+                onClick={() => openPreview(cert)}
               >
                 {/* Artifact Header / Image placeholder area */}
-                <div className="h-32 bg-[var(--color-ink-black)] relative overflow-hidden flex items-center justify-center border-b-4 border-[var(--color-ink-black)]">
+                <div className="h-40 bg-[var(--color-ink-black)] relative overflow-hidden flex items-center justify-center border-b-4 border-[var(--color-ink-black)]">
+                  <img src={cert.file} alt={cert.title} className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-80 transition-opacity duration-300 mix-blend-luminosity" />
                   <div className="absolute inset-0 bg-halftone-cyan opacity-20 mix-blend-screen pointer-events-none"></div>
                   
-                  {/* Decorative circuit/badge pattern */}
-                  <svg width="60" height="60" viewBox="0 0 100 100" className="text-[var(--color-comic-yellow)] opacity-80 group-hover:scale-110 transition-transform duration-500">
-                    <polygon points="50,5 95,25 95,75 50,95 5,75 5,25" fill="none" stroke="currentColor" strokeWidth="4" />
-                    <circle cx="50" cy="50" r="25" fill="none" stroke="currentColor" strokeWidth="4" />
-                    <circle cx="50" cy="50" r="10" fill="currentColor" />
-                  </svg>
-                  
-                  <div className="absolute top-2 left-2 font-mono text-[10px] text-white opacity-50">
-                    ID: {Math.random().toString(36).substr(2, 6).toUpperCase()}
+                  <div className="absolute top-2 left-2 font-mono text-[10px] text-white opacity-80 bg-black px-1">
+                    ID: {cert.year}-{cert.title.substring(0, 3).toUpperCase()}
                   </div>
-                  <div className="absolute bottom-2 right-2 font-mono text-[10px] text-[var(--color-success-green)] font-bold">
+                  <div className="absolute bottom-2 right-2 font-mono text-[10px] text-[var(--color-success-green)] font-bold bg-black px-1">
                     [ AUTHORIZED ]
+                  </div>
+                  
+                  {/* Overlay text on hover */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+                    <span className="font-label font-bold text-white tracking-widest border-2 border-white px-3 py-1">PREVIEW</span>
                   </div>
                 </div>
 
@@ -105,11 +127,12 @@ const Certifications = () => {
                     <span className="font-label font-bold text-sm bg-[var(--color-ink-black)] text-white px-3 py-1 transform -rotate-2">
                       {cert.year}
                     </span>
-                    <a href={cert.file} target="_blank" rel="noreferrer">
-                      <button className="font-label uppercase font-bold text-xs tracking-widest text-[var(--color-portal-cyan)] hover:text-[var(--color-dimension-magenta)] transition-colors underline decoration-2 underline-offset-4">
-                        VERIFY ARTIFACT
-                      </button>
-                    </a>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); openPreview(cert); }}
+                      className="font-label uppercase font-bold text-xs tracking-widest text-[var(--color-portal-cyan)] hover:text-[var(--color-dimension-magenta)] transition-colors underline decoration-2 underline-offset-4"
+                    >
+                      EXAMINE
+                    </button>
                   </div>
                 </div>
               </ComicPanel>
@@ -118,6 +141,44 @@ const Certifications = () => {
 
         </div>
       </div>
+
+      {/* Preview Modal */}
+      {previewCert && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 md:p-8 bg-black/80 backdrop-blur-sm" onClick={closePreview}>
+          <div 
+            className="relative bg-white border-8 border-[var(--color-ink-black)] max-w-4xl w-full max-h-full flex flex-col shadow-[16px_16px_0_var(--color-portal-cyan)] animate-in fade-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-[var(--color-ink-black)] text-white p-4 flex justify-between items-center border-b-4 border-[var(--color-ink-black)]">
+              <h3 className="font-display text-2xl tracking-wider">{previewCert.title}</h3>
+              <button onClick={closePreview} className="hover:text-[var(--color-signal-red)] transition-colors" aria-label="Close preview">
+                <X size={28} />
+              </button>
+            </div>
+            
+            {/* Modal Body - Image */}
+            <div className="bg-[var(--color-paper-light)] p-4 overflow-auto flex-grow flex items-center justify-center relative min-h-[300px]">
+              <div className="absolute inset-0 bg-halftone-light opacity-10 pointer-events-none"></div>
+              <img src={previewCert.file} alt={previewCert.title} className="max-w-full max-h-[60vh] object-contain border-2 border-[var(--color-ink-black)] relative z-10 shadow-lg" />
+            </div>
+            
+            {/* Modal Footer - Actions */}
+            <div className="bg-white p-4 border-t-4 border-[var(--color-ink-black)] flex flex-wrap justify-between items-center gap-4">
+              <div>
+                <p className="font-label font-bold text-[var(--color-pencil-gray)] uppercase text-sm">ISSUED BY</p>
+                <p className="font-display text-xl text-[var(--color-ink-black)]">{previewCert.issuer}</p>
+              </div>
+              <a href={previewCert.file} target="_blank" rel="noreferrer">
+                <InkButton variant="yellow" className="flex items-center gap-2">
+                  <ExternalLink size={18} /> VERIFY CREDENTIAL SOURCE
+                </InkButton>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
     </ComicSpread>
   );
 };

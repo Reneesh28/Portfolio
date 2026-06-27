@@ -5,29 +5,27 @@ import projectsData from '../data/projects';
 import ComicSpread from '../components/comic/ComicSpread';
 import ComicPanel from '../components/comic/ComicPanel';
 import InkButton from '../components/comic/InkButton';
+import { Network, FileText, Cpu, Layout, Play, Github } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Projects = () => {
   const sectionRef = useRef(null);
   const [filter, setFilter] = useState('All');
+  const [techMode, setTechMode] = useState(false); // false = Simplify, true = Technical
   
-  // Extract unique categories
   const categories = ['All', ...new Set(projectsData.map(p => p.category))];
-  
   const filteredProjects = filter === 'All' 
     ? projectsData 
     : projectsData.filter(p => p.category === filter);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Entrance animation
-      gsap.from('.project-card', {
+      gsap.from('.project-6panel', {
         y: 100,
         opacity: 0,
-        rotation: () => (Math.random() - 0.5) * 10,
         duration: 0.8,
-        stagger: 0.1,
+        stagger: 0.2,
         ease: "power2.out",
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -39,30 +37,35 @@ const Projects = () => {
     return () => ctx.revert();
   }, []);
 
-  // Re-animate when filter changes
-  useEffect(() => {
-    gsap.fromTo('.project-card', 
-      { scale: 0.8, opacity: 0 }, 
-      { scale: 1, opacity: 1, duration: 0.4, stagger: 0.05, ease: "back.out(1.5)" }
-    );
-  }, [filter]);
-
   return (
     <ComicSpread id="projects" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] border-t-8 border-b-8 border-[var(--color-paper)] z-30" ref={sectionRef}>
       
-      {/* Background Texture */}
       <div className="absolute inset-0 bg-halftone-cyan opacity-10 pointer-events-none mix-blend-screen"></div>
 
       <div className="relative z-10 w-full max-w-[1920px] mx-auto flex flex-col items-center">
         
-        <div className="text-center mb-8 relative">
+        <div className="text-center mb-8 relative flex flex-col items-center">
           <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-dimension-magenta)] mb-2">EXPLORE THE MULTIVERSE</p>
           <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-magenta">
-            THE UNIVERSES
+            CASE STUDIES
           </h2>
+
+          <div className="mt-8 flex gap-4 bg-[var(--color-deep-navy)] p-1 rounded-sm border-2 border-[var(--color-portal-cyan)]">
+            <button 
+              onClick={() => setTechMode(false)}
+              className={`px-4 py-2 font-label font-bold text-sm uppercase transition-colors flex items-center gap-2 ${!techMode ? 'bg-[var(--color-portal-cyan)] text-[var(--color-ink-black)]' : 'text-white hover:text-[var(--color-portal-cyan)]'}`}
+            >
+              <Layout size={16} /> Simplify Mode
+            </button>
+            <button 
+              onClick={() => setTechMode(true)}
+              className={`px-4 py-2 font-label font-bold text-sm uppercase transition-colors flex items-center gap-2 ${techMode ? 'bg-[var(--color-portal-cyan)] text-[var(--color-ink-black)]' : 'text-white hover:text-[var(--color-portal-cyan)]'}`}
+            >
+              <Cpu size={16} /> Technical Mode
+            </button>
+          </div>
         </div>
 
-        {/* Filter Tabs */}
         <div className="flex flex-wrap justify-center gap-4 mb-16 px-4">
           {categories.map((cat, idx) => (
             <button
@@ -79,127 +82,119 @@ const Projects = () => {
           ))}
         </div>
 
-        {/* Projects Grid / Splash Page */}
-        <div className="w-full px-4 md:px-8 lg:px-12">
-          {/* Asymmetrical Grid layout simulating a comic page */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 auto-rows-min">
-            
-            {filteredProjects.map((project, index) => {
-              // Determine size based on featured status and index for asymmetrical look
-              const isLarge = project.featured;
-              const colSpan = isLarge ? 'lg:col-span-8 md:col-span-2' : 'lg:col-span-4';
-              const rowSpan = isLarge ? 'lg:row-span-2' : 'lg:row-span-1';
-              
-              // Get color theme
-              let themeColor = 'var(--color-comic-yellow)';
-              if (project.palette === 'cyan') themeColor = 'var(--color-portal-cyan)';
-              if (project.palette === 'red') themeColor = 'var(--color-signal-red)';
-              if (project.palette === 'magenta') themeColor = 'var(--color-dimension-magenta)';
-              if (project.palette === 'acid') themeColor = 'var(--color-acid-green)';
+        <div className="w-full px-4 md:px-8 lg:px-12 flex flex-col gap-16">
+          {filteredProjects.map((project, index) => {
+            let themeColor = 'var(--color-comic-yellow)';
+            if (project.palette === 'cyan') themeColor = 'var(--color-portal-cyan)';
+            if (project.palette === 'red') themeColor = 'var(--color-signal-red)';
+            if (project.palette === 'magenta') themeColor = 'var(--color-dimension-magenta)';
+            if (project.palette === 'acid') themeColor = 'var(--color-acid-green)';
 
-              return (
-                <div key={index} className={`project-card ${colSpan} ${rowSpan} h-full flex`}>
-                  <ComicPanel 
-                    theme="dark" 
-                    className="w-full h-full flex flex-col p-0 overflow-hidden group cursor-pointer border-4 hover:border-8 transition-all duration-300 relative bg-[var(--color-deep-navy)]"
-                    style={{ borderColor: 'var(--color-ink-black)' }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = themeColor;
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.zIndex = 10;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--color-ink-black)';
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.zIndex = 1;
-                    }}
-                  >
-                    {/* Image Header with Halftone Filter */}
-                    <div className={`relative ${isLarge ? 'h-64 lg:h-96' : 'h-48'} overflow-hidden border-b-4 border-[var(--color-ink-black)]`}>
-                      <img 
-                        src={project.image} 
-                        alt={project.title} 
-                        className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105 origin-center"
-                      />
-                      <div className="absolute inset-0 bg-halftone-cyan opacity-40 mix-blend-overlay pointer-events-none group-hover:opacity-20 transition-opacity"></div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-ink-black)] to-transparent opacity-90"></div>
-                      
-                      {/* Project Type Badge */}
-                      <div className="absolute top-4 left-4 bg-[var(--color-ink-black)] text-white font-label font-bold text-xs uppercase px-3 py-1 border-2 border-white transform -rotate-3">
-                        {project.category}
-                      </div>
-
-                      {/* Status Badge */}
-                      <div className="absolute top-4 right-4 bg-white text-[var(--color-ink-black)] font-label font-bold text-xs uppercase px-3 py-1 transform rotate-2">
-                        {project.status}
-                      </div>
-
-                      {/* Title Overlay */}
-                      <div className="absolute bottom-4 left-4 right-4 z-10">
-                        <h3 className={`font-display text-3xl ${isLarge ? 'md:text-5xl lg:text-6xl' : 'md:text-4xl'} leading-tight`} style={{ color: themeColor }}>
-                          {project.title}
-                        </h3>
-                      </div>
-                    </div>
-
-                    {/* Content Area */}
-                    <div className="p-6 flex-grow flex flex-col justify-between">
-                      <p className="font-body text-base md:text-lg text-[var(--color-text-on-dark)] opacity-90 mb-6 line-clamp-3">
-                        {project.description}
-                      </p>
-                      
-                      <div>
-                        {/* Powers / Tech */}
-                        <div className="mb-6">
-                          <p className="font-label uppercase font-bold text-xs text-[var(--color-text-muted-dark)] mb-2">POWERS EXTRACTED</p>
-                          <div className="flex flex-wrap gap-2">
-                            {project.tech.map((t, i) => (
-                              <span key={i} className="font-mono text-xs font-bold text-[var(--color-ink-black)] px-2 py-1" style={{ backgroundColor: themeColor }}>
-                                [{t.toUpperCase()}]
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex flex-wrap gap-4 pt-4 border-t-2 border-dashed border-[var(--color-ink-black)]/50">
-                          {(project.codeLink && project.codeLink !== "#") && (
-                            <a href={project.codeLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px]">
-                              <InkButton variant="white" className="w-full text-xs md:text-sm py-2">
-                                READ SOURCE
-                              </InkButton>
-                            </a>
-                          )}
-                          {(project.codeLinkBackend && project.codeLinkFrontend) && (
-                            <>
-                              <a href={project.codeLinkBackend} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px]">
-                                <InkButton variant="white" className="w-full text-xs md:text-sm py-2">
-                                  BACKEND LOG
-                                </InkButton>
-                              </a>
-                              <a href={project.codeLinkFrontend} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px]">
-                                <InkButton variant="cyan" className="w-full text-xs md:text-sm py-2">
-                                  FRONTEND LOG
-                                </InkButton>
-                              </a>
-                            </>
-                          )}
-                          {(project.liveLink && project.liveLink !== "#") && (
-                            <a href={project.liveLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[140px]">
-                              <InkButton variant="yellow" className="w-full text-xs md:text-sm py-2">
-                                ENTER UNIVERSE
-                              </InkButton>
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </ComicPanel>
+            return (
+              <div key={index} className="project-6panel w-full bg-[var(--color-deep-navy)] border-4 p-4 shadow-[12px_12px_0_rgba(0,0,0,1)] transition-transform duration-300" style={{ borderColor: themeColor }}>
+                {/* Comic page header */}
+                <div className="flex justify-between items-end border-b-4 pb-2 mb-4" style={{ borderColor: themeColor }}>
+                  <h3 className="font-display text-4xl md:text-5xl uppercase" style={{ color: themeColor }}>{project.title}</h3>
+                  <span className="font-label uppercase font-bold text-sm bg-white text-[var(--color-ink-black)] px-2 py-1 transform rotate-2">{project.category}</span>
                 </div>
-              );
-            })}
 
-          </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-fr">
+                  
+                  {/* Panel 1: Cover Image (Spans 2 cols on tablet, 1 on desktop) */}
+                  <div className="md:col-span-2 lg:col-span-1 border-4 border-[var(--color-ink-black)] relative overflow-hidden group min-h-[250px]">
+                    <img 
+                      src={project.image} 
+                      alt={project.title} 
+                      className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-700"
+                    />
+                    <div className="absolute inset-0 bg-halftone-cyan opacity-40 mix-blend-overlay"></div>
+                    <div className="absolute top-2 left-2 bg-[var(--color-ink-black)] text-white text-xs font-bold px-2 py-1 border-2 border-white">COVER</div>
+                  </div>
+
+                  {/* Panel 2: The Brief (Overview) */}
+                  <div className="border-4 border-[var(--color-ink-black)] bg-[var(--color-paper-light)] text-[var(--color-ink-black)] p-6 relative">
+                    <div className="absolute top-2 left-2 font-label font-bold text-xs text-[var(--color-pencil-gray)]">PANEL 2: THE BRIEF</div>
+                    <p className="font-body text-base md:text-lg mt-4 font-medium leading-tight">
+                      {project.description}
+                    </p>
+                    <div className="mt-4 font-label font-bold uppercase text-xs" style={{ color: themeColor }}>
+                      Status: {project.status}
+                    </div>
+                  </div>
+
+                  {/* Panel 3: Architecture Map or Simplified Impact */}
+                  <div className="md:col-span-3 lg:col-span-1 border-4 border-[var(--color-ink-black)] bg-white p-6 relative flex flex-col justify-center items-center text-center overflow-hidden">
+                    <div className="absolute top-2 left-2 font-label font-bold text-xs text-[var(--color-pencil-gray)] z-10">PANEL 3: {techMode ? "ARCHITECTURE" : "IMPACT"}</div>
+                    
+                    {techMode ? (
+                      <div className="w-full h-full border-2 border-dashed border-[var(--color-portal-cyan)] mt-4 p-4 flex flex-col items-center justify-center bg-[var(--color-deep-navy)] text-white bg-halftone-light bg-blend-overlay">
+                        <Network size={32} className="text-[var(--color-portal-cyan)] mb-2" />
+                        <span className="font-mono text-xs text-[var(--color-portal-cyan)]">SYSTEM_ARCH_MAP</span>
+                        <div className="text-[10px] font-mono opacity-50 mt-2">[Awaiting Data Uplink...]</div>
+                      </div>
+                    ) : (
+                      <div className="mt-4">
+                        <h4 className="font-display text-3xl text-[var(--color-ink-black)]">USER VALUE</h4>
+                        <p className="font-body text-sm font-bold mt-2">Delivered streamlined experiences reducing manual friction and creating scalable digital solutions.</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Panel 4: Tech Stack (Only visible in Tech Mode or simplified in Simple Mode) */}
+                  <div className={`border-4 border-[var(--color-ink-black)] p-6 relative ${techMode ? 'bg-[var(--color-ink-black)] text-white' : 'bg-[var(--color-paper)] text-[var(--color-ink-black)]'}`}>
+                    <div className="absolute top-2 left-2 font-label font-bold text-xs opacity-50">PANEL 4: POWERS</div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {project.tech.map((t, i) => (
+                        <span key={i} className={`font-mono text-xs font-bold px-2 py-1 ${techMode ? 'border-2 border-white' : 'bg-[var(--color-ink-black)] text-white'}`}>
+                          {techMode ? `[${t.toUpperCase()}]` : t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Panel 5: Links & Actions */}
+                  <div className="md:col-span-2 border-4 border-[var(--color-ink-black)] bg-[var(--color-ink-black)] p-6 relative flex items-center justify-center gap-4 flex-wrap">
+                    <div className="absolute top-2 left-2 font-label font-bold text-xs text-white opacity-50">PANEL 5: ACTIONS</div>
+                    
+                    {(project.codeLink && project.codeLink !== "#" && !project.codeLink.includes("syncing")) && (
+                      <a href={project.codeLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
+                        <InkButton variant="white" className="w-full text-xs md:text-sm py-3 flex justify-center items-center gap-2">
+                          <Github size={16} /> READ SOURCE
+                        </InkButton>
+                      </a>
+                    )}
+                    {(project.codeLinkBackend && project.codeLinkFrontend) && (
+                      <>
+                        <a href={project.codeLinkBackend} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
+                          <InkButton variant="white" className="w-full text-xs md:text-sm py-3 flex justify-center items-center gap-2">
+                            <Github size={16} /> BACKEND LOG
+                          </InkButton>
+                        </a>
+                        <a href={project.codeLinkFrontend} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
+                          <InkButton variant="cyan" className="w-full text-xs md:text-sm py-3 flex justify-center items-center gap-2">
+                            <Github size={16} /> FRONTEND LOG
+                          </InkButton>
+                        </a>
+                      </>
+                    )}
+                    {(project.liveLink && project.liveLink !== "#" && !project.liveLink.includes("syncing")) && (
+                      <a href={project.liveLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
+                        <InkButton variant="yellow" className="w-full text-xs md:text-sm py-3 flex justify-center items-center gap-2">
+                          <Play size={16} /> ENTER UNIVERSE
+                        </InkButton>
+                      </a>
+                    )}
+                    {(!project.codeLink && !project.codeLinkBackend && !project.liveLink) || project.codeLink?.includes("syncing") ? (
+                      <div className="font-mono text-sm text-[var(--color-signal-red)] uppercase border-2 border-[var(--color-signal-red)] px-4 py-2">
+                        Classified / Awaiting Sync
+                      </div>
+                    ) : null}
+                  </div>
+
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
       

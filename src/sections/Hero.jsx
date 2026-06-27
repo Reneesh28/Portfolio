@@ -84,7 +84,7 @@ const Hero = () => {
         {/* Left Column - Metadata & Copy */}
         <div ref={leftColRef} className="lg:col-span-5 flex flex-col order-2 lg:order-1 relative z-20">
           <div className="font-label uppercase font-bold tracking-widest text-[var(--color-comic-yellow)] mb-4 md:mb-6">
-            ISSUE #01 · EARTH-28
+            ISSUE #01 &middot; EARTH-28
           </div>
           
           <h1 className="font-display text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-wider text-[var(--color-text-on-dark)] mb-6 relative z-10">

@@ -113,6 +113,20 @@ const Education = () => {
                   <br/><br/>
                   {educationData[activeTab].description}
                 </p>
+
+                {/* Coursework Expandable Section */}
+                {educationData[activeTab].coursework && (
+                  <div className="mt-8 border-l-4 border-[var(--color-comic-yellow)] pl-4">
+                    <p className="font-label uppercase font-bold text-sm text-[var(--color-pencil-gray)] mb-2">KEY TRAINING PROTOCOLS</p>
+                    <div className="flex flex-wrap gap-2">
+                      {educationData[activeTab].coursework.map((course, i) => (
+                        <span key={i} className="font-mono text-xs bg-white border-2 border-[var(--color-ink-black)] px-2 py-1 shadow-[2px_2px_0_var(--color-ink-black)]">
+                          {course}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="mt-12 flex flex-wrap gap-8 font-mono border-t-2 border-[var(--color-ink-black)] pt-6">

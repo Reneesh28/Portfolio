@@ -5,7 +5,8 @@ const education = [
     degree: "Bachelor of Technology (CSE)",
     institution: "Lovely Professional University, Punjab",
     description:
-      "Pursuing Computer Science and Engineering with focus on programming, data structures, databases, and machine learning."
+      "Pursuing Computer Science and Engineering with focus on programming, data structures, databases, and machine learning.",
+    coursework: ["Data Structures & Algorithms", "Database Management Systems", "Machine Learning", "Operating Systems", "Web Development"]
   },
   {
     period: "2021 – 2023",
@@ -13,7 +14,8 @@ const education = [
     degree: "Intermediate (12th)",
     institution: "FIITJEE Junior College, Hyderabad, Telangana",
     description:
-      "Completed higher secondary education with focus on Mathematics, Physics, and foundational computer science."
+      "Completed higher secondary education with focus on Mathematics, Physics, and foundational computer science.",
+    coursework: ["Advanced Mathematics", "Physics", "Chemistry"]
   },
   {
     period: "2016 – 2021",
@@ -21,7 +23,8 @@ const education = [
     degree: "Secondary School (10th)",
     institution: "Vedanta Childhood High School, Anantapur, Andhra Pradesh",
     description:
-      "Built a strong academic foundation with excellent performance across core subjects."
+      "Built a strong academic foundation with excellent performance across core subjects.",
+    coursework: ["Core Sciences", "Mathematics", "Social Sciences"]
   }
 ];
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PaperTexture from '../comic/PaperTexture';
 
 const navItems = [
@@ -14,6 +14,8 @@ const navItems = [
 
 const IssueIndex = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const dialogRef = useRef(null);
+  const prevFocusRef = useRef(null);
   const [activeChapter, setActiveChapter] = useState('hero');
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -60,12 +62,46 @@ const IssueIndex = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  // Lock body scroll when index is open
+  // Lock body scroll and trap focus when index is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      prevFocusRef.current = document.activeElement;
+      
+      // Focus first element
+      if (dialogRef.current) {
+        const focusable = dialogRef.current.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusable.length) focusable[0].focus();
+      }
+
+      // Trap focus
+      const handleTab = (e) => {
+        if (e.key !== 'Tab' || !dialogRef.current) return;
+        
+        const focusable = dialogRef.current.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (!focusable.length) return;
+        
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      };
+
+      window.addEventListener('keydown', handleTab);
+      return () => window.removeEventListener('keydown', handleTab);
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
+      if (prevFocusRef.current) prevFocusRef.current.focus();
     }
   }, [isOpen]);
 
@@ -111,7 +147,7 @@ const IssueIndex = () => {
 
       {/* Full-screen Issue Index Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-[var(--color-paper)] text-[var(--color-ink-black)] flex flex-col p-4 md:p-8 overflow-y-auto" role="dialog" aria-modal="true" aria-label="Issue Index">
+        <div ref={dialogRef} className="fixed inset-0 z-50 bg-[var(--color-paper)] text-[var(--color-ink-black)] flex flex-col p-4 md:p-8 overflow-y-auto" role="dialog" aria-modal="true" aria-label="Issue Index">
           <PaperTexture theme="light" />
           
           <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center mb-8 md:mb-12 border-b-4 border-[var(--color-ink-black)] pb-4 gap-4">

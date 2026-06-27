@@ -21,6 +21,7 @@ const Experience = () => {
   const sectionRef = useRef(null);
   const timelineRef = useRef(null);
   const [activeIssue, setActiveIssue] = useState(0);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'timeline'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -63,11 +64,11 @@ const Experience = () => {
       
       {/* Texture Layer */}
       <div className="absolute inset-0 bg-halftone-light opacity-30 mix-blend-multiply pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay"></div>
+      <div className="absolute inset-0 bg-halftone-dark opacity-20 pointer-events-none mix-blend-overlay"></div>
 
       <div className="relative z-10 w-full max-w-[1920px] mx-auto flex flex-col items-center">
         
-        <div className="text-center mb-16 relative">
+        <div className="text-center mb-12 relative flex flex-col items-center">
           <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-pencil-gray)] mb-2">OPERATIONAL HISTORY</p>
           <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-ink-black)] relative z-10">
             PREVIOUS ISSUES
@@ -76,17 +77,32 @@ const Experience = () => {
           <svg className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-4 text-[var(--color-dimension-magenta)]" viewBox="0 0 200 10" preserveAspectRatio="none">
             <path d="M0,5 Q50,0 100,6 T200,4" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
           </svg>
+          
+          <div className="mt-8 flex gap-4 bg-[var(--color-ink-black)] p-1 rounded-sm">
+            <button 
+              onClick={() => setViewMode('grid')}
+              className={`px-4 py-2 font-label font-bold text-sm uppercase transition-colors ${viewMode === 'grid' ? 'bg-[var(--color-comic-yellow)] text-[var(--color-ink-black)]' : 'text-white hover:text-[var(--color-comic-yellow)]'}`}
+            >
+              Issue Covers
+            </button>
+            <button 
+              onClick={() => setViewMode('timeline')}
+              className={`px-4 py-2 font-label font-bold text-sm uppercase transition-colors ${viewMode === 'timeline' ? 'bg-[var(--color-comic-yellow)] text-[var(--color-ink-black)]' : 'text-white hover:text-[var(--color-comic-yellow)]'}`}
+            >
+              Timeline
+            </button>
+          </div>
         </div>
 
         {/* Desktop View: Horizontal Covers, Mobile View: Vertical Stack */}
-        <div className="relative w-full px-4 md:px-12">
+        <div className={`relative w-full px-4 md:px-12 ${viewMode === 'timeline' ? 'max-w-4xl' : ''}`}>
           
           {/* Horizontal Timeline Ink Line (Desktop) */}
-          <div className="hidden lg:block absolute top-1/2 left-0 w-full h-2 bg-[var(--color-ink-black)] z-0 transform -translate-y-1/2"></div>
-          {/* Vertical Timeline Ink Line (Mobile) */}
-          <div ref={timelineRef} className="block lg:hidden absolute top-0 left-8 md:left-12 w-2 h-full bg-[var(--color-ink-black)] z-0 transform origin-top"></div>
+          <div className={`hidden lg:block absolute top-1/2 left-0 w-full h-2 bg-[var(--color-ink-black)] z-0 transform -translate-y-1/2 ${viewMode === 'timeline' ? 'hidden' : ''}`}></div>
+          {/* Vertical Timeline Ink Line */}
+          <div ref={timelineRef} className={`absolute top-0 left-8 md:left-12 w-2 h-full bg-[var(--color-ink-black)] z-0 transform origin-top ${viewMode === 'timeline' ? 'block' : 'block lg:hidden'}`}></div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8 relative z-10">
+          <div className={`grid relative z-10 ${viewMode === 'grid' ? 'grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8' : 'grid-cols-1 gap-12'}`}>
             {experienceData.map((item, index) => {
               const colors = getPaletteClasses(item.palette);
               const isActive = activeIssue === index;
@@ -94,11 +110,11 @@ const Experience = () => {
               return (
                 <div 
                   key={index} 
-                  className={`issue-cover relative group cursor-pointer transition-all duration-500 pl-16 lg:pl-0 ${isActive ? 'lg:scale-105 z-20' : 'lg:scale-95 z-10 lg:opacity-70 lg:hover:opacity-100'}`}
+                  className={`issue-cover relative group cursor-pointer transition-all duration-500 pl-16 ${viewMode === 'timeline' ? '' : 'lg:pl-0'} ${isActive && viewMode === 'grid' ? 'lg:scale-105 z-20' : (viewMode === 'grid' ? 'lg:scale-95 z-10 lg:opacity-70 lg:hover:opacity-100' : 'z-20')}`}
                   onClick={() => setActiveIssue(index)}
                 >
-                  {/* Timeline Node (Mobile) */}
-                  <div className="lg:hidden absolute left-[-8px] top-8 w-6 h-6 rounded-full border-4 border-[var(--color-ink-black)] bg-[var(--color-paper)] z-10"></div>
+                  {/* Timeline Node */}
+                  <div className={`absolute left-[-8px] top-8 w-6 h-6 rounded-full border-4 border-[var(--color-ink-black)] bg-[var(--color-paper)] z-10 ${viewMode === 'timeline' ? 'block' : 'lg:hidden'}`}></div>
                   
                   {/* Issue Cover Panel */}
                   <ComicPanel 
@@ -128,7 +144,7 @@ const Experience = () => {
                         {item.period}
                       </div>
 
-                      <div className={`space-y-4 mb-6 transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:h-0 lg:overflow-hidden'}`}>
+                      <div className={`space-y-4 mb-6 transition-all duration-300 ${isActive || viewMode === 'timeline' ? 'opacity-100' : 'opacity-100 lg:opacity-0 lg:h-0 lg:overflow-hidden'}`}>
                         <div>
                           <span className={`font-label uppercase font-bold text-xs block mb-1 ${colors.text}`}>Mission</span>
                           <p className="font-body text-sm font-bold leading-tight">{item.mission}</p>
