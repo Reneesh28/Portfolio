@@ -5,6 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ComicSpread from "../components/comic/ComicSpread";
 import ComicPanel from "../components/comic/ComicPanel";
 import InkButton from "../components/comic/InkButton";
+import StampReveal from "../components/comic/StampReveal";
+import { lazy, Suspense } from 'react';
+const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
 import profileData from "../data/profile";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -41,10 +44,10 @@ const Contact = () => {
 
     setStatus("sending");
     setLogs(["INITIATING DELIVERY..."]);
-    
+
     // Comic Effect "Zzzap!"
     setEffectText("ZZZAP!");
-    gsap.fromTo('.comic-effect', 
+    gsap.fromTo('.comic-effect',
       { scale: 0, opacity: 1, rotation: -20 },
       { scale: 1.5, opacity: 0, rotation: 20, duration: 0.6, ease: "power4.out" }
     );
@@ -63,12 +66,18 @@ const Contact = () => {
       setLogs(prev => [...prev, "MESSAGE RECEIVED!"]);
       setStatus("success");
       setEffectText("BOOM!");
-      gsap.fromTo('.comic-effect', 
+      gsap.fromTo('.comic-effect',
         { scale: 0, opacity: 1, rotation: 10 },
         { scale: 2, opacity: 0, rotation: -10, duration: 1, ease: "elastic.out(1, 0.3)" }
       );
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.to(sectionRef.current, {
+          x: 'random(-8,8)', y: 'random(-6,6)', duration: 0.05, repeat: 5, yoyo: true,
+          onComplete: () => gsap.set(sectionRef.current, { x: 0, y: 0 }),
+        });
+      }
       formRef.current.reset();
-      
+
       // Reset back to idle after a while
       setTimeout(() => setStatus("idle"), 5000);
     } catch (err) {
@@ -81,33 +90,40 @@ const Contact = () => {
 
   return (
     <ComicSpread id="contact" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] z-30 pb-32" ref={sectionRef}>
-      
+
       {/* Background Texture */}
       <div className="absolute inset-0 bg-halftone-magenta opacity-20 mix-blend-screen pointer-events-none"></div>
 
+      {/* 3D dimension-rift backdrop — final signal across the multiverse */}
+      <div className="absolute inset-0 opacity-50 pointer-events-none">
+        <Suspense fallback={null}><DimensionRift density={18} /></Suspense>
+      </div>
+
       <div className="relative z-10 w-full max-w-7xl mx-auto">
-        
+
         <div className="text-center mb-16">
           <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-portal-cyan)] mb-2">COMMUNICATIONS</p>
-          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)]">
-            GET IN TOUCH
-          </h2>
+          <StampReveal sfx="SIGNAL!" color="var(--color-portal-cyan)" rotation={-5}>
+            <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)]">
+              GET IN TOUCH
+            </h2>
+          </StampReveal>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
+
           {/* Left Panel: The Portal Interface */}
           <div className="contact-panel lg:col-span-7 h-full">
             <ComicPanel theme="dark" rotation="-1deg" className="h-full p-6 md:p-10 relative overflow-hidden bg-[var(--color-deep-navy)]" style={{ borderColor: 'var(--color-portal-cyan)' }}>
-              
+
               {/* Decorative elements */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--color-dimension-magenta)] rounded-full blur-[80px] opacity-30 pointer-events-none"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-[var(--color-portal-cyan)] rounded-full blur-[80px] opacity-30 pointer-events-none"></div>
 
               <h3 className="font-display text-3xl mb-8 text-[var(--color-dimension-magenta)]">SEND A MESSAGE</h3>
-              
+
               <form ref={formRef} onSubmit={sendEmail} className="space-y-6 relative z-10">
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="font-label font-bold uppercase text-[var(--color-text-muted-dark)] text-xs">Your Name</label>
@@ -120,7 +136,7 @@ const Contact = () => {
                       placeholder="Jane Doe"
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <label className="font-label font-bold uppercase text-[var(--color-text-muted-dark)] text-xs">Email Address</label>
                     <input
@@ -155,7 +171,7 @@ const Contact = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className="font-label font-bold uppercase text-[var(--color-text-muted-dark)] text-xs">Message</label>
                   <textarea
@@ -166,11 +182,11 @@ const Contact = () => {
                     placeholder="How can I help you?"
                   />
                 </div>
-                
+
                 <div className="pt-4 relative">
-                  <InkButton 
-                    type="submit" 
-                    variant={status === 'success' ? 'yellow' : 'cyan'} 
+                  <InkButton
+                    type="submit"
+                    variant={status === 'success' ? 'yellow' : 'cyan'}
                     disabled={status === "sending"}
                     className="w-full text-lg shadow-[8px_8px_0_var(--color-dimension-magenta)]"
                   >
@@ -188,14 +204,14 @@ const Contact = () => {
 
           {/* Right Panel: Operator Data & Logs */}
           <div className="lg:col-span-5 flex flex-col gap-8 h-full">
-            
+
             {/* Operator Info */}
             <div className="contact-panel flex-grow">
               <ComicPanel theme="light" rotation="1deg" className="h-full p-6 md:p-8 bg-[var(--color-paper-light)]">
                 <div className="border-b-4 border-[var(--color-ink-black)] pb-4 mb-6">
                   <h3 className="font-display text-4xl text-[var(--color-ink-black)] leading-none">CONTACT DETAILS</h3>
                 </div>
-                
+
                 <div className="space-y-6">
                   <div>
                     <span className="font-label uppercase font-bold text-xs text-[var(--color-pencil-gray)] block mb-1">Name</span>
@@ -241,7 +257,7 @@ const Contact = () => {
             </div>
 
           </div>
-          
+
         </div>
       </div>
     </ComicSpread>

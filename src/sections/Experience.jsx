@@ -1,6 +1,7 @@
 import { useState } from "react";
 import experienceData from "../data/experience";
 import ComicSpread from "../components/comic/ComicSpread";
+import StampReveal from "../components/comic/StampReveal";
 
 const palettes = {
   cyan: {
@@ -30,15 +31,16 @@ function StatusStamp({ status }) {
   const active = status.toLowerCase() === "active";
 
   return (
-    <span
-      className={`shrink-0 border-2 border-[var(--color-ink-black)] px-2 py-1 font-label text-[10px] font-bold uppercase tracking-wider ${
-        active
-          ? "bg-[var(--color-comic-yellow)] text-[var(--color-ink-black)]"
-          : "bg-[var(--color-ink-black)] text-white"
-      }`}
-    >
-      {active ? "ONGOING" : status}
-    </span>
+    <StampReveal sfx={null} color="var(--color-signal-red)" rotation={-14} once={false}>
+      <span
+        className={`shrink-0 border-2 border-[var(--color-ink-black)] px-2 py-1 font-label text-[10px] font-bold uppercase tracking-wider ${active
+            ? "bg-[var(--color-comic-yellow)] text-[var(--color-ink-black)]"
+            : "bg-[var(--color-ink-black)] text-white"
+          }`}
+      >
+        {active ? "ONGOING" : status}
+      </span>
+    </StampReveal>
   );
 }
 
@@ -51,11 +53,10 @@ function IssueSummary({ item, index, selected, controls, onSelect }) {
       onClick={onSelect}
       aria-expanded={selected}
       aria-controls={controls}
-      className={`comic-focus relative w-full border-4 border-[var(--color-ink-black)] p-0 text-left transition-[transform,box-shadow,opacity] duration-300 ${
-        selected
+      className={`comic-focus relative w-full border-4 border-[var(--color-ink-black)] p-0 text-left transition-[transform,box-shadow,opacity] duration-300 ${selected
           ? "translate-x-2 opacity-100 shadow-[8px_8px_0_var(--color-ink-black)]"
           : "opacity-75 hover:translate-x-1 hover:opacity-100"
-      }`}
+        }`}
     >
       <span className={`block h-3 w-full ${palette.accentClass}`} aria-hidden="true" />
       <span className="block bg-[var(--color-paper-light)] p-4 text-[var(--color-ink-black)]">
@@ -190,9 +191,11 @@ export default function Experience() {
           <p className="mb-2 font-label font-bold uppercase tracking-[0.3em] text-[var(--color-pencil-gray)]">
             Operational History
           </p>
-          <h2 className="font-display text-5xl tracking-wider md:text-7xl lg:text-8xl">
-            Previous Issues
-          </h2>
+          <StampReveal sfx="ISSUE!" color="var(--color-dimension-magenta)" rotation={-5}>
+            <h2 className="font-display text-5xl tracking-wider md:text-7xl lg:text-8xl">
+              Previous Issues
+            </h2>
+          </StampReveal>
           <svg
             className="mx-auto mt-3 h-4 w-2/3 max-w-md text-[var(--color-dimension-magenta)]"
             viewBox="0 0 200 10"

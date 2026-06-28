@@ -5,13 +5,15 @@ import profileData from '../data/profile';
 import ComicSpread from '../components/comic/ComicSpread';
 import ComicPanel from '../components/comic/ComicPanel';
 import InkButton from '../components/comic/InkButton';
-import codewalkerImg from "../assets/images/codewalker.png";
+import TiltCard from '../components/comic/TiltCard';
+import StampReveal from '../components/comic/StampReveal';
+import codewalkerImg from "../assets/images/codewalker.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const About = () => {
   const sectionRef = useRef(null);
-  
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Entrance animation for panels
@@ -34,28 +36,32 @@ const About = () => {
 
   return (
     <ComicSpread id="about" className="bg-[var(--color-paper)] text-[var(--color-text-on-paper)] border-t-8 border-b-8 border-[var(--color-ink-black)] z-20" ref={sectionRef}>
-      
+
       {/* Background Texture */}
       <div className="absolute inset-0 bg-halftone-light opacity-50 pointer-events-none mix-blend-multiply"></div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto">
-        <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-[var(--color-ink-black)] mb-12 tracking-wider text-center print-offset-both">
-          THE ORIGIN STORY
-        </h2>
+        <StampReveal sfx="ORIGIN!" color="var(--color-dimension-magenta)" rotation={-4}>
+          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-[var(--color-ink-black)] mb-12 tracking-wider text-center print-offset-both">
+            THE ORIGIN STORY
+          </h2>
+        </StampReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 md:gap-8">
-          
+
           {/* Panel 1: Profile Image */}
           <div className="about-panel lg:col-span-4">
-            <ComicPanel theme="light" rotation="-2deg" className="h-full p-4 flex flex-col bg-white">
-              <div className="flex-grow bg-[var(--color-ink-black)] relative overflow-hidden border-4 border-[var(--color-ink-black)] shadow-inner">
-                <img src={codewalkerImg} alt="The Codewalker Desk Variant" className="w-full h-auto object-cover opacity-80 mix-blend-screen" />
-              </div>
-              <div className="mt-4 border-t-4 border-[var(--color-ink-black)] pt-2 flex justify-between font-label uppercase font-bold text-sm">
-                <span>IDENTITY_FILE_01</span>
-                <span>EARTH-28</span>
-              </div>
-            </ComicPanel>
+            <TiltCard maxTilt={8}>
+              <ComicPanel theme="light" rotation="-2deg" className="h-full p-4 flex flex-col bg-white">
+                <div className="flex-grow bg-[var(--color-ink-black)] relative overflow-hidden border-4 border-[var(--color-ink-black)] shadow-inner">
+                  <img src={codewalkerImg} alt="The Codewalker Desk Variant" className="w-full h-auto object-cover opacity-80 mix-blend-screen" />
+                </div>
+                <div className="mt-4 border-t-4 border-[var(--color-ink-black)] pt-2 flex justify-between font-label uppercase font-bold text-sm">
+                  <span>IDENTITY_FILE_01</span>
+                  <span>EARTH-28</span>
+                </div>
+              </ComicPanel>
+            </TiltCard>
           </div>
 
           {/* Panel 2: Biography */}
@@ -76,7 +82,7 @@ const About = () => {
               <h3 className="font-display text-3xl md:text-4xl text-[var(--color-dimension-magenta)] mb-6 tracking-wide">
                 CHARACTER PROFILE
               </h3>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 font-body text-sm md:text-base">
                 <div className="border-b-2 border-dashed border-[var(--color-ink-black)]/30 pb-2">
                   <span className="font-label font-bold uppercase text-[var(--color-pencil-gray)] block text-xs">Alias</span>
@@ -100,7 +106,9 @@ const About = () => {
                 </div>
                 <div className="border-b-2 border-dashed border-[var(--color-ink-black)]/30 pb-2 sm:col-span-2">
                   <span className="font-label font-bold uppercase text-[var(--color-pencil-gray)] block text-xs">Availability</span>
-                  <span className="font-bold text-[var(--color-success-green)] bg-[var(--color-ink-black)] px-2 py-0.5 inline-block mt-1">{profileData.availability}</span>
+                  <StampReveal sfx={null} color="var(--color-success-green)" rotation={-12} className="mt-1">
+                    <span className="font-bold text-[var(--color-success-green)] bg-[var(--color-ink-black)] px-2 py-0.5 inline-block">{profileData.availability}</span>
+                  </StampReveal>
                 </div>
               </div>
             </ComicPanel>
@@ -119,7 +127,7 @@ const About = () => {
               </a>
             </ComicPanel>
           </div>
-          
+
         </div>
       </div>
     </ComicSpread>

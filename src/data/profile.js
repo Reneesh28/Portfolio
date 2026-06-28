@@ -1,4 +1,5 @@
 const profile = {
+  name: "Balam Reneesh",
   alias: "The Codewalker",
   identity: "Reneesh Balam",
   base: "Earth-28",
