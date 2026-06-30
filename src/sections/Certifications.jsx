@@ -7,7 +7,9 @@ import ComicPanel from '../components/comic/ComicPanel';
 import InkButton from '../components/comic/InkButton';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
+import FrameStutter from '../components/comic/FrameStutter';
 import { X, ExternalLink } from 'lucide-react';
+import { SectionPortal } from '../components/comic/PortalTransition';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -57,6 +59,7 @@ const Certifications = () => {
 
   return (
     <ComicSpread id="certifications" className="bg-[var(--color-paper-light)] text-[var(--color-ink-black)] z-20" ref={sectionRef}>
+      <SectionPortal colorA="var(--color-saffron)" colorB="var(--color-success-green)" />
 
       {/* Background Texture */}
       <div className="absolute inset-0 bg-halftone-light opacity-50 pointer-events-none mix-blend-multiply"></div>
@@ -72,11 +75,13 @@ const Certifications = () => {
           <div className="font-label uppercase font-bold text-[var(--color-pencil-gray)] mb-2 tracking-[0.3em] bg-[var(--color-ink-black)] text-[var(--color-paper-light)] px-4 py-1 inline-block transform -rotate-1">
             TROPHY ROOM
           </div>
-          <StampReveal sfx="VERIFIED!" color="var(--color-success-green)" rotation={-4}>
-            <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-ink-black)] mt-4">
-              COLLECTED ARTIFACTS
-            </h2>
-          </StampReveal>
+          <FrameStutter steps={5}>
+            <StampReveal sfx="VERIFIED!" color="var(--color-success-green)" rotation={-4}>
+              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-ink-black)] mt-4">
+                COLLECTED ARTIFACTS
+              </h2>
+            </StampReveal>
+          </FrameStutter>
         </div>
 
         {/* Inventory Grid */}

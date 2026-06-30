@@ -13,6 +13,7 @@ import Experience from "./sections/Experience";
 import Contact from "./sections/Contact";
 import Footer from "./components/Footer";
 import GlobalControls from "./components/GlobalControls";
+import PortalOverlay from "./components/comic/PortalTransition";
 
 function App() {
   const [introDone, setIntroDone] = useState(() => {
@@ -29,6 +30,7 @@ function App() {
     <div className="bg-[var(--color-ink-black)] min-h-screen text-[var(--color-text-on-dark)] font-body">
       {/* Global Textures */}
       <PaperTexture theme="dark" />
+      <PortalOverlay />
 
       {/* GSAP INTRO — blocks everything */}
       {!introDone && <Intro onFinish={handleIntroFinish} />}

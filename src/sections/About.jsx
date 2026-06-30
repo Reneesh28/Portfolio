@@ -7,7 +7,9 @@ import ComicPanel from '../components/comic/ComicPanel';
 import InkButton from '../components/comic/InkButton';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
+import FrameStutter from '../components/comic/FrameStutter';
 import codewalkerImg from "../assets/images/codewalker.webp";
+import { SectionPortal } from '../components/comic/PortalTransition';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,16 +38,19 @@ const About = () => {
 
   return (
     <ComicSpread id="about" className="bg-[var(--color-paper)] text-[var(--color-text-on-paper)] border-t-8 border-b-8 border-[var(--color-ink-black)] z-20" ref={sectionRef}>
+      <SectionPortal colorA="var(--color-miles-red)" colorB="var(--color-saffron)" />
 
       {/* Background Texture */}
       <div className="absolute inset-0 bg-halftone-light opacity-50 pointer-events-none mix-blend-multiply"></div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto">
-        <StampReveal sfx="ORIGIN!" color="var(--color-dimension-magenta)" rotation={-4}>
-          <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-[var(--color-ink-black)] mb-12 tracking-wider text-center print-offset-both">
-            THE ORIGIN STORY
-          </h2>
-        </StampReveal>
+        <FrameStutter steps={5}>
+          <StampReveal sfx="ORIGIN!" color="var(--color-dimension-magenta)" rotation={-4}>
+            <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-[var(--color-ink-black)] mb-12 tracking-wider text-center print-offset-both">
+              THE ORIGIN STORY
+            </h2>
+          </StampReveal>
+        </FrameStutter>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 md:gap-8">
 

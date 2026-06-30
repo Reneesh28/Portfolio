@@ -6,6 +6,8 @@ import ComicSpread from '../components/comic/ComicSpread';
 import PaperTexture from '../components/comic/PaperTexture';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
+import FrameStutter from '../components/comic/FrameStutter';
+import { SectionPortal } from '../components/comic/PortalTransition';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,6 +57,7 @@ const Education = () => {
 
   return (
     <ComicSpread id="education" className="bg-[var(--color-deep-navy)] z-10" ref={sectionRef}>
+      <SectionPortal colorA="var(--color-dimension-magenta)" colorB="var(--color-temple-gold)" />
 
       {/* Background Texture */}
       <div className="absolute inset-0 bg-halftone-cyan opacity-20 mix-blend-screen pointer-events-none"></div>
@@ -62,11 +65,13 @@ const Education = () => {
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center">
 
         <div className="text-center mb-16 relative">
-          <StampReveal sfx="FILED!" color="var(--color-dimension-magenta)" rotation={-5}>
-            <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-cyan print-offset-magenta">
-              ORIGIN RECORDS
-            </h2>
-          </StampReveal>
+          <FrameStutter steps={5}>
+            <StampReveal sfx="FILED!" color="var(--color-dimension-magenta)" rotation={-5}>
+              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-cyan print-offset-magenta">
+                ORIGIN RECORDS
+              </h2>
+            </StampReveal>
+          </FrameStutter>
         </div>
 
         {/* Dossier Folder */}

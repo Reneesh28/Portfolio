@@ -10,7 +10,7 @@
   --color-paper-muted: #D8CEB8;
   --color-pencil-gray: #77727D;
   --color-ink-muted: #AAA3A0;
-  
+
   --color-portal-cyan: #00E5FF;
   --color-electric-blue: #287BFF;
   --color-dimension-magenta: #FF2DAA;
@@ -20,14 +20,27 @@
   --color-success-green: #35E08A;
   --color-error-red: #FF455D;
 
+  /* Mumbattan accents — Pavitr Prabhakar dimension palette */
+  --color-saffron: #FF7A1A;
+  --color-marigold: #FFB627;
+  --color-rose-pink: #FF3D7F;
+  --color-temple-gold: #E8B33D;
+  --color-indigo-night: #2B1B4D;
+
+  /* Brooklyn accents — Miles Morales dimension palette */
+  --color-miles-red: #E0122A;
+  --color-miles-black: #0A0A0C;
+  --color-spray-pink: #FF1D6C;
+  --color-web-white: #F2F2F2;
+
   --color-text-on-dark: #F7F1E3;
   --color-text-muted-dark: #B9B3B1;
   --color-text-on-paper: #111116;
   --color-text-muted-paper: #514D50;
-  
+
   --color-ink-border: #111116;
-  --color-cyan-border: rgba(0,229,255,0.65);
-  --color-paper-border: rgba(17,17,22,0.22);
+  --color-cyan-border: rgba(0, 229, 255, 0.65);
+  --color-paper-border: rgba(17, 17, 22, 0.22);
 }
 
 :root {

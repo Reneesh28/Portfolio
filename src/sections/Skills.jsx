@@ -7,6 +7,8 @@ import ComicSpread from '../components/comic/ComicSpread';
 import ComicPanel from '../components/comic/ComicPanel';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
+import FrameStutter from '../components/comic/FrameStutter';
+import { SectionPortal } from '../components/comic/PortalTransition';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,17 +55,20 @@ const Skills = () => {
 
   return (
     <ComicSpread id="skills" className="bg-[var(--color-deep-navy)] z-10" ref={sectionRef}>
+      <SectionPortal colorA="var(--color-saffron)" colorB="var(--color-portal-cyan)" />
 
       <div className="absolute inset-0 bg-halftone-dark opacity-20 pointer-events-none"></div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center">
 
         <div className="flex flex-col md:flex-row justify-between items-center w-full mb-12 px-4 md:px-0 gap-6">
-          <StampReveal sfx="ZAP!" color="var(--color-portal-cyan)" rotation={-4}>
-            <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-[var(--color-text-on-dark)] tracking-wider text-center md:text-left print-offset-cyan">
-              POWERS & TOOLS
-            </h2>
-          </StampReveal>
+          <FrameStutter steps={5}>
+            <StampReveal sfx="ZAP!" color="var(--color-portal-cyan)" rotation={-4}>
+              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-[var(--color-text-on-dark)] tracking-wider text-center md:text-left print-offset-cyan">
+                POWERS & TOOLS
+              </h2>
+            </StampReveal>
+          </FrameStutter>
 
           <div className="flex items-center gap-4 bg-[var(--color-ink-black)] border-4 border-[var(--color-portal-cyan)] p-2">
             <button

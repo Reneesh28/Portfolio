@@ -20,6 +20,7 @@
 .paper-grain {
   position: relative;
 }
+
 .paper-grain::before {
   content: "";
   position: absolute;
@@ -62,4 +63,299 @@
 
 .torn-edge-bottom {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), 95% 100%, 90% calc(100% - 10px), 85% 100%, 80% calc(100% - 10px), 75% 100%, 70% calc(100% - 10px), 65% 100%, 60% calc(100% - 10px), 55% 100%, 50% calc(100% - 10px), 45% 100%, 40% calc(100% - 10px), 35% 100%, 30% calc(100% - 10px), 25% 100%, 20% calc(100% - 10px), 15% 100%, 10% calc(100% - 10px), 5% 100%, 0 calc(100% - 10px));
+}
+
+/* ===============================
+   SPIDER-VERSE / MUMBATTAN LAYER
+   Jagged borders, speed lines, drips, kinetic type, caption boxes
+=============================== */
+
+/* Hand-drawn jagged panel border — replaces clean rectangles with a sketchy,
+   slightly irregular comic-panel outline. Apply alongside (not instead of)
+   existing border classes. */
+.jagged-panel {
+  position: relative;
+  clip-path: polygon(0.5% 2%, 3% 0%, 97% 1%, 99.5% 3%,
+      100% 96%, 97% 99%, 4% 100%, 0% 97%);
+}
+
+.jagged-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 3px solid var(--color-ink-black);
+  clip-path: polygon(0.5% 2%, 3% 0%, 97% 1%, 99.5% 3%,
+      100% 96%, 97% 99%, 4% 100%, 0% 97%);
+}
+
+/* Speed-line burst — radiating action lines from a center point, used behind
+   stamp impacts for extra kinetic energy. Pure CSS conic-gradient, cheap. */
+.speed-burst {
+  position: absolute;
+  inset: -40%;
+  pointer-events: none;
+  background: repeating-conic-gradient(from 0deg,
+      var(--speed-burst-color, var(--color-saffron)) 0deg 2deg,
+      transparent 2deg 14deg);
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+/* Ink drip — sits on the bottom edge of a panel/card for a hand-painted feel */
+.drip-edge {
+  position: relative;
+}
+
+.drip-edge::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -14px;
+  height: 18px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 8% 0, currentColor 0 5px, transparent 6px) 0 -2px / 40px 20px repeat-x,
+    radial-gradient(circle at 60% 0, currentColor 0 4px, transparent 5px) 10px -2px / 60px 20px repeat-x,
+    radial-gradient(circle at 30% 0, currentColor 0 3px, transparent 4px) 25px -2px / 50px 20px repeat-x;
+  opacity: 0.9;
+}
+
+/* Kinetic glitch type — letters jitter and ghost-duplicate in dimension
+   colors. Bold variant for headers wanting Mumbattan-level chaos.
+   Apply to a wrapping element; works best on short headline text. */
+.glitch-type {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-type::before,
+.glitch-type::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  color: inherit;
+}
+
+.glitch-type::before {
+  color: var(--color-miles-red);
+  mix-blend-mode: screen;
+  animation: glitch-shift-1 3.4s infinite linear;
+}
+
+.glitch-type::after {
+  color: var(--color-saffron);
+  mix-blend-mode: screen;
+  animation: glitch-shift-2 2.8s infinite linear;
+}
+
+@keyframes glitch-shift-1 {
+
+  0%,
+  88%,
+  100% {
+    transform: translate(0, 0);
+    clip-path: inset(0 0 0 0);
+    opacity: 0;
+  }
+
+  89% {
+    transform: translate(-3px, 1px);
+    clip-path: inset(10% 0 60% 0);
+    opacity: 0.85;
+  }
+
+  90.5% {
+    transform: translate(2px, -1px);
+    clip-path: inset(55% 0 10% 0);
+    opacity: 0.85;
+  }
+
+  92% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes glitch-shift-2 {
+
+  0%,
+  91%,
+  100% {
+    transform: translate(0, 0);
+    clip-path: inset(0 0 0 0);
+    opacity: 0;
+  }
+
+  92% {
+    transform: translate(3px, -1px);
+    clip-path: inset(40% 0 30% 0);
+    opacity: 0.8;
+  }
+
+  93.5% {
+    transform: translate(-2px, 1px);
+    clip-path: inset(5% 0 75% 0);
+    opacity: 0.8;
+  }
+
+  95% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .glitch-type::before,
+  .glitch-type::after {
+    animation: none;
+    display: none;
+  }
+}
+
+/* Caption box — Spider-Verse style yellow narration box for intros/blurbs */
+.caption-box {
+  display: inline-block;
+  background: var(--color-marigold);
+  color: var(--color-ink-black);
+  border: 3px solid var(--color-ink-black);
+  padding: 0.4em 0.8em;
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transform: rotate(-1.2deg);
+  box-shadow: 4px 4px 0 var(--color-ink-black);
+}
+
+/* Mumbattan halftone — warm saffron dot pattern, alt to the cool cyan one */
+.bg-halftone-saffron {
+  background-image: radial-gradient(circle, var(--color-saffron) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+/* Dimension-bleed seam — a torn, glitchy edge where 3D rift "punches through"
+   a 2D panel boundary. Use on a thin strip element overlapping a panel edge. */
+.bleed-seam {
+  background: repeating-linear-gradient(100deg,
+      var(--color-rose-pink) 0 2px,
+      transparent 2px 6px,
+      var(--color-portal-cyan) 6px 8px,
+      transparent 8px 14px);
+  filter: blur(0.5px);
+  mix-blend-mode: screen;
+}
+
+/* ===============================
+   FUSION LAYER — Pavitr Prabhakar x Miles Morales
+   Use rangoli + spray classes TOGETHER on the same element for the
+   combined identity, not as alternates.
+=============================== */
+
+/* Rangoli corner accent — small geometric mandala-style mark (Pavitr/Mumbai),
+   placed in a panel corner. Pure CSS conic/radial layering. */
+.rangoli-corner {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  pointer-events: none;
+  background:
+    repeating-conic-gradient(var(--color-temple-gold) 0deg 8deg,
+      transparent 8deg 45deg);
+  -webkit-mask: radial-gradient(circle, black 55%, transparent 58%);
+  mask: radial-gradient(circle, black 55%, transparent 58%);
+  opacity: 0.85;
+}
+
+.rangoli-corner::after {
+  content: "";
+  position: absolute;
+  inset: 30%;
+  border-radius: 50%;
+  background: var(--color-saffron);
+}
+
+/* Graffiti spray edge — rough spray-paint speckle along a border (Miles/Brooklyn).
+   Layer on top of jagged-panel for the combined frame treatment. */
+.spray-edge {
+  position: relative;
+}
+
+.spray-edge::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, var(--color-miles-red) 1px, transparent 1.4px),
+    radial-gradient(circle, var(--color-spray-pink) 1px, transparent 1.4px);
+  background-size: 9px 9px, 13px 13px;
+  background-position: 0 0, 4px 6px;
+  -webkit-mask: linear-gradient(black, black) content-box, linear-gradient(black, black);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.5;
+  z-index: 5;
+}
+
+/* Suit-block stripe — a diagonal red/black band reminiscent of both the
+   Miles suit blocking and a Pavitr dhoti sash, run along one panel edge. */
+.suit-block-sash {
+  position: absolute;
+  top: 0;
+  right: 8%;
+  width: 14%;
+  height: 100%;
+  background: repeating-linear-gradient(115deg,
+      var(--color-miles-red) 0 10px,
+      var(--color-miles-black) 10px 14px,
+      var(--color-temple-gold) 14px 18px);
+  opacity: 0.9;
+  pointer-events: none;
+  clip-path: polygon(20% 0, 100% 0, 80% 100%, 0% 100%);
+}
+
+/* Fusion halftone — alternating warm saffron / Brooklyn-red dot rows */
+.bg-halftone-fusion {
+  background-image:
+    radial-gradient(circle, var(--color-saffron) 1px, transparent 1px),
+    radial-gradient(circle, var(--color-miles-red) 1px, transparent 1px);
+  background-size: 4px 4px, 4px 4px;
+  background-position: 0 0, 2px 2px;
+}
+
+/* Two-tone fusion text shadow — Miles glitch magenta/cyan PLUS Pavitr
+   saffron/marigold in one stamp, instead of picking one palette */
+.print-offset-fusion {
+  text-shadow:
+    2px 2px 0 var(--color-dimension-magenta),
+    -2px -2px 0 var(--color-portal-cyan),
+    1px -1px 0 var(--color-saffron);
+}
+
+/* Stencil display type — sharp Miles-style cutout lettering for labels/tags */
+.stencil-label {
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  -webkit-text-stroke: 1px var(--color-ink-black);
+}
+
+/* Web-line motion streaks — thin diagonal lines suggesting a web-sling pass,
+   layered subtly behind kinetic elements */
+.web-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(115deg,
+      rgba(255, 255, 255, 0.08) 0px,
+      rgba(255, 255, 255, 0.08) 1px,
+      transparent 1px,
+      transparent 26px);
 }

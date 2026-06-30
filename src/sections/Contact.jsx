@@ -6,9 +6,11 @@ import ComicSpread from "../components/comic/ComicSpread";
 import ComicPanel from "../components/comic/ComicPanel";
 import InkButton from "../components/comic/InkButton";
 import StampReveal from "../components/comic/StampReveal";
+import FrameStutter from "../components/comic/FrameStutter";
 import { lazy, Suspense } from 'react';
 const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
 import profileData from "../data/profile";
+import { SectionPortal } from '../components/comic/PortalTransition';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -90,6 +92,7 @@ const Contact = () => {
 
   return (
     <ComicSpread id="contact" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] z-30 pb-32" ref={sectionRef}>
+      <SectionPortal colorA="var(--color-miles-red)" colorB="var(--color-portal-cyan)" />
 
       {/* Background Texture */}
       <div className="absolute inset-0 bg-halftone-magenta opacity-20 mix-blend-screen pointer-events-none"></div>
@@ -103,11 +106,13 @@ const Contact = () => {
 
         <div className="text-center mb-16">
           <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-portal-cyan)] mb-2">COMMUNICATIONS</p>
-          <StampReveal sfx="SIGNAL!" color="var(--color-portal-cyan)" rotation={-5}>
-            <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)]">
-              GET IN TOUCH
-            </h2>
-          </StampReveal>
+          <FrameStutter steps={5}>
+            <StampReveal sfx="SIGNAL!" color="var(--color-portal-cyan)" rotation={-5}>
+              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)]">
+                GET IN TOUCH
+              </h2>
+            </StampReveal>
+          </FrameStutter>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

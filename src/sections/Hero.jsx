@@ -3,6 +3,10 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import InkButton from '../components/comic/InkButton';
 import StampReveal from '../components/comic/StampReveal';
+import KineticTitle from '../components/comic/KineticTitle';
+import SpeedBurst from '../components/comic/SpeedBurst';
+import FrameStutter from '../components/comic/FrameStutter';
+import { SectionPortal } from '../components/comic/PortalTransition';
 import { lazy, Suspense } from 'react';
 const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
 import codewalkerImg from '../assets/images/codewalker.webp'; // Generated Codewalker art
@@ -79,6 +83,7 @@ const Hero = () => {
 
   return (
     <section ref={sectionRef} id="hero" className="relative min-h-screen w-full bg-[var(--color-ink-black)] overflow-hidden flex items-center justify-center">
+      <SectionPortal colorA="var(--color-miles-red)" colorB="var(--color-saffron)" threshold={0.2} />
 
       <div className="absolute inset-0 bg-halftone-dark opacity-10 pointer-events-none"></div>
 
@@ -96,34 +101,37 @@ const Hero = () => {
             ISSUE #01 &middot; EARTH-28
           </div>
 
-          <StampReveal sfx="THWIP!" color="var(--color-portal-cyan)" rotation={-6} className="block w-full">
-            <h1 className="font-display text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-wider text-[var(--color-text-on-dark)] mb-6 relative z-10">
-              <span className="relative inline-block w-full">
-                RENEESH
-                <span className="print-layer-m absolute top-0 left-0 w-full text-[var(--color-dimension-magenta)] mix-blend-screen opacity-70 pointer-events-none -z-10">RENEESH</span>
-                <span className="print-layer-c absolute top-0 left-0 w-full text-[var(--color-portal-cyan)] mix-blend-screen opacity-70 pointer-events-none -z-10">RENEESH</span>
-              </span>
-              <span className="block text-3xl md:text-5xl lg:text-5xl mt-4 text-[var(--color-text-muted-dark)] tracking-wide">
-                ACROSS THE CODEVERSE
-              </span>
-            </h1>
-          </StampReveal>
+          <FrameStutter steps={6} distance={50} direction="left">
+            <StampReveal sfx="THWIP!" color="var(--color-miles-red)" rotation={-6} className="block w-full">
+              <h1 className="font-display text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-wider text-[var(--color-text-on-dark)] mb-6 relative z-10">
+                <span className="relative inline-block w-full">
+                  <SpeedBurst color="var(--color-saffron)" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] -z-20" />
+                  <KineticTitle as="span">RENEESH</KineticTitle>
+                </span>
+                <span className="block text-3xl md:text-5xl lg:text-5xl mt-4 text-[var(--color-text-muted-dark)] tracking-wide">
+                  ACROSS THE CODEVERSE
+                </span>
+              </h1>
+            </StampReveal>
+          </FrameStutter>
 
-          <h2 className="font-label uppercase font-bold text-lg md:text-2xl text-[var(--color-portal-cyan)] mb-6 border-l-4 border-[var(--color-portal-cyan)] pl-4 leading-tight">
-            AI Systems Engineer building intelligent, full-stack experiences.
-          </h2>
+          <div className="caption-box mb-6 w-fit" style={{ borderColor: 'var(--color-miles-black)', boxShadow: '4px 4px 0 var(--color-miles-red)' }}>
+            <h2 className="font-label uppercase font-bold text-sm md:text-base leading-tight m-0">
+              AI Systems Engineer building intelligent, full-stack experiences.
+            </h2>
+          </div>
 
           <p className="font-body text-base md:text-lg text-[var(--color-text-on-dark)] mb-10 max-w-xl opacity-90 leading-relaxed">
             I combine generative AI, machine learning and modern interfaces to turn ambitious ideas into working systems.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
-            <StampReveal sfx="BAM!" color="var(--color-comic-yellow)" rotation={-10} delay={0.15}>
+            <StampReveal sfx="BAM!" color="var(--color-saffron)" rotation={-10} delay={0.15}>
               <InkButton variant="cyan" onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>
                 Explore the Codeverse
               </InkButton>
             </StampReveal>
-            <StampReveal sfx="POW!" color="var(--color-dimension-magenta)" rotation={8} delay={0.3}>
+            <StampReveal sfx="POW!" color="var(--color-miles-red)" rotation={8} delay={0.3}>
               <InkButton variant="magenta" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
                 Send a Signal
               </InkButton>
@@ -136,23 +144,28 @@ const Hero = () => {
 
         {/* Right Column - Character Art */}
         <div ref={rightColRef} className="lg:col-span-7 order-1 lg:order-2 relative h-[40vh] lg:h-[80vh] flex items-center justify-center mt-12 lg:mt-0">
-          {/* Comic Panel Frame */}
-          <div className="absolute inset-0 border-8 border-[var(--color-ink-black)] bg-[var(--color-deep-navy)] transform rotate-2 overflow-hidden shadow-2xl mx-4 lg:mx-0">
-            <div className="absolute inset-0 bg-halftone-cyan opacity-20 mix-blend-overlay"></div>
+          {/* Comic Panel Frame — fused Miles spray-edge + Pavitr rangoli/sash, same frame */}
+          <div className="jagged-panel spray-edge absolute inset-0 border-8 border-[var(--color-ink-black)] bg-[var(--color-deep-navy)] transform rotate-2 overflow-hidden shadow-2xl mx-4 lg:mx-0">
+            <div className="absolute inset-0 bg-halftone-fusion opacity-15 mix-blend-overlay"></div>
+            {/* Dimension-bleed seam where the rift punches through */}
+            <div className="bleed-seam absolute top-0 left-0 w-full h-3 opacity-60"></div>
+            {/* Suit-block sash — Miles blocking + Pavitr dhoti-sash diagonal */}
+            <div className="suit-block-sash"></div>
+            {/* Rangoli corner mark — Pavitr/Mumbai */}
+            <div className="rangoli-corner top-3 left-3"></div>
             {/* Background elements */}
-            <div className="parallax-layer absolute top-10 left-10 w-32 h-32 bg-[var(--color-dimension-magenta)] rounded-full blur-3xl opacity-30"></div>
-            <div className="parallax-layer absolute bottom-10 right-10 w-48 h-48 bg-[var(--color-portal-cyan)] rounded-full blur-3xl opacity-20"></div>
+            <div className="parallax-layer absolute top-10 left-10 w-32 h-32 bg-[var(--color-miles-red)] rounded-full blur-3xl opacity-25"></div>
+            <div className="parallax-layer absolute bottom-10 right-10 w-48 h-48 bg-[var(--color-saffron)] rounded-full blur-3xl opacity-25"></div>
             <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-[var(--color-ink-black)] to-transparent opacity-80"></div>
           </div>
 
           {/* Character breaking out of panel */}
-          <div className="hero-character relative z-10 w-2/3 max-w-sm lg:max-w-md parallax-layer transform -rotate-1">
+          <div className="hero-character drip-edge relative z-10 w-2/3 max-w-sm lg:max-w-md parallax-layer transform -rotate-1 text-[var(--color-miles-black)]">
             <img
               src={codewalkerImg}
               alt="The Codewalker"
-              className="w-full h-auto object-cover rounded-sm border-4 border-[var(--color-ink-black)] shadow-[8px_8px_0_var(--color-dimension-magenta)] grayscale contrast-125"
+              className="w-full h-auto object-cover rounded-sm border-4 border-[var(--color-ink-black)] shadow-[8px_8px_0_var(--color-miles-red)] grayscale contrast-125"
             />
-            {/* Removed placeholder tag */}
           </div>
         </div>
 

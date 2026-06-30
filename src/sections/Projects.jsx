@@ -7,7 +7,9 @@ import ComicPanel from '../components/comic/ComicPanel';
 import InkButton from '../components/comic/InkButton';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
+import FrameStutter from '../components/comic/FrameStutter';
 import { Network, FileText, Cpu, Layout, Play, Github } from 'lucide-react';
+import { SectionPortal } from '../components/comic/PortalTransition';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -41,6 +43,7 @@ const Projects = () => {
 
   return (
     <ComicSpread id="projects" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] border-t-8 border-b-8 border-[var(--color-paper)] z-30" ref={sectionRef}>
+      <SectionPortal colorA="var(--color-portal-cyan)" colorB="var(--color-saffron)" />
 
       <div className="absolute inset-0 bg-halftone-cyan opacity-10 pointer-events-none mix-blend-screen"></div>
 
@@ -48,11 +51,13 @@ const Projects = () => {
 
         <div className="text-center mb-8 relative flex flex-col items-center">
           <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-dimension-magenta)] mb-2">EXPLORE THE MULTIVERSE</p>
-          <StampReveal sfx="SNAP!" color="var(--color-dimension-magenta)" rotation={-5}>
-            <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-magenta">
-              CASE STUDIES
-            </h2>
-          </StampReveal>
+          <FrameStutter steps={5}>
+            <StampReveal sfx="SNAP!" color="var(--color-dimension-magenta)" rotation={-5}>
+              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-magenta">
+                CASE STUDIES
+              </h2>
+            </StampReveal>
+          </FrameStutter>
 
           <div className="mt-8 flex gap-4 bg-[var(--color-deep-navy)] p-1 rounded-sm border-2 border-[var(--color-portal-cyan)]">
             <button
@@ -76,8 +81,8 @@ const Projects = () => {
               key={idx}
               onClick={() => setFilter(cat)}
               className={`font-label uppercase font-bold tracking-widest text-sm md:text-base px-4 py-2 border-4 transition-all duration-200 comic-focus ${filter === cat
-                  ? 'bg-[var(--color-comic-yellow)] border-[var(--color-comic-yellow)] text-[var(--color-ink-black)] transform -translate-y-1 shadow-[4px_4px_0_var(--color-portal-cyan)]'
-                  : 'bg-transparent border-[var(--color-text-muted-dark)] text-[var(--color-text-on-dark)] hover:border-[var(--color-portal-cyan)] hover:text-[var(--color-portal-cyan)]'
+                ? 'bg-[var(--color-comic-yellow)] border-[var(--color-comic-yellow)] text-[var(--color-ink-black)] transform -translate-y-1 shadow-[4px_4px_0_var(--color-portal-cyan)]'
+                : 'bg-transparent border-[var(--color-text-muted-dark)] text-[var(--color-text-on-dark)] hover:border-[var(--color-portal-cyan)] hover:text-[var(--color-portal-cyan)]'
                 }`}
             >
               {cat}

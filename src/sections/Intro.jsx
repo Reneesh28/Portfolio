@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Volume2, VolumeX } from 'lucide-react';
+import KineticTitle from '../components/comic/KineticTitle';
 import { lazy, Suspense } from 'react';
 const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
 
@@ -75,22 +76,22 @@ const Intro = ({ onFinish }) => {
     // 3. Three colliding technical universes — now with a real 3D dimension-rift bleeding through
     tl.set(universeRef.current, { opacity: 1 })
       .to(riftRef.current, { opacity: 1, duration: 0.3 }, "<")
-      .fromTo('.universe-c', { x: -300, y: -300, scale: 0 }, { x: -20, y: -20, scale: 1, opacity: 0.8, duration: 0.4, ease: "back.out(1.7)" })
-      .fromTo('.universe-m', { x: 300, y: -300, scale: 0 }, { x: 20, y: 20, scale: 1, opacity: 0.8, duration: 0.4, ease: "back.out(1.7)" }, "-=0.2")
-      .fromTo('.universe-y', { x: 0, y: 300, scale: 0 }, { x: 0, y: 0, scale: 1, opacity: 0.8, duration: 0.4, ease: "back.out(1.7)" }, "-=0.2")
+      .fromTo('.universe-c', { x: -300, y: -300, scale: 0 }, { x: -20, y: -20, scale: 1, opacity: 0.8, duration: 0.4, ease: "steps(4)" })
+      .fromTo('.universe-m', { x: 300, y: -300, scale: 0 }, { x: 20, y: 20, scale: 1, opacity: 0.8, duration: 0.4, ease: "steps(4)" }, "-=0.2")
+      .fromTo('.universe-y', { x: 0, y: 300, scale: 0 }, { x: 0, y: 0, scale: 1, opacity: 0.8, duration: 0.4, ease: "steps(4)" }, "-=0.2")
       .to('.universe-circle', { scale: 15, opacity: 0, duration: 0.4, ease: "power2.in" }, "+=0.3")
       // Collision climax: camera-shake punch through the whole frame
       .to(containerRef.current, { x: 'random(-10,10)', y: 'random(-8,8)', duration: 0.04, repeat: 5, yoyo: true }, "<")
       .set(containerRef.current, { x: 0, y: 0 });
 
-    // 4. Cover Title — stamped in like an impact panel
+    // 4. Cover Title — stamped in like an impact panel, with an off-model
+    // stepped-ease stutter on the settle (core Spider-Verse frame-drop trick)
     tl.set(containerRef.current, { backgroundColor: 'var(--color-ink-black)' })
-      .fromTo(titleRef.current, { opacity: 0, scale: 2.2, rotation: -6 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.28, ease: "power4.in" })
+      .fromTo(titleRef.current, { opacity: 0, scale: 2.2, rotation: -6 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.28, ease: "steps(5)" })
       .to(titleRef.current, { scale: 1.06, duration: 0.06 })
       .to(titleRef.current, { scale: 1, duration: 0.16, ease: "elastic.out(1, 0.4)" })
       .to(containerRef.current, { x: 'random(-6,6)', y: 'random(-5,5)', duration: 0.04, repeat: 3, yoyo: true }, "<")
-      .set(containerRef.current, { x: 0, y: 0 })
-      .to('.cmyk-title', { x: (i) => (i === 0 ? -6 : i === 1 ? 6 : -2), y: (i) => (i === 0 ? 4 : i === 1 ? -4 : -6), duration: 0.1, stagger: 0.05 }, "+=0.1");
+      .set(containerRef.current, { x: 0, y: 0 });
 
     // 5. Codewalker breaking through the cover — glass shatter + impact stamp + rift fade
     tl.set(breakoutRef.current, { opacity: 1 })
@@ -157,32 +158,31 @@ const Intro = ({ onFinish }) => {
 
         {/* Phase 2: Panels */}
         <div className="absolute inset-0 flex items-center justify-center gap-8">
-          <div ref={panel1Ref} className="opacity-0 translate-y-8 bg-white border-4 border-[var(--color-ink-black)] p-4 shadow-[8px_8px_0_var(--color-ink-black)] rotate-[-5deg]">
+          <div ref={panel1Ref} className="jagged-panel spray-edge opacity-0 translate-y-8 bg-white border-4 border-[var(--color-miles-red)] p-4 shadow-[8px_8px_0_var(--color-ink-black)] rotate-[-5deg]">
             <h2 className="font-display text-4xl text-[var(--color-ink-black)]">STUDENT</h2>
           </div>
-          <div ref={panel2Ref} className="opacity-0 translate-y-8 bg-[var(--color-comic-yellow)] border-4 border-[var(--color-ink-black)] p-4 shadow-[8px_8px_0_var(--color-ink-black)] rotate-[2deg]">
+          <div ref={panel2Ref} className="jagged-panel spray-edge opacity-0 translate-y-8 bg-[var(--color-saffron)] border-4 border-[var(--color-ink-black)] p-4 shadow-[8px_8px_0_var(--color-ink-black)] rotate-[2deg]">
             <h2 className="font-display text-4xl text-[var(--color-ink-black)]">BUILDER</h2>
           </div>
-          <div ref={panel3Ref} className="opacity-0 translate-y-8 bg-[var(--color-portal-cyan)] border-4 border-[var(--color-ink-black)] p-4 shadow-[8px_8px_0_var(--color-ink-black)] rotate-[-3deg]">
+          <div ref={panel3Ref} className="jagged-panel spray-edge opacity-0 translate-y-8 bg-[var(--color-portal-cyan)] border-4 border-[var(--color-ink-black)] p-4 shadow-[8px_8px_0_var(--color-ink-black)] rotate-[-3deg]">
             <h2 className="font-display text-4xl text-[var(--color-ink-black)]">ENGINEER</h2>
           </div>
         </div>
 
-        {/* Phase 3: Colliding Universes */}
+        {/* Phase 3: Colliding Universes — Codeverse cyan, Miles red, Pavitr saffron */}
         <div ref={universeRef} className="absolute inset-0 flex items-center justify-center opacity-0 mix-blend-screen">
           <div className="universe-circle universe-c absolute w-64 h-64 rounded-full bg-[var(--color-portal-cyan)] mix-blend-screen"></div>
-          <div className="universe-circle universe-m absolute w-64 h-64 rounded-full bg-[var(--color-dimension-magenta)] mix-blend-screen"></div>
-          <div className="universe-circle universe-y absolute w-64 h-64 rounded-full bg-[var(--color-comic-yellow)] mix-blend-screen"></div>
+          <div className="universe-circle universe-m absolute w-64 h-64 rounded-full bg-[var(--color-miles-red)] mix-blend-screen"></div>
+          <div className="universe-circle universe-y absolute w-64 h-64 rounded-full bg-[var(--color-saffron)] mix-blend-screen"></div>
         </div>
 
         {/* Phase 4 & 5: Cover and Breakout */}
         <div ref={titleRef} className="absolute opacity-0 scale-90 flex flex-col items-center justify-center w-full z-20">
           <p className="font-label uppercase tracking-[0.3em] text-[var(--color-comic-yellow)] mb-4 text-sm md:text-base">Issue #01 &middot; Earth-28</p>
           <div className="relative w-full text-center">
-            <h1 className="font-display text-5xl md:text-7xl lg:text-9xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 mix-blend-normal">RENEESH</h1>
-            <h1 className="cmyk-title absolute top-0 left-0 w-full font-display text-5xl md:text-7xl lg:text-9xl tracking-wider text-[var(--color-dimension-magenta)] z-0 mix-blend-screen">RENEESH</h1>
-            <h1 className="cmyk-title absolute top-0 left-0 w-full font-display text-5xl md:text-7xl lg:text-9xl tracking-wider text-[var(--color-portal-cyan)] z-0 mix-blend-screen">RENEESH</h1>
-            <h1 className="cmyk-title absolute top-0 left-0 w-full font-display text-5xl md:text-7xl lg:text-9xl tracking-wider text-[var(--color-comic-yellow)] z-0 mix-blend-screen">RENEESH</h1>
+            <h1 className="font-display text-5xl md:text-7xl lg:text-9xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 mix-blend-normal">
+              <KineticTitle as="span">RENEESH</KineticTitle>
+            </h1>
           </div>
           <h2 className="font-display text-2xl md:text-4xl lg:text-5xl tracking-widest text-[var(--color-text-on-dark)] mt-4 text-center">ACROSS THE CODEVERSE</h2>
         </div>
@@ -190,16 +190,18 @@ const Intro = ({ onFinish }) => {
         {/* Codewalker Breakout */}
         <div ref={breakoutRef} className="absolute inset-0 flex items-center justify-center opacity-0 z-30 pointer-events-none overflow-visible">
           <div className="breakout-glass absolute w-full h-full bg-white opacity-0"></div>
+          <div className="rangoli-corner top-10 left-10 opacity-70"></div>
+          <div className="suit-block-sash opacity-40"></div>
           <img
             src="/src/assets/images/codewalker.webp"
             alt="The Codewalker"
-            className="codewalker-intro max-h-[80vh] object-contain drop-shadow-[0_0_30px_rgba(0,255,255,0.8)]"
+            className="codewalker-intro drip-edge max-h-[80vh] object-contain drop-shadow-[0_0_30px_rgba(224,18,42,0.6)] text-[var(--color-miles-black)]"
           />
           <span
             ref={impactStampRef}
             aria-hidden="true"
             className="absolute top-1/4 right-[10%] font-display uppercase text-4xl md:text-6xl opacity-0 pointer-events-none z-40"
-            style={{ color: 'var(--color-signal-red)', textShadow: '3px 3px 0 var(--color-ink-black)' }}
+            style={{ color: 'var(--color-miles-red)', textShadow: '3px 3px 0 var(--color-ink-black), -2px -2px 0 var(--color-saffron)' }}
           >
             CRASH!
           </span>
