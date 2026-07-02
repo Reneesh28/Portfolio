@@ -3,6 +3,7 @@ import experienceData from "../data/experience";
 import ComicSpread from "../components/comic/ComicSpread";
 import StampReveal from "../components/comic/StampReveal";
 import FrameStutter from "../components/comic/FrameStutter";
+import KineticTitle from "../components/comic/KineticTitle";
 import { SectionPortal } from '../components/comic/PortalTransition';
 
 const palettes = {
@@ -196,8 +197,8 @@ export default function Experience() {
           </p>
           <FrameStutter steps={5}>
             <StampReveal sfx="ISSUE!" color="var(--color-dimension-magenta)" rotation={-5}>
-              <h2 className="font-display text-5xl tracking-wider md:text-7xl lg:text-8xl">
-                Previous Issues
+              <h2 className="font-display text-4xl tracking-wider md:text-7xl lg:text-8xl">
+                <KineticTitle as="span">CANON EVENTS</KineticTitle>
               </h2>
             </StampReveal>
           </FrameStutter>

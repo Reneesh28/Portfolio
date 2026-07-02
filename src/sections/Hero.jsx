@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, lazy, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import InkButton from '../components/comic/InkButton';
@@ -6,10 +6,12 @@ import StampReveal from '../components/comic/StampReveal';
 import KineticTitle from '../components/comic/KineticTitle';
 import SpeedBurst from '../components/comic/SpeedBurst';
 import FrameStutter from '../components/comic/FrameStutter';
+import SpiderWebBackground from '../components/comic/SpiderWebBackground';
 import { SectionPortal } from '../components/comic/PortalTransition';
-import { lazy, Suspense } from 'react';
-const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
 import codewalkerImg from '../assets/images/codewalker.webp'; // Generated Codewalker art
+
+const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
+const DimensionCharacterGlitch = lazy(() => import('../components/three/DimensionCharacterGlitch'));
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,12 +20,27 @@ const Hero = () => {
   const leftColRef = useRef(null);
   const rightColRef = useRef(null);
   const tearRef = useRef(null);
+  const parallaxRef = useRef(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia(sectionRef);
+
+    mm.add({
+      isDesktop: "(min-width: 768px)",
+      isMobile: "(max-width: 767px)",
+      reduceMotion: "(prefers-reduced-motion: reduce)"
+    }, (context) => {
+      let { isDesktop, isMobile, reduceMotion } = context.conditions;
+
+      if (reduceMotion) {
+        gsap.set([leftColRef.current, rightColRef.current], { opacity: 1 });
+        return;
+      }
+
       // Entrance animation
       gsap.from(leftColRef.current, {
-        x: -50,
+        x: isDesktop ? -50 : 0,
+        y: isMobile ? 20 : 0,
         opacity: 0,
         duration: 1,
         ease: "power3.out",
@@ -31,7 +48,8 @@ const Hero = () => {
       });
 
       gsap.from(rightColRef.current, {
-        x: 50,
+        x: isDesktop ? 50 : 0,
+        y: isMobile ? 20 : 0,
         opacity: 0,
         duration: 1,
         ease: "power3.out",
@@ -39,23 +57,20 @@ const Hero = () => {
       });
 
       // Parallax mouse effect (subtle)
+      const parallaxLayers = parallaxRef.current?.querySelectorAll('.parallax-layer') ?? [];
+      const moveX = gsap.quickTo(parallaxLayers, 'x', { duration: 0.45, ease: 'power2.out' });
+      const moveY = gsap.quickTo(parallaxLayers, 'y', { duration: 0.45, ease: 'power2.out' });
       const handleMouseMove = (e) => {
+        if (isMobile) return;
         const { clientX, clientY } = e;
         const xPos = (clientX / window.innerWidth - 0.5) * 20;
         const yPos = (clientY / window.innerHeight - 0.5) * 20;
 
-        gsap.to('.parallax-layer', {
-          x: xPos,
-          y: yPos,
-          duration: 1,
-          ease: "power2.out"
-        });
+        moveX(xPos);
+        moveY(yPos);
       };
 
-      // Only attach mousemove if not reduced motion
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        window.addEventListener('mousemove', handleMouseMove);
-      }
+      window.addEventListener('mousemove', handleMouseMove);
 
       // Scroll out effect
       const tl = gsap.timeline({
@@ -64,21 +79,22 @@ const Hero = () => {
           start: "top top",
           end: "+=80%",
           scrub: true,
-          pin: true,
+          pin: isDesktop,
         }
       });
 
-      tl.to('.print-layer-m', { x: -20, y: 10, duration: 1 }, 0)
-        .to('.print-layer-c', { x: 20, y: -10, duration: 1 }, 0)
-        .to('.hero-character', { x: 30, scale: 1.05, duration: 1 }, 0)
-        .to(tearRef.current, { scaleY: 1, duration: 1 }, 0.2);
+      const heroCharacter = sectionRef.current?.querySelector('.hero-character');
+      if (heroCharacter && isDesktop) {
+        tl.to(heroCharacter, { x: 30, scale: 1.05, duration: 1 }, 0);
+      }
+      if (tearRef.current) tl.to(tearRef.current, { scaleY: 1, duration: 1 }, 0.2);
 
       return () => {
         window.removeEventListener('mousemove', handleMouseMove);
       };
-    }, sectionRef);
+    });
 
-    return () => ctx.revert();
+    return () => mm.revert();
   }, []);
 
   return (
@@ -92,8 +108,25 @@ const Hero = () => {
         <Suspense fallback={null}><DimensionRift density={16} /></Suspense>
       </div>
 
+      {/* Spider-Verse multiverse portal — glowing dimensional rift */}
+      <SpiderWebBackground
+        ringCount={8}
+        sides={7}
+        originX={80}
+        originY={35}
+        maxRadius={420}
+        streakCount={16}
+        particleCount={35}
+        className="z-[1] parallax-layer"
+      />
 
-      <div className="relative z-10 w-full h-full min-h-screen max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center px-6 md:px-12 pt-24 pb-12">
+      {/* Inter-dimensional character hauntings — the core Spider-Verse mechanic */}
+      <Suspense fallback={null}>
+        <DimensionCharacterGlitch interval={[5000, 11000]} maxVisible={2} />
+      </Suspense>
+
+
+      <div ref={parallaxRef} className="relative z-10 w-full h-full min-h-screen max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center px-6 md:px-12 pt-24 pb-12">
 
         {/* Left Column - Metadata & Copy */}
         <div ref={leftColRef} className="lg:col-span-5 flex flex-col order-2 lg:order-1 relative z-20">
@@ -103,12 +136,12 @@ const Hero = () => {
 
           <FrameStutter steps={6} distance={50} direction="left">
             <StampReveal sfx="THWIP!" color="var(--color-miles-red)" rotation={-6} className="block w-full">
-              <h1 className="font-display text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-wider text-[var(--color-text-on-dark)] mb-6 relative z-10">
+              <h1 className="font-display text-4xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-wider text-[var(--color-text-on-dark)] mb-6 relative z-10">
                 <span className="relative inline-block w-full">
                   <SpeedBurst color="var(--color-saffron)" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] -z-20" />
                   <KineticTitle as="span">RENEESH</KineticTitle>
                 </span>
-                <span className="block text-3xl md:text-5xl lg:text-5xl mt-4 text-[var(--color-text-muted-dark)] tracking-wide">
+                <span className="block text-2xl md:text-5xl lg:text-5xl mt-4 text-[var(--color-text-muted-dark)] tracking-wide">
                   ACROSS THE CODEVERSE
                 </span>
               </h1>

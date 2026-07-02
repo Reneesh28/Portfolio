@@ -1,213 +1,233 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+import LottieLib from 'lottie-react';
 import { Volume2, VolumeX } from 'lucide-react';
 import KineticTitle from '../components/comic/KineticTitle';
-import { lazy, Suspense } from 'react';
+import codewalker from '../assets/images/codewalker.webp';
+import particleExplosion from '../assets/particle.explosion.lottie.json';
+import './Intro.css';
+import './IntroLottie.css';
+
+// Extract the Lottie component regardless of how Vite/Rollup resolves the CJS/ESM interop
+const Lottie = typeof LottieLib === 'function' ? LottieLib : (LottieLib?.default?.default || LottieLib?.default || LottieLib);
+
 const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
+const DimensionCharacterGlitch = lazy(() => import('../components/three/DimensionCharacterGlitch'));
+
+const codeFragments = ['<idea />', 'npm run build', 'const future = now()', '{ systems: alive }', '01 10 11 01'];
 
 const Intro = ({ onFinish }) => {
-  const containerRef = useRef(null);
-  const sequenceRef = useRef(null);
-
-  // Refs for sequence elements
-  const gridLinesRef = useRef(null);
-  const panel1Ref = useRef(null);
-  const panel2Ref = useRef(null);
-  const panel3Ref = useRef(null);
-  const universeRef = useRef(null);
-  const titleRef = useRef(null);
-  const breakoutRef = useRef(null);
-  const riftRef = useRef(null);
-  const impactStampRef = useRef(null);
-
-  const [reducedMotion] = useState(
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-
+  const rootRef = useRef(null);
+  const timelineRef = useRef(null);
+  const audioRef = useRef(null);
+  const explosionRef = useRef(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
-
-  const handleSkip = React.useCallback(() => {
-    if (sequenceRef.current) sequenceRef.current.kill();
-    gsap.to(containerRef.current, {
-      opacity: 0,
-      duration: 0.3,
-      onComplete: onFinish
-    });
-  }, [onFinish]);
+  const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') handleSkip();
+    if (!soundEnabled) return undefined;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return undefined;
+    const ctx = audioRef.current || new AudioContext();
+    audioRef.current = ctx;
+    ctx.resume();
+    const oscillator = ctx.createOscillator();
+    const pulse = ctx.createOscillator();
+    const gain = ctx.createGain();
+    oscillator.type = 'sawtooth';
+    pulse.type = 'sine';
+    oscillator.frequency.value = 48;
+    pulse.frequency.value = 96;
+    gain.gain.value = 0.018;
+    oscillator.connect(gain);
+    pulse.connect(gain);
+    gain.connect(ctx.destination);
+    oscillator.start();
+    pulse.start();
+    return () => {
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
+      oscillator.stop(ctx.currentTime + 0.1);
+      pulse.stop(ctx.currentTime + 0.1);
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleSkip]);
+  }, [soundEnabled]);
+
+  const finish = useCallback(() => {
+    timelineRef.current?.kill();
+    gsap.to(rootRef.current, {
+      opacity: 0,
+      scale: 1.04,
+      duration: reducedMotion ? 0.25 : 0.65,
+      ease: 'power3.inOut',
+      onComplete: onFinish,
+    });
+  }, [onFinish, reducedMotion]);
+
+  useEffect(() => {
+    const onKeyDown = (event) => event.key === 'Escape' && finish();
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [finish]);
 
   useEffect(() => {
     if (reducedMotion) {
-      const tl = gsap.timeline({ onComplete: onFinish });
-      tl.to(containerRef.current, { opacity: 0, duration: 1, delay: 0.5 });
-      return;
+      const reduced = gsap.timeline({ onComplete: finish });
+      reduced.set('.intro-title-scene', { opacity: 1 }).to({}, { duration: 1.4 });
+      timelineRef.current = reduced;
+      return () => reduced.kill();
     }
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        // Seamless transition - fade out intro layer to reveal Hero underneath
-        gsap.to(containerRef.current, {
-          opacity: 0,
-          duration: 1,
-          ease: "power2.inOut",
-          onComplete: onFinish
-        });
-      }
-    });
+    const q = gsap.utils.selector(rootRef);
+    const tl = gsap.timeline({ defaults: { ease: 'power3.inOut' }, onComplete: finish });
 
-    // 1. Pencil-drawn page construction (grid lines animating in)
-    tl.to(containerRef.current, { backgroundColor: 'var(--color-paper)', duration: 0.2 })
-      .to('.pencil-line-h', { scaleX: 1, duration: 0.4, stagger: 0.1, ease: "power2.inOut" })
-      .to('.pencil-line-v', { scaleY: 1, duration: 0.4, stagger: 0.1, ease: "power2.inOut" }, "-=0.3");
+    gsap.set(q('.dimension-scene, .intro-title-scene, .intro-codewalker, .collision-field'), { opacity: 0 });
+    gsap.set(q('.portal-shell'), { scale: 0, rotation: -35 });
 
-    // 2. Student / Builder / Engineer Panels
-    tl.to(panel1Ref.current, { opacity: 1, y: 0, duration: 0.3 })
-      .to(panel2Ref.current, { opacity: 1, y: 0, duration: 0.3 }, "-=0.1")
-      .to(panel3Ref.current, { opacity: 1, y: 0, duration: 0.3 }, "-=0.1")
-      .to([panel1Ref.current, panel2Ref.current, panel3Ref.current, gridLinesRef.current], { opacity: 0, duration: 0.3, delay: 0.5 });
+    // Cold open: the transmission struggles to lock onto Earth-28.
+    tl.to(q('.boot-line'), { opacity: 1, x: 0, duration: 0.18, stagger: 0.12, ease: 'steps(2)' })
+      .to(q('.intro-scanline'), { yPercent: 115, duration: 0.75, ease: 'none' }, '<')
+      .to(rootRef.current, { x: 'random(-7,7)', duration: 0.035, repeat: 5, yoyo: true }, '-=0.2')
+      .set(rootRef.current, { x: 0 })
+      .to(q('.boot-screen'), { opacity: 0, duration: 0.18 });
 
-    // 3. Three colliding technical universes — now with a real 3D dimension-rift bleeding through
-    tl.set(universeRef.current, { opacity: 1 })
-      .to(riftRef.current, { opacity: 1, duration: 0.3 }, "<")
-      .fromTo('.universe-c', { x: -300, y: -300, scale: 0 }, { x: -20, y: -20, scale: 1, opacity: 0.8, duration: 0.4, ease: "steps(4)" })
-      .fromTo('.universe-m', { x: 300, y: -300, scale: 0 }, { x: 20, y: 20, scale: 1, opacity: 0.8, duration: 0.4, ease: "steps(4)" }, "-=0.2")
-      .fromTo('.universe-y', { x: 0, y: 300, scale: 0 }, { x: 0, y: 0, scale: 1, opacity: 0.8, duration: 0.4, ease: "steps(4)" }, "-=0.2")
-      .to('.universe-circle', { scale: 15, opacity: 0, duration: 0.4, ease: "power2.in" }, "+=0.3")
-      // Collision climax: camera-shake punch through the whole frame
-      .to(containerRef.current, { x: 'random(-10,10)', y: 'random(-8,8)', duration: 0.04, repeat: 5, yoyo: true }, "<")
-      .set(containerRef.current, { x: 0, y: 0 });
+    // Earth 01: hand-drawn student dimension.
+    tl.set(q('.student-scene'), { opacity: 1 })
+      .to(q('.student-scene .portal-shell'), { scale: 1, rotation: 0, duration: 0.58, ease: 'back.out(1.45)' })
+      .fromTo(q('.sketch-line'), { scaleX: 0 }, { scaleX: 1, duration: 0.34, stagger: 0.045, ease: 'steps(4)' }, '-=0.35')
+      .fromTo(q('.dimension-word.student'), { xPercent: -130, rotation: -12 }, { xPercent: 0, rotation: -4, duration: 0.4, ease: 'back.out(1.8)' }, '-=0.2')
+      .fromTo(q('.student-note'), { y: 70, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.05, duration: 0.25 }, '<')
+      .to(q('.student-scene .portal-shell'), { scale: 7, rotation: 18, duration: 0.58, ease: 'power4.in' }, '+=0.28')
+      .set(q('.student-scene'), { opacity: 0 });
 
-    // 4. Cover Title — stamped in like an impact panel, with an off-model
-    // stepped-ease stutter on the settle (core Spider-Verse frame-drop trick)
-    tl.set(containerRef.current, { backgroundColor: 'var(--color-ink-black)' })
-      .fromTo(titleRef.current, { opacity: 0, scale: 2.2, rotation: -6 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.28, ease: "steps(5)" })
-      .to(titleRef.current, { scale: 1.06, duration: 0.06 })
-      .to(titleRef.current, { scale: 1, duration: 0.16, ease: "elastic.out(1, 0.4)" })
-      .to(containerRef.current, { x: 'random(-6,6)', y: 'random(-5,5)', duration: 0.04, repeat: 3, yoyo: true }, "<")
-      .set(containerRef.current, { x: 0, y: 0 });
+    // Earth 02: code blocks assemble into the builder identity.
+    tl.set(q('.builder-scene'), { opacity: 1 })
+      .fromTo(q('.builder-scene'), { scale: 1.35 }, { scale: 1, duration: 0.35, ease: 'power3.out' })
+      .fromTo(q('.code-fragment'), { z: -500, opacity: 0, rotateX: 70 }, { z: 0, opacity: 1, rotateX: 0, stagger: 0.065, duration: 0.42, ease: 'back.out(1.4)' })
+      .fromTo(q('.dimension-word.builder'), { scale: 2.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.32, ease: 'steps(4)' }, '-=0.25')
+      .to(q('.builder-grid'), { backgroundPosition: '80px 80px', duration: 0.55, ease: 'none' }, '<')
+      .to(q('.builder-scene'), { clipPath: 'circle(0% at 82% 22%)', rotate: 7, duration: 0.58, ease: 'power4.in' }, '+=0.32')
+      .set(q('.builder-scene'), { opacity: 0 });
 
-    // 5. Codewalker breaking through the cover — glass shatter + impact stamp + rift fade
-    tl.set(breakoutRef.current, { opacity: 1 })
-      .fromTo('.breakout-glass', { scale: 0, opacity: 1 }, { scale: 2, opacity: 0, duration: 0.3, ease: "power2.out" })
-      .fromTo('.codewalker-intro', { scale: 0.5, y: 200, opacity: 0 }, { scale: 1.5, y: 0, opacity: 1, duration: 0.5, ease: "back.out(1.5)" })
-      .fromTo(impactStampRef.current, { opacity: 0, scale: 2.5, rotation: -14 }, { opacity: 1, scale: 1, rotation: -8, duration: 0.18, ease: "power4.in" }, "<")
-      .to(containerRef.current, { x: 'random(-8,8)', y: 'random(-6,6)', duration: 0.05, repeat: 4, yoyo: true }, "<")
-      .set(containerRef.current, { x: 0, y: 0 })
-      .to(impactStampRef.current, { opacity: 0, scale: 1.4, duration: 0.4, ease: "power1.in" }, "+=0.3")
-      .to(riftRef.current, { opacity: 0, duration: 0.4 }, "<")
-      .to({}, { duration: 0.4 }); // Hold for impact before fading
+    // Earth 03: technical geometry and circuitry surge toward camera.
+    tl.set(q('.engineer-scene'), { opacity: 1, clipPath: 'circle(0% at 82% 22%)' })
+      .to(q('.engineer-scene'), { clipPath: 'circle(145% at 82% 22%)', duration: 0.58, ease: 'power4.out' })
+      .fromTo(q('.engineer-ring'), { scale: 0, rotate: -120 }, { scale: 1, rotate: 0, stagger: 0.08, duration: 0.55, ease: 'back.out(1.4)' }, '-=0.32')
+      .fromTo(q('.circuit-line'), { scaleX: 0 }, { scaleX: 1, stagger: 0.035, duration: 0.28, ease: 'steps(3)' }, '<')
+      .fromTo(q('.dimension-word.engineer'), { scale: 1.15, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.42, ease: 'steps(5)' }, '-=0.15')
+      .to(q('.engineer-core'), { scale: 14, rotate: 90, duration: 0.62, ease: 'power4.in' }, '+=0.3')
+      .set(q('.engineer-scene'), { opacity: 0 });
 
-    sequenceRef.current = tl;
+    // The dimensions collide; portals orbit the rift before imploding.
+    tl.set(q('.collision-field'), { opacity: 1 })
+      .fromTo(q('.collision-portal'), { scale: 0, rotate: -60 }, { scale: 1, rotate: 0, stagger: 0.08, duration: 0.42, ease: 'back.out(1.7)' })
+      .to(q('.collision-orbit'), { rotate: 115, scale: 1.18, duration: 0.7, ease: 'power2.inOut' }, '<')
+      .fromTo(q('.collision-label'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.2, ease: 'steps(2)' }, '-=0.45')
+      .to(rootRef.current, { x: 'random(-12,12)', y: 'random(-8,8)', duration: 0.035, repeat: 8, yoyo: true }, '+=0.12')
+      .set(rootRef.current, { x: 0, y: 0 })
+      .to(q('.collision-portal'), { x: 0, y: 0, scale: 0, duration: 0.34, stagger: 0.035, ease: 'power4.in' }, '<')
+      .call(() => explosionRef.current?.goToAndPlay(0, true))
+      .fromTo(q('.particle-explosion'), { opacity: 0, scale: 0.35 }, { opacity: 1, scale: 1.45, duration: 0.34, ease: 'power4.out' }, '<')
+      .to(q('.collision-flash'), { opacity: 1, scale: 2.5, duration: 0.08, ease: 'steps(1)' })
+      .to(q('.collision-field'), { opacity: 0, duration: 0.12 });
 
-    return () => {
-      if (sequenceRef.current) sequenceRef.current.kill();
-    };
-  }, [reducedMotion, onFinish]);
+    // Codewalker breaks through and freezes into the comic cover.
+    tl.set(q('.intro-title-scene'), { opacity: 1 })
+      .fromTo(q('.intro-codewalker'), { opacity: 0, yPercent: 80, scale: 0.4, rotate: -18 }, { opacity: 1, yPercent: 0, scale: 1, rotate: 0, duration: 0.62, ease: 'back.out(1.55)' })
+      .fromTo(q('.ink-shard'), { scale: 0, opacity: 1 }, { scale: 'random(1.2,2.4)', opacity: 0, stagger: 0.025, duration: 0.42 }, '<')
+      .fromTo(q('.cover-kicker'), { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.24, ease: 'steps(3)' }, '-=0.18')
+      .fromTo(q('.cover-title'), { scale: 2.6, opacity: 0, rotate: -7 }, { scale: 1, opacity: 1, rotate: 0, duration: 0.3, ease: 'steps(5)' })
+      .fromTo(q('.cover-subtitle'), { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, ease: 'back.out(1.6)' }, '-=0.08')
+      .fromTo(q('.impact-word'), { scale: 3, opacity: 0, rotate: 15 }, { scale: 1, opacity: 1, rotate: -8, duration: 0.16, ease: 'power4.in' }, '<')
+      .to(rootRef.current, { x: 'random(-9,9)', y: 'random(-6,6)', duration: 0.04, repeat: 5, yoyo: true }, '<')
+      .set(rootRef.current, { x: 0, y: 0 })
+      .to(q('.impact-word'), { opacity: 0, scale: 1.35, duration: 0.3 }, '+=0.45')
+      .to({}, { duration: 0.55 });
 
-  const handleAccelerate = () => {
-    if (sequenceRef.current && sequenceRef.current.timeScale() < 3) {
-      sequenceRef.current.timeScale(sequenceRef.current.timeScale() * 1.5);
-    }
+    timelineRef.current = tl;
+    return () => tl.kill();
+  }, [finish, reducedMotion]);
+
+  const accelerate = () => {
+    if (timelineRef.current) timelineRef.current.timeScale(Math.min(2, timelineRef.current.timeScale() + 0.25));
   };
 
   return (
-    <div
-      ref={containerRef}
-      onClick={handleAccelerate}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[var(--color-ink-black)] overflow-hidden cursor-pointer"
-    >
-      {/* Controls */}
-      <div className="absolute top-8 right-8 z-50 flex gap-4">
-        <button
-          onClick={(e) => { e.stopPropagation(); setSoundEnabled(!soundEnabled); }}
-          className="p-2 bg-[var(--color-paper)] border-2 border-[var(--color-ink-black)] text-[var(--color-ink-black)] hover:bg-[var(--color-comic-yellow)] transition-colors comic-focus"
-          aria-label={soundEnabled ? "Mute Sound" : "Enable Sound"}
-        >
-          {soundEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+    <div ref={rootRef} className="codeverse-intro" onClick={accelerate}>
+      <div className="intro-controls">
+        <button onClick={(e) => { e.stopPropagation(); setSoundEnabled((value) => !value); }} aria-label={soundEnabled ? 'Mute sound' : 'Enable sound'}>
+          {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
         </button>
-        <button
-          onClick={(e) => { e.stopPropagation(); handleSkip(); }}
-          className="px-4 py-2 bg-[var(--color-paper)] border-2 border-[var(--color-ink-black)] text-[var(--color-ink-black)] hover:bg-[var(--color-portal-cyan)] font-label uppercase font-bold transition-colors comic-focus"
-        >
-          SKIP
-        </button>
+        <button onClick={(e) => { e.stopPropagation(); finish(); }} className="skip-intro">Skip <span>Esc</span></button>
       </div>
 
-      <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
-
-        {/* Phase 1: Pencil Grid */}
-        <div ref={gridLinesRef} className="absolute inset-0 opacity-50">
-          <div className="pencil-line-h absolute top-1/3 left-0 w-full h-[2px] bg-[var(--color-pencil-gray)] origin-left scale-x-0"></div>
-          <div className="pencil-line-h absolute top-2/3 left-0 w-full h-[2px] bg-[var(--color-pencil-gray)] origin-left scale-x-0"></div>
-          <div className="pencil-line-v absolute top-0 left-1/3 w-[2px] h-full bg-[var(--color-pencil-gray)] origin-top scale-y-0"></div>
-          <div className="pencil-line-v absolute top-0 left-2/3 w-[2px] h-full bg-[var(--color-pencil-gray)] origin-top scale-y-0"></div>
-        </div>
-
-        {/* 3D dimension-rift: bleeds through from the universe-collision onward */}
-        <div ref={riftRef} className="absolute inset-0 opacity-0 pointer-events-none">
-          <Suspense fallback={null}><DimensionRift density={20} /></Suspense>
-        </div>
-
-
-        {/* Phase 2: Panels */}
-        <div className="absolute inset-0 flex items-center justify-center gap-8">
-          <div ref={panel1Ref} className="jagged-panel spray-edge opacity-0 translate-y-8 bg-white border-4 border-[var(--color-miles-red)] p-4 shadow-[8px_8px_0_var(--color-ink-black)] rotate-[-5deg]">
-            <h2 className="font-display text-4xl text-[var(--color-ink-black)]">STUDENT</h2>
-          </div>
-          <div ref={panel2Ref} className="jagged-panel spray-edge opacity-0 translate-y-8 bg-[var(--color-saffron)] border-4 border-[var(--color-ink-black)] p-4 shadow-[8px_8px_0_var(--color-ink-black)] rotate-[2deg]">
-            <h2 className="font-display text-4xl text-[var(--color-ink-black)]">BUILDER</h2>
-          </div>
-          <div ref={panel3Ref} className="jagged-panel spray-edge opacity-0 translate-y-8 bg-[var(--color-portal-cyan)] border-4 border-[var(--color-ink-black)] p-4 shadow-[8px_8px_0_var(--color-ink-black)] rotate-[-3deg]">
-            <h2 className="font-display text-4xl text-[var(--color-ink-black)]">ENGINEER</h2>
-          </div>
-        </div>
-
-        {/* Phase 3: Colliding Universes — Codeverse cyan, Miles red, Pavitr saffron */}
-        <div ref={universeRef} className="absolute inset-0 flex items-center justify-center opacity-0 mix-blend-screen">
-          <div className="universe-circle universe-c absolute w-64 h-64 rounded-full bg-[var(--color-portal-cyan)] mix-blend-screen"></div>
-          <div className="universe-circle universe-m absolute w-64 h-64 rounded-full bg-[var(--color-miles-red)] mix-blend-screen"></div>
-          <div className="universe-circle universe-y absolute w-64 h-64 rounded-full bg-[var(--color-saffron)] mix-blend-screen"></div>
-        </div>
-
-        {/* Phase 4 & 5: Cover and Breakout */}
-        <div ref={titleRef} className="absolute opacity-0 scale-90 flex flex-col items-center justify-center w-full z-20">
-          <p className="font-label uppercase tracking-[0.3em] text-[var(--color-comic-yellow)] mb-4 text-sm md:text-base">Issue #01 &middot; Earth-28</p>
-          <div className="relative w-full text-center">
-            <h1 className="font-display text-5xl md:text-7xl lg:text-9xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 mix-blend-normal">
-              <KineticTitle as="span">RENEESH</KineticTitle>
-            </h1>
-          </div>
-          <h2 className="font-display text-2xl md:text-4xl lg:text-5xl tracking-widest text-[var(--color-text-on-dark)] mt-4 text-center">ACROSS THE CODEVERSE</h2>
-        </div>
-
-        {/* Codewalker Breakout */}
-        <div ref={breakoutRef} className="absolute inset-0 flex items-center justify-center opacity-0 z-30 pointer-events-none overflow-visible">
-          <div className="breakout-glass absolute w-full h-full bg-white opacity-0"></div>
-          <div className="rangoli-corner top-10 left-10 opacity-70"></div>
-          <div className="suit-block-sash opacity-40"></div>
-          <img
-            src="/src/assets/images/codewalker.webp"
-            alt="The Codewalker"
-            className="codewalker-intro drip-edge max-h-[80vh] object-contain drop-shadow-[0_0_30px_rgba(224,18,42,0.6)] text-[var(--color-miles-black)]"
-          />
-          <span
-            ref={impactStampRef}
-            aria-hidden="true"
-            className="absolute top-1/4 right-[10%] font-display uppercase text-4xl md:text-6xl opacity-0 pointer-events-none z-40"
-            style={{ color: 'var(--color-miles-red)', textShadow: '3px 3px 0 var(--color-ink-black), -2px -2px 0 var(--color-saffron)' }}
-          >
-            CRASH!
-          </span>
-        </div>
-
+      <div className="boot-screen intro-layer">
+        <div className="intro-scanline" />
+        <p className="boot-line">MULTIVERSE_LINK::SEARCHING</p>
+        <p className="boot-line">ANOMALY_DETECTED / EARTH-28</p>
+        <p className="boot-line boot-alert">IDENTITY SIGNAL UNSTABLE</p>
       </div>
+
+      <section className="dimension-scene student-scene intro-layer">
+        <div className="portal-shell student-portal">
+          <div className="notebook-grid" />
+          {[12, 28, 46, 64, 82].map((top) => <i key={top} className="sketch-line" style={{ top: `${top}%` }} />)}
+          <span className="student-note note-one">ideas?</span><span className="student-note note-two">learn.</span><span className="student-note note-three">iterate!</span>
+          <h2 className="dimension-word student">Student</h2>
+        </div>
+        <div className="earth-tag">EARTH-01 / ORIGIN</div>
+      </section>
+
+      <section className="dimension-scene builder-scene intro-layer">
+        <div className="builder-grid" />
+        {codeFragments.map((fragment, index) => <code key={fragment} className={`code-fragment fragment-${index}`}>{fragment}</code>)}
+        <div className="builder-cursor" />
+        <h2 className="dimension-word builder">Builder</h2>
+        <div className="earth-tag">EARTH-02 / CONSTRUCTION</div>
+      </section>
+
+      <section className="dimension-scene engineer-scene intro-layer">
+        <div className="engineer-core">
+          <i className="engineer-ring ring-a"/><i className="engineer-ring ring-b"/><i className="engineer-ring ring-c"/>
+        </div>
+        {[18, 34, 50, 66, 82].map((top) => <i key={top} className="circuit-line" style={{ top: `${top}%` }} />)}
+        <h2 className="dimension-word engineer">Engineer</h2>
+        <div className="earth-tag">EARTH-03 / SYSTEMS</div>
+      </section>
+
+      <section className="collision-field intro-layer">
+        <Suspense fallback={null}><DimensionRift density={12} className="intro-rift" /></Suspense>
+        <Suspense fallback={null}><DimensionCharacterGlitch interval={[600, 1200]} maxVisible={2} /></Suspense>
+        <div className="collision-orbit">
+          <div className="collision-portal collision-a"><span className="collision-label">ORIGIN</span></div>
+          <div className="collision-portal collision-b"><span className="collision-label">BUILD</span></div>
+          <div className="collision-portal collision-c"><span className="collision-label">SYSTEM</span></div>
+        </div>
+        <Lottie
+          lottieRef={explosionRef}
+          animationData={particleExplosion}
+          autoplay={false}
+          loop={false}
+          className="particle-explosion"
+          aria-hidden="true"
+        />
+        <div className="collision-flash" />
+        <p className="collision-warning">DIMENSIONAL COLLISION IMMINENT</p>
+      </section>
+
+      <section className="intro-title-scene intro-layer">
+        <div className="title-rift" />
+        {Array.from({ length: 10 }, (_, index) => <i key={index} className={`ink-shard shard-${index}`} />)}
+        <img src={codewalker} alt="The Codewalker" className="intro-codewalker" />
+        <div className="cover-copy">
+          <p className="cover-kicker">ISSUE #01 · EARTH-28 PRESENTS</p>
+          <h1 className="cover-title"><KineticTitle as="span">RENEESH</KineticTitle></h1>
+          <h2 className="cover-subtitle">ACROSS THE CODEVERSE</h2>
+        </div>
+        <span className="impact-word" aria-hidden="true">THWIP!</span>
+      </section>
+
+      <div className="intro-grain" />
+      <div className="intro-vignette" />
+      <p className="accelerate-hint">CLICK TO ACCELERATE</p>
     </div>
   );
 };

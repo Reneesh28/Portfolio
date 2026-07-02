@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useId } from 'react';
+import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -32,7 +32,6 @@ const StampReveal = ({
   const wrapRef = useRef(null);
   const burstRef = useRef(null);
   const sfxRef = useRef(null);
-  const uid = useId();
 
   useEffect(() => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -69,23 +68,19 @@ const StampReveal = ({
         // Impact: overshoot + micro shake
         .to(el, { scale: 1.08, duration: 0.08, ease: 'power1.out' })
         .to(el, { scale: 0.97, rotation: rotation * 0.06, duration: 0.07 })
-        .to(el, { scale: 1, rotation: 0, duration: 0.18, ease: 'elastic.out(1, 0.4)' })
-        // Ink burst ring
-        .to(
-          burstRef.current,
-          { opacity: 0.9, scale: 1.6, duration: 0.18, ease: 'power2.out' },
-          '<'
-        )
-        .to(burstRef.current, { opacity: 0, duration: 0.35 }, '>-0.05')
-        // Onomatopoeia pop
-        .to(
-          sfxRef.current,
-          { opacity: 1, scale: 1, rotation: 0, duration: 0.18, ease: 'back.out(3)' },
-          '<-0.1'
-        )
-        .to(sfxRef.current, { opacity: 0, scale: 1.3, duration: 0.4, ease: 'power1.in' }, '+=0.25')
-        // Whole-viewport-feel shake on the wrapper's parent stacking context
-        .to(
+        .to(el, { scale: 1, rotation: 0, duration: 0.18, ease: 'elastic.out(1, 0.4)' });
+
+      if (burstRef.current) {
+        tl.to(burstRef.current, { opacity: 0.9, scale: 1.6, duration: 0.18, ease: 'power2.out' }, '<')
+          .to(burstRef.current, { opacity: 0, duration: 0.35 }, '>-0.05');
+      }
+
+      if (sfxRef.current) {
+        tl.to(sfxRef.current, { opacity: 1, scale: 1, rotation: 0, duration: 0.18, ease: 'back.out(3)' }, '<-0.1')
+          .to(sfxRef.current, { opacity: 0, scale: 1.3, duration: 0.4, ease: 'power1.in' }, '+=0.25');
+      }
+
+      tl.to(
           el,
           {
             x: 'random(-4,4)',

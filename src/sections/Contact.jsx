@@ -7,8 +7,10 @@ import ComicPanel from "../components/comic/ComicPanel";
 import InkButton from "../components/comic/InkButton";
 import StampReveal from "../components/comic/StampReveal";
 import FrameStutter from "../components/comic/FrameStutter";
+import KineticTitle from "../components/comic/KineticTitle";
 import { lazy, Suspense } from 'react';
 const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
+const DimensionCharacterGlitch = lazy(() => import('../components/three/DimensionCharacterGlitch'));
 import profileData from "../data/profile";
 import { SectionPortal } from '../components/comic/PortalTransition';
 
@@ -22,22 +24,36 @@ const Contact = () => {
   const [effectText, setEffectText] = useState("");
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia(sectionRef);
+
+    mm.add({
+      isDesktop: "(min-width: 768px)",
+      isMobile: "(max-width: 767px)",
+      reduceMotion: "(prefers-reduced-motion: reduce)"
+    }, (context) => {
+      let { isDesktop, reduceMotion } = context.conditions;
+
+      if (reduceMotion) {
+        gsap.set('.contact-panel', { opacity: 1 });
+        return;
+      }
+
       gsap.from(".contact-panel", {
-        y: 100,
+        y: isDesktop ? 100 : 30,
         opacity: 0,
-        rotation: (i) => i % 2 === 0 ? -2 : 2,
+        rotation: (i) => isDesktop ? (i % 2 === 0 ? -2 : 2) : 0,
         duration: 0.8,
-        stagger: 0.2,
+        stagger: 0.15,
         ease: "power3.out",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 70%",
+          start: "top 80%",
           once: true
         }
       });
-    }, sectionRef);
-    return () => ctx.revert();
+    });
+
+    return () => mm.revert();
   }, []);
 
   const sendEmail = async (e) => {
@@ -102,14 +118,19 @@ const Contact = () => {
         <Suspense fallback={null}><DimensionRift density={18} /></Suspense>
       </div>
 
+      {/* Characters haunt across contact — signalling across universes */}
+      <Suspense fallback={null}>
+        <DimensionCharacterGlitch interval={[7000, 14000]} maxVisible={1} />
+      </Suspense>
+
       <div className="relative z-10 w-full max-w-7xl mx-auto">
 
         <div className="text-center mb-16">
           <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-portal-cyan)] mb-2">COMMUNICATIONS</p>
           <FrameStutter steps={5}>
             <StampReveal sfx="SIGNAL!" color="var(--color-portal-cyan)" rotation={-5}>
-              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)]">
-                GET IN TOUCH
+              <h2 className="font-display text-4xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)]">
+                <KineticTitle as="span">GET IN TOUCH</KineticTitle>
               </h2>
             </StampReveal>
           </FrameStutter>

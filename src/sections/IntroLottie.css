@@ -1,0 +1,18 @@
+.particle-explosion {
+  position: absolute;
+  z-index: 20;
+  left: 50%;
+  top: 50%;
+  width: min(85vmin, 760px);
+  height: min(85vmin, 760px);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+.title-rift {
+  background:
+    radial-gradient(circle at 62% 54%, rgba(255, 255, 255, 0.2) 0 2%, rgba(0, 229, 255, 0.35) 4%, rgba(255, 45, 170, 0.22) 15%, transparent 38%),
+    repeating-conic-gradient(from 20deg at 62% 54%, rgba(0, 229, 255, 0.08) 0 4deg, transparent 4deg 14deg);
+}

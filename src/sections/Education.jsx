@@ -7,6 +7,7 @@ import PaperTexture from '../components/comic/PaperTexture';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
 import FrameStutter from '../components/comic/FrameStutter';
+import KineticTitle from '../components/comic/KineticTitle';
 import { SectionPortal } from '../components/comic/PortalTransition';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -16,22 +17,35 @@ const Education = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Entrance animation
+    const mm = gsap.matchMedia(sectionRef);
+
+    mm.add({
+      isDesktop: "(min-width: 768px)",
+      isMobile: "(max-width: 767px)",
+      reduceMotion: "(prefers-reduced-motion: reduce)"
+    }, (context) => {
+      let { isDesktop, reduceMotion } = context.conditions;
+
+      if (reduceMotion) {
+        gsap.set('.folder-container', { opacity: 1 });
+        return;
+      }
+
       gsap.from('.folder-container', {
-        y: 100,
+        y: isDesktop ? 100 : 30,
         opacity: 0,
-        rotation: -2,
+        rotation: isDesktop ? -2 : 0,
         duration: 0.8,
         ease: "power3.out",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 70%",
+          start: "top 80%",
           once: true
         }
       });
-    }, sectionRef);
-    return () => ctx.revert();
+    });
+
+    return () => mm.revert();
   }, []);
 
   // When tab changes, animate the content
@@ -67,8 +81,8 @@ const Education = () => {
         <div className="text-center mb-16 relative">
           <FrameStutter steps={5}>
             <StampReveal sfx="FILED!" color="var(--color-dimension-magenta)" rotation={-5}>
-              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-cyan print-offset-magenta">
-                ORIGIN RECORDS
+              <h2 className="font-display text-4xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-cyan print-offset-magenta">
+                <KineticTitle as="span">ORIGIN RECORDS</KineticTitle>
               </h2>
             </StampReveal>
           </FrameStutter>

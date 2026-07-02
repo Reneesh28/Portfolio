@@ -8,6 +8,7 @@ import InkButton from '../components/comic/InkButton';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
 import FrameStutter from '../components/comic/FrameStutter';
+import KineticTitle from '../components/comic/KineticTitle';
 import { X, ExternalLink } from 'lucide-react';
 import { SectionPortal } from '../components/comic/PortalTransition';
 
@@ -78,7 +79,7 @@ const Certifications = () => {
           <FrameStutter steps={5}>
             <StampReveal sfx="VERIFIED!" color="var(--color-success-green)" rotation={-4}>
               <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-ink-black)] mt-4">
-                COLLECTED ARTIFACTS
+                <KineticTitle as="span">COLLECTED ARTIFACTS</KineticTitle>
               </h2>
             </StampReveal>
           </FrameStutter>

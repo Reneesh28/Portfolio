@@ -8,6 +8,7 @@ import ComicPanel from '../components/comic/ComicPanel';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
 import FrameStutter from '../components/comic/FrameStutter';
+import KineticTitle from '../components/comic/KineticTitle';
 import { SectionPortal } from '../components/comic/PortalTransition';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -35,22 +36,36 @@ const Skills = () => {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia(sectionRef);
+
+    mm.add({
+      isDesktop: "(min-width: 768px)",
+      isMobile: "(max-width: 767px)",
+      reduceMotion: "(prefers-reduced-motion: reduce)"
+    }, (context) => {
+      let { isDesktop, reduceMotion } = context.conditions;
+
+      if (reduceMotion) {
+        gsap.set('.skill-category-panel', { opacity: 1 });
+        return;
+      }
+
       gsap.from('.skill-category-panel', {
-        y: 50,
+        y: isDesktop ? 50 : 20,
         opacity: 0,
-        rotation: () => (Math.random() - 0.5) * 4,
+        rotation: () => isDesktop ? (Math.random() - 0.5) * 4 : 0,
         duration: 0.8,
         stagger: 0.15,
         ease: "power3.out",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 80%",
           once: true
         }
       });
-    }, sectionRef);
-    return () => ctx.revert();
+    });
+
+    return () => mm.revert();
   }, []);
 
   return (
@@ -64,8 +79,8 @@ const Skills = () => {
         <div className="flex flex-col md:flex-row justify-between items-center w-full mb-12 px-4 md:px-0 gap-6">
           <FrameStutter steps={5}>
             <StampReveal sfx="ZAP!" color="var(--color-portal-cyan)" rotation={-4}>
-              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-[var(--color-text-on-dark)] tracking-wider text-center md:text-left print-offset-cyan">
-                POWERS & TOOLS
+              <h2 className="font-display text-4xl md:text-7xl lg:text-8xl text-[var(--color-text-on-dark)] tracking-wider text-center md:text-left print-offset-cyan">
+                <KineticTitle as="span">ARSENAL</KineticTitle>
               </h2>
             </StampReveal>
           </FrameStutter>

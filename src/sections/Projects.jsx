@@ -8,6 +8,7 @@ import InkButton from '../components/comic/InkButton';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
 import FrameStutter from '../components/comic/FrameStutter';
+import KineticTitle from '../components/comic/KineticTitle';
 import { Network, FileText, Cpu, Layout, Play, Github } from 'lucide-react';
 import { SectionPortal } from '../components/comic/PortalTransition';
 
@@ -24,21 +25,35 @@ const Projects = () => {
     : projectsData.filter(p => p.category === filter);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia(sectionRef);
+
+    mm.add({
+      isDesktop: "(min-width: 768px)",
+      isMobile: "(max-width: 767px)",
+      reduceMotion: "(prefers-reduced-motion: reduce)"
+    }, (context) => {
+      let { isDesktop, reduceMotion } = context.conditions;
+
+      if (reduceMotion) {
+        gsap.set('.project-6panel', { opacity: 1 });
+        return;
+      }
+
       gsap.from('.project-6panel', {
-        y: 100,
+        y: isDesktop ? 100 : 30,
         opacity: 0,
         duration: 0.8,
-        stagger: 0.2,
+        stagger: 0.15,
         ease: "power2.out",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 70%",
+          start: "top 80%",
           once: true
         }
       });
-    }, sectionRef);
-    return () => ctx.revert();
+    });
+
+    return () => mm.revert();
   }, []);
 
   return (
@@ -53,8 +68,8 @@ const Projects = () => {
           <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-dimension-magenta)] mb-2">EXPLORE THE MULTIVERSE</p>
           <FrameStutter steps={5}>
             <StampReveal sfx="SNAP!" color="var(--color-dimension-magenta)" rotation={-5}>
-              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-magenta">
-                CASE STUDIES
+              <h2 className="font-display text-4xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-magenta">
+                <KineticTitle as="span">CASE STUDIES</KineticTitle>
               </h2>
             </StampReveal>
           </FrameStutter>
@@ -107,7 +122,7 @@ const Projects = () => {
               >
                 {/* Comic page header */}
                 <div className="flex justify-between items-end border-b-4 pb-2 mb-4" style={{ borderColor: themeColor }}>
-                  <h3 className="font-display text-4xl md:text-5xl uppercase" style={{ color: themeColor }}>{project.title}</h3>
+                  <h3 className="font-display text-3xl md:text-5xl uppercase" style={{ color: themeColor }}>{project.title}</h3>
                   <span className="font-label uppercase font-bold text-sm bg-white text-[var(--color-ink-black)] px-2 py-1 transform rotate-2">{project.category}</span>
                 </div>
 

@@ -8,6 +8,7 @@ import InkButton from '../components/comic/InkButton';
 import TiltCard from '../components/comic/TiltCard';
 import StampReveal from '../components/comic/StampReveal';
 import FrameStutter from '../components/comic/FrameStutter';
+import KineticTitle from '../components/comic/KineticTitle';
 import codewalkerImg from "../assets/images/codewalker.webp";
 import { SectionPortal } from '../components/comic/PortalTransition';
 
@@ -17,23 +18,36 @@ const About = () => {
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Entrance animation for panels
+    const mm = gsap.matchMedia(sectionRef);
+
+    mm.add({
+      isDesktop: "(min-width: 768px)",
+      isMobile: "(max-width: 767px)",
+      reduceMotion: "(prefers-reduced-motion: reduce)"
+    }, (context) => {
+      let { isDesktop, isMobile, reduceMotion } = context.conditions;
+
+      if (reduceMotion) {
+        gsap.set('.about-panel', { opacity: 1 });
+        return;
+      }
+
       gsap.from('.about-panel', {
-        y: 100,
+        y: isDesktop ? 100 : 40,
         opacity: 0,
-        rotation: (i) => (i % 2 === 0 ? -5 : 5),
+        rotation: (i) => isDesktop ? (i % 2 === 0 ? -5 : 5) : 0,
         duration: 0.8,
-        stagger: 0.2,
+        stagger: 0.15,
         ease: "power2.out",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 80%",
           once: true
         }
       });
-    }, sectionRef);
-    return () => ctx.revert();
+    });
+
+    return () => mm.revert();
   }, []);
 
   return (
@@ -46,8 +60,8 @@ const About = () => {
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         <FrameStutter steps={5}>
           <StampReveal sfx="ORIGIN!" color="var(--color-dimension-magenta)" rotation={-4}>
-            <h2 className="font-display text-5xl md:text-7xl lg:text-8xl text-[var(--color-ink-black)] mb-12 tracking-wider text-center print-offset-both">
-              THE ORIGIN STORY
+            <h2 className="font-display text-4xl md:text-7xl lg:text-8xl text-[var(--color-ink-black)] mb-12 tracking-wider text-center print-offset-both">
+              <KineticTitle as="span">THE ORIGIN STORY</KineticTitle>
             </h2>
           </StampReveal>
         </FrameStutter>

@@ -25,9 +25,11 @@ const TiltCard = ({
   const rafRef = useRef(null);
   const reducedMotion = typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = typeof window !== 'undefined' && 
+    window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
   const handleMove = (e) => {
-    if (reducedMotion || !cardRef.current) return;
+    if (reducedMotion || isTouch || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width; // 0..1
     const py = (e.clientY - rect.top) / rect.height; // 0..1
@@ -58,7 +60,7 @@ const TiltCard = ({
   };
 
   const handleLeave = () => {
-    if (reducedMotion || !cardRef.current) return;
+    if (reducedMotion || isTouch || !cardRef.current) return;
     gsap.to(cardRef.current, {
       rotateX: 0,
       rotateY: 0,

@@ -17,7 +17,7 @@ import * as THREE from 'three';
  *   </div>
  */
 
-const DIMENSION_COLORS = ['#00E5FF', '#FF2DAA', '#FFD447', '#B9FF4F'];
+const DIMENSION_COLORS = ['#00E5FF', '#FF2DAA', '#FFB627', '#E0122A', '#287BFF', '#FF7A1A'];
 
 function Shard({ position, rotation, scale, color, speed }) {
   const ref = useRef();
@@ -107,7 +107,7 @@ const DimensionRift = ({ density = 14, glitch = true, className = '' }) => {
           <Shards density={density} />
           <MouseParallaxRig />
           <EffectComposer multisampling={0}>
-            <ChromaticAberration offset={[0.0012, 0.0018]} radialModulation modulationOffset={0.3} />
+            <ChromaticAberration offset={[0.003, 0.004]} radialModulation modulationOffset={0.4} />
             <Noise opacity={0.025} />
             {glitch && (
               <Glitch
