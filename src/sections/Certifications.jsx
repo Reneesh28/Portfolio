@@ -59,7 +59,7 @@ const Certifications = () => {
   }, [previewCert]);
 
   return (
-    <ComicSpread id="certifications" className="bg-[var(--color-paper-light)] text-[var(--color-ink-black)] z-20" ref={sectionRef}>
+    <ComicSpread id="certifications" tearColor="var(--color-deep-navy)" className="bg-[var(--color-paper-light)] text-[var(--color-ink-black)] z-20" ref={sectionRef}>
       <SectionPortal colorA="var(--color-saffron)" colorB="var(--color-success-green)" />
 
       {/* Background Texture */}

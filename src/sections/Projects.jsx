@@ -57,7 +57,7 @@ const Projects = () => {
   }, []);
 
   return (
-    <ComicSpread id="projects" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] border-t-8 border-b-8 border-[var(--color-paper)] z-30" ref={sectionRef}>
+    <ComicSpread id="projects" tearColor="var(--color-paper-light)" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] border-t-8 border-b-8 border-[var(--color-paper)] z-30" ref={sectionRef}>
       <SectionPortal colorA="var(--color-portal-cyan)" colorB="var(--color-saffron)" />
 
       <div className="absolute inset-0 bg-halftone-cyan opacity-10 pointer-events-none mix-blend-screen"></div>

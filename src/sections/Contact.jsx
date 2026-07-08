@@ -107,7 +107,7 @@ const Contact = () => {
   };
 
   return (
-    <ComicSpread id="contact" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] z-30 pb-32" ref={sectionRef}>
+    <ComicSpread id="contact" tearColor="var(--color-paper-light)" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] z-30 pb-32" ref={sectionRef}>
       <SectionPortal colorA="var(--color-miles-red)" colorB="var(--color-portal-cyan)" />
 
       {/* Background Texture */}

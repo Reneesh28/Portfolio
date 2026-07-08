@@ -70,7 +70,7 @@ const Education = () => {
   }, [activeTab]);
 
   return (
-    <ComicSpread id="education" className="bg-[var(--color-deep-navy)] z-10" ref={sectionRef}>
+    <ComicSpread id="education" tearColor="var(--color-ink-black)" className="bg-[var(--color-deep-navy)] z-10" ref={sectionRef}>
       <SectionPortal colorA="var(--color-dimension-magenta)" colorB="var(--color-temple-gold)" />
 
       {/* Background Texture */}

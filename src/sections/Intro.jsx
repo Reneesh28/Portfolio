@@ -23,6 +23,17 @@ const Intro = ({ onFinish }) => {
   const explosionRef = useRef(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  // The rift/glitch layers are full WebGL canvases with postprocessing — expensive.
+  // They're only visually relevant for the ~2s collision beat, so we don't mount
+  // them until the timeline actually reaches that scene (see the tl.call below).
+  // We DO warm the lazy chunk immediately so there's no download hitch later.
+  const [showCollisionFX, setShowCollisionFX] = useState(false);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    import('../components/three/DimensionRift');
+    import('../components/three/DimensionCharacterGlitch');
+  }, [reducedMotion]);
 
   useEffect(() => {
     if (!soundEnabled) return undefined;
@@ -77,17 +88,23 @@ const Intro = ({ onFinish }) => {
     }
 
     const q = gsap.utils.selector(rootRef);
-    const tl = gsap.timeline({ defaults: { ease: 'power3.inOut' }, onComplete: finish });
+    const tl = gsap.timeline({ defaults: { ease: 'power3.inOut', force3D: true }, onComplete: finish });
+
+    // Reusable camera-shake — keeps every impact beat consistent and lets us
+    // dial amplitude/repeats down in one place for a calmer, smoother feel.
+    const shake = (position, { x = 8, y = 0, duration = 0.035, repeat = 4 } = {}) => {
+      tl.to(rootRef.current, { x: `random(-${x},${x})`, y: y ? `random(-${y},${y})` : 0, duration, repeat, yoyo: true }, position)
+        .set(rootRef.current, { x: 0, y: 0 });
+    };
 
     gsap.set(q('.dimension-scene, .intro-title-scene, .intro-codewalker, .collision-field'), { opacity: 0 });
     gsap.set(q('.portal-shell'), { scale: 0, rotation: -35 });
 
     // Cold open: the transmission struggles to lock onto Earth-28.
     tl.to(q('.boot-line'), { opacity: 1, x: 0, duration: 0.18, stagger: 0.12, ease: 'steps(2)' })
-      .to(q('.intro-scanline'), { yPercent: 115, duration: 0.75, ease: 'none' }, '<')
-      .to(rootRef.current, { x: 'random(-7,7)', duration: 0.035, repeat: 5, yoyo: true }, '-=0.2')
-      .set(rootRef.current, { x: 0 })
-      .to(q('.boot-screen'), { opacity: 0, duration: 0.18 });
+      .to(q('.intro-scanline'), { yPercent: 115, duration: 0.75, ease: 'none' }, '<');
+    shake('-=0.2', { x: 6, repeat: 3 });
+    tl.to(q('.boot-screen'), { opacity: 0, duration: 0.18 });
 
     // Earth 01: hand-drawn student dimension.
     tl.set(q('.student-scene'), { opacity: 1 })
@@ -95,35 +112,34 @@ const Intro = ({ onFinish }) => {
       .fromTo(q('.sketch-line'), { scaleX: 0 }, { scaleX: 1, duration: 0.34, stagger: 0.045, ease: 'steps(4)' }, '-=0.35')
       .fromTo(q('.dimension-word.student'), { xPercent: -130, rotation: -12 }, { xPercent: 0, rotation: -4, duration: 0.4, ease: 'back.out(1.8)' }, '-=0.2')
       .fromTo(q('.student-note'), { y: 70, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.05, duration: 0.25 }, '<')
-      .to(q('.student-scene .portal-shell'), { scale: 7, rotation: 18, duration: 0.58, ease: 'power4.in' }, '+=0.28')
-      .set(q('.student-scene'), { opacity: 0 });
+      .to(q('.student-scene .portal-shell'), { scale: 7, rotation: 18, duration: 0.58, ease: 'power4.in' }, '+=0.22')
+      .to(q('.student-scene'), { opacity: 0, duration: 0.2 }, '-=0.15');
 
     // Earth 02: code blocks assemble into the builder identity.
-    tl.set(q('.builder-scene'), { opacity: 1 })
-      .fromTo(q('.builder-scene'), { scale: 1.35 }, { scale: 1, duration: 0.35, ease: 'power3.out' })
+    tl.fromTo(q('.builder-scene'), { opacity: 0, scale: 1.35 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power3.out' }, '-=0.15')
       .fromTo(q('.code-fragment'), { z: -500, opacity: 0, rotateX: 70 }, { z: 0, opacity: 1, rotateX: 0, stagger: 0.065, duration: 0.42, ease: 'back.out(1.4)' })
       .fromTo(q('.dimension-word.builder'), { scale: 2.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.32, ease: 'steps(4)' }, '-=0.25')
-      .to(q('.builder-grid'), { backgroundPosition: '80px 80px', duration: 0.55, ease: 'none' }, '<')
-      .to(q('.builder-scene'), { clipPath: 'circle(0% at 82% 22%)', rotate: 7, duration: 0.58, ease: 'power4.in' }, '+=0.32')
-      .set(q('.builder-scene'), { opacity: 0 });
+      .to(q('.builder-grid'), { x: 80, y: 80, duration: 0.55, ease: 'none' }, '<')
+      .to(q('.builder-scene'), { clipPath: 'circle(0% at 82% 22%)', rotate: 7, duration: 0.58, ease: 'power4.in' }, '+=0.24')
+      .to(q('.builder-scene'), { opacity: 0, duration: 0.16 }, '-=0.1');
 
     // Earth 03: technical geometry and circuitry surge toward camera.
     tl.set(q('.engineer-scene'), { opacity: 1, clipPath: 'circle(0% at 82% 22%)' })
-      .to(q('.engineer-scene'), { clipPath: 'circle(145% at 82% 22%)', duration: 0.58, ease: 'power4.out' })
+      .to(q('.engineer-scene'), { clipPath: 'circle(145% at 82% 22%)', duration: 0.58, ease: 'power4.out' }, '-=0.5')
       .fromTo(q('.engineer-ring'), { scale: 0, rotate: -120 }, { scale: 1, rotate: 0, stagger: 0.08, duration: 0.55, ease: 'back.out(1.4)' }, '-=0.32')
       .fromTo(q('.circuit-line'), { scaleX: 0 }, { scaleX: 1, stagger: 0.035, duration: 0.28, ease: 'steps(3)' }, '<')
       .fromTo(q('.dimension-word.engineer'), { scale: 1.15, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.42, ease: 'steps(5)' }, '-=0.15')
-      .to(q('.engineer-core'), { scale: 14, rotate: 90, duration: 0.62, ease: 'power4.in' }, '+=0.3')
-      .set(q('.engineer-scene'), { opacity: 0 });
+      .to(q('.engineer-core'), { scale: 14, rotate: 90, duration: 0.62, ease: 'power4.in' }, '+=0.22')
+      .to(q('.engineer-scene'), { opacity: 0, duration: 0.22 }, '-=0.2');
 
     // The dimensions collide; portals orbit the rift before imploding.
-    tl.set(q('.collision-field'), { opacity: 1 })
+    tl.call(() => setShowCollisionFX(true))
+      .set(q('.collision-field'), { opacity: 1 })
       .fromTo(q('.collision-portal'), { scale: 0, rotate: -60 }, { scale: 1, rotate: 0, stagger: 0.08, duration: 0.42, ease: 'back.out(1.7)' })
       .to(q('.collision-orbit'), { rotate: 115, scale: 1.18, duration: 0.7, ease: 'power2.inOut' }, '<')
-      .fromTo(q('.collision-label'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.2, ease: 'steps(2)' }, '-=0.45')
-      .to(rootRef.current, { x: 'random(-12,12)', y: 'random(-8,8)', duration: 0.035, repeat: 8, yoyo: true }, '+=0.12')
-      .set(rootRef.current, { x: 0, y: 0 })
-      .to(q('.collision-portal'), { x: 0, y: 0, scale: 0, duration: 0.34, stagger: 0.035, ease: 'power4.in' }, '<')
+      .fromTo(q('.collision-label'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.2, ease: 'steps(2)' }, '-=0.45');
+    shake('+=0.1', { x: 11, y: 7, repeat: 6 });
+    tl.to(q('.collision-portal'), { x: 0, y: 0, scale: 0, duration: 0.34, stagger: 0.035, ease: 'power4.in' }, '<')
       .call(() => explosionRef.current?.goToAndPlay(0, true))
       .fromTo(q('.particle-explosion'), { opacity: 0, scale: 0.35 }, { opacity: 1, scale: 1.45, duration: 0.34, ease: 'power4.out' }, '<')
       .to(q('.collision-flash'), { opacity: 1, scale: 2.5, duration: 0.08, ease: 'steps(1)' })
@@ -136,18 +152,20 @@ const Intro = ({ onFinish }) => {
       .fromTo(q('.cover-kicker'), { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.24, ease: 'steps(3)' }, '-=0.18')
       .fromTo(q('.cover-title'), { scale: 2.6, opacity: 0, rotate: -7 }, { scale: 1, opacity: 1, rotate: 0, duration: 0.3, ease: 'steps(5)' })
       .fromTo(q('.cover-subtitle'), { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, ease: 'back.out(1.6)' }, '-=0.08')
-      .fromTo(q('.impact-word'), { scale: 3, opacity: 0, rotate: 15 }, { scale: 1, opacity: 1, rotate: -8, duration: 0.16, ease: 'power4.in' }, '<')
-      .to(rootRef.current, { x: 'random(-9,9)', y: 'random(-6,6)', duration: 0.04, repeat: 5, yoyo: true }, '<')
-      .set(rootRef.current, { x: 0, y: 0 })
-      .to(q('.impact-word'), { opacity: 0, scale: 1.35, duration: 0.3 }, '+=0.45')
-      .to({}, { duration: 0.55 });
+      .fromTo(q('.impact-word'), { scale: 3, opacity: 0, rotate: 15 }, { scale: 1, opacity: 1, rotate: -8, duration: 0.16, ease: 'power4.in' }, '<');
+    shake('<', { x: 8, y: 5, duration: 0.04, repeat: 4 });
+    tl.to(q('.impact-word'), { opacity: 0, scale: 1.35, duration: 0.3 }, '+=0.35')
+      .to({}, { duration: 0.4 });
 
     timelineRef.current = tl;
     return () => tl.kill();
   }, [finish, reducedMotion]);
 
   const accelerate = () => {
-    if (timelineRef.current) timelineRef.current.timeScale(Math.min(2, timelineRef.current.timeScale() + 0.25));
+    const tl = timelineRef.current;
+    if (!tl) return;
+    const next = Math.min(2, tl.timeScale() + 0.25);
+    gsap.to(tl, { timeScale: next, duration: 0.3, ease: 'power2.out' });
   };
 
   return (
@@ -185,8 +203,9 @@ const Intro = ({ onFinish }) => {
       </section>
 
       <section className="dimension-scene engineer-scene intro-layer">
+        <div className="suit-block-sash intro-engineer-sash" aria-hidden="true" />
         <div className="engineer-core">
-          <i className="engineer-ring ring-a"/><i className="engineer-ring ring-b"/><i className="engineer-ring ring-c"/>
+          <i className="engineer-ring ring-a" /><i className="engineer-ring ring-b" /><i className="engineer-ring ring-c" />
         </div>
         {[18, 34, 50, 66, 82].map((top) => <i key={top} className="circuit-line" style={{ top: `${top}%` }} />)}
         <h2 className="dimension-word engineer">Engineer</h2>
@@ -194,8 +213,13 @@ const Intro = ({ onFinish }) => {
       </section>
 
       <section className="collision-field intro-layer">
-        <Suspense fallback={null}><DimensionRift density={12} className="intro-rift" /></Suspense>
-        <Suspense fallback={null}><DimensionCharacterGlitch interval={[600, 1200]} maxVisible={2} /></Suspense>
+        <div className="bleed-seam intro-collision-seam" aria-hidden="true" />
+        {showCollisionFX && (
+          <>
+            <Suspense fallback={null}><DimensionRift density={8} glitch={false} className="intro-rift" /></Suspense>
+            <Suspense fallback={null}><DimensionCharacterGlitch interval={[600, 1200]} maxVisible={2} /></Suspense>
+          </>
+        )}
         <div className="collision-orbit">
           <div className="collision-portal collision-a"><span className="collision-label">ORIGIN</span></div>
           <div className="collision-portal collision-b"><span className="collision-label">BUILD</span></div>
@@ -215,6 +239,7 @@ const Intro = ({ onFinish }) => {
 
       <section className="intro-title-scene intro-layer">
         <div className="title-rift" />
+        <div className="rangoli-corner spray-edge intro-fusion-mark" aria-hidden="true" />
         {Array.from({ length: 10 }, (_, index) => <i key={index} className={`ink-shard shard-${index}`} />)}
         <img src={codewalker} alt="The Codewalker" className="intro-codewalker" />
         <div className="cover-copy">

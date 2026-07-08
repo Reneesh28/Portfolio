@@ -15,12 +15,19 @@ const DimensionCharacterGlitch = lazy(() => import('../components/three/Dimensio
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Hero = () => {
+const Hero = ({ activateHeavyFX = true }) => {
   const sectionRef = useRef(null);
   const leftColRef = useRef(null);
   const rightColRef = useRef(null);
   const tearRef = useRef(null);
   const parallaxRef = useRef(null);
+
+  useEffect(() => {
+    // Warm the chunk immediately so there's no download hitch once activateHeavyFX
+    // flips true — the module is likely already cached from the Intro's own prefetch.
+    import('../components/three/DimensionRift');
+    import('../components/three/DimensionCharacterGlitch');
+  }, []);
 
   useEffect(() => {
     const mm = gsap.matchMedia(sectionRef);
@@ -87,7 +94,15 @@ const Hero = () => {
       if (heroCharacter && isDesktop) {
         tl.to(heroCharacter, { x: 30, scale: 1.05, duration: 1 }, 0);
       }
-      if (tearRef.current) tl.to(tearRef.current, { scaleY: 1, duration: 1 }, 0.2);
+      if (tearRef.current) {
+        gsap.set(tearRef.current, { rotateX: -22 });
+        const shadowEl = tearRef.current.parentElement?.querySelector('.tear-shadow');
+        tl.to(tearRef.current, { scaleY: 1, rotateX: 0, duration: 1, ease: 'none' }, 0.2);
+        if (shadowEl) {
+          tl.fromTo(shadowEl, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'none' }, 0.2)
+            .to(shadowEl, { opacity: 0, duration: 0.65, ease: 'none' }, 0.55);
+        }
+      }
 
       return () => {
         window.removeEventListener('mousemove', handleMouseMove);
@@ -103,10 +118,15 @@ const Hero = () => {
 
       <div className="absolute inset-0 bg-halftone-dark opacity-10 pointer-events-none"></div>
 
-      {/* 3D dimension-rift backdrop — floating glitch shards behind everything */}
-      <div className="absolute inset-0 -z-0 opacity-70">
-        <Suspense fallback={null}><DimensionRift density={16} /></Suspense>
-      </div>
+      {/* 3D dimension-rift backdrop — floating glitch shards behind everything.
+          Deferred until the intro is done: while the intro covers the screen,
+          this canvas + its postprocessing stack would just be burning frames
+          nobody can see, competing with the intro's own animation. */}
+      {activateHeavyFX && (
+        <div className="absolute inset-0 -z-0 opacity-70">
+          <Suspense fallback={null}><DimensionRift density={16} /></Suspense>
+        </div>
+      )}
 
       {/* Spider-Verse multiverse portal — glowing dimensional rift */}
       <SpiderWebBackground
@@ -121,9 +141,11 @@ const Hero = () => {
       />
 
       {/* Inter-dimensional character hauntings — the core Spider-Verse mechanic */}
-      <Suspense fallback={null}>
-        <DimensionCharacterGlitch interval={[5000, 11000]} maxVisible={2} />
-      </Suspense>
+      {activateHeavyFX && (
+        <Suspense fallback={null}>
+          <DimensionCharacterGlitch interval={[5000, 11000]} maxVisible={2} />
+        </Suspense>
+      )}
 
 
       <div ref={parallaxRef} className="relative z-10 w-full h-full min-h-screen max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center px-6 md:px-12 pt-24 pb-12">
@@ -204,12 +226,20 @@ const Hero = () => {
 
       </div>
 
-      {/* Torn paper transition at bottom */}
-      <div
-        ref={tearRef}
-        className="absolute bottom-0 left-0 w-full h-16 md:h-24 lg:h-32 bg-[var(--color-paper)] scale-y-0 torn-edge-bottom z-30 transform-gpu"
-        style={{ transformOrigin: 'bottom' }}
-      ></div>
+      {/* Torn paper transition at bottom — same page-lift treatment as ComicSpread:
+          shadow fade underneath + rotateX on the flap, so Hero -> About matches
+          every other section boundary's page-turn feel. */}
+      <div className="absolute bottom-0 left-0 w-full z-30 pointer-events-none" style={{ perspective: '700px' }} aria-hidden="true">
+        <div
+          className="tear-shadow absolute left-0 w-full h-8 bottom-16 md:bottom-24 lg:bottom-32"
+          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.35), transparent)', opacity: 0 }}
+        />
+        <div
+          ref={tearRef}
+          className="absolute bottom-0 left-0 w-full h-16 md:h-24 lg:h-32 bg-[var(--color-paper)] scale-y-0 torn-edge-bottom transform-gpu"
+          style={{ transformOrigin: 'bottom', willChange: 'transform' }}
+        ></div>
+      </div>
 
     </section>
   );

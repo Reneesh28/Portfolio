@@ -185,6 +185,7 @@ export default function Experience() {
   return (
     <ComicSpread
       id="experience"
+      tearColor="var(--color-ink-black)"
       className="relative z-20 overflow-visible bg-[var(--color-paper-light)] text-[var(--color-ink-black)]"
     >
       <SectionPortal colorA="var(--color-dimension-magenta)" colorB="var(--color-miles-red)" />

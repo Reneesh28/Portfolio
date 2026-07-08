@@ -51,7 +51,7 @@ const About = () => {
   }, []);
 
   return (
-    <ComicSpread id="about" className="bg-[var(--color-paper)] text-[var(--color-text-on-paper)] border-t-8 border-b-8 border-[var(--color-ink-black)] z-20" ref={sectionRef}>
+    <ComicSpread id="about" tearColor="var(--color-deep-navy)" className="bg-[var(--color-paper)] text-[var(--color-text-on-paper)] border-t-8 border-b-8 border-[var(--color-ink-black)] z-20" ref={sectionRef}>
       <SectionPortal colorA="var(--color-miles-red)" colorB="var(--color-saffron)" />
 
       {/* Background Texture */}

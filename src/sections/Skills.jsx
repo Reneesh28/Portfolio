@@ -69,7 +69,7 @@ const Skills = () => {
   }, []);
 
   return (
-    <ComicSpread id="skills" className="bg-[var(--color-deep-navy)] z-10" ref={sectionRef}>
+    <ComicSpread id="skills" tearColor="var(--color-paper-light)" className="bg-[var(--color-deep-navy)] z-10" ref={sectionRef}>
       <SectionPortal colorA="var(--color-saffron)" colorB="var(--color-portal-cyan)" />
 
       <div className="absolute inset-0 bg-halftone-dark opacity-20 pointer-events-none"></div>
