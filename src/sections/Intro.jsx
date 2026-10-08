@@ -13,6 +13,11 @@ export default function Intro({ onFinish }) {
 
   const [isMuted, setIsMuted] = useState(false);
   const [timelineProgress, setTimelineProgress] = useState(0);
+  const [audioState, setAudioState] = useState({
+    isPlaying: false,
+    isMuted: false,
+    autoplayBlocked: false,
+  });
 
   // 3D Book State driven by GSAP
   const [bookState, setBookState] = useState({
@@ -49,9 +54,11 @@ export default function Intro({ onFinish }) {
     }
   }, [onFinish, reducedMotion]);
 
-  // Toggle audio mute
-  const toggleMute = useCallback(() => {
-    const muted = introAudio.toggleMute();
+  // Toggle audio mute & start playback if paused
+  const toggleMute = useCallback((e) => {
+    e?.stopPropagation?.();
+    const currentSyncTime = timelineRef.current ? timelineRef.current.time() : 0;
+    const muted = introAudio.toggleMute(currentSyncTime);
     setIsMuted(muted);
   }, []);
 
@@ -68,23 +75,32 @@ export default function Intro({ onFinish }) {
 
   // Autoplay audio with interaction fallback for browser restrictions
   useEffect(() => {
-    introAudio.play();
+    introAudio.onStateChange = (state) => {
+      setAudioState(state);
+      setIsMuted(state.isMuted);
+    };
+
+    // Attempt autoplay immediately
+    introAudio.play(0);
 
     const handleFirstInteraction = () => {
-      introAudio.play();
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-      window.removeEventListener('touchstart', handleFirstInteraction);
+      if (!introAudio.isPlaying && !introAudio.isMuted) {
+        const currentSyncTime = timelineRef.current ? timelineRef.current.time() : 0;
+        introAudio.play(currentSyncTime);
+      }
     };
 
     window.addEventListener('click', handleFirstInteraction);
     window.addEventListener('keydown', handleFirstInteraction);
     window.addEventListener('touchstart', handleFirstInteraction);
+    window.addEventListener('pointerdown', handleFirstInteraction);
 
     return () => {
       window.removeEventListener('click', handleFirstInteraction);
       window.removeEventListener('keydown', handleFirstInteraction);
       window.removeEventListener('touchstart', handleFirstInteraction);
+      window.removeEventListener('pointerdown', handleFirstInteraction);
+      introAudio.onStateChange = null;
     };
   }, []);
 
@@ -406,6 +422,12 @@ export default function Intro({ onFinish }) {
       className="manga-intro-root"
       role="region"
       aria-label="Portfolio Manga Intro Cinematic"
+      onClick={() => {
+        if (!introAudio.isPlaying && !introAudio.isMuted) {
+          const currentSyncTime = timelineRef.current ? timelineRef.current.time() : 0;
+          introAudio.play(currentSyncTime);
+        }
+      }}
     >
       {/* 2D Manga Panels Layer */}
       <MangaPanels panelsRef={panelsRef} />
@@ -433,6 +455,8 @@ export default function Intro({ onFinish }) {
         isMuted={isMuted}
         onToggleMute={toggleMute}
         progress={timelineProgress}
+        isPlaying={audioState.isPlaying}
+        autoplayBlocked={audioState.autoplayBlocked}
       />
     </div>
   );

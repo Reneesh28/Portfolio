@@ -31,8 +31,8 @@ function App() {
       {/* GSAP INTRO — blocks everything */}
       {!introDone && <Intro onFinish={handleIntroFinish} />}
 
-      {/* MAIN CONTENT — loads immediately so Hero is visible underneath when Intro finishes */}
-      <IssueIndex />
+      {/* MAIN CONTENT — navbar only appears after intro is done */}
+      {introDone && <IssueIndex />}
       <main className="relative z-10">
         <Hero isIntroActive={!introDone} />
         <About />

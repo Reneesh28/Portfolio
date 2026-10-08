@@ -10,13 +10,14 @@
 .manga-intro-root {
   position: fixed;
   inset: 0;
-  z-index: 99999;
+  z-index: 100000;
   overflow: hidden;
   background-color: #0A0A0E;
   color: #111116;
   font-family: 'Noto Sans JP', 'Zen Kaku Gothic New', sans-serif;
   user-select: none;
   isolation: isolate;
+  cursor: pointer;
 }
 
 /* =========================================================
@@ -57,6 +58,42 @@
 .manga-ctrl-btn:active {
   transform: translate(2px, 2px);
   box-shadow: 1px 1px 0 #111116;
+}
+
+.sound-prompt-btn {
+  background: #FFFFFF;
+  color: #111116;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.45), 3px 3px 0 #111116;
+  animation: soundPromptPulse 1.8s ease-in-out infinite;
+}
+
+.ctrl-label-jp {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.8rem;
+}
+
+@keyframes soundPromptPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 3px 3px 0 #111116;
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.7), 4px 4px 0 #111116;
+  }
+}
+
+.sound-btn.is-playing-ctrl {
+  background: #111116;
+  color: #F4EFE6;
+  border-color: #F4EFE6;
+  box-shadow: 3px 3px 0 #888894;
+}
+
+.sound-btn.is-playing-ctrl:hover {
+  background: #FFFFFF;
+  color: #111116;
 }
 
 .skip-btn {

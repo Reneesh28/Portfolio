@@ -1,30 +1,50 @@
 import React from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Music } from 'lucide-react';
 
 export default function MangaOverlay({
   onSkip,
   isMuted,
   onToggleMute,
-  progress = 0
+  progress = 0,
+  isPlaying = false,
+  autoplayBlocked = false,
 }) {
   return (
     <>
       {/* Top Controls: Sound Toggle & Skip */}
       <div className="manga-intro-controls">
+        {autoplayBlocked && !isPlaying && (
+          <button
+            type="button"
+            onClick={onToggleMute}
+            className="manga-ctrl-btn sound-prompt-btn"
+            aria-label="Click to enable sound"
+          >
+            <Music size={14} className="animate-pulse" />
+            <span className="ctrl-label-jp">♫ 音声再生</span>
+            <span className="ctrl-label">[ TAP FOR SOUND ]</span>
+          </button>
+        )}
+
         <button
           type="button"
           onClick={onToggleMute}
-          className="manga-ctrl-btn sound-btn"
-          aria-label={isMuted ? '音声オン (Unmute intro audio)' : '音声ミュート (Mute intro audio)'}
-          title={isMuted ? 'Unmute' : 'Mute'}
+          className={`manga-ctrl-btn sound-btn ${!isPlaying || isMuted ? 'is-muted-ctrl' : 'is-playing-ctrl'}`}
+          aria-label={isMuted || !isPlaying ? '音声オン (Unmute intro audio)' : '音声ミュート (Mute intro audio)'}
+          title={isMuted || !isPlaying ? 'Play / Unmute Audio' : 'Mute Audio'}
         >
-          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-          <span className="ctrl-label">{isMuted ? 'MUTED' : 'AUDIO'}</span>
+          {isMuted || !isPlaying ? <VolumeX size={16} /> : <Volume2 size={16} />}
+          <span className="ctrl-label">
+            {isMuted ? 'MUTED' : isPlaying ? 'BGM: ON' : 'SOUND: OFF'}
+          </span>
         </button>
 
         <button
           type="button"
-          onClick={onSkip}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSkip();
+          }}
           className="manga-ctrl-btn skip-btn"
           aria-label="イントロをスキップ (Skip Intro)"
         >
@@ -48,3 +68,4 @@ export default function MangaOverlay({
     </>
   );
 }
+

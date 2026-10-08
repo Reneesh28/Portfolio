@@ -1,1750 +1,2095 @@
 /* =========================================================
-   CHAPTER 02 — CHARACTER PROFILE (ABOUT SECTION)
-   - 70% Seinen × 30% Slice of Life
-   - Tankobon Double-Page Spread Editorial Aesthetic
-   - Pure Monochrome Sumi-e Ink & Washi Paper (#F4EFE6 / #111116)
-   - Identity Map, Core Traits Panels, and Akogare Engine
+   CHAPTER 02: ABOUT SECTION (TANKŌBON MANGA SYSTEM)
+   - Pure Black & White / Grayscale Manga Aesthetic
+   - Single Accent: Vermilion #D7331F (Thread, Seals, Eye)
+   - 100% Image Visibility (object-fit: contain with manga matting)
+   - Fluid Responsive System (Mobile -> Tablet -> Desktop)
    ========================================================= */
 
-.about-section-root {
+.about-root {
+  --about-ink: #111116;
+  --about-paper: #F4EFE6;
+  --about-night: #0A0A0E;
+  --about-gray: #888894;
+  --about-vermilion: #D7331F;
+  --about-matting: #EFE9DC;
+  --about-matting-dark: #121218;
+  --about-nav-h: 56px;
+
   position: relative;
-  width: 100%;
-  min-height: 100vh;
-  background-color: #0A0A0E;
-  color: #111116;
-  font-family: 'Noto Sans JP', 'Inter', sans-serif;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: clamp(2rem, 5vw, 4.5rem) clamp(1rem, 3vw, 2.5rem);
-  box-sizing: border-box;
-  isolation: isolate;
-}
-
-/* Background Atmosphere Texture */
-.about-ambient-grain {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.06;
-  z-index: 1;
-  background-image: radial-gradient(#FFFFFF 15%, transparent 16%);
-  background-size: 8px 8px;
-}
-
-/* =========================================================
-   MANGA DOUBLE-PAGE SPREAD WRAPPER
-   ========================================================= */
-.about-manga-spread-container {
-  position: relative;
-  width: 100%;
-  max-width: 1560px;
-  background: #F4EFE6;
-  border: 4px solid #111116;
-  box-shadow: 12px 12px 0 #111116, 0 24px 48px rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 10;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-
-/* =========================================================
-   TOP EDITORIAL FOLIO BAR
-   ========================================================= */
-.about-top-folio {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 1.25rem;
-  background: #111116;
-  color: #F4EFE6;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  border-bottom: 2px solid #111116;
+  background-color: var(--about-paper);
+  color: var(--about-ink);
+  font-family: 'Noto Sans JP', sans-serif;
+  overflow-x: hidden;
   user-select: none;
 }
 
-.about-folio-left,
+/* Screen reader only utility */
+.about-root .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* =========================================================
+   1. ACTS STAGE (PINNED 100vh MASTER MANGA SPREAD ON DESKTOP)
+   ========================================================= */
+.about-acts-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--about-paper);
+  overflow: hidden;
+  display: flex;
+}
+
+.about-acts-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.about-act-page {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--about-paper);
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem clamp(1.25rem, 3.5vw, 3.5rem) 1.25rem clamp(4.5rem, 5.5vw, 6.5rem);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.about-act-page.is-negative-page {
+  background-color: var(--about-night);
+  color: var(--about-paper);
+}
+
+/* Folio Bar Top Header */
+.about-act-folio-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid var(--about-ink);
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.85rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(0.62rem, 1.1vw, 0.82rem);
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+
+.is-negative-page .about-act-folio-bar {
+  border-bottom-color: var(--about-paper);
+}
+
+.about-folio-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.about-folio-trait {
+  color: var(--about-vermilion);
+  letter-spacing: 0.12em;
+}
+
 .about-folio-right {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.6rem;
 }
 
-.about-folio-tag,
-.about-folio-badge {
-  background: #F4EFE6;
-  color: #111116;
-  padding: 0.15rem 0.45rem;
-  font-size: 0.65rem;
-}
-
-.about-folio-sep {
-  color: #888894;
-}
-
-.about-folio-center {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-weight: 800;
-  font-size: 0.68rem;
-  letter-spacing: 0.2em;
-  color: #888894;
-}
-
-/* =========================================================
-   CHAPTER 02 HEADLINE
-   ========================================================= */
-.about-chapter-headline {
-  padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1.25rem, 3.5vw, 2.5rem) 1rem;
-  border-bottom: 2px solid #111116;
-  background: #EDE6D6;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.about-chapter-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #111116;
-  color: #FFFFFF;
-  padding: 0.3rem 0.75rem;
-  border: 1.5px solid #111116;
-}
-
-.badge-kanji {
-  font-family: 'Yuji Boku', serif;
-  font-size: 1.2rem;
+.about-folio-time {
+  background: var(--about-ink);
+  color: var(--about-paper);
+  padding: 0.12rem 0.45rem;
   font-weight: 900;
-  color: #FFFFFF;
 }
 
-.badge-en {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
+.is-negative-page .about-folio-time {
+  background: var(--about-vermilion);
+  color: var(--about-paper);
 }
 
-.about-title-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.about-main-title {
-  margin: 0;
-  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
-  font-size: clamp(2rem, 4.5vw, 3.2rem);
-  color: #111116;
-  letter-spacing: 0.06em;
-  line-height: 1;
-}
-
-.about-japanese-accent {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.35rem;
-  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
-  font-size: 0.85rem;
-  color: #555560;
-  letter-spacing: 0.15em;
-}
-
-.kanji-accent {
-  font-family: 'Yuji Boku', serif;
-  font-size: 1.1rem;
-  color: #111116;
-}
-
-/* =========================================================
-   MAIN SPREAD GRID (Left: Portrait | Right: Story & File)
-   ========================================================= */
-.about-main-spread-grid {
+/* Asymmetrical Manga Panel Grids (Desktop 100vh Fitting) */
+.about-act-grid {
+  flex: 1;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  padding: clamp(1.25rem, 3.5vw, 2.5rem);
-  border-bottom: 3px solid #111116;
+  gap: 14px;
+  background-color: var(--about-ink);
+  padding: 12px;
+  border: 3px solid var(--about-ink);
+  box-sizing: border-box;
+  min-height: 0;
 }
 
-@media (min-width: 1024px) {
-  .about-main-spread-grid {
-    grid-template-columns: 5.5fr 6.5fr;
-    gap: 2.5rem;
-    align-items: start;
-  }
+.is-negative-page .about-act-grid {
+  background-color: var(--about-night);
+  border-color: var(--about-paper);
 }
 
-/* Left Page: Portrait Card */
-.about-page-left {
-  display: flex;
-  flex-direction: column;
+/* Act 1 Grid (2x2 Dawn Spread) */
+.grid-act1 {
+  grid-template-columns: 1.1fr 1fr;
+  grid-template-rows: 1.1fr 0.9fr;
 }
 
-.about-portrait-card {
-  background: #111116;
-  padding: 4px;
-  border: 2px solid #111116;
-  box-shadow: 8px 8px 0 #111116, 0 16px 32px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  overflow: hidden;
+/* Act 2 Grid (Sharp diagonal rhythm) */
+.grid-act2 {
+  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-rows: 1.1fr 0.9fr;
 }
 
-.about-portrait-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 12px 12px 0 #111116, 0 20px 40px rgba(0,0,0,0.4);
+/* Act 3 Grid (3 Noir panels) */
+.grid-act3 {
+  grid-template-columns: 1.15fr 1fr;
+  grid-template-rows: 1.15fr 0.85fr;
 }
-
-.about-portrait-card:focus-visible {
-  outline: 3px solid #111116;
-  outline-offset: 4px;
-}
-
-.portrait-frame-top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #111116;
-  color: #F4EFE6;
-  padding: 0.35rem 0.65rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-}
-
-.portrait-frame-label {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.portrait-kanji-stamp {
-  background: #FFFFFF;
-  color: #111116;
-  padding: 0.05rem 0.3rem;
-  font-family: 'Yuji Boku', serif;
-  font-size: 0.75rem;
-  font-weight: 900;
-}
-
-.about-art-viewport {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 3.4;
-  background: #111116;
-  overflow: hidden;
-  border-top: 2px solid #FFFFFF;
-  border-bottom: 2px solid #FFFFFF;
-}
-
-.about-portrait-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 25%;
-  filter: grayscale(100%) contrast(135%);
-  transition: transform 0.4s ease, filter 0.3s ease;
-}
-
-.about-portrait-card:hover .about-portrait-image {
-  transform: scale(1.02);
-  filter: grayscale(100%) contrast(145%);
-}
-
-.about-screentone-layer {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(#111116 18%, transparent 19%);
-  background-size: 5px 5px;
-  opacity: 0.12;
-  pointer-events: none;
-}
-
-.about-vignette-layer {
-  position: absolute;
-  inset: 0;
-  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.75);
-  pointer-events: none;
-}
-
-.portrait-seal-stamp {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: #111116;
-  color: #FFFFFF;
-  border: 2px solid #FFFFFF;
-  padding: 0.3rem 0.55rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 3px 3px 0 rgba(0,0,0,0.6);
-}
-
-.seal-kanji {
-  font-family: 'Yuji Boku', serif;
-  font-size: 1.4rem;
-  line-height: 1;
-}
-
-.seal-sub {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  margin-top: 2px;
-}
-
-.portrait-inspect-hint {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  background: rgba(17, 17, 22, 0.85);
-  color: #F4EFE6;
-  padding: 0.25rem 0.55rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  border: 1px solid #FFFFFF;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.about-portrait-card:hover .portrait-inspect-hint {
-  background: #FFFFFF;
-  color: #111116;
-}
-
-.portrait-frame-bottom-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #F4EFE6;
-  color: #111116;
-  padding: 0.35rem 0.65rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-}
-
-/* Right Page: Identity & Character File */
-.about-page-right {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.about-identity-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.about-protagonist-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: #111116;
-  color: #F4EFE6;
-  padding: 0.2rem 0.6rem;
-  align-self: flex-start;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.15em;
-}
-
-.pill-kanji {
-  font-family: 'Yuji Boku', serif;
-  font-size: 0.85rem;
-  background: #FFFFFF;
-  color: #111116;
-  padding: 0.05rem 0.3rem;
-}
-
-.about-name-title {
-  margin: 0.25rem 0 0;
-  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
-  font-size: clamp(2.2rem, 4vw, 3.4rem);
-  letter-spacing: 0.04em;
-  color: #111116;
-  line-height: 0.95;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.about-role-strip {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #E8E2D5;
-  border-left: 4px solid #111116;
-  padding: 0.4rem 0.75rem;
-  margin-top: 0.35rem;
-}
-
-.role-strip-bullet {
-  font-size: 0.7rem;
-  color: #111116;
-}
-
-.role-strip-text {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: clamp(0.75rem, 1.3vw, 0.95rem);
-  letter-spacing: 0.12em;
-  color: #111116;
-}
-
-.about-story-editorial {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.about-bio-paragraph {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 500;
-  line-height: 1.65;
-  color: #33333E;
-}
-
-/* Character File Box */
-.about-character-file-block {
-  background: #FFFFFF;
-  border: 3px solid #111116;
-  box-shadow: 6px 6px 0 #111116;
-  padding: 1rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.char-file-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #111116;
-  padding-bottom: 0.4rem;
-}
-
-.char-file-kanji {
-  font-family: 'Yuji Boku', serif;
-  font-size: 0.95rem;
-  font-weight: 900;
-  background: #111116;
-  color: #FFFFFF;
-  padding: 0.1rem 0.4rem;
-}
-
-.char-file-title {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.15em;
-  color: #111116;
-}
-
-.char-file-serial {
-  font-family: monospace;
-  font-size: 0.7rem;
-  font-weight: 800;
-  color: #888894;
-}
-
-.char-file-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-}
-
-@media (min-width: 640px) {
-  .char-file-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.char-file-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  background: #F4EFE6;
-  border: 1.5px solid #111116;
-  padding: 0.5rem 0.75rem;
-}
-
-.file-col-2 {
+.grid-act3 .panel-pos-3 {
   grid-column: 1 / -1;
 }
 
-.file-label {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-  color: #888894;
+/* Act 4 Grid (Deep negative full spread) */
+.grid-act4 {
+  grid-template-columns: 1fr 1.2fr;
+  grid-template-rows: 1fr 1.8fr;
+}
+.grid-act4 .panel-pos-3 {
+  grid-column: 1 / -1;
 }
 
-.file-value {
-  font-family: 'Noto Sans JP', 'Inter', sans-serif;
-  font-size: 0.82rem;
-  font-weight: 800;
-  color: #111116;
-}
-
-.file-domain-pills {
+/* Individual Manga Panel Frame */
+.about-manga-panel {
+  position: relative;
+  background: var(--about-paper);
+  border: 3px solid var(--about-ink);
+  overflow: hidden;
+  box-sizing: border-box;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.2rem;
+  flex-direction: column;
+  min-height: 0;
 }
 
-.domain-pill {
-  background: #111116;
-  color: #F4EFE6;
+.is-negative-page .about-manga-panel {
+  background: var(--about-night);
+  border-color: var(--about-paper);
+}
+
+/* Panel Number Circled Badge (①②③④) */
+.about-panel-num-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 20;
+  width: 22px;
+  height: 22px;
+  background: var(--about-ink);
+  color: var(--about-paper);
+  display: grid;
+  place-items: center;
   font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  padding: 0.2rem 0.5rem;
+  font-size: 0.68rem;
+  border: 1.5px solid var(--about-paper);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
 }
 
-.char-file-highlight {
-  background: #EDE6D6;
-  border-left: 4px solid #111116;
-}
-
-.arc-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.arc-jp-badge {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  background: #111116;
-  color: #FFFFFF;
-  padding: 0.1rem 0.35rem;
-}
-
-.arc-content-text {
-  margin: 0.2rem 0 0;
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #111116;
-  line-height: 1.45;
-}
-
-.status-active {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #111116;
-  display: inline-block;
-  animation: pulseDot 1.5s infinite ease-in-out;
-}
-
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(0.7); }
+.is-negative-page .about-panel-num-badge {
+  background: var(--about-paper);
+  color: var(--about-ink);
+  border-color: var(--about-night);
 }
 
 /* =========================================================
-   IDENTITY MAP SECTION
+   PANEL IMAGE CONTAINERS & 100% ARTWORK VISIBILITY
    ========================================================= */
-.about-identity-map-section {
-  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3.5vw, 2.5rem);
-  border-bottom: 3px solid #111116;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.identity-map-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.identity-map-kicker {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  color: #888894;
-}
-
-.map-kicker-kanji {
-  background: #111116;
-  color: #FFFFFF;
-  padding: 0.1rem 0.35rem;
-}
-
-.identity-map-title {
-  margin: 0;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-  letter-spacing: 0.08em;
-  color: #111116;
-}
-
-.identity-map-subtitle {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #555560;
-  max-width: 680px;
-  line-height: 1.5;
-}
-
-.identity-map-canvas {
+.about-panel-image-wrap,
+.about-panel-thought-wrap,
+.about-panel-stamp-wrap,
+.about-panel-sfx-wrap {
   position: relative;
   width: 100%;
-  min-height: 380px;
-  background: #FFFFFF;
-  border: 3px solid #111116;
-  box-shadow: 8px 8px 0 #111116;
-  display: grid;
-  place-items: center;
-  padding: 2rem 1rem;
+  height: 100%;
   overflow: hidden;
+  background-color: var(--about-matting);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.identity-map-grid-bg {
+.is-negative-page .about-panel-image-wrap,
+.is-negative-page .about-panel-thought-wrap,
+.is-negative-page .about-panel-stamp-wrap,
+.is-negative-page .about-panel-sfx-wrap {
+  background-color: var(--about-matting-dark);
+}
+
+/* The core image: MUST be object-fit contain so whole illustration is visible */
+.about-panel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.about-panel-screentone {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(#111116 12%, transparent 13%);
-  background-size: 12px 12px;
+  background-image: radial-gradient(var(--about-ink) 15%, transparent 16%);
+  background-size: 6px 6px;
   opacity: 0.08;
   pointer-events: none;
 }
 
-.identity-map-connecting-lines {
+/* Caption Boxes (Shippori Mincho / Noto Sans JP) */
+.about-panel-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 15;
+  background: rgba(244, 239, 230, 0.94);
+  backdrop-filter: blur(4px);
+  color: var(--about-ink);
+  padding: 0.4rem 0.65rem;
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(0.7rem, 1.05vw, 0.84rem);
+  line-height: 1.35;
+  border-top: 2px solid var(--about-ink);
+  margin: 0;
+}
+
+.is-negative-page .about-panel-caption {
+  background: rgba(10, 10, 14, 0.94);
+  color: var(--about-paper);
+  border-top-color: var(--about-paper);
+}
+
+/* Thought Bubble (Act 1 Panel ②) */
+.about-thought-bubble {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 15;
+  background: #FFFFFF;
+  color: var(--about-ink);
+  border: 2.5px solid var(--about-ink);
+  padding: 0.5rem 0.8rem;
+  max-width: 82%;
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(0.72rem, 1.05vw, 0.86rem);
+  line-height: 1.35;
+  box-shadow: 3px 3px 0 var(--about-ink);
+}
+
+.thought-tail-dot-1 {
+  position: absolute;
+  left: -8px;
+  bottom: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid var(--about-ink);
+}
+
+.thought-tail-dot-2 {
+  position: absolute;
+  left: -15px;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid var(--about-ink);
+}
+
+.thought-text {
+  margin: 0;
+  font-style: italic;
+}
+
+/* Hanko Seal on Panel */
+.about-panel-hanko-seal {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--about-vermilion);
+  color: var(--about-paper);
+  padding: 0.2rem 0.45rem;
+  border: 2px solid var(--about-paper);
+  outline: 2px solid var(--about-vermilion);
+  box-shadow: 3px 3px 0 var(--about-ink);
+  transform: rotate(-2deg);
+}
+
+.seal-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.seal-label {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+}
+
+/* Dialogue Speech Bubbles (Act 1 Panel ④) */
+.about-panel-dialogue-wrap {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  background: var(--about-paper);
+  box-sizing: border-box;
+}
+
+.about-dialogue-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.about-speech-bubble {
+  position: relative;
+  background: #FFFFFF;
+  border: 2.5px solid var(--about-ink);
+  padding: 0.5rem 0.75rem;
+}
+
+.bubble-shout {
+  clip-path: polygon(0% 0%, 98% 0%, 100% 90%, 90% 100%, 0% 100%);
+  background: #EDE6D6;
+}
+
+.bubble-speaker-tag {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.55rem;
+  color: var(--about-gray);
+  letter-spacing: 0.1em;
+}
+
+.bubble-text {
+  margin: 0.15rem 0 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(0.78rem, 1.2vw, 1.05rem);
+  line-height: 1.3;
+}
+
+.about-dialogue-seal {
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--about-vermilion);
+  color: var(--about-paper);
+  padding: 0.15rem 0.45rem;
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.85rem;
+  border: 1.5px solid var(--about-ink);
+}
+
+/* SFX Impact Burst (Act 2 Panel ② / Act 3) */
+.about-sfx-burst {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.sfx-glyph {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  color: #FFFFFF;
+  text-shadow: 4px 4px 0 var(--about-ink), -2px -2px 0 var(--about-ink), 2px -2px 0 var(--about-ink), -2px 2px 0 var(--about-ink);
+  letter-spacing: -0.08em;
+}
+
+/* Staircase Progression (Act 2 Panel ③) */
+.about-panel-staircase-wrap {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.about-staircase-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.about-stair-step {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: #FFFFFF;
+  border: 2px solid var(--about-ink);
+  padding: 0.35rem 0.6rem;
+}
+
+.step-3 {
+  background: var(--about-ink);
+  color: var(--about-paper);
+  border-color: var(--about-vermilion);
+  box-shadow: 3px 3px 0 var(--about-vermilion);
+}
+
+.step-rank-badge {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.7rem;
+  background: var(--about-vermilion);
+  color: var(--about-paper);
+  padding: 0.1rem 0.35rem;
+}
+
+.step-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(0.72rem, 1.05vw, 0.82rem);
+  letter-spacing: 0.06em;
+}
+
+.step-jp {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.8rem;
+  margin-left: 0.4rem;
+  color: var(--about-gray);
+}
+
+.step-3 .step-jp {
+  color: var(--about-paper);
+}
+
+/* Placeholder Slots */
+.about-panel-placeholder-slot {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  background: var(--about-matting);
+}
+
+.about-placeholder-dev-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: var(--about-vermilion);
+  color: #FFFFFF;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.52rem;
+  padding: 0.1rem 0.35rem;
+  z-index: 20;
+}
+
+.about-rooftop-svg-wrap {
+  width: 100%;
+  height: 100%;
+  background: var(--about-night);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-rooftop-svg {
+  width: 85%;
+  max-height: 85%;
+  height: auto;
+}
+
+.about-schematic-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 2px dashed var(--about-ink);
+  margin: 0.5rem;
+}
+
+.schematic-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 2.5rem;
+  color: var(--about-ink);
+}
+
+.schematic-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--about-gray);
+}
+
+/* Act 4: Giant Akogare Double Spread */
+.about-panel-akogare-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  box-sizing: border-box;
+  background: var(--about-night);
+  overflow: hidden;
+}
+
+.about-akogare-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0.18;
+  filter: contrast(140%);
+}
+
+.about-akogare-glyph-center {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.about-akogare-giant-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: clamp(5rem, 12vw, 10rem);
+  font-weight: 900;
+  color: var(--about-paper);
+  line-height: 0.9;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 30px rgba(244, 239, 230, 0.2);
+}
+
+.about-akogare-sub-caption {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(0.65rem, 1.1vw, 0.9rem);
+  letter-spacing: 0.2em;
+  color: var(--about-gray);
+  margin-top: 0.4rem;
+}
+
+.about-akogare-thread-svg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 6;
 }
 
-.identity-map-core-hub {
+.about-act-akogare-thread {
+  fill: none;
+  stroke: var(--about-vermilion);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+
+.about-akogare-statement-box {
   position: relative;
-  z-index: 5;
-  background: #111116;
-  color: #F4EFE6;
-  padding: 1.25rem 1.75rem;
-  border: 3px solid #FFFFFF;
-  outline: 3px solid #111116;
-  box-shadow: 6px 6px 0 #555560;
-  text-align: center;
+  z-index: 8;
+  max-width: 440px;
+  background: rgba(10, 10, 14, 0.94);
+  border: 2px solid var(--about-paper);
+  padding: 1rem 1.25rem;
+  box-shadow: 5px 5px 0 var(--about-vermilion);
 }
 
-.core-hub-inner {
+.akogare-text {
+  font-family: 'Shippori Mincho', serif;
+  font-size: clamp(0.75rem, 1.05vw, 0.88rem);
+  line-height: 1.55;
+  color: var(--about-paper);
+  margin: 0 0 0.85rem;
+}
+
+.akogare-sig-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border-top: 1px dashed var(--about-gray);
+  padding-top: 0.5rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.72rem;
+}
+
+.sig-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.05rem;
+  color: var(--about-vermilion);
+}
+
+.sig-name {
+  color: var(--about-paper);
+  letter-spacing: 0.1em;
+}
+
+.sig-year {
+  color: var(--about-gray);
+}
+
+/* =========================================================
+   2. CLOCK DIAL (PROGRESS & SELECT MODES)
+   ========================================================= */
+.about-clock-progress {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.about-clock-progress-svg {
+  width: clamp(80px, 8.5vw, 120px);
+  aspect-ratio: 1;
+}
+
+.about-dial-outer-ring {
+  fill: var(--about-paper);
+  stroke: var(--about-ink);
+  stroke-width: 2.5;
+}
+
+.is-negative-page .about-dial-outer-ring {
+  fill: var(--about-night);
+  stroke: var(--about-paper);
+}
+
+.about-dial-inner-ring {
+  fill: none;
+  stroke: var(--about-gray);
+  stroke-width: 1.5;
+}
+
+.about-dial-tick {
+  stroke: var(--about-gray);
+  stroke-width: 1.5;
+}
+
+.about-dial-tick-major {
+  stroke: var(--about-ink);
+  stroke-width: 2.5;
+}
+
+.is-negative-page .about-dial-tick-major {
+  stroke: var(--about-paper);
+}
+
+.about-dial-mini-notch {
+  fill: var(--about-vermilion);
+  stroke: var(--about-ink);
+  stroke-width: 1.5;
+}
+
+.about-dial-hand-thread {
+  fill: none;
+  stroke: var(--about-vermilion);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.about-dial-pivot-outer {
+  fill: var(--about-ink);
+}
+
+.is-negative-page .about-dial-pivot-outer {
+  fill: var(--about-paper);
+}
+
+.about-dial-pivot-inner {
+  fill: var(--about-vermilion);
+}
+
+.about-clock-time-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--about-ink);
+  color: var(--about-paper);
+  border: 1.5px solid var(--about-vermilion);
+  padding: 0.12rem 0.45rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+}
+
+.about-time-kanji {
+  font-family: 'Yuji Boku', serif;
+  color: var(--about-vermilion);
+}
+
+/* =========================================================
+   3. FINALE SECTION (24-HOUR CHRONOMETER & WOLF SANCTUARY)
+   ========================================================= */
+.about-finale-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--about-paper);
+  padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1rem, 4vw, 3rem);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-top: 4px solid var(--about-ink);
+}
+
+.about-finale-header {
+  text-align: center;
+  max-width: 800px;
+  margin-bottom: 2rem;
+}
+
+.about-finale-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--about-ink);
+  color: var(--about-paper);
+  padding: 0.2rem 0.65rem;
+  margin-bottom: 0.6rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+}
+
+.finale-kanji-stamp {
+  font-family: 'Yuji Boku', serif;
+  color: var(--about-vermilion);
+  font-size: 1rem;
+}
+
+.about-finale-heading {
+  margin: 0 0 0.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1.6rem, 3.8vw, 3rem);
+  color: var(--about-ink);
+  letter-spacing: 0.05em;
+}
+
+.about-finale-subheading {
+  margin: 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(0.75rem, 1.15vw, 0.88rem);
+  color: var(--about-gray);
+  letter-spacing: 0.04em;
+}
+
+.about-finale-stage-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Central Hub: Dial + Wolf Stage inside */
+.about-finale-center-hub {
+  position: relative;
+  width: min(88vw, 500px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  margin: 0 auto;
+}
+
+.about-finale-wolf-enclosure {
+  position: absolute;
+  inset: 18%;
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.about-wolf-stage-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-wolf-screentone-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--about-ink) 20%, transparent 20%);
+  background-size: 6px 6px;
+  mix-blend-mode: multiply;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.about-wolf-2d-fallback {
+  width: 85%;
+  height: 85%;
+  display: grid;
+  place-items: center;
+}
+
+.about-wolf-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Select Mode Clock Dial */
+.about-clock-select-container {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  outline: none;
+  cursor: grab;
+}
+
+.about-clock-select-container:active {
+  cursor: grabbing;
+}
+
+.about-clock-select-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.about-dial-select-track {
+  fill: none;
+  stroke: rgba(17, 17, 22, 0.06);
+  stroke-width: 16;
+}
+
+.about-dial-hour-label {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 11px;
+  fill: var(--about-gray);
+}
+
+.about-dial-notch-group {
+  cursor: pointer;
+  outline: none;
+}
+
+.about-notch-bg {
+  fill: #FFFFFF;
+  transition: r 0.2s ease, fill 0.2s ease;
+}
+
+.about-notch-bg.is-active-notch-bg {
+  fill: var(--about-vermilion);
+}
+
+.about-notch-border {
+  fill: none;
+  stroke: var(--about-ink);
+  stroke-width: 2.5;
+}
+
+.about-dial-notch-group:focus-visible .about-notch-border {
+  stroke: var(--about-vermilion);
+  stroke-width: 3.5;
+}
+
+.about-notch-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 13px;
+  font-weight: 900;
+  fill: var(--about-ink);
+}
+
+.about-notch-kanji.is-active-kanji {
+  fill: var(--about-paper);
+}
+
+.about-dial-center-hub {
+  fill: var(--about-ink);
+}
+
+.about-dial-center-vermilion {
+  fill: var(--about-vermilion);
+}
+
+/* Mobile Nav Controls in Finale */
+.about-finale-mobile-nav {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 0.85rem;
+  background: var(--about-ink);
+  color: var(--about-paper);
+  box-sizing: border-box;
+}
+
+.about-arrow-btn {
+  background: var(--about-paper);
+  color: var(--about-ink);
+  border: 1.5px solid var(--about-ink);
+  padding: 0.45rem 0.85rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  cursor: pointer;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-arrow-btn:active {
+  background: var(--about-vermilion);
+  color: var(--about-paper);
+}
+
+.about-mobile-active-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.82rem;
+}
+
+.mobile-active-kanji {
+  color: var(--about-vermilion);
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.2rem;
+}
+
+/* Six Class Panels Grid */
+.about-class-panels-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.about-class-panel-card {
+  background: #FFFFFF;
+  border: 3px solid var(--about-ink);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.about-class-panel-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--about-ink);
+}
+
+.about-class-panel-card.is-active-card {
+  border: 3.5px solid var(--about-vermilion);
+  box-shadow: 4px 4px 0 var(--about-vermilion);
+  background: #FDFCFA;
+}
+
+.about-class-panel-card:focus-visible {
+  outline: 3px solid var(--about-vermilion);
+}
+
+.about-card-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid var(--about-ink);
+  padding-bottom: 0.3rem;
+}
+
+.about-card-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--about-ink);
+}
+
+.is-active-card .about-card-kanji {
+  color: var(--about-vermilion);
+}
+
+.about-card-notch-time {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  color: var(--about-gray);
+}
+
+/* Complete Thumbnail Visibility (object-fit: contain) */
+.about-card-art-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 2px solid var(--about-ink);
+  overflow: hidden;
+  background-color: var(--about-matting);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-card-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.about-card-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--about-ink) 20%, transparent 20%);
+  background-size: 4px 4px;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.about-card-active-seal {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--about-vermilion);
+  color: var(--about-paper);
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.85rem;
+  font-weight: 900;
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--about-paper);
+  box-shadow: 2px 2px 0 var(--about-ink);
+}
+
+.about-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.about-card-title {
+  margin: 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--about-ink);
+}
+
+.about-card-sub {
+  margin: 0;
+  font-size: 0.68rem;
+  color: var(--about-gray);
+  line-height: 1.3;
+}
+
+.about-card-footer {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  border-top: 1px dashed var(--about-gray);
+}
+
+.about-card-open-btn {
+  width: 100%;
+  background: var(--about-ink);
+  color: var(--about-paper);
+  border: none;
+  padding: 0.35rem 0.5rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-card-open-btn:hover {
+  background: var(--about-vermilion);
+}
+
+/* Active Mark Stat Bar Dossier */
+.about-finale-active-dossier {
+  width: 100%;
+  background: #FFFFFF;
+  border: 3px solid var(--about-ink);
+  padding: 1.25rem clamp(1rem, 3vw, 2rem);
+  box-sizing: border-box;
+}
+
+.about-dossier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 2px solid var(--about-ink);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.about-dossier-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.about-dossier-kanji-badge {
+  background: var(--about-vermilion);
+  color: var(--about-paper);
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  padding: 0.1rem 0.55rem;
+  border: 2px solid var(--about-ink);
+}
+
+.about-dossier-headline {
+  margin: 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  letter-spacing: 0.04em;
+}
+
+.about-dossier-sub {
+  font-size: 0.75rem;
+  color: var(--about-gray);
+}
+
+.about-dossier-inspect-cta {
+  background: var(--about-ink);
+  color: var(--about-paper);
+  border: 2px solid var(--about-vermilion);
+  padding: 0.45rem 0.95rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-dossier-inspect-cta:hover {
+  background: var(--about-vermilion);
+  color: #FFFFFF;
+}
+
+.about-dossier-stats-bars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.about-dossier-stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dossier-stat-label-line {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
+.dossier-stat-lvl {
+  font-size: 0.65rem;
+}
+
+.lvl-core {
+  color: var(--about-vermilion);
+}
+
+.lvl-applied {
+  color: var(--about-ink);
+}
+
+.lvl-exploring {
+  color: var(--about-gray);
+}
+
+.dossier-stat-track {
+  height: 8px;
+  background: #EDE6D6;
+  border: 1.5px solid var(--about-ink);
+  overflow: hidden;
+}
+
+.dossier-stat-fill {
+  height: 100%;
+  transition: width 0.3s ease-out;
+}
+
+.lvl-fill-core {
+  background: var(--about-vermilion);
+}
+
+.lvl-fill-applied {
+  background: var(--about-ink);
+}
+
+.lvl-fill-exploring {
+  background: var(--about-gray);
+}
+
+/* Exit Thread Line */
+.about-finale-exit-thread-gutter {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.about-exit-thread-svg {
+  width: 40px;
+  height: 80px;
+}
+
+.about-exit-thread-line {
+  fill: none;
+  stroke: var(--about-vermilion);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+
+.about-exit-caption {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.2rem;
 }
 
-.core-hub-kanji {
-  font-family: 'Yuji Boku', serif;
-  font-size: 1.2rem;
-  color: #FFFFFF;
-}
-
-.core-hub-name {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 1.1rem;
-  letter-spacing: 0.12em;
-}
-
-.core-hub-role {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  color: #888894;
-}
-
-.identity-stamps-constellation {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 1fr 1fr;
-  padding: 1.5rem;
-  gap: 1rem;
-  pointer-events: none;
-}
-
-.map-stamp-node {
-  pointer-events: auto;
-  background: #F4EFE6;
-  border: 2px solid #111116;
-  box-shadow: 4px 4px 0 #111116;
-  padding: 0.5rem 0.75rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  text-align: left;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  max-width: 220px;
-}
-
-.map-stamp-node:hover {
-  transform: scale(1.06) rotate(0deg) !important;
-  box-shadow: 6px 6px 0 #111116;
-  background: #FFFFFF;
-}
-
-.map-stamp-node.is-selected {
-  background: #111116;
-  color: #F4EFE6;
-  border-color: #111116;
-  box-shadow: 5px 5px 0 #888894;
-  transform: scale(1.08) rotate(0deg) !important;
-}
-
-.map-stamp-node.is-special {
-  border-width: 2.5px;
-}
-
-.stamp-node-border {
-  width: 100%;
-}
-
-.stamp-node-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.2rem;
-}
-
-.stamp-node-num {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.62rem;
-  color: #888894;
-}
-
-.map-stamp-node.is-selected .stamp-node-num {
-  color: #F4EFE6;
-}
-
-.stamp-node-kanji {
-  font-family: 'Yuji Boku', serif;
-  font-size: 0.8rem;
-  background: #111116;
-  color: #FFFFFF;
-  padding: 0.05rem 0.3rem;
-}
-
-.map-stamp-node.is-selected .stamp-node-kanji {
-  background: #FFFFFF;
-  color: #111116;
-}
-
-.stamp-node-title {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  color: #111116;
-}
-
-.map-stamp-node.is-selected .stamp-node-title {
-  color: #FFFFFF;
-}
-
-.stamp-node-sub {
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #555560;
-  margin-top: 2px;
-}
-
-.map-stamp-node.is-selected .stamp-node-sub {
-  color: #888894;
-}
-
-/* Dossier Card Below Map */
-.stamp-dossier-card {
-  background: #FFFFFF;
-  border: 3px solid #111116;
-  box-shadow: 6px 6px 0 #111116;
-  padding: 1rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  animation: dossierFade 0.25s ease-out;
-}
-
-@keyframes dossierFade {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.dossier-top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #111116;
-  padding-bottom: 0.4rem;
-}
-
-.dossier-badge-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.dossier-num {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.75rem;
-  background: #111116;
-  color: #FFFFFF;
-  padding: 0.1rem 0.4rem;
-}
-
-.dossier-kanji {
-  font-family: 'Yuji Boku', serif;
-  font-size: 1rem;
-}
-
-.dossier-title {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.1em;
-  color: #111116;
-}
-
-.dossier-close-btn {
-  background: #F4EFE6;
-  border: 1.5px solid #111116;
-  padding: 0.2rem 0.55rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.dossier-close-btn:hover {
-  background: #111116;
-  color: #FFFFFF;
-}
-
-.dossier-description {
-  margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.6;
-  color: #33333E;
-  font-weight: 500;
-}
-
-.dossier-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 0.5rem;
-}
-
-.dossier-tag-pill {
-  background: #EDE6D6;
-  border: 1px solid #111116;
-  padding: 0.2rem 0.5rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  color: #111116;
-}
-
-/* =========================================================
-   FOUR CORE TRAITS PANELS (BUILD, CREATE, LEAD, EXPLORE)
-   ========================================================= */
-.about-traits-section {
-  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3.5vw, 2.5rem);
-  border-bottom: 3px solid #111116;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.traits-section-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.traits-kicker {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  color: #888894;
-}
-
-.traits-kicker-kanji {
-  background: #111116;
-  color: #FFFFFF;
-  padding: 0.1rem 0.35rem;
-}
-
-.traits-section-title {
-  margin: 0;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-  letter-spacing: 0.08em;
-  color: #111116;
-}
-
-.traits-section-subtitle {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #555560;
-  max-width: 680px;
-  line-height: 1.5;
-}
-
-.traits-panels-composition-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .traits-panels-composition-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-}
-
-.trait-manga-panel {
-  background: #111116;
-  padding: 4px;
-  border: 2px solid #111116;
-  box-shadow: 6px 6px 0 #111116;
-  cursor: pointer;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  overflow: hidden;
-}
-
-.trait-manga-panel:hover {
-  transform: translate(-3px, -3px) scale(1.02) !important;
-  box-shadow: 10px 10px 0 #111116;
-}
-
-.trait-manga-panel:focus-visible {
-  outline: 3px solid #111116;
-  outline-offset: 4px;
-}
-
-.trait-panel-inner {
-  background: #F4EFE6;
-  display: flex;
-  flex-direction: column;
-}
-
-.trait-panel-top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #111116;
-  color: #F4EFE6;
-  padding: 0.35rem 0.65rem;
-  border-bottom: 2px solid #FFFFFF;
-}
-
-.trait-num-kanji {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.trait-idx {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-}
-
-.trait-kanji-badge {
-  font-family: 'Yuji Boku', serif;
-  font-size: 0.8rem;
-  background: #FFFFFF;
-  color: #111116;
-  padding: 0.05rem 0.35rem;
-  font-weight: 900;
-}
-
-.trait-tag-label {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 0.6rem;
-  font-weight: 800;
-  color: #888894;
-  letter-spacing: 0.05em;
-}
-
-.trait-art-viewport {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  background: #111116;
-  overflow: hidden;
-}
-
-.trait-panel-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: grayscale(100%) contrast(135%);
-  transition: transform 0.35s ease, filter 0.3s ease;
-}
-
-.trait-manga-panel:hover .trait-panel-img {
-  transform: scale(1.03);
-  filter: grayscale(100%) contrast(145%);
-}
-
-.trait-screentone-overlay {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(#111116 16%, transparent 17%);
-  background-size: 5px 5px;
-  opacity: 0.12;
-  pointer-events: none;
-}
-
-.trait-manga-sfx {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-family: 'Reggae One', 'Dela Gothic One', sans-serif;
-  font-size: 1.25rem;
-  color: #FFFFFF;
-  text-shadow: 2px 2px 0 #111116;
-  background: rgba(17, 17, 22, 0.8);
-  padding: 0.15rem 0.45rem;
-  border: 1px solid #FFFFFF;
-  letter-spacing: 0.1em;
-}
-
-.trait-panel-content {
-  padding: 0.85rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.trait-title-row {
-  display: flex;
-  flex-direction: column;
-}
-
-.trait-title-main {
-  margin: 0;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 1.3rem;
-  letter-spacing: 0.08em;
-  color: #111116;
-}
-
-.trait-sub-headline {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  color: #888894;
-}
-
-.trait-description-text {
-  margin: 0;
-  font-size: 0.88rem;
-  line-height: 1.55;
-  color: #33333E;
-  font-weight: 500;
-}
-
-.trait-panel-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.35rem 0.75rem;
-  background: #E8E2D5;
-  border-top: 1.5px solid #111116;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  color: #555560;
-}
-
-.trait-inspect-prompt {
-  color: #111116;
-}
-
-/* =========================================================
-   AKOGARE SECTION (PHILOSOPHICAL ENGINE / NEGATIVE SPACE)
-   ========================================================= */
-.about-akogare-section {
-  padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 3.5vw, 2.5rem);
-  background: #F4EFE6;
-  border-bottom: 3px solid #111116;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  transition: background 0.3s ease;
-}
-
-.akogare-negative-space-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 900px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.akogare-screentone-subtle {
-  position: absolute;
-  inset: -20px;
-  background-image: radial-gradient(#111116 8%, transparent 9%);
-  background-size: 10px 10px;
-  opacity: 0.05;
-  pointer-events: none;
-}
-
-.akogare-indicator-top {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  color: #888894;
-  margin-bottom: 1.5rem;
-}
-
-.indicator-kanji {
-  background: #111116;
-  color: #FFFFFF;
-  padding: 0.15rem 0.45rem;
-}
-
-.indicator-line {
-  width: 30px;
-  height: 2px;
-  background: #111116;
-}
-
-.akogare-center-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  padding: 1.5rem;
-  border: 3px solid transparent;
-  transition: all 0.25s ease;
-}
-
-.akogare-center-stage:hover {
-  border-color: #111116;
-  background: #FFFFFF;
-  box-shadow: 8px 8px 0 #111116;
-}
-
-.akogare-center-stage:focus-visible {
-  outline: 3px solid #111116;
-}
-
-.akogare-giant-kanji-wrap {
-  margin: 0;
-}
-
-.akogare-giant-glyph {
-  margin: 0;
-  font-family: 'Yuji Boku', 'Yuji Syuku', serif;
-  font-size: clamp(5.5rem, 14vw, 9rem);
-  font-weight: 900;
-  color: #111116;
-  line-height: 0.9;
-  letter-spacing: 0.05em;
-  text-shadow: 4px 4px 0 #888894;
-  transition: transform 0.3s ease;
-}
-
-.akogare-center-stage:hover .akogare-giant-glyph {
-  transform: scale(1.03);
-}
-
-.akogare-romaji-headline {
-  margin-top: 0.75rem;
-}
-
-.romaji-text {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: clamp(1.2rem, 3vw, 1.8rem);
-  letter-spacing: 0.35em;
-  color: #111116;
-}
-
-.akogare-subtitle-badge {
-  margin-top: 0.5rem;
-  background: #111116;
-  color: #FFFFFF;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  padding: 0.3rem 0.85rem;
-}
-
-.akogare-interactive-hint {
-  margin-top: 1.25rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  color: #888894;
-}
-
-/* Statement Reveal */
-.akogare-statement-reveal {
-  display: none;
-  width: 100%;
-  max-width: 680px;
-  margin-top: 1.75rem;
-  animation: statementSlide 0.35s ease-out;
-}
-
-.akogare-statement-reveal.is-visible {
-  display: block;
-}
-
-@keyframes statementSlide {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.akogare-statement-card {
-  background: #FFFFFF;
-  border: 3px solid #111116;
-  box-shadow: 6px 6px 0 #111116;
-  padding: 1.5rem;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.statement-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #111116;
-  padding-bottom: 0.4rem;
-}
-
-.statement-badge {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  color: #888894;
-}
-
-.statement-quote-symbol {
-  font-family: serif;
-  font-size: 2rem;
-  line-height: 0.8;
-  color: #111116;
-}
-
-.statement-body-text {
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: #33333E;
-  font-weight: 500;
-}
-
-.statement-footer-signature {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1.5px dashed #888894;
-  padding-top: 0.6rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  color: #111116;
-}
-
-.sig-kanji {
-  font-family: 'Yuji Boku', serif;
-  font-size: 1rem;
-}
-
-/* =========================================================
-   CHAPTER 03 ARSENAL TRANSITION FOOTER
-   ========================================================= */
-.about-transition-footer {
-  background: #EDE6D6;
-  padding: 1.5rem clamp(1.25rem, 3.5vw, 2.5rem);
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.page-turn-gutter {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.gutter-line-left,
-.gutter-line-right {
-  flex: 1;
-  height: 2px;
-  background: #111116;
-}
-
-.gutter-center-stamp {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  color: #111116;
-}
-
-.gutter-kanji {
-  background: #111116;
-  color: #FFFFFF;
-  padding: 0.1rem 0.4rem;
-  font-family: 'Yuji Boku', serif;
-  font-size: 0.8rem;
-}
-
-.chapter-next-teaser-card {
-  background: #111116;
-  color: #F4EFE6;
-  border: 3px solid #111116;
-  box-shadow: 6px 6px 0 #555560;
-  padding: 1.25rem 1.75rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-}
-
-.teaser-left-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.teaser-chapter-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.15em;
-  color: #888894;
-}
-
-.teaser-title {
-  margin: 0;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-  color: #FFFFFF;
-  letter-spacing: 0.08em;
-  line-height: 1;
-}
-
-.teaser-sub-text {
-  margin: 0;
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: #888894;
-  letter-spacing: 0.1em;
-}
-
-.about-manga-cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: #F4EFE6;
-  color: #111116;
-  border: 2px solid #FFFFFF;
-  padding: 0.65rem 1.4rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
-  cursor: pointer;
-  box-shadow: 4px 4px 0 #FFFFFF;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-}
-
-.about-manga-cta-btn:hover {
-  background: #FFFFFF;
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 #FFFFFF;
-}
-
-.about-manga-cta-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 #FFFFFF;
-}
-
-.btn-jp {
+.exit-next-tag {
   font-family: 'Yuji Boku', serif;
   font-size: 0.85rem;
+  color: var(--about-gray);
+}
+
+.exit-next-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.15em;
+  color: var(--about-ink);
 }
 
 /* =========================================================
-   MODAL OVERLAY DIALOGS
+   4. MARK SPREAD (PHYSICAL 3D PAGE-TURN FLIP MODAL)
    ========================================================= */
-.about-modal-backdrop {
+.about-mark-spread-overlay {
   position: fixed;
   inset: 0;
   z-index: 999999;
-  background: rgba(10, 10, 14, 0.85);
+  background: rgba(10, 10, 14, 0.9);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(1rem, 3vw, 2.5rem);
+  padding: clamp(0.75rem, 3vw, 2rem);
+  box-sizing: border-box;
 }
 
-.about-modal-card {
+.about-spread-perspective-stage {
+  perspective: 1800px;
+  width: 100%;
+  max-width: 1200px;
+  max-height: 92vh;
+  display: flex;
+  justify-content: center;
+}
+
+.about-spread-double-page {
   position: relative;
   width: 100%;
-  max-width: 960px;
-  max-height: 90vh;
-  background: #F4EFE6;
-  border: 4px solid #111116;
-  box-shadow: 16px 16px 0 #111116, 0 30px 60px rgba(0,0,0,0.7);
+  background: var(--about-paper);
+  border: 4px solid var(--about-ink);
+  box-shadow: 12px 12px 0 var(--about-ink);
   display: flex;
-  flex-direction: column;
   overflow: hidden;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  max-height: 88vh;
+  box-sizing: border-box;
 }
 
-.about-modal-folio-bar {
+.about-spread-close-corner-tab {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--about-ink);
+  color: var(--about-paper);
+  border: none;
+  padding: 0.45rem 0.85rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: background 0.15s ease;
+  min-height: 38px;
+}
+
+.about-spread-close-corner-tab:hover {
+  background: var(--about-vermilion);
+}
+
+.about-tab-time {
+  color: var(--about-vermilion);
+}
+
+.about-spread-close-corner-tab:hover .about-tab-time {
+  color: var(--about-paper);
+}
+
+.about-spread-page {
+  flex: 1;
+  padding: clamp(1rem, 2.5vw, 2rem);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.about-spread-page-left {
+  background: #EDE6D6;
+  border-right: 2px solid rgba(17, 17, 22, 0.15);
+}
+
+.about-spread-center-spine {
+  width: 12px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.12), rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.12));
+  flex-shrink: 0;
+}
+
+.about-spread-folio-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #111116;
-  color: #F4EFE6;
-  padding: 0.6rem 1.25rem;
-  border-bottom: 2px solid #111116;
-}
-
-.modal-folio-left {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.modal-folio-kanji {
-  background: #F4EFE6;
-  color: #111116;
-  font-family: 'Yuji Boku', serif;
-  font-weight: 900;
-  padding: 0.1rem 0.4rem;
-  font-size: 0.8rem;
-}
-
-.modal-folio-title {
   font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  border-bottom: 2px solid var(--about-ink);
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.85rem;
+  flex-shrink: 0;
 }
 
-.about-modal-close-btn {
-  background: #F4EFE6;
-  color: #111116;
-  border: 1.5px solid #111116;
-  padding: 0.25rem 0.65rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  box-shadow: 2px 2px 0 #888894;
-  transition: all 0.15s ease;
-}
-
-.about-modal-close-btn:hover {
-  background: #FFFFFF;
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 #FFFFFF;
-}
-
-.about-modal-viewport {
-  padding: clamp(1.25rem, 3vw, 2.25rem);
-  overflow-y: auto;
-  max-height: calc(90vh - 100px);
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .about-modal-viewport {
-    grid-template-columns: 1fr 1.2fr;
-    align-items: center;
-  }
-}
-
-.modal-image-container {
+/* 100% Spread Art Visibility */
+.about-spread-art-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3.2;
-  background: #111116;
-  border: 3px solid #111116;
-  box-shadow: 6px 6px 0 #111116;
+  aspect-ratio: 4 / 3;
+  min-height: 220px;
+  border: 3px solid var(--about-ink);
   overflow: hidden;
+  background: var(--about-matting);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.modal-zoom-image {
+.about-spread-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  filter: grayscale(100%) contrast(140%);
+  object-fit: contain;
+  object-position: center;
+  display: block;
 }
 
-.modal-screentone-overlay {
+.about-spread-screentone-overlay {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(#111116 16%, transparent 17%);
-  background-size: 5px 5px;
-  opacity: 0.15;
+  background-image: radial-gradient(var(--about-ink) 20%, transparent 20%);
+  background-size: 6px 6px;
+  opacity: 0.08;
   pointer-events: none;
 }
 
-.modal-content-details {
+.about-spread-hanko-seal {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: var(--about-vermilion);
+  color: var(--about-paper);
+  padding: 0.3rem 0.55rem;
+  border: 2px solid var(--about-paper);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  align-items: center;
+  box-shadow: 3px 3px 0 var(--about-ink);
+  z-index: 10;
 }
 
-.modal-category-tag {
+.about-hanko-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.about-hanko-sub {
   font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  color: #888894;
+  font-size: 0.55rem;
 }
 
-.modal-headline {
-  margin: 0;
+.about-spread-art-caption {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--about-gray);
+  margin-top: 0.65rem;
+  margin-bottom: 0;
+}
+
+/* Right Page Content */
+.about-spread-right-header {
+  margin-bottom: 0.75rem;
+}
+
+.about-spread-tagline-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   font-family: 'Dela Gothic One', sans-serif;
-  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
-  color: #111116;
-  line-height: 1.15;
+  font-size: 0.68rem;
+  color: var(--about-vermilion);
 }
 
-.modal-body-text {
+.about-kicker-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.95rem;
+}
+
+.about-spread-title {
+  margin: 0.2rem 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1.3rem, 2.5vw, 1.85rem);
+  letter-spacing: 0.04em;
+}
+
+.about-spread-subtitle {
   margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.6;
-  color: #33333E;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--about-gray);
 }
 
-.modal-tags-list {
+.about-spread-body-desc {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(0.8rem, 1.05vw, 0.9rem);
+  line-height: 1.55;
+  color: var(--about-ink);
+  margin-bottom: 0.85rem;
+}
+
+.about-spread-tags-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
+  margin-bottom: 1rem;
 }
 
-.modal-tag-pill {
-  background: #111116;
-  color: #FFFFFF;
+.about-spread-tag-chip {
+  background: #EDE6D6;
+  color: var(--about-ink);
+  border: 1px solid var(--about-ink);
+  padding: 0.12rem 0.45rem;
   font-family: 'Dela Gothic One', sans-serif;
   font-size: 0.6rem;
-  padding: 0.2rem 0.45rem;
+  letter-spacing: 0.05em;
 }
 
-.modal-actions-row {
-  margin-top: 0.5rem;
-}
-
-.about-modal-dismiss-btn {
-  background: #111116;
-  color: #F4EFE6;
-  border: 2px solid #111116;
-  padding: 0.5rem 1rem;
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  cursor: pointer;
-  box-shadow: 3px 3px 0 #888894;
-  transition: all 0.15s ease;
-}
-
-.about-modal-dismiss-btn:hover {
+.about-spread-stats-matrix {
   background: #FFFFFF;
-  color: #111116;
-  transform: translate(-1px, -1px);
+  border: 2px solid var(--about-ink);
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.about-stats-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1.5px solid var(--about-ink);
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.68rem;
+}
+
+.about-stats-bars-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.about-stat-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.about-stat-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+}
+
+.about-stat-kanji {
+  font-family: 'Yuji Boku', serif;
+  margin-right: 0.25rem;
+}
+
+.about-stat-dim-sub {
+  color: var(--about-gray);
+  font-size: 0.58rem;
+}
+
+.about-stat-level-tag {
+  font-size: 0.6rem;
+}
+
+.level-core {
+  color: var(--about-vermilion);
+}
+
+.level-applied {
+  color: var(--about-ink);
+}
+
+.level-exploring {
+  color: var(--about-gray);
+}
+
+.about-stat-track {
+  height: 6px;
+  background: #EDE6D6;
+  border: 1px solid var(--about-ink);
+}
+
+.about-stat-fill {
+  height: 100%;
+}
+
+.fill-core {
+  background: var(--about-vermilion);
+}
+
+.fill-applied {
+  background: var(--about-ink);
+}
+
+.fill-exploring {
+  background: var(--about-gray);
+}
+
+.about-spread-bottom-folio {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px dashed var(--about-gray);
+  padding-top: 0.45rem;
+  font-size: 0.65rem;
+  color: var(--about-gray);
+}
+
+.about-spread-bottom-close-btn {
+  background: none;
+  border: none;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  color: var(--about-ink);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+}
+
+.about-spread-bottom-close-btn:hover {
+  color: var(--about-vermilion);
 }
 
 /* =========================================================
-   RESPONSIVE DESIGN SYSTEM
+   5. SPINE TAB (PERSISTENT RIGHT-EDGE MANGA FOLIO)
    ========================================================= */
+.about-spine-tab {
+  position: fixed;
+  top: var(--about-nav-h);
+  right: 0;
+  width: 52px;
+  height: calc(100vh - var(--about-nav-h));
+  z-index: 9000;
+  background: var(--about-ink);
+  color: var(--about-paper);
+  border-left: 2.5px solid var(--about-paper);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.85rem 0;
+  box-sizing: border-box;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
 
-/* Tablets and Medium Screens (768px - 1023px) */
-@media (max-width: 1023px) {
-  .about-section-root {
-    padding: clamp(1rem, 3vw, 2rem) clamp(0.5rem, 2vw, 1.5rem);
+.about-spine-tab.is-hidden {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.about-spine-tab.is-visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.about-spine-desktop-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.about-spine-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.about-spine-alias-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--about-vermilion);
+}
+
+.about-spine-series-tag {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+}
+
+.about-spine-divider {
+  width: 22px;
+  height: 1.5px;
+  background: var(--about-gray);
+  margin: 0.4rem 0;
+}
+
+.about-spine-vertical-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  gap: 0.75rem;
+  max-height: 55vh;
+}
+
+.about-spine-text-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.about-spine-vertical-label {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  color: var(--about-gray);
+  margin-bottom: 0.2rem;
+}
+
+.about-spine-vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  color: var(--about-paper);
+}
+
+.about-spine-vertical-mission {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--about-paper);
+}
+
+.about-spine-resume-hanko {
+  display: block;
+  text-decoration: none;
+  margin-top: auto;
+}
+
+.about-hanko-box {
+  width: 40px;
+  height: 40px;
+  background: var(--about-vermilion);
+  color: var(--about-paper);
+  border: 2px solid var(--about-paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2px 2px 0 var(--about-ink);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.about-hanko-box:hover {
+  transform: scale(1.06);
+  background: #FFFFFF;
+  color: var(--about-vermilion);
+}
+
+.about-hanko-box .about-hanko-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.8rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.about-hanko-en {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.42rem;
+  letter-spacing: 0.04em;
+}
+
+.about-spine-mobile-dock {
+  display: none;
+}
+
+/* =========================================================
+   6. TABLET / MEDIUM VIEWPORT (768px - 1023px)
+   ========================================================= */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .about-act-page {
+    padding: 1rem 1.25rem 1rem 4.75rem;
   }
 
-  .about-chapter-headline {
-    flex-direction: column;
-    align-items: flex-start;
+  .about-act-grid {
+    gap: 10px;
+    padding: 10px;
   }
 
-  .about-title-group {
-    align-items: flex-start;
+  .about-clock-progress {
+    left: 0.75rem;
   }
 
-  .identity-map-canvas {
-    min-height: 480px;
+  .about-clock-progress-svg {
+    width: 75px;
   }
 
-  .identity-stamps-constellation {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+  .about-class-panels-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
   }
 }
 
-/* Mobile Devices (320px - 640px) */
-@media (max-width: 640px) {
-  .about-section-root {
-    padding: 0.5rem 0.25rem;
-  }
-
-  .about-top-folio {
-    font-size: 0.62rem;
-    padding: 0.35rem 0.5rem;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-  }
-
-  .about-folio-center {
-    display: none;
-  }
-
-  .about-chapter-headline {
-    padding: 1rem 0.85rem;
-  }
-
-  .about-main-title {
-    font-size: 1.85rem;
-  }
-
-  .about-main-spread-grid {
-    padding: 1rem 0.85rem;
-    gap: 1.25rem;
-  }
-
-  .about-name-title {
-    font-size: 2rem;
-  }
-
-  .about-bio-paragraph {
-    font-size: 0.88rem;
-  }
-
-  /* Identity Map Mobile Stacking */
-  .identity-map-canvas {
+/* =========================================================
+   7. MOBILE RESPONSIVE ADAPTATION (< 768px)
+   ========================================================= */
+@media (max-width: 767px) {
+  .about-acts-stage {
+    height: auto;
     min-height: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1.25rem 0.85rem;
+    display: block;
+    overflow: visible;
   }
 
-  .identity-map-connecting-lines {
+  .about-acts-viewport {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .about-act-page {
+    position: relative;
+    inset: auto;
+    height: auto;
+    min-height: auto;
+    padding: 1.25rem 0.85rem 2rem;
+    overflow: visible;
+    display: flex !important;
+    opacity: 1 !important;
+    clip-path: none !important;
+  }
+
+  .about-act-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: auto;
+    min-height: auto;
+    padding: 10px;
+  }
+
+  /* Individual panel min-height and clear framing on mobile */
+  .about-manga-panel {
+    min-height: 250px;
+    width: 100%;
+    opacity: 1 !important;
+    clip-path: none !important;
+  }
+
+  .about-manga-panel.panel-type-image,
+  .about-manga-panel.panel-type-thought,
+  .about-manga-panel.panel-type-image-stamp,
+  .about-manga-panel.panel-type-image-sfx {
+    aspect-ratio: 16 / 11;
+    min-height: 240px;
+  }
+
+  .about-manga-panel.panel-type-dialogue,
+  .about-manga-panel.panel-type-staircase {
+    aspect-ratio: auto;
+    min-height: auto;
+  }
+
+  .about-panel-placeholder-slot {
+    min-height: 220px;
+  }
+
+  /* Akogare on mobile */
+  .about-panel-akogare-stage {
+    min-height: 460px;
+    padding: 2rem 1rem;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .about-akogare-giant-kanji {
+    font-size: clamp(4.5rem, 18vw, 7.5rem);
+  }
+
+  .about-akogare-statement-box {
+    max-width: 100%;
+    box-shadow: 4px 4px 0 var(--about-vermilion);
+  }
+
+  /* Sticky Mobile Clock Timeline Header */
+  .about-clock-progress {
+    position: sticky;
+    top: var(--about-nav-h);
+    left: 0;
+    width: 100%;
+    transform: none;
+    flex-direction: row;
+    justify-content: space-between;
+    background: var(--about-ink);
+    color: var(--about-paper);
+    padding: 0.35rem 0.85rem;
+    box-sizing: border-box;
+    z-index: 100;
+    border-bottom: 2px solid var(--about-vermilion);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .about-clock-progress-svg {
     display: none;
   }
 
-  .identity-stamps-constellation {
-    position: static;
+  .about-clock-time-badge {
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 0.82rem;
+  }
+
+  /* Finale Mobile Grid & Controls */
+  .about-finale-section {
+    padding: 2.5rem 0.85rem;
+  }
+
+  .about-finale-center-hub {
+    width: min(92vw, 360px);
+  }
+
+  .about-finale-mobile-nav {
+    display: flex;
+  }
+
+  .about-class-panels-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+  }
+
+  .about-dossier-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .about-dossier-inspect-cta {
+    width: 100%;
+  }
+
+  .about-dossier-stats-bars {
+    grid-template-columns: 1fr;
+  }
+
+  /* Mark Spread Modal Mobile Stack */
+  .about-spread-double-page {
+    flex-direction: column;
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+
+  .about-spread-page {
+    flex: none;
+    width: 100%;
+    padding: 1.25rem 0.85rem;
+    overflow-y: visible;
+  }
+
+  .about-spread-center-spine {
+    display: none;
+  }
+
+  .about-spread-art-frame {
+    aspect-ratio: 16 / 11;
+    min-height: 200px;
+  }
+
+  /* Mobile Spine Tab Dock at screen bottom */
+  .about-spine-tab {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    border-left: none;
+    border-top: 2px solid var(--about-paper);
+    padding: 0;
+    padding-bottom: max(0.2rem, env(safe-area-inset-bottom));
+  }
+
+  .about-spine-desktop-content {
+    display: none;
+  }
+
+  .about-spine-mobile-dock {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
-    padding: 0;
     width: 100%;
   }
 
-  .map-stamp-node {
-    max-width: 100%;
-    transform: none !important;
-  }
-
-  /* Traits Panels Mobile */
-  .traits-panels-composition-grid {
-    gap: 1rem;
-  }
-
-  .trait-manga-panel {
-    transform: none !important;
-  }
-
-  /* Akogare Mobile */
-  .akogare-giant-glyph {
-    font-size: 4.8rem;
-  }
-
-  .romaji-text {
-    font-size: 1.1rem;
-    letter-spacing: 0.2em;
-  }
-
-  .akogare-subtitle-badge {
+  .about-spine-mobile-ticker {
+    width: 100%;
+    overflow: hidden;
+    background: var(--about-night);
+    padding: 0.2rem 0;
+    border-bottom: 1px solid rgba(244, 239, 230, 0.2);
+    font-family: 'Shippori Mincho', serif;
     font-size: 0.65rem;
-    letter-spacing: 0.1em;
+    color: var(--about-gray);
   }
 
-  /* Next Chapter Card Mobile */
-  .chapter-next-teaser-card {
-    padding: 1rem;
+  .about-spine-ticker-track {
+    display: inline-block;
+    white-space: nowrap;
+    animation: aboutTickerMarquee 24s linear infinite;
   }
 
-  .teaser-title {
-    font-size: 1.75rem;
+  @keyframes aboutTickerMarquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
-  .about-manga-cta-btn {
-    width: 100%;
-    justify-content: center;
+  .about-spine-mobile-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.85rem;
+  }
+
+  .about-spine-mobile-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-info-alias {
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 0.75rem;
+    color: var(--about-vermilion);
+  }
+
+  .mobile-info-role {
+    font-size: 0.62rem;
+    color: var(--about-paper);
+  }
+
+  .about-spine-mobile-resume-btn {
+    background: var(--about-vermilion);
+    color: var(--about-paper);
+    border: 1.5px solid var(--about-paper);
+    padding: 0.25rem 0.55rem;
+    font-family: 'Dela Gothic One', sans-serif;
+    font-size: 0.65rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 32px;
+  }
+
+  .mobile-resume-kanji {
+    font-family: 'Yuji Boku', serif;
   }
 }
 
-/* Reduced Motion Mode */
-@media (prefers-reduced-motion: reduce) {
-  .about-manga-spread-container,
-  .about-portrait-card,
-  .map-stamp-node,
-  .trait-manga-panel,
-  .about-portrait-image,
-  .trait-panel-img,
-  .about-manga-cta-btn {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
+/* =========================================================
+   8. EXTRA SMALL MOBILE (< 480px)
+   ========================================================= */
+@media (max-width: 480px) {
+  .about-class-panels-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-speech-bubble .bubble-text {
+    font-size: 0.82rem;
+  }
+
+  .about-finale-heading {
+    font-size: 1.4rem;
   }
 }
