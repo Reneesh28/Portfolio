@@ -1,709 +1,1363 @@
-.codeverse-intro {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    overflow: hidden;
-    background: #050509;
-    color: #fff;
-    cursor: pointer;
-    isolation: isolate;
-    perspective: 1000px
+/* =========================================================
+   MANGA INTRO CINEMATIC DESIGN SYSTEM (PURE B&W / GRAYSCALE)
+   - Authentic Black & White Tankobon manga aesthetic
+   - Sumi-e ink, Washi paper, Screentone halftones
+   - Japanese typography (Yuji Boku, Dela Gothic One, Noto Sans JP)
+   - 6 Physical Identity Stamps & 7 Abstract Ink Marks
+   - Final Double-Page Spread & Seamless Transformation
+========================================================= */
+
+.manga-intro-root {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  overflow: hidden;
+  background-color: #0A0A0E;
+  color: #111116;
+  font-family: 'Noto Sans JP', 'Zen Kaku Gothic New', sans-serif;
+  user-select: none;
+  isolation: isolate;
 }
 
-.intro-layer {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    will-change: transform, opacity
+/* =========================================================
+   TOP CONTROLS (Audio & Skip) - Pure B&W
+========================================================= */
+.manga-intro-controls {
+  position: absolute;
+  top: clamp(1rem, 2.5vw, 2rem);
+  right: clamp(1rem, 2.5vw, 2.5rem);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.intro-controls {
-    position: absolute;
-    right: clamp(1rem, 3vw, 2.25rem);
-    top: clamp(1rem, 3vw, 2.25rem);
-    z-index: 200;
-    display: flex;
-    gap: .6rem
+.manga-ctrl-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #F4EFE6;
+  color: #111116;
+  border: 2px solid #111116;
+  padding: 0.45rem 0.85rem;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  box-shadow: 3px 3px 0 #111116;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
-.intro-controls button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 40px;
-    border: 2px solid #08080b;
-    background: #f6f0df;
-    color: #08080b;
-    padding: .55rem .75rem;
-    font-family: var(--font-label);
-    font-weight: 800;
-    text-transform: uppercase;
-    box-shadow: 4px 4px 0 var(--color-portal-cyan);
-    cursor: pointer
+.manga-ctrl-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #888894;
+  background: #FFFFFF;
 }
 
-.intro-controls button:hover {
-    background: var(--color-marigold);
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 var(--color-dimension-magenta)
+.manga-ctrl-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #111116;
 }
 
-.intro-controls .skip-intro {
-    gap: .55rem
+.skip-btn {
+  background: #111116;
+  color: #F4EFE6;
+  border-color: #F4EFE6;
+  box-shadow: 3px 3px 0 #888894;
 }
 
-.skip-intro span {
-    font: 600 .65rem var(--font-body);
-    opacity: .55
+.skip-btn:hover {
+  background: #FFFFFF;
+  color: #111116;
+  box-shadow: 4px 4px 0 #111116;
 }
 
-.boot-screen {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 10vw;
-    background: repeating-linear-gradient(0deg, rgba(0, 229, 255, .035) 0 1px, transparent 1px 5px), #050509;
-    font: 700 clamp(.75rem, 1.5vw, 1rem) var(--font-mono);
-    letter-spacing: .16em;
-    color: var(--color-portal-cyan)
+.skip-jp {
+  font-size: 0.7rem;
+  opacity: 0.85;
 }
 
-.boot-line {
-    opacity: 0;
-    transform: translateX(-30px);
-    margin: .35rem 0
+.skip-en {
+  font-weight: 900;
 }
 
-.boot-alert {
-    color: var(--color-dimension-magenta);
-    font-size: clamp(1rem, 3vw, 2rem)
+.skip-kbd {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.35rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  letter-spacing: 0.1em;
 }
 
-.intro-scanline {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: -15%;
-    height: 12%;
-    background: linear-gradient(transparent, rgba(0, 229, 255, .28), transparent);
-    mix-blend-mode: screen
+/* =========================================================
+   2D MANGA PANELS CONTAINER & SUBLAYERS
+========================================================= */
+.manga-panels-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
-.dimension-scene {
-    display: grid;
-    place-items: center
+.intro-sublayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.portal-shell {
-    position: absolute;
-    width: min(72vw, 860px);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 0 0 10px #0a090d, 0 0 0 15px var(--color-portal-cyan), 0 0 60px 24px rgba(0, 229, 255, .45);
-    will-change: transform
+/* =========================================================
+   BEAT 01: INK OPENING & ATMOSPHERE (0:00 → 3.75s)
+========================================================= */
+.manga-phase-1 {
+  background-color: #0A0A0E;
+  color: #F4EFE6;
+  flex-direction: column;
 }
 
-.student-scene {
-    background: #09070e
+.ink-mist-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(40, 40, 50, 0.45) 0%, #0A0A0E 75%);
+  opacity: 0.8;
 }
 
-.student-portal {
-    background: #f4eedc;
-    color: #0a0a10;
-    clip-path: polygon(48% 0, 57% 3%, 68% 0, 75% 5%, 88% 2%, 95% 12%, 100% 23%, 97% 35%, 100% 48%, 97% 62%, 100% 76%, 93% 89%, 82% 94%, 69% 100%, 57% 97%, 44% 100%, 31% 96%, 17% 99%, 7% 88%, 2% 75%, 4% 61%, 0 49%, 4% 34%, 1% 21%, 10% 10%, 22% 5%, 34% 7%)
+.prologue-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  letter-spacing: 0.25em;
+  color: #F4EFE6;
+  font-size: clamp(0.9rem, 1.8vw, 1.3rem);
+  margin-bottom: 1.5rem;
 }
 
-.notebook-grid {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(rgba(25, 70, 120, .16) 1px, transparent 1px), linear-gradient(90deg, rgba(25, 70, 120, .16) 1px, transparent 1px);
-    background-size: 28px 28px;
-    transform: rotate(-5deg) scale(1.2)
+.kanji-chapter {
+  color: #111116;
+  background: #F4EFE6;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid #111116;
 }
 
-.sketch-line {
-    position: absolute;
-    left: 8%;
-    width: 84%;
-    height: 3px;
-    background: #1c1b23;
-    transform-origin: left;
-    opacity: .45
+.brush-stroke-wrapper {
+  position: relative;
+  width: min(90vw, 760px);
+  height: 100px;
+  z-index: 5;
 }
 
-.student-note {
-    position: absolute;
-    font: 700 clamp(1rem, 3vw, 2.2rem) var(--font-label);
-    color: #1b4ec9
+.brush-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 16px rgba(244, 239, 230, 0.25));
 }
 
-.note-one {
-    left: 18%;
-    top: 24%;
-    transform: rotate(-12deg)
+.primary-akogare-stage {
+  position: relative;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
 }
 
-.note-two {
-    right: 18%;
-    top: 26%;
-    transform: rotate(8deg)
+.akogare-ink-aura {
+  position: absolute;
+  width: clamp(260px, 40vw, 480px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244, 239, 230, 0.18) 0%, transparent 70%);
+  filter: blur(24px);
+  pointer-events: none;
 }
 
-.note-three {
-    right: 20%;
-    bottom: 23%;
-    color: var(--color-miles-red);
-    transform: rotate(-6deg)
+.primary-akogare-char {
+  margin: 0;
+  font-family: 'Yuji Boku', 'Yuji Syuku', serif;
+  font-size: clamp(8rem, 22vw, 17rem);
+  font-weight: 900;
+  color: #F4EFE6;
+  line-height: 0.9;
+  letter-spacing: 0.05em;
+  filter: drop-shadow(0 0 30px rgba(244, 239, 230, 0.3));
 }
 
-.dimension-word {
-    position: relative;
-    z-index: 5;
-    margin: 0;
-    font: 400 clamp(4.2rem, 14vw, 11rem)/.8 var(--font-display);
-    text-transform: uppercase
+.akogare-full-text {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  color: #888894;
 }
 
-.student {
-    color: #0a0a10;
-    text-shadow: 5px 5px 0 var(--color-miles-red), -4px -4px 0 var(--color-portal-cyan)
+.full-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+  color: #F4EFE6;
 }
 
-.earth-tag {
-    position: absolute;
-    left: 4vw;
-    bottom: 4vh;
-    border: 2px solid currentColor;
-    padding: .45rem .7rem;
-    font: 800 .7rem var(--font-mono);
-    letter-spacing: .18em
+.full-sep {
+  color: #555560;
 }
 
-.builder-scene {
-    background: #061521;
-    clip-path: circle(150% at 50% 50%);
-    transform-style: preserve-3d;
-    will-change: clip-path
+.full-romaji {
+  font-size: clamp(0.9rem, 1.8vw, 1.3rem);
+  letter-spacing: 0.3em;
+  color: #888894;
 }
 
-.builder-grid {
-    position: absolute;
-    inset: -30%;
-    background-image: linear-gradient(rgba(0, 229, 255, .13) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 229, 255, .13) 1px, transparent 1px);
-    background-size: 40px 40px;
-    transform: perspective(600px) rotateX(58deg) scale(1.6);
-    transform-origin: center bottom;
-    will-change: transform
+.ippiki-identity-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  color: #F4EFE6;
+  background: rgba(17, 17, 22, 0.8);
+  border: 1px solid rgba(244, 239, 230, 0.3);
+  padding: 0.4rem 1.2rem;
+  letter-spacing: 0.25em;
+  box-shadow: 4px 4px 0 #555560;
 }
 
-.code-fragment {
-    position: absolute;
-    border: 2px solid var(--color-portal-cyan);
-    background: #071017;
-    padding: .8rem 1rem;
-    color: var(--color-portal-cyan);
-    font-size: clamp(.65rem, 1.6vw, 1rem);
-    box-shadow: 6px 6px 0 var(--color-dimension-magenta);
-    will-change: transform, opacity
+.strip-kanji {
+  font-size: clamp(1rem, 2vw, 1.4rem);
 }
 
-.fragment-0 {
-    left: 8%;
-    top: 18%;
-    transform: rotate(-6deg)
+.strip-latin {
+  font-size: clamp(0.85rem, 1.7vw, 1.2rem);
+  letter-spacing: 0.3em;
 }
 
-.fragment-1 {
-    right: 9%;
-    top: 17%;
-    transform: rotate(4deg)
+/* =========================================================
+   BEAT 02 (Around 3.75s): HANKO SEAL VISUAL IMPRESSION
+========================================================= */
+.manga-phase-hanko {
+  background-color: #F4EFE6;
+  color: #111116;
 }
 
-.fragment-2 {
-    left: 13%;
-    bottom: 17%;
-    transform: rotate(5deg)
+.screentone-dot-matrix {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#111116 15%, transparent 16%);
+  background-size: 10px 10px;
+  opacity: 0.08;
+  pointer-events: none;
 }
 
-.fragment-3 {
-    right: 12%;
-    bottom: 15%;
-    transform: rotate(-4deg)
+.hanko-seal-slam-target {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-.fragment-4 {
-    left: 44%;
-    top: 9%;
-    transform: rotate(2deg)
+.hanko-ink-spread-ring {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  border: 6px dashed rgba(17, 17, 22, 0.4);
 }
 
-.builder {
-    color: #f5f1df;
-    text-shadow: 7px 7px 0 var(--color-dimension-magenta), -5px -5px 0 var(--color-portal-cyan)
+.hanko-seal-box {
+  width: clamp(130px, 20vw, 200px);
+  aspect-ratio: 1;
+  background: #111116;
+  border: 5px solid #FFFFFF;
+  outline: 5px solid #111116;
+  display: grid;
+  place-items: center;
+  box-shadow: 8px 8px 0 #555560;
+  transform: rotate(-3deg);
 }
 
-.builder-cursor {
-    position: absolute;
-    width: 2px;
-    height: 62%;
-    background: var(--color-portal-cyan);
-    left: 50%;
-    top: 19%;
-    box-shadow: 0 0 18px var(--color-portal-cyan);
-    animation: cursor-blink .3s steps(1) infinite
+.hanko-seal-char {
+  font-family: 'Yuji Boku', serif;
+  font-size: clamp(5rem, 12vw, 8rem);
+  color: #FFFFFF;
+  font-weight: 900;
+  transform: translateY(-2px);
 }
 
-.engineer-scene {
-    background: radial-gradient(circle at center, #142b46 0, #06070c 55%, #020205 100%);
-    color: var(--color-marigold);
-    will-change: clip-path
+.hanko-seal-caption {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(0.75rem, 1.4vw, 1rem);
+  letter-spacing: 0.3em;
+  color: #111116;
+  background: #FFFFFF;
+  padding: 0.25rem 0.8rem;
+  border: 2px solid #111116;
+  box-shadow: 3px 3px 0 #555560;
 }
 
-.engineer-core {
-    position: absolute;
-    width: min(45vw, 430px);
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center
+/* =========================================================
+   BEAT 03 & 04 (5.0s → 6.5s): 3D MANGA VOLUME WRAPPER
+========================================================= */
+.manga-book-3d-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  background-color: #0A0A0E;
 }
 
-.engineer-ring {
-    position: absolute;
-    inset: 0;
-    border: clamp(2px, .5vw, 6px) solid var(--color-portal-cyan);
-    clip-path: polygon(50% 0, 100% 25%, 88% 88%, 25% 100%, 0 45%);
-    filter: drop-shadow(0 0 10px var(--color-portal-cyan));
-    will-change: transform
+/* =========================================================
+   BEAT 05 & STAMPS (6.5s → 12.5s): RAPID MANGA PAGES & PANELS
+========================================================= */
+.manga-phase-spread {
+  background-color: #F4EFE6;
+  color: #111116;
+  padding: 2rem;
 }
 
-.ring-b {
-    inset: 14%;
-    border-color: var(--color-dimension-magenta);
-    transform: rotate(35deg)
+.manga-page-frame {
+  position: relative;
+  width: min(94vw, 1100px);
+  height: min(88vh, 720px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #111116;
+  padding: 12px;
+  box-shadow: 10px 10px 0 #555560;
 }
 
-.ring-c {
-    inset: 29%;
-    border-color: var(--color-marigold);
-    transform: rotate(70deg)
+.panel-box {
+  position: relative;
+  background: #F4EFE6;
+  border: 4px solid #111116;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.engineer-core:after {
-    content: "";
-    width: 18%;
-    aspect-ratio: 1;
-    background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 20px #fff, 0 0 60px var(--color-portal-cyan)
+/* Top Panel */
+.panel-top {
+  height: 38%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  background: #EDE6D6;
 }
 
-.circuit-line {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent 5%, var(--color-portal-cyan) 5% 20%, transparent 20% 34%, var(--color-dimension-magenta) 34% 61%, transparent 61% 76%, var(--color-marigold) 76% 92%, transparent 92%);
-    transform-origin: left;
-    will-change: transform
+.speedlines-radial {
+  position: absolute;
+  inset: -20%;
+  background: repeating-conic-gradient(
+    rgba(17, 17, 22, 0.08) 0deg 3deg,
+    transparent 3deg 12deg
+  );
+  pointer-events: none;
 }
 
-.engineer {
-    z-index: 3;
-    color: #fff;
-    text-shadow: 5px 5px 0 var(--color-electric-blue), -5px -5px 0 var(--color-miles-red)
+.panel-content {
+  position: relative;
+  z-index: 5;
 }
 
-.collision-field {
-    background: #020205
+.panel-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: #111116;
 }
 
-.intro-rift,
-.intro-rift>div,
-.intro-rift canvas {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important
+.panel-heading {
+  margin: 0.2rem 0 0.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  letter-spacing: 0.05em;
+  color: #111116;
 }
 
-.collision-orbit {
-    position: absolute;
-    inset: 0
+.panel-jp-text {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555560;
 }
 
-.collision-portal {
-    position: absolute;
-    width: clamp(150px, 26vw, 360px);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    border: 8px solid #fff;
-    box-shadow: 0 0 0 9px currentColor, 0 0 50px currentColor;
-    overflow: hidden;
-    will-change: transform
+/* Manga Sound Effects Typography */
+.manga-sfx {
+  font-family: 'Dela Gothic One', 'Reggae One', sans-serif;
+  color: #111116;
+  position: relative;
+  z-index: 8;
+  user-select: none;
 }
 
-.collision-portal:before {
-    content: "";
-    position: absolute;
-    inset: -20%;
-    background: repeating-conic-gradient(currentColor 0deg 8deg, #07070a 8deg 19deg);
-    animation: portal-spin 1.3s linear infinite
+.sfx-gogogo {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  color: #111116;
+  text-shadow: 3px 3px 0 #888894;
+  letter-spacing: -0.05em;
 }
 
-.collision-a {
-    left: 7%;
-    top: 12%;
-    color: var(--color-portal-cyan)
+/* Mid 2-Column Split Panels */
+.panel-row-split {
+  height: 38%;
+  display: flex;
+  gap: 12px;
 }
 
-.collision-b {
-    right: 6%;
-    top: 18%;
-    color: var(--color-dimension-magenta)
+.panel-mid-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.5rem;
+  background: #F4EFE6;
 }
 
-.collision-c {
-    left: 36%;
-    bottom: -8%;
-    color: var(--color-marigold)
+.halftone-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#111116 20%, transparent 20%);
+  background-size: 8px 8px;
+  opacity: 0.08;
 }
 
-.collision-label {
-    position: relative;
-    z-index: 2;
-    background: #050509;
-    border: 2px solid currentColor;
-    padding: .4rem;
-    color: #fff;
-    font: 800 clamp(.65rem, 1.4vw, 1rem) var(--font-mono)
+.kanji-calligraphy-burst {
+  font-family: 'Yuji Boku', serif;
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  font-weight: 900;
+  color: #111116;
+  position: relative;
+  z-index: 5;
 }
 
-.collision-warning {
-    position: absolute;
-    top: 6%;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    color: var(--color-miles-red);
-    font: 800 clamp(.65rem, 1.5vw, 1rem) var(--font-mono);
-    letter-spacing: .2em;
-    animation: warning-flash .35s steps(1) infinite
+.panel-meta-caption {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  color: #555560;
+  letter-spacing: 0.1em;
+  position: relative;
+  z-index: 5;
 }
 
-.collision-flash {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 50vmax;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    opacity: 0
+.panel-mid-right {
+  flex: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 1.2rem 1.5rem;
+  background: #111116;
+  color: #F4EFE6;
+  border-color: #F4EFE6;
 }
 
-.intro-title-scene {
-    background: #050509
+.hatch-screentone {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(244, 239, 230, 0.08) 0px,
+    rgba(244, 239, 230, 0.08) 2px,
+    transparent 2px,
+    transparent 6px
+  );
 }
 
-.title-rift {
-    position: absolute;
-    inset: 0;
-    opacity: .85
+.sfx-don {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: #FFFFFF;
+  text-shadow: 4px 4px 0 #555560;
 }
 
-.intro-codewalker {
-    position: absolute;
-    z-index: 4;
-    left: 50%;
-    bottom: -4vh;
-    transform: translateX(-50%);
-    height: min(88vh, 900px);
-    max-width: 68vw;
-    object-fit: contain;
-    filter: drop-shadow(-13px 0 0 rgba(0, 229, 255, .45)) drop-shadow(13px 0 0 rgba(255, 45, 170, .4)) drop-shadow(0 0 30px rgba(224, 18, 42, .65));
-    will-change: transform, opacity
+.panel-quote {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(0.75rem, 1.3vw, 1rem);
+  font-weight: 700;
+  line-height: 1.5;
+  color: #F4EFE6;
+  position: relative;
+  z-index: 5;
+  max-width: 240px;
 }
 
-.cover-copy {
-    position: absolute;
-    z-index: 8;
-    left: 5vw;
-    top: 16vh;
+/* Bottom Banner Panel */
+.panel-bottom {
+  height: 24%;
+  background: #EDE6D6;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+}
+
+.speedlines-horizontal {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(17, 17, 22, 0.06) 0px,
+    rgba(17, 17, 22, 0.06) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+.panel-bottom-content {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bottom-kanji-stamp {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.8rem;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.2rem 0.8rem;
+  border: 2px solid #111116;
+}
+
+.bottom-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom-en {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(0.7rem, 1.4vw, 1rem);
+  letter-spacing: 0.15em;
+  color: #111116;
+}
+
+.bottom-jp {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #555560;
+}
+
+.sfx-zuba {
+  font-size: clamp(2rem, 4vw, 3rem);
+  color: #111116;
+  text-shadow: 3px 3px 0 #888894;
+}
+
+/* =========================================================
+   THE SIX IDENTITY STAMPS (Physical Inked Manga Impressions)
+========================================================= */
+.identity-stamp {
+  position: absolute;
+  z-index: 15;
+  pointer-events: none;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+}
+
+.stamp-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  background: #111116;
+  color: #F4EFE6;
+  border: 2.5px solid #FFFFFF;
+  outline: 2.5px solid #111116;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.12em;
+}
+
+.stamp-num {
+  font-size: 0.65rem;
+  background: #FFFFFF;
+  color: #111116;
+  padding: 0.1rem 0.3rem;
+  font-weight: 900;
+}
+
+.stamp-text {
+  font-size: clamp(0.7rem, 1.3vw, 0.95rem);
+  white-space: nowrap;
+}
+
+/* Stamp Placement and Distressed Inking */
+.stamp-ceo {
+  right: 1.5rem;
+  top: 1.2rem;
+  transform: rotate(-3deg);
+}
+
+.stamp-intern {
+  left: 1rem;
+  bottom: 1rem;
+  transform: rotate(4deg);
+}
+
+.stamp-freelancer {
+  right: 1rem;
+  top: 0.8rem;
+  transform: rotate(-2deg);
+}
+
+.stamp-cofounder {
+  left: 1rem;
+  top: 0.8rem;
+  transform: rotate(2deg);
+}
+
+.stamp-gamedev {
+  right: 1rem;
+  bottom: 0.8rem;
+  transform: rotate(-5deg);
+}
+
+.stamp-akogare {
+  left: 45%;
+  bottom: 0.6rem;
+  transform: rotate(1deg);
+}
+
+.stamp-akogare .stamp-inner {
+  background: #FFFFFF;
+  color: #111116;
+  border-color: #111116;
+  outline-color: #FFFFFF;
+}
+
+.stamp-akogare .stamp-num {
+  background: #111116;
+  color: #FFFFFF;
+}
+
+/* =========================================================
+   SEVEN SHORT ABSTRACT VISUAL INK MARKS (~7.5s - 11.25s)
+========================================================= */
+.abstract-ink-marks-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+}
+
+.ink-mark {
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  background: #111116;
+  border-radius: 50%;
+  clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 90% 70%, 75% 100%, 30% 95%, 0% 70%, 10% 25%);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+}
+
+.mark-0 { top: 12%; left: 8%; }
+.mark-1 { top: 22%; right: 14%; }
+.mark-2 { bottom: 28%; left: 16%; }
+.mark-3 { top: 52%; right: 8%; }
+.mark-4 { bottom: 12%; right: 26%; }
+.mark-5 { top: 38%; left: 32%; }
+.mark-6 { bottom: 18%; left: 48%; }
+
+/* =========================================================
+   BEAT 06 & 07 (12.5s → 15.0s): FINAL DOUBLE-PAGE SPREAD & TRANSFORMATION
+========================================================= */
+.manga-phase-climax {
+  background-color: #0A0A0E;
+  color: #F4EFE6;
+  flex-direction: column;
+}
+
+.climax-speed-burst {
+  position: absolute;
+  inset: -30%;
+  background: repeating-conic-gradient(
+    rgba(244, 239, 230, 0.12) 0deg 2deg,
+    transparent 2deg 8deg
+  );
+  pointer-events: none;
+}
+
+.climax-vignette-ink {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+/* Double-Page Spread Layout */
+.manga-double-page-spread {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  width: min(94vw, 1140px);
+  height: min(86vh, 680px);
+  background: #F4EFE6;
+  border: 6px solid #111116;
+  box-shadow: 12px 12px 0 #555560;
+  color: #111116;
+  overflow: hidden;
+}
+
+.spread-page {
+  flex: 1;
+  position: relative;
+  padding: clamp(1.5rem, 3vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Left Page: Manga Art World */
+.spread-left {
+  background: #EDE6D6;
+  border-right: 2px solid rgba(17, 17, 22, 0.15);
+}
+
+.spread-screentone {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#111116 15%, transparent 16%);
+  background-size: 8px 8px;
+  opacity: 0.06;
+}
+
+.spread-art-center {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.spread-hanko-seal {
+  width: 72px;
+  height: 72px;
+  background: #111116;
+  color: #FFFFFF;
+  display: grid;
+  place-items: center;
+  border: 3px solid #FFFFFF;
+  outline: 3px solid #111116;
+  box-shadow: 5px 5px 0 #555560;
+  margin-bottom: 1rem;
+}
+
+.spread-hanko-glyph {
+  font-family: 'Yuji Boku', serif;
+  font-size: 3rem;
+  font-weight: 900;
+  transform: translateY(-2px);
+}
+
+.spread-japanese-title {
+  font-family: 'Dela Gothic One', 'RocknRoll One', sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  letter-spacing: 0.15em;
+  color: #111116;
+  margin-bottom: 0.3rem;
+}
+
+.spread-latin-sub {
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: clamp(0.85rem, 1.6vw, 1.15rem);
+  letter-spacing: 0.25em;
+  color: #555560;
+}
+
+.spread-stamps-grid {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 2px dashed rgba(17, 17, 22, 0.3);
+}
+
+.mini-stamp {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  background: #111116;
+  color: #F4EFE6;
+  padding: 0.2rem 0.4rem;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+/* Center Gutter */
+.spread-gutter {
+  width: 16px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.18), rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.18));
+  position: relative;
+  z-index: 8;
+}
+
+/* Right Page: English Professional Identity */
+.spread-right {
+  background: #F4EFE6;
+}
+
+.spread-right-content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.spread-author-badge {
+  display: inline-block;
+  align-self: flex-start;
+  background: #111116;
+  color: #F4EFE6;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  padding: 0.25rem 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.spread-author-name {
+  margin: 0;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: #111116;
+  line-height: 0.95;
+  text-shadow: 4px 4px 0 #888894;
+}
+
+.spread-author-role {
+  margin: 0.6rem 0 1rem;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(0.85rem, 1.8vw, 1.25rem);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: #33333E;
+}
+
+.spread-author-mission {
+  margin: 0 0 1.5rem;
+  font-size: clamp(0.8rem, 1.3vw, 0.95rem);
+  font-weight: 600;
+  line-height: 1.6;
+  color: #555560;
+  max-width: 460px;
+}
+
+.spread-tech-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pill {
+  background: #111116;
+  color: #F4EFE6;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.65rem;
+}
+
+/* Manga Frame Break Lines */
+.frame-break-line {
+  position: absolute;
+  background: #F4EFE6;
+  z-index: 15;
+  pointer-events: none;
+}
+
+.break-top {
+  top: 4vh;
+  left: 4vw;
+  right: 4vw;
+  height: 4px;
+  transform-origin: center;
+}
+
+.break-bottom {
+  bottom: 4vh;
+  left: 4vw;
+  right: 4vw;
+  height: 4px;
+  transform-origin: center;
+}
+
+.break-left {
+  left: 4vw;
+  top: 4vh;
+  bottom: 4vh;
+  width: 4px;
+  transform-origin: center;
+}
+
+.break-right {
+  right: 4vw;
+  top: 4vh;
+  bottom: 4vh;
+  width: 4px;
+  transform-origin: center;
+}
+
+/* =========================================================
+   BOTTOM TIMELINE PROGRESS BAR
+========================================================= */
+.manga-timeline-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  z-index: 1000;
+}
+
+.manga-timeline-fill {
+  height: 100%;
+  background: #FFFFFF;
+  box-shadow: 0 0 10px #FFFFFF;
+  transition: width 0.1s linear;
+}
+
+/* =========================================================
+   TEXTURE OVERLAYS (Grain & Vignette)
+========================================================= */
+.manga-grain-overlay {
+  position: absolute;
+  inset: -50%;
+  z-index: 500;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+.manga-vignette-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 501;
+  pointer-events: none;
+  box-shadow: inset 0 0 8vmax rgba(0, 0, 0, 0.6);
+}
+
+/* =========================================================
+   RESPONSIVE LAYOUTS (Mobile, Tablet, Desktop, Ultrawide)
+========================================================= */
+@media (max-width: 1024px) {
+  .manga-page-frame {
+    width: min(96vw, 900px);
+    height: min(86vh, 680px);
+  }
+
+  .manga-double-page-spread {
+    width: min(96vw, 920px);
+    height: min(86vh, 660px);
+  }
+
+  .spread-author-name {
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .manga-intro-controls {
+    top: 0.75rem;
+    right: 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .manga-ctrl-btn {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.65rem;
+    box-shadow: 2px 2px 0 #111116;
+  }
+
+  .skip-kbd {
+    display: none;
+  }
+
+  .prologue-header {
+    font-size: clamp(0.8rem, 3.5vw, 1.1rem);
+    letter-spacing: 0.15em;
+    gap: 0.5rem;
+  }
+
+  .brush-stroke-wrapper {
+    width: min(94vw, 500px);
+    height: 60px;
+  }
+
+  .primary-akogare-char {
+    font-size: clamp(5.5rem, 18vw, 8.5rem);
+  }
+
+  .akogare-full-text {
+    gap: 0.5rem;
+  }
+
+  .ippiki-identity-strip {
+    gap: 0.5rem;
+    padding: 0.35rem 0.8rem;
+    letter-spacing: 0.15em;
     max-width: 90vw;
-    will-change: transform, opacity
+    box-sizing: border-box;
+    justify-content: center;
+  }
+
+  .strip-kanji {
+    font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+  }
+
+  .strip-latin {
+    font-size: clamp(0.75rem, 2.8vw, 0.95rem);
+    letter-spacing: 0.18em;
+  }
+
+  .hanko-seal-box {
+    width: clamp(100px, 22vw, 150px);
+  }
+
+  .hanko-seal-char {
+    font-size: clamp(4rem, 12vw, 6rem);
+  }
+
+  /* Rapid Pages Frame on Mobile */
+  .manga-page-frame {
+    width: min(95vw, 480px);
+    height: min(88vh, 620px);
+    padding: 8px;
+    gap: 8px;
+    box-shadow: 6px 6px 0 #555560;
+  }
+
+  .panel-box {
+    border-width: 3px;
+  }
+
+  .panel-top {
+    height: 32%;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .panel-heading {
+    font-size: clamp(1rem, 3.8vw, 1.4rem);
+    margin: 0.1rem 0 0.2rem;
+  }
+
+  .panel-jp-text {
+    font-size: 0.72rem;
+  }
+
+  .sfx-gogogo {
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+  }
+
+  .panel-row-split {
+    flex-direction: column;
+    height: 46%;
+    gap: 8px;
+  }
+
+  .panel-mid-left {
+    padding: 0.6rem 0.85rem;
+  }
+
+  .kanji-calligraphy-burst {
+    font-size: clamp(2rem, 6vw, 2.8rem);
+  }
+
+  .panel-meta-caption {
+    font-size: 0.65rem;
+  }
+
+  .panel-mid-right {
+    padding: 0.6rem 0.85rem;
+  }
+
+  .sfx-don {
+    font-size: clamp(1.8rem, 5.5vw, 2.5rem);
+  }
+
+  .panel-quote {
+    font-size: 0.72rem;
+    max-width: 180px;
+    line-height: 1.35;
+  }
+
+  .panel-bottom {
+    height: 22%;
+    padding: 0 0.85rem;
+  }
+
+  .bottom-kanji-stamp {
+    font-size: 1.2rem;
+    padding: 0.15rem 0.5rem;
+  }
+
+  .bottom-en {
+    font-size: clamp(0.6rem, 2.2vw, 0.75rem);
+    letter-spacing: 0.08em;
+  }
+
+  .bottom-jp {
+    font-size: 0.65rem;
+  }
+
+  .sfx-zuba {
+    font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+  }
+
+  /* Identity Stamps on Mobile */
+  .identity-stamp {
+    transform: scale(0.75) !important;
+  }
+
+  .stamp-inner {
+    padding: 0.25rem 0.5rem;
+    gap: 0.3rem;
+  }
+
+  .stamp-ceo {
+    right: 0.3rem;
+    top: 0.3rem;
+  }
+
+  .stamp-intern {
+    left: 0.3rem;
+    bottom: 0.3rem;
+  }
+
+  .stamp-freelancer {
+    right: 0.3rem;
+    top: 0.3rem;
+  }
+
+  .stamp-cofounder {
+    left: 0.3rem;
+    top: 0.3rem;
+  }
+
+  .stamp-gamedev {
+    right: 0.3rem;
+    bottom: 0.3rem;
+  }
+
+  .stamp-akogare {
+    left: 30%;
+    bottom: 0.3rem;
+  }
+
+  /* Climax Double-Page Spread on Mobile */
+  .manga-double-page-spread {
+    flex-direction: column;
+    width: min(95vw, 480px);
+    height: min(88vh, 620px);
+    box-shadow: 6px 6px 0 #555560;
+    overflow-y: auto;
+  }
+
+  .spread-gutter {
+    display: none;
+  }
+
+  .spread-page {
+    padding: 0.85rem;
+  }
+
+  .spread-left {
+    border-right: none;
+    border-bottom: 2px dashed rgba(17, 17, 22, 0.2);
+    min-height: 180px;
+  }
+
+  .spread-art-center {
+    margin-top: 0.25rem;
+  }
+
+  .spread-hanko-seal {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.4rem;
+  }
+
+  .spread-hanko-glyph {
+    font-size: 2rem;
+  }
+
+  .spread-japanese-title {
+    font-size: clamp(1.3rem, 4.5vw, 1.8rem);
+  }
+
+  .spread-latin-sub {
+    font-size: 0.75rem;
+  }
+
+  .spread-stamps-grid {
+    padding-top: 0.5rem;
+    gap: 0.3rem;
+  }
+
+  .mini-stamp {
+    font-size: 0.55rem;
+    padding: 0.15rem 0.3rem;
+  }
+
+  .spread-author-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .spread-author-name {
+    font-size: clamp(2rem, 7vw, 2.8rem);
+    text-shadow: 2px 2px 0 #888894;
+  }
+
+  .spread-author-role {
+    font-size: 0.78rem;
+    margin: 0.25rem 0 0.5rem;
+  }
+
+  .spread-author-mission {
+    font-size: 0.72rem;
+    line-height: 1.4;
+    margin-bottom: 0.65rem;
+  }
+
+  .spread-tech-pills {
+    gap: 0.3rem;
+  }
+
+  .pill {
+    font-size: 0.58rem;
+    padding: 0.18rem 0.4rem;
+  }
 }
 
-.cover-kicker {
-    display: inline-block;
-    margin: 0 0 1rem;
-    background: var(--color-marigold);
-    color: #08080b;
-    border: 3px solid #08080b;
-    padding: .45rem .8rem;
-    box-shadow: 5px 5px 0 var(--color-miles-red);
-    font: 800 clamp(.6rem, 1.3vw, .9rem) var(--font-label);
-    letter-spacing: .18em
+@media (max-width: 480px) {
+  .primary-akogare-char {
+    font-size: clamp(4.2rem, 18vw, 6.5rem);
+  }
+
+  .full-kanji {
+    font-size: 1.1rem;
+  }
+
+  .full-romaji {
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+  }
+
+  .identity-stamp {
+    transform: scale(0.68) !important;
+  }
+
+  .manga-page-frame {
+    height: min(90vh, 580px);
+  }
+
+  .manga-double-page-spread {
+    height: min(90vh, 580px);
+  }
 }
 
-.cover-title {
-    margin: 0;
-    font: 400 clamp(5rem, 17vw, 14rem)/.7 var(--font-display);
-    letter-spacing: .02em;
-    color: #f9f4e5;
-    filter: drop-shadow(8px 8px 0 var(--color-miles-red))
+/* Landscape Mobile & Short Height Viewports */
+@media (max-height: 600px) and (orientation: landscape) {
+  .manga-intro-controls {
+    top: 0.4rem;
+    right: 0.5rem;
+  }
+
+  .prologue-header {
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .brush-stroke-wrapper {
+    display: none;
+  }
+
+  .primary-akogare-char {
+    font-size: 4rem;
+  }
+
+  .ippiki-identity-strip {
+    margin-top: 0.5rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .manga-page-frame {
+    height: 94vh;
+    width: min(96vw, 760px);
+  }
+
+  .panel-row-split {
+    flex-direction: row;
+    height: 38%;
+  }
+
+  .manga-double-page-spread {
+    flex-direction: row;
+    height: 94vh;
+    width: min(96vw, 780px);
+  }
+
+  .spread-gutter {
+    display: block;
+    width: 8px;
+  }
+
+  .spread-left {
+    border-right: 2px solid rgba(17, 17, 22, 0.15);
+    border-bottom: none;
+  }
+
+  .spread-art-center {
+    margin-top: 0.5rem;
+  }
+
+  .spread-author-name {
+    font-size: 1.8rem;
+  }
+
+  .spread-author-mission {
+    display: none;
+  }
 }
 
-.cover-subtitle {
-    margin: 1.5rem 0 0;
-    font: 400 clamp(1.4rem, 4vw, 4rem)/1 var(--font-display);
-    letter-spacing: .12em;
-    color: #fff;
-    text-shadow: 3px 3px 0 var(--color-electric-blue)
-}
+/* =========================================================
+   ACCESSIBILITY: PREFERS-REDUCED-MOTION
+========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .manga-phase-1,
+  .manga-phase-hanko,
+  .manga-phase-spread,
+  .manga-book-3d-wrapper,
+  .climax-speed-burst,
+  .abstract-ink-marks-layer {
+    display: none !important;
+  }
 
-.impact-word {
-    position: absolute;
-    z-index: 12;
-    right: 6vw;
-    top: 18vh;
-    color: var(--color-marigold);
-    -webkit-text-stroke: 3px #08080b;
-    font: 400 clamp(3rem, 8vw, 7rem) var(--font-display);
-    text-shadow: 6px 6px 0 var(--color-miles-red)
-}
+  .manga-phase-climax {
+    display: flex !important;
+    opacity: 1 !important;
+  }
 
-.ink-shard {
-    position: absolute;
-    z-index: 3;
-    left: 50%;
-    top: 50%;
-    width: 8vw;
-    height: 28vh;
-    background: #fff;
-    clip-path: polygon(50% 0, 100% 100%, 0 75%);
-    transform-origin: 50% 100%;
-    will-change: transform, opacity
-}
+  .manga-grain-overlay {
+    opacity: 0.03;
+  }
 
-.shard-0 {
-    transform: rotate(0deg)
-}
-
-.shard-1 {
-    transform: rotate(36deg)
-}
-
-.shard-2 {
-    transform: rotate(72deg)
-}
-
-.shard-3 {
-    transform: rotate(108deg)
-}
-
-.shard-4 {
-    transform: rotate(144deg)
-}
-
-.shard-5 {
-    transform: rotate(180deg)
-}
-
-.shard-6 {
-    transform: rotate(216deg)
-}
-
-.shard-7 {
-    transform: rotate(252deg)
-}
-
-.shard-8 {
-    transform: rotate(288deg)
-}
-
-.shard-9 {
-    transform: rotate(324deg)
-}
-
-.intro-grain {
-    position: absolute;
-    inset: -50%;
-    z-index: 100;
-    pointer-events: none;
-    opacity: .1;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    animation: grain .18s steps(2) infinite;
-    will-change: transform
-}
-
-.intro-vignette {
-    position: absolute;
-    inset: 0;
-    z-index: 101;
-    pointer-events: none;
-    box-shadow: inset 0 0 18vmax rgba(0, 0, 0, .72)
-}
-
-.accelerate-hint {
-    position: absolute;
-    z-index: 150;
-    left: clamp(1rem, 3vw, 2.25rem);
-    bottom: 1.5rem;
-    margin: 0;
-    font: 700 .58rem var(--font-mono);
-    letter-spacing: .18em;
-    color: #fff;
-    opacity: .45
-}
-
-@keyframes portal-spin {
-    to {
-        transform: rotate(360deg)
-    }
-}
-
-@keyframes warning-flash {
-    50% {
-        opacity: .2
-    }
-}
-
-@keyframes cursor-blink {
-    50% {
-        opacity: 0
-    }
-}
-
-@keyframes grain {
-    0% {
-        transform: translate(0, 0)
-    }
-
-    25% {
-        transform: translate(3%, -2%)
-    }
-
-    50% {
-        transform: translate(-2%, 4%)
-    }
-
-    75% {
-        transform: translate(4%, 2%)
-    }
-}
-
-@media(max-width:640px) {
-    .portal-shell {
-        width: 110vw
-    }
-
-    .dimension-word {
-        font-size: 19vw
-    }
-
-    .code-fragment {
-        padding: .45rem
-    }
-
-    .fragment-4 {
-        display: none
-    }
-
-    .collision-c {
-        left: 22%
-    }
-
-    .intro-codewalker {
-        max-width: 100vw;
-        height: 74vh
-    }
-
-    .cover-copy {
-        top: 20vh
-    }
-
-    .cover-title {
-        font-size: 22vw
-    }
-
-    .cover-subtitle {
-        max-width: 80vw
-    }
-
-    .impact-word {
-        top: 10vh
-    }
-
-    .accelerate-hint {
-        display: none
-    }
-}
-
-.intro-engineer-sash {
-    opacity: .5;
-    mix-blend-mode: screen
-}
-
-.intro-collision-seam {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 10px;
-    z-index: 6;
-    pointer-events: none
-}
-
-.intro-fusion-mark {
-    top: 1.6rem;
-    left: 1.6rem;
-    z-index: 9;
-    opacity: .85
-}
-
-@media(max-width:640px) {
-    .intro-fusion-mark {
-        width: 40px;
-        height: 40px;
-        top: 1rem;
-        left: 1rem
-    }
-
-    .intro-engineer-sash {
-        width: 20%
-    }
-}
-
-@media(prefers-reduced-motion:reduce) {
-
-    .boot-screen,
-    .student-scene,
-    .builder-scene,
-    .engineer-scene,
-    .collision-field,
-    .ink-shard {
-        display: none
-    }
-
-    .intro-title-scene {
-        opacity: 1 !important
-    }
-
-    .intro-codewalker,
-    .cover-copy {
-        opacity: 1 !important;
-        transform: none !important
-    }
-
-    .intro-codewalker {
-        transform: translateX(-50%) !important
-    }
-
-    .intro-grain {
-        animation: none
-    }
+  .manga-ctrl-btn {
+    transition: none;
+  }
 }

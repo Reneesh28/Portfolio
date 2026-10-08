@@ -1,0 +1,650 @@
+/* =========================================================
+   CHAPTER 07 — ACADEMIC FOUNDATION (EDUCATION SECTION)
+   - Manga Academic Records & Origin Protocols
+   - One Academic Record Dominant at a Time (Dossier Spread)
+   - Pure Monochrome Sumi-e Ink & Washi Paper (#F4EFE6 / #111116)
+   - SCAN → FOLLOW → EXAMINE Interaction Model
+   ========================================================= */
+
+.edu-section-root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0A0A0E;
+  color: #111116;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(2rem, 5vw, 4.5rem) clamp(1rem, 3vw, 2.5rem);
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+/* Ambient Grain Texture */
+.edu-ambient-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  z-index: 1;
+  background-image: radial-gradient(#FFFFFF 15%, transparent 16%);
+  background-size: 8px 8px;
+}
+
+/* =========================================================
+   MANGA DOUBLE-PAGE SPREAD CONTAINER
+   ========================================================= */
+.edu-manga-spread-container {
+  position: relative;
+  width: 100%;
+  max-width: 1560px;
+  background: #F4EFE6;
+  border: 4px solid #111116;
+  box-shadow: 12px 12px 0 #111116, 0 24px 48px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* =========================================================
+   TOP EDITORIAL FOLIO BAR
+   ========================================================= */
+.edu-top-folio {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.25rem;
+  background: #111116;
+  color: #F4EFE6;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  border-bottom: 2px solid #111116;
+  user-select: none;
+}
+
+.edu-folio-left,
+.edu-folio-right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.edu-folio-tag,
+.edu-folio-badge {
+  background: #F4EFE6;
+  color: #111116;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.65rem;
+}
+
+.edu-folio-sep {
+  color: #888894;
+}
+
+.edu-folio-center {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: #888894;
+}
+
+/* =========================================================
+   CHAPTER 07 HEADLINE
+   ========================================================= */
+.edu-chapter-headline {
+  padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1.25rem, 3.5vw, 2.5rem) 1.25rem;
+  border-bottom: 2px solid #111116;
+  background: #EDE6D6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.edu-chapter-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid #111116;
+}
+
+.edu-chapter-badge .badge-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.edu-chapter-badge .badge-en {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+}
+
+.edu-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.edu-main-title {
+  margin: 0;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  color: #111116;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.edu-japanese-accent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: 0.85rem;
+  color: #555560;
+  letter-spacing: 0.15em;
+}
+
+.edu-japanese-accent .kanji-accent {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.1rem;
+  color: #111116;
+}
+
+/* =========================================================
+   ACADEMIC SPREAD VIEWER
+   ========================================================= */
+.edu-spread-viewer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: clamp(1.25rem, 3.5vw, 2.5rem);
+  border-bottom: 3px solid #111116;
+  background: #F4EFE6;
+  animation: eduSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes eduSlideIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@media (min-width: 1024px) {
+  .edu-spread-viewer {
+    grid-template-columns: 5.8fr 6.2fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+}
+
+/* Left Page: Degree & Extraction */
+.edu-page-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.edu-volume-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.edu-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edu-num-tag {
+  background: #111116;
+  color: #FFFFFF;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  padding: 0.2rem 0.6rem;
+}
+
+.edu-kanji-stamp {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  background: #FFFFFF;
+  color: #111116;
+  border: 1.5px solid #111116;
+  padding: 0.05rem 0.4rem;
+}
+
+.edu-status-badge {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.2rem 0.6rem;
+  border: 1px dashed #FFFFFF;
+}
+
+.edu-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.edu-headline {
+  margin: 0;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  letter-spacing: 0.04em;
+  color: #111116;
+  line-height: 1.1;
+}
+
+.edu-institution-text {
+  margin: 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(0.78rem, 1.4vw, 0.95rem);
+  letter-spacing: 0.12em;
+  color: #555560;
+}
+
+/* Editorial Metadata Strip */
+.edu-editorial-meta-strip {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: #FFFFFF;
+  border: 2px solid #111116;
+  padding: 0.5rem 0.85rem;
+  box-shadow: 3px 3px 0 #111116;
+}
+
+.edu-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.edu-meta-label {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: #888894;
+}
+
+.edu-meta-val {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #111116;
+}
+
+.score-val {
+  font-family: 'Dela Gothic One', sans-serif;
+  color: #111116;
+}
+
+/* Transcript Terminal Box */
+.edu-dossier-transcript-box {
+  background: #FFFFFF;
+  border: 2px solid #111116;
+  box-shadow: 4px 4px 0 #111116;
+  display: flex;
+  flex-direction: column;
+}
+
+.transcript-terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #111116;
+  color: #F4EFE6;
+  padding: 0.35rem 0.75rem;
+  font-family: 'Dela Gothic One', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+.terminal-dot {
+  width: 8px;
+  height: 8px;
+  background: #555560;
+  border-radius: 50%;
+}
+
+.transcript-body-text {
+  margin: 0;
+  padding: 1rem;
+  font-family: 'Space Mono', 'Consolas', monospace;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #111116;
+}
+
+/* Right Page: Protocols Card */
+.edu-page-protocols {
+  display: flex;
+  flex-direction: column;
+}
+
+.edu-protocol-card {
+  background: #EDE6D6;
+  border: 3px solid #111116;
+  box-shadow: 8px 8px 0 #111116, 0 16px 32px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.protocol-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111116;
+  color: #F4EFE6;
+  padding: 0.45rem 0.75rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+}
+
+.protocol-label-left {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.protocol-kanji-tag {
+  background: #FFFFFF;
+  color: #111116;
+  padding: 0.05rem 0.35rem;
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.protocol-content-body {
+  position: relative;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #F4EFE6;
+}
+
+.protocol-intro-prompt {
+  margin: 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: #888894;
+}
+
+.protocol-chips-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.protocol-course-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #FFFFFF;
+  border: 2px solid #111116;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 2px 2px 0 #111116;
+}
+
+.course-idx {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  color: #888894;
+}
+
+.course-name {
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  color: #111116;
+}
+
+/* Seal */
+.edu-manga-approval-seal {
+  align-self: flex-end;
+  margin-top: 0.5rem;
+  border: 3px double #111116;
+  padding: 0.4rem 0.8rem;
+  background: #FFFFFF;
+  box-shadow: 3px 3px 0 #888894;
+  transform: rotate(-3deg);
+}
+
+.seal-outer-border {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.seal-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #111116;
+  letter-spacing: 0.15em;
+}
+
+.seal-sub {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: #555560;
+}
+
+.protocol-bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #EDE6D6;
+  color: #111116;
+  padding: 0.45rem 0.75rem;
+  border-top: 2px solid #111116;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+}
+
+/* =========================================================
+   NAVIGATION CONTROLS
+   ========================================================= */
+.edu-navigation-controls {
+  padding: 1.25rem clamp(1.25rem, 3.5vw, 2.5rem);
+  background: #EDE6D6;
+  border-bottom: 2px solid #111116;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edu-nav-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.edu-nav-arrow-btn {
+  background: #F4EFE6;
+  color: #111116;
+  border: 2px solid #111116;
+  box-shadow: 3px 3px 0 #111116;
+  padding: 0.45rem 1rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.edu-nav-arrow-btn:hover {
+  background: #111116;
+  color: #FFFFFF;
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #111116;
+}
+
+.edu-nav-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.edu-counter-text {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: #111116;
+}
+
+.edu-dots-chain {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.edu-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #111116;
+  background: #FFFFFF;
+  transition: all 0.2s ease;
+}
+
+.edu-dot.is-active {
+  background: #111116;
+  transform: scale(1.3);
+}
+
+.edu-dot.is-past {
+  background: #888894;
+}
+
+.edu-chain-line {
+  width: 14px;
+  height: 2px;
+  background: #111116;
+}
+
+/* Direct Jump Track */
+.edu-nav-index-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  border-top: 1px dashed #888894;
+  padding-top: 0.75rem;
+}
+
+.edu-index-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: #888894;
+}
+
+.edu-index-kanji {
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.05rem 0.3rem;
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.75rem;
+}
+
+.edu-index-buttons-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.edu-jump-btn {
+  background: #F4EFE6;
+  border: 1.5px solid #111116;
+  box-shadow: 2px 2px 0 #111116;
+  padding: 0.3rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.edu-jump-btn:hover {
+  background: #FFFFFF;
+  transform: translateY(-2px);
+}
+
+.edu-jump-btn.is-active {
+  background: #111116;
+  color: #FFFFFF;
+  border-color: #111116;
+  box-shadow: 3px 3px 0 #888894;
+}
+
+.edu-keyboard-hint {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: #888894;
+  text-align: right;
+}
+
+/* =========================================================
+   PAGE TURN FOOTER
+   ========================================================= */
+.edu-transition-footer {
+  background: #EDE6D6;
+  display: flex;
+  flex-direction: column;
+}
+
+.edu-manga-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #111116;
+  color: #FFFFFF;
+  border: 2px solid #111116;
+  padding: 0.65rem 1.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #888894;
+  transition: all 0.15s ease;
+}
+
+.edu-manga-cta-btn:hover {
+  background: #FFFFFF;
+  color: #111116;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #111116;
+}

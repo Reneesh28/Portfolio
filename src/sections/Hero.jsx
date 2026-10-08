@@ -1,248 +1,405 @@
-import React, { useRef, useEffect, lazy, Suspense } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import InkButton from '../components/comic/InkButton';
-import StampReveal from '../components/comic/StampReveal';
-import KineticTitle from '../components/comic/KineticTitle';
-import SpeedBurst from '../components/comic/SpeedBurst';
-import FrameStutter from '../components/comic/FrameStutter';
-import SpiderWebBackground from '../components/comic/SpiderWebBackground';
-import { SectionPortal } from '../components/comic/PortalTransition';
-import codewalkerImg from '../assets/images/codewalker.webp'; // Generated Codewalker art
-
-const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
-const DimensionCharacterGlitch = lazy(() => import('../components/three/DimensionCharacterGlitch'));
+import GenreIndex from '../components/hero/GenreIndex';
+import MangaProtagonistPanel from '../components/hero/MangaProtagonistPanel';
+import SupportingMangaPanels from '../components/hero/SupportingMangaPanels';
+import MangaGenreAtmosphere from '../components/hero/MangaGenreAtmosphere';
+import MangaExpandedModal from '../components/hero/MangaExpandedModal';
+import { heroAudio } from '../components/hero/HeroAudio';
+import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Hero = ({ activateHeavyFX = true }) => {
+export default function Hero({ isIntroActive = false }) {
   const sectionRef = useRef(null);
-  const leftColRef = useRef(null);
-  const rightColRef = useRef(null);
-  const tearRef = useRef(null);
-  const parallaxRef = useRef(null);
+  const spreadRef = useRef(null);
+  const identityColRef = useRef(null);
+  const protagonistColRef = useRef(null);
+  const systemsColRef = useRef(null);
 
-  useEffect(() => {
-    // Warm the chunk immediately so there's no download hitch once activateHeavyFX
-    // flips true — the module is likely already cached from the Intro's own prefetch.
-    import('../components/three/DimensionRift');
-    import('../components/three/DimensionCharacterGlitch');
+  // Default genre is SEINEN (Engineering / Maturity / Depth)
+  const [activeGenre, setActiveGenre] = useState('seinen');
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [isAudioMuted, setIsAudioMuted] = useState(false);
+
+  // Active expanded panel modal: null | 'protagonist' | 'ai' | 'creative' | 'akogare' | 'identity_seal'
+  const [activeModal, setActiveModal] = useState(null);
+
+  // Toggle Audio Play / Pause
+  const handleToggleAudio = useCallback(() => {
+    if (heroAudio.isPlaying) {
+      heroAudio.pause();
+      setIsAudioPlaying(false);
+    } else {
+      heroAudio.play().then((playing) => {
+        setIsAudioPlaying(playing);
+      });
+    }
   }, []);
 
+  // Audio Playback Lifecycle — Only triggers after Intro completes and lands on Hero
+  useEffect(() => {
+    // Listen for playback state changes (e.g. track ends)
+    heroAudio.onStateChange = (playing) => {
+      setIsAudioPlaying(playing);
+    };
+
+    // If Intro is currently active, prevent Hero audio
+    if (isIntroActive) {
+      heroAudio.pause();
+      setIsAudioPlaying(false);
+      return;
+    }
+
+    heroAudio.playOnceOnFirstLanding().then((playing) => {
+      setIsAudioPlaying(playing);
+    });
+
+    const handleFirstUserInteraction = () => {
+      if (isIntroActive) return;
+      heroAudio.playOnceOnFirstLanding().then((playing) => {
+        setIsAudioPlaying(playing);
+      });
+    };
+
+    window.addEventListener('click', handleFirstUserInteraction, { once: true });
+    window.addEventListener('keydown', handleFirstUserInteraction, { once: true });
+    window.addEventListener('touchstart', handleFirstUserInteraction, { once: true });
+
+    return () => {
+      window.removeEventListener('click', handleFirstUserInteraction);
+      window.removeEventListener('keydown', handleFirstUserInteraction);
+      window.removeEventListener('touchstart', handleFirstUserInteraction);
+      heroAudio.onStateChange = null;
+    };
+  }, [isIntroActive]);
+
+  // Stop audio as soon as the user scrolls away from Hero section
+  useEffect(() => {
+    if (!sectionRef.current || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Re-enter Hero section: resume if previously active, not finished, and not muted
+            if (heroAudio.hasAutoPlayed && !heroAudio.hasFinishedPlaying && !heroAudio.isMuted) {
+              heroAudio.play().then((playing) => {
+                setIsAudioPlaying(playing);
+              });
+            }
+          } else {
+            // Scrolled away from Hero section: pause immediately
+            heroAudio.pause();
+            setIsAudioPlaying(false);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => {
+      observer.disconnect();
+      heroAudio.pause();
+    };
+  }, []);
+
+  // GSAP MatchMedia & Scroll Experience
   useEffect(() => {
     const mm = gsap.matchMedia(sectionRef);
 
-    mm.add({
-      isDesktop: "(min-width: 768px)",
-      isMobile: "(max-width: 767px)",
-      reduceMotion: "(prefers-reduced-motion: reduce)"
-    }, (context) => {
-      let { isDesktop, isMobile, reduceMotion } = context.conditions;
+    mm.add(
+      {
+        isDesktop: '(min-width: 1024px)',
+        isMobile: '(max-width: 1023px)',
+        reduceMotion: '(prefers-reduced-motion: reduce)',
+      },
+      (context) => {
+        const { isDesktop, reduceMotion } = context.conditions;
 
-      if (reduceMotion) {
-        gsap.set([leftColRef.current, rightColRef.current], { opacity: 1 });
-        return;
-      }
-
-      // Entrance animation
-      gsap.from(leftColRef.current, {
-        x: isDesktop ? -50 : 0,
-        y: isMobile ? 20 : 0,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-        delay: 0.2
-      });
-
-      gsap.from(rightColRef.current, {
-        x: isDesktop ? 50 : 0,
-        y: isMobile ? 20 : 0,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-        delay: 0.4
-      });
-
-      // Parallax mouse effect (subtle)
-      const parallaxLayers = parallaxRef.current?.querySelectorAll('.parallax-layer') ?? [];
-      const moveX = gsap.quickTo(parallaxLayers, 'x', { duration: 0.45, ease: 'power2.out' });
-      const moveY = gsap.quickTo(parallaxLayers, 'y', { duration: 0.45, ease: 'power2.out' });
-      const handleMouseMove = (e) => {
-        if (isMobile) return;
-        const { clientX, clientY } = e;
-        const xPos = (clientX / window.innerWidth - 0.5) * 20;
-        const yPos = (clientY / window.innerHeight - 0.5) * 20;
-
-        moveX(xPos);
-        moveY(yPos);
-      };
-
-      window.addEventListener('mousemove', handleMouseMove);
-
-      // Scroll out effect
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=80%",
-          scrub: true,
-          pin: isDesktop,
+        if (reduceMotion) {
+          gsap.set([identityColRef.current, protagonistColRef.current, systemsColRef.current], {
+            opacity: 1,
+            y: 0,
+          });
+          return;
         }
-      });
 
-      const heroCharacter = sectionRef.current?.querySelector('.hero-character');
-      if (heroCharacter && isDesktop) {
-        tl.to(heroCharacter, { x: 30, scale: 1.05, duration: 1 }, 0);
-      }
-      if (tearRef.current) {
-        gsap.set(tearRef.current, { rotateX: -22 });
-        const shadowEl = tearRef.current.parentElement?.querySelector('.tear-shadow');
-        tl.to(tearRef.current, { scaleY: 1, rotateX: 0, duration: 1, ease: 'none' }, 0.2);
-        if (shadowEl) {
-          tl.fromTo(shadowEl, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'none' }, 0.2)
-            .to(shadowEl, { opacity: 0, duration: 0.65, ease: 'none' }, 0.55);
+        // Entrance animation on initial load / intro completion
+        const entranceTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        entranceTl
+          .fromTo(
+            spreadRef.current,
+            { scale: 0.96, opacity: 0, y: 30 },
+            { scale: 1, opacity: 1, y: 0, duration: 0.9 }
+          )
+          .fromTo(
+            identityColRef.current,
+            { x: -30, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.7 },
+            '-=0.5'
+          )
+          .fromTo(
+            protagonistColRef.current,
+            { scale: 0.92, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.8 },
+            '-=0.6'
+          )
+          .fromTo(
+            systemsColRef.current,
+            { x: 30, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.7 },
+            '-=0.6'
+          );
+
+        // Subtle Mouse Parallax on Desktop
+        if (isDesktop) {
+          const handleMouseMove = (e) => {
+            const { clientX, clientY } = e;
+            const xOffset = (clientX / window.innerWidth - 0.5) * 12;
+            const yOffset = (clientY / window.innerHeight - 0.5) * 12;
+
+            gsap.to(protagonistColRef.current, {
+              x: xOffset * 1.2,
+              y: yOffset * 1.2,
+              duration: 0.8,
+              ease: 'power1.out',
+            });
+            gsap.to(identityColRef.current, {
+              x: -xOffset * 0.5,
+              y: -yOffset * 0.5,
+              duration: 0.8,
+              ease: 'power1.out',
+            });
+            gsap.to(systemsColRef.current, {
+              x: xOffset * 0.6,
+              y: yOffset * 0.6,
+              duration: 0.8,
+              ease: 'power1.out',
+            });
+          };
+
+          window.addEventListener('mousemove', handleMouseMove);
+
+          // Scroll-driven manga spread expansion leading toward About
+          const scrollTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: '+=80%',
+              scrub: 0.6,
+            },
+          });
+
+          scrollTl
+            .to(
+              protagonistColRef.current,
+              {
+                scale: 1.04,
+                y: -20,
+                duration: 1,
+              },
+              0
+            )
+            .to(
+              identityColRef.current,
+              {
+                opacity: 0.85,
+                x: -25,
+                duration: 1,
+              },
+              0
+            )
+            .to(
+              systemsColRef.current,
+              {
+                opacity: 0.85,
+                x: 25,
+                duration: 1,
+              },
+              0
+            );
+
+          return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+          };
         }
       }
-
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-      };
-    });
+    );
 
     return () => mm.revert();
   }, []);
 
+  // Handle Genre Transition Animation
+  const handleSelectGenre = (genreId) => {
+    if (genreId === activeGenre) return;
+
+    setActiveGenre(genreId);
+
+    // Subtle physical panel ink impulse
+    if (protagonistColRef.current) {
+      gsap.fromTo(
+        protagonistColRef.current,
+        { scale: 0.98 },
+        { scale: 1, duration: 0.4, ease: 'back.out(2)' }
+      );
+    }
+  };
+
   return (
-    <section ref={sectionRef} id="hero" className="relative min-h-screen w-full bg-[var(--color-ink-black)] overflow-hidden flex items-center justify-center">
-      <SectionPortal colorA="var(--color-miles-red)" colorB="var(--color-saffron)" threshold={0.2} />
+    <section
+      ref={sectionRef}
+      id="hero"
+      className="manga-hero-root"
+      aria-label="Protagonist Character Introduction"
+    >
+      {/* Genre Visual Atmosphere & Screentone Layer */}
+      <MangaGenreAtmosphere activeGenre={activeGenre} />
 
-      <div className="absolute inset-0 bg-halftone-dark opacity-10 pointer-events-none"></div>
-
-      {/* 3D dimension-rift backdrop — floating glitch shards behind everything.
-          Deferred until the intro is done: while the intro covers the screen,
-          this canvas + its postprocessing stack would just be burning frames
-          nobody can see, competing with the intro's own animation. */}
-      {activateHeavyFX && (
-        <div className="absolute inset-0 -z-0 opacity-70">
-          <Suspense fallback={null}><DimensionRift density={16} /></Suspense>
-        </div>
-      )}
-
-      {/* Spider-Verse multiverse portal — glowing dimensional rift */}
-      <SpiderWebBackground
-        ringCount={8}
-        sides={7}
-        originX={80}
-        originY={35}
-        maxRadius={420}
-        streakCount={16}
-        particleCount={35}
-        className="z-[1] parallax-layer"
-      />
-
-      {/* Inter-dimensional character hauntings — the core Spider-Verse mechanic */}
-      {activateHeavyFX && (
-        <Suspense fallback={null}>
-          <DimensionCharacterGlitch interval={[5000, 11000]} maxVisible={2} />
-        </Suspense>
-      )}
-
-
-      <div ref={parallaxRef} className="relative z-10 w-full h-full min-h-screen max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center px-6 md:px-12 pt-24 pb-12">
-
-        {/* Left Column - Metadata & Copy */}
-        <div ref={leftColRef} className="lg:col-span-5 flex flex-col order-2 lg:order-1 relative z-20">
-          <div className="font-label uppercase font-bold tracking-widest text-[var(--color-comic-yellow)] mb-4 md:mb-6">
-            ISSUE #01 &middot; EARTH-28
+      {/* Main Manga Double Spread Container */}
+      <div ref={spreadRef} className="manga-hero-spread">
+        {/* Top Folio Header (Tankobon Publishing Format) */}
+        <header className="manga-spread-top-folio">
+          <div className="folio-left">
+            <span className="folio-kanji">第壱話</span>
+            <span className="folio-title">CHAPTER 01 // PROTAGONIST INTRODUCTION</span>
           </div>
+          <div className="folio-center">
+            <span>BALAM RENEESH · MANGA PORTFOLIO</span>
+          </div>
+          <div className="folio-right">
+            {/* Manga Audio BGM Controller */}
+            <button
+              type="button"
+              className={`hero-audio-folio-btn ${isAudioPlaying ? 'is-playing' : ''}`}
+              onClick={handleToggleAudio}
+              aria-label="Toggle Hero Background Music"
+              title={isAudioPlaying ? 'Turn BGM OFF' : 'Turn BGM ON'}
+            >
+              <span className="hero-audio-glyph">{isAudioPlaying ? '♪' : '✕'}</span>
+              <span className="hero-audio-text">{isAudioPlaying ? 'BGM: ON' : 'BGM: OFF'}</span>
+            </button>
+            <span>VOL.01 SPREAD [02-03]</span>
+            <span className="folio-kanji">開館</span>
+          </div>
+        </header>
 
-          <FrameStutter steps={6} distance={50} direction="left">
-            <StampReveal sfx="THWIP!" color="var(--color-miles-red)" rotation={-6} className="block w-full">
-              <h1 className="font-display text-4xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-wider text-[var(--color-text-on-dark)] mb-6 relative z-10">
-                <span className="relative inline-block w-full">
-                  <SpeedBurst color="var(--color-saffron)" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] -z-20" />
-                  <KineticTitle as="span">RENEESH</KineticTitle>
-                </span>
-                <span className="block text-2xl md:text-5xl lg:text-5xl mt-4 text-[var(--color-text-muted-dark)] tracking-wide">
-                  ACROSS THE CODEVERSE
+        {/* Spread Body: 3-Column Asymmetrical Manga Grid */}
+        <div className="manga-spread-body">
+          {/* Col 1: Identity, Name & Japanese Marks */}
+          <div ref={identityColRef} className="manga-hero-col-identity">
+            <div className="manga-identity-block">
+              {/* Subtle Manga Character Designation */}
+              <div className="protagonist-kicker-strip">
+                <span className="kicker-kanji">主人公</span>
+                <span className="kicker-en">SHUJINKŌ · PROTAGONIST</span>
+              </div>
+
+              {/* Primary Name Typography */}
+              <h1 className="protagonist-name-headline">
+                <span className="name-first">BALAM</span>
+                <span className="name-last">
+                  RENEESH
+                  <span className="name-last-accent" aria-hidden="true"></span>
                 </span>
               </h1>
-            </StampReveal>
-          </FrameStutter>
 
-          <div className="caption-box mb-6 w-fit" style={{ borderColor: 'var(--color-miles-black)', boxShadow: '4px 4px 0 var(--color-miles-red)' }}>
-            <h2 className="font-label uppercase font-bold text-sm md:text-base leading-tight m-0">
-              AI Systems Engineer building intelligent, full-stack experiences.
-            </h2>
+              {/* Professional Identity */}
+              <div className="protagonist-role-banner">
+                <span className="role-banner-text">
+                  AI / SOFTWARE / CREATIVE BUILDER
+                </span>
+              </div>
+
+              {/* Editorial Introduction Summary */}
+              <p className="protagonist-bio-editorial">
+                Architecting intelligent software systems, generative intelligence architectures,
+                and immersive interactive experiences across the computational frontier.
+              </p>
+            </div>
+
+            {/* Japanese Artistic Identity Area: 憧れ (Akogare) & 一匹狼 (Ippiki Ōkami) - Clickable */}
+            <div
+              className="japanese-emblem-box is-interactive"
+              onClick={() => setActiveModal('identity_seal')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setActiveModal('identity_seal');
+                }
+              }}
+              tabIndex={0}
+              role="button"
+              aria-label="Trigger Japanese Identity Seal Animation"
+            >
+              <div className="emblem-top-row">
+                <span className="emblem-title">JAPANESE IDENTITY MARK</span>
+                <span className="emblem-ippiki">一匹狼 // LONE WOLF</span>
+              </div>
+              <div className="emblem-main-visual">
+                <span className="emblem-kanji-huge">憧れ</span>
+                <div className="emblem-romaji-group">
+                  <span className="emblem-romaji">AKOGARE</span>
+                  <span className="emblem-meaning">ASPIRATION · YEARNING FOR MASTERY</span>
+                </div>
+              </div>
+              <div className="emblem-inspect-tag" aria-hidden="true">
+                <span>[ IDENTITY SEAL ⊕ ]</span>
+              </div>
+            </div>
           </div>
 
-          <p className="font-body text-base md:text-lg text-[var(--color-text-on-dark)] mb-10 max-w-xl opacity-90 leading-relaxed">
-            I combine generative AI, machine learning and modern interfaces to turn ambitious ideas into working systems.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
-            <StampReveal sfx="BAM!" color="var(--color-saffron)" rotation={-10} delay={0.15}>
-              <InkButton variant="cyan" onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>
-                Explore the Codeverse
-              </InkButton>
-            </StampReveal>
-            <StampReveal sfx="POW!" color="var(--color-miles-red)" rotation={8} delay={0.3}>
-              <InkButton variant="magenta" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
-                Send a Signal
-              </InkButton>
-            </StampReveal>
-            <a href="/resume.pdf" target="_blank" rel="noreferrer" className="flex items-center justify-center font-label uppercase font-bold tracking-widest px-6 py-3 border-4 border-transparent hover:border-[var(--color-comic-yellow)] hover:bg-[var(--color-ink-black)] transition-colors comic-focus text-[var(--color-text-on-dark)]">
-              Open Origin File
-            </a>
-          </div>
-        </div>
-
-        {/* Right Column - Character Art */}
-        <div ref={rightColRef} className="lg:col-span-7 order-1 lg:order-2 relative h-[40vh] lg:h-[80vh] flex items-center justify-center mt-12 lg:mt-0">
-          {/* Comic Panel Frame — fused Miles spray-edge + Pavitr rangoli/sash, same frame */}
-          <div className="jagged-panel spray-edge absolute inset-0 border-8 border-[var(--color-ink-black)] bg-[var(--color-deep-navy)] transform rotate-2 overflow-hidden shadow-2xl mx-4 lg:mx-0">
-            <div className="absolute inset-0 bg-halftone-fusion opacity-15 mix-blend-overlay"></div>
-            {/* Dimension-bleed seam where the rift punches through */}
-            <div className="bleed-seam absolute top-0 left-0 w-full h-3 opacity-60"></div>
-            {/* Suit-block sash — Miles blocking + Pavitr dhoti-sash diagonal */}
-            <div className="suit-block-sash"></div>
-            {/* Rangoli corner mark — Pavitr/Mumbai */}
-            <div className="rangoli-corner top-3 left-3"></div>
-            {/* Background elements */}
-            <div className="parallax-layer absolute top-10 left-10 w-32 h-32 bg-[var(--color-miles-red)] rounded-full blur-3xl opacity-25"></div>
-            <div className="parallax-layer absolute bottom-10 right-10 w-48 h-48 bg-[var(--color-saffron)] rounded-full blur-3xl opacity-25"></div>
-            <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-[var(--color-ink-black)] to-transparent opacity-80"></div>
+          {/* Col 2: Dominant Main Manga Character Panel - Clickable */}
+          <div ref={protagonistColRef} className="manga-hero-col-protagonist">
+            <MangaProtagonistPanel
+              activeGenre={activeGenre}
+              onOpenProfile={() => setActiveModal('protagonist')}
+            />
           </div>
 
-          {/* Character breaking out of panel */}
-          <div className="hero-character drip-edge relative z-10 w-2/3 max-w-sm lg:max-w-md parallax-layer transform -rotate-1 text-[var(--color-miles-black)]">
-            <img
-              src={codewalkerImg}
-              alt="The Codewalker"
-              className="w-full h-auto object-cover rounded-sm border-4 border-[var(--color-ink-black)] shadow-[8px_8px_0_var(--color-miles-red)] grayscale contrast-125"
+          {/* Col 3: Editorial Genre Classification Index & Supporting Panels */}
+          <div ref={systemsColRef} className="manga-hero-col-systems">
+            {/* Genre Classification Index (7 Manga Genres) */}
+            <GenreIndex
+              activeGenre={activeGenre}
+              onSelectGenre={handleSelectGenre}
+            />
+
+            {/* 2-3 Asymmetrical Supporting Manga Panels - Clickable */}
+            <SupportingMangaPanels
+              activeGenre={activeGenre}
+              onOpenAI={() => setActiveModal('ai')}
+              onOpenCreative={() => setActiveModal('creative')}
+              onOpenAkogare={() => setActiveModal('akogare')}
             />
           </div>
         </div>
 
+        {/* Bottom Folio Gutter & Reading Advance Indicator */}
+        <footer className="manga-spread-bottom-gutter">
+          <div className="gutter-left">
+            <span>© 2026 BALAM RENEESH · ALL CHAPTERS REGISTERED</span>
+          </div>
+          <div className="scroll-indicator-manga">
+            <span>[ SCROLL TO ADVANCE MANGA SPREAD // 次頁へ </span>
+            <span aria-hidden="true">↓ ]</span>
+          </div>
+          <div className="gutter-right">
+            <span>TANKOBON FORMAT // 1560 × 980</span>
+          </div>
+        </footer>
       </div>
 
-      {/* Torn paper transition at bottom — same page-lift treatment as ComicSpread:
-          shadow fade underneath + rotateX on the flap, so Hero -> About matches
-          every other section boundary's page-turn feel. */}
-      <div className="absolute bottom-0 left-0 w-full z-30 pointer-events-none" style={{ perspective: '700px' }} aria-hidden="true">
-        <div
-          className="tear-shadow absolute left-0 w-full h-8 bottom-16 md:bottom-24 lg:bottom-32"
-          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.35), transparent)', opacity: 0 }}
-        />
-        <div
-          ref={tearRef}
-          className="absolute bottom-0 left-0 w-full h-16 md:h-24 lg:h-32 bg-[var(--color-paper)] scale-y-0 torn-edge-bottom transform-gpu"
-          style={{ transformOrigin: 'bottom', willChange: 'transform' }}
-        ></div>
-      </div>
-
+      {/* Expanded Manga Spread Modal Overlay */}
+      <MangaExpandedModal
+        modalType={activeModal}
+        onClose={() => setActiveModal(null)}
+        activeGenre={activeGenre}
+      />
     </section>
   );
-};
-
-export default Hero;
+}

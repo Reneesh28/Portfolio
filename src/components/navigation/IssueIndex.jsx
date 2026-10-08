@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import PaperTexture from '../comic/PaperTexture';
-import StampReveal from '../comic/StampReveal';
+import './MangaNavbar.css';
 
-const navItems = [
-  { id: 'hero', title: 'Home', subtitle: 'Cover' },
-  { id: 'about', title: 'About', subtitle: 'Origin Story' },
-  { id: 'skills', title: 'Skills', subtitle: 'Powers & Tools' },
-  { id: 'experience', title: 'Experience', subtitle: 'Previous Issues' },
-  { id: 'projects', title: 'Selected Projects', subtitle: 'The Universes' },
-  { id: 'certifications', title: 'Certifications', subtitle: 'Collected Artifacts' },
-  { id: 'education', title: 'Education', subtitle: 'Origin Records' },
-  { id: 'contact', title: 'Contact', subtitle: 'Open a Portal' },
+const chapters = [
+  { id: 'hero', number: '01', kanji: '一', title: 'THE PROTAGONIST', subtitle: 'Who is he? // Origin & Hero Spread', page: 'P. 001-005' },
+  { id: 'about', number: '02', kanji: '二', title: 'CHARACTER PROFILE', subtitle: 'Who is the person? // Dossier & Stats', page: 'P. 006-011' },
+  { id: 'skills', number: '03', kanji: '三', title: 'ARSENAL & POWERS', subtitle: 'What can he build with? // Technical Dossier', page: 'P. 012-017' },
+  { id: 'experience', number: '04', kanji: '四', title: 'JOURNEY & STORY ARCS', subtitle: 'Where has he applied it? // Chronicles', page: 'P. 018-023' },
+  { id: 'projects', number: '05', kanji: '五', title: 'THE WORK', subtitle: 'What has he built? // Project Anthology', page: 'P. 024-025' },
+  { id: 'certifications', number: '06', kanji: '六', title: 'CREDENTIALS', subtitle: 'Verified mastery // Authenticated Scrolls', page: 'P. 026-027' },
+  { id: 'education', number: '07', kanji: '七', title: 'ACADEMIC FOUNDATION', subtitle: 'Scholastic roots // Origin Protocols', page: 'P. 028-029' },
+  { id: 'contact', number: '08', kanji: '八', title: 'DIRECT TRANSMISSION', subtitle: 'Open frequencies // Final Signal', page: 'P. 030-031' },
 ];
 
-const IssueIndex = () => {
+export default function IssueIndex() {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef(null);
   const prevFocusRef = useRef(null);
@@ -25,25 +24,25 @@ const IssueIndex = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
       const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
       const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scrolled = (winScroll / height) * 100;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
       setProgress(scrolled);
 
-      if (currentScrollY > lastScrollY && currentScrollY > 100 && !isOpen) {
+      if (currentScrollY > lastScrollY && currentScrollY > 120 && !isOpen) {
         setIsVisible(false);
       } else {
         setIsVisible(true);
       }
       setLastScrollY(currentScrollY);
 
-      const sections = navItems.map(item => document.getElementById(item.id));
+      // Determine active section
+      const sectionElements = chapters.map((c) => document.getElementById(c.id));
       let currentId = 'hero';
-      sections.forEach(section => {
+      sectionElements.forEach((section) => {
         if (section) {
           const sectionTop = section.offsetTop;
-          if (window.scrollY >= sectionTop - 200) {
+          if (window.scrollY >= sectionTop - 240) {
             currentId = section.id;
           }
         }
@@ -63,25 +62,25 @@ const IssueIndex = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
-  // Lock body scroll and trap focus when index is open
+  // Trap focus and body scroll lock
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       prevFocusRef.current = document.activeElement;
 
-      // Focus first element
       if (dialogRef.current) {
-        const focusable = dialogRef.current.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const focusable = dialogRef.current.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
         if (focusable.length) focusable[0].focus();
       }
 
-      // Trap focus
       const handleTab = (e) => {
         if (e.key !== 'Tab' || !dialogRef.current) return;
-
-        const focusable = dialogRef.current.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const focusable = dialogRef.current.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
         if (!focusable.length) return;
-
         const firstElement = focusable[0];
         const lastElement = focusable[focusable.length - 1];
 
@@ -114,92 +113,143 @@ const IssueIndex = () => {
     }
   };
 
-  const activeItem = navItems.find(i => i.id === activeChapter) || navItems[0];
+  const activeItem = chapters.find((c) => c.id === activeChapter) || chapters[0];
 
   return (
     <>
-      {/* Top Nav Bar */}
-      <nav className={`fixed top-0 left-0 w-full z-40 transition-transform duration-ui ${isVisible || isOpen ? 'translate-y-0' : '-translate-y-full'} bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] font-label uppercase text-sm border-b-4 border-ink-black`} style={{ boxShadow: '0 4px 0 var(--color-paper-border)' }}>
-        <div className="flex justify-between items-center px-4 md:px-8 py-3 max-w-[1920px] mx-auto">
-          <div className="flex items-center space-x-6">
-            <span className="font-bold tracking-widest text-[var(--color-text-on-dark)]">RB / EARTH-28</span>
-            <span className="hidden md:block text-[var(--color-comic-yellow)] tracking-widest">{activeItem.subtitle}</span>
+      {/* Top Manga Navigation Folio Bar */}
+      <nav
+        className={`manga-top-navbar ${isVisible || isOpen ? 'is-visible' : 'is-hidden'}`}
+        aria-label="Tankōbon Manga Navigation Bar"
+      >
+        <div className="manga-nav-inner">
+          {/* Left: Identity & Active Chapter Badge */}
+          <div className="manga-nav-left">
+            <button
+              type="button"
+              className="manga-logo-btn"
+              onClick={() => scrollTo('hero')}
+              aria-label="Return to Cover"
+            >
+              <span className="logo-kanji">巻一</span>
+              <span className="logo-text">BALAM RENEESH</span>
+            </button>
+            <span className="manga-nav-sep" aria-hidden="true">/</span>
+            <div className="manga-current-indicator">
+              <span className="indicator-vol">第{activeItem.kanji}話</span>
+              <span className="indicator-title">{activeItem.title}</span>
+            </div>
           </div>
 
-          <div className="flex items-center space-x-4 md:space-x-8">
-            <a href="/resume.pdf" target="_blank" rel="noreferrer" className="hover:text-[var(--color-portal-cyan)] transition-colors comic-focus hidden md:block font-bold">
-              [RESUME]
-            </a>
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="hover:text-[var(--color-dimension-magenta)] transition-colors comic-focus outline-none font-bold tracking-widest cursor-pointer"
-              aria-label="Toggle Issue Index"
+          {/* Right: Actions */}
+          <div className="manga-nav-right">
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="manga-nav-link resume-link"
+              aria-label="Open Resume Document"
             >
-              [ISSUE INDEX]
+              <span className="link-kanji">履歴</span>
+              <span className="link-text">[ RESUME ↗ ]</span>
+            </a>
+
+            <button
+              type="button"
+              onClick={() => setIsOpen(!isOpen)}
+              className="manga-nav-btn toc-btn"
+              aria-label="Open Table of Contents (目次)"
+            >
+              <span className="btn-kanji">目次</span>
+              <span className="btn-text">[ CONTENTS ☰ ]</span>
             </button>
           </div>
         </div>
 
-        {/* Ink-stroke progress line */}
-        <div className="h-1 bg-[var(--color-noir-black)] w-full relative overflow-hidden">
-          <div className="absolute top-0 left-0 h-full bg-[var(--color-portal-cyan)] transition-all duration-150" style={{ width: `${progress}%` }} />
+        {/* Ink Progress Rule */}
+        <div className="manga-nav-progress-track" aria-hidden="true">
+          <div
+            className="manga-nav-progress-fill"
+            style={{ width: `${progress}%` }}
+          />
         </div>
       </nav>
 
-      {/* Full-screen Issue Index Modal */}
+      {/* Full-Screen Japanese Table of Contents (目次) Spread Modal */}
       {isOpen && (
-        <div ref={dialogRef} className="fixed inset-0 z-50 bg-[var(--color-paper)] text-[var(--color-ink-black)] flex flex-col p-4 md:p-8 overflow-y-auto" role="dialog" aria-modal="true" aria-label="Issue Index">
-          <PaperTexture theme="light" />
+        <div
+          ref={dialogRef}
+          className="manga-toc-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Manga Table of Contents"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            className="manga-toc-modal-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top Folio Header */}
+            <div className="manga-toc-folio-bar">
+              <div className="toc-folio-left">
+                <span className="toc-kanji-badge">目次</span>
+                <span className="toc-folio-text">
+                  TANKŌBON VOL. 01 // TABLE OF CONTENTS · 全八話
+                </span>
+              </div>
+              <button
+                type="button"
+                className="toc-close-btn"
+                onClick={() => setIsOpen(false)}
+                aria-label="Close Table of Contents"
+              >
+                CLOSE [ ✕ ]
+              </button>
+            </div>
 
-          <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center mb-8 md:mb-12 border-b-4 border-[var(--color-ink-black)] pb-4 gap-4">
-            <StampReveal sfx={null} color="var(--color-dimension-magenta)" rotation={-5} once={false} delay={0.05}>
-              <h2 className="font-display text-4xl md:text-5xl tracking-widest text-shadow-magenta">ISSUE INDEX</h2>
-            </StampReveal>
-            <div className="flex items-center space-x-4 flex-wrap gap-y-2">
-              <a href="/resume.pdf" target="_blank" rel="noreferrer" className="font-label uppercase hover:text-[var(--color-dimension-magenta)] font-bold">Resume</a>
-              <a href="https://github.com/Reneesh28" target="_blank" rel="noreferrer" className="font-label uppercase hover:text-[var(--color-dimension-magenta)] font-bold">GitHub</a>
-              <button onClick={() => setIsOpen(false)} className="font-display text-2xl hover:text-[var(--color-error-red)] comic-focus p-2 cursor-pointer border-2 border-transparent">CLOSE [X]</button>
+            {/* Chapters Grid Viewport */}
+            <div className="manga-toc-grid-viewport">
+              <div className="manga-toc-intro-header">
+                <h2 className="toc-main-headline">TABLE OF CONTENTS</h2>
+                <p className="toc-sub-headline">
+                  SELECT A CHAPTER VOLUME TO JUMP ACROSS THE STORY SPREAD
+                </p>
+              </div>
+
+              <div className="manga-toc-chapters-grid">
+                {chapters.map((chap) => {
+                  const isActive = activeChapter === chap.id;
+                  return (
+                    <button
+                      key={chap.id}
+                      type="button"
+                      onClick={() => scrollTo(chap.id)}
+                      className={`manga-toc-card ${isActive ? 'is-active' : ''}`}
+                    >
+                      <div className="toc-card-top">
+                        <div className="toc-card-num-group">
+                          <span className="toc-kanji-num">{chap.kanji}</span>
+                          <span className="toc-num-tag">CHAPTER {chap.number}</span>
+                        </div>
+                        <span className="toc-page-tag">{chap.page}</span>
+                      </div>
+
+                      <div className="toc-card-body">
+                        <h3 className="toc-chapter-title">{chap.title}</h3>
+                        <p className="toc-chapter-subtitle">{chap.subtitle}</p>
+                      </div>
+
+                      <div className="toc-card-bottom">
+                        <span className="toc-jump-prompt">READ SPREAD ➔</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-
-          <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto w-full pb-12">
-            {navItems.map((item, index) => (
-              <button
-                key={item.id}
-                onClick={() => scrollTo(item.id)}
-                className={`comic-focus group relative overflow-hidden flex flex-col items-start p-6 text-left transition-transform active:scale-95 min-h-[160px] border-4 border-[var(--color-ink-black)] cursor-pointer ${activeChapter === item.id ? 'bg-[var(--color-comic-yellow)] text-[var(--color-ink-black)]' : 'bg-[var(--color-paper-light)] text-[var(--color-ink-black)] hover:bg-[var(--color-portal-cyan)]'}`}
-                style={{
-                  clipPath: index % 2 === 0
-                    ? 'polygon(0 0, 100% 3%, 97% 100%, 3% 97%)'
-                    : 'polygon(3% 0, 97% 3%, 100% 100%, 0 97%)',
-                  animation: `fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.05}s forwards`,
-                  opacity: 0,
-                  transform: 'translateY(20px)'
-                }}
-              >
-                <div className="absolute inset-0 bg-halftone-light opacity-30 pointer-events-none mix-blend-multiply"></div>
-                <div className="relative z-10">
-                  <span className="font-display text-3xl md:text-4xl mb-1 block opacity-80">#{String(index + 1).padStart(2, '0')}</span>
-                  <span className="font-label uppercase font-bold text-xl leading-tight block mb-2">{item.subtitle}</span>
-                  <span className="font-body text-sm font-semibold opacity-70">{item.title}</span>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <style dangerouslySetInnerHTML={{
-            __html: `
-            @keyframes fadeInUp {
-              to { opacity: 1; transform: translateY(0); }
-            }
-            .text-shadow-magenta {
-              text-shadow: 2px 2px 0 var(--color-dimension-magenta);
-            }
-          `}} />
         </div>
       )}
     </>
   );
-};
-
-export default IssueIndex;
+}

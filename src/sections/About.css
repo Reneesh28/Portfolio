@@ -1,0 +1,1750 @@
+/* =========================================================
+   CHAPTER 02 — CHARACTER PROFILE (ABOUT SECTION)
+   - 70% Seinen × 30% Slice of Life
+   - Tankobon Double-Page Spread Editorial Aesthetic
+   - Pure Monochrome Sumi-e Ink & Washi Paper (#F4EFE6 / #111116)
+   - Identity Map, Core Traits Panels, and Akogare Engine
+   ========================================================= */
+
+.about-section-root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0A0A0E;
+  color: #111116;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(2rem, 5vw, 4.5rem) clamp(1rem, 3vw, 2.5rem);
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+/* Background Atmosphere Texture */
+.about-ambient-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  z-index: 1;
+  background-image: radial-gradient(#FFFFFF 15%, transparent 16%);
+  background-size: 8px 8px;
+}
+
+/* =========================================================
+   MANGA DOUBLE-PAGE SPREAD WRAPPER
+   ========================================================= */
+.about-manga-spread-container {
+  position: relative;
+  width: 100%;
+  max-width: 1560px;
+  background: #F4EFE6;
+  border: 4px solid #111116;
+  box-shadow: 12px 12px 0 #111116, 0 24px 48px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* =========================================================
+   TOP EDITORIAL FOLIO BAR
+   ========================================================= */
+.about-top-folio {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.25rem;
+  background: #111116;
+  color: #F4EFE6;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  border-bottom: 2px solid #111116;
+  user-select: none;
+}
+
+.about-folio-left,
+.about-folio-right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.about-folio-tag,
+.about-folio-badge {
+  background: #F4EFE6;
+  color: #111116;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.65rem;
+}
+
+.about-folio-sep {
+  color: #888894;
+}
+
+.about-folio-center {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: #888894;
+}
+
+/* =========================================================
+   CHAPTER 02 HEADLINE
+   ========================================================= */
+.about-chapter-headline {
+  padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1.25rem, 3.5vw, 2.5rem) 1rem;
+  border-bottom: 2px solid #111116;
+  background: #EDE6D6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.about-chapter-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid #111116;
+}
+
+.badge-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.badge-en {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+}
+
+.about-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.about-main-title {
+  margin: 0;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  color: #111116;
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+.about-japanese-accent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: 0.85rem;
+  color: #555560;
+  letter-spacing: 0.15em;
+}
+
+.kanji-accent {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.1rem;
+  color: #111116;
+}
+
+/* =========================================================
+   MAIN SPREAD GRID (Left: Portrait | Right: Story & File)
+   ========================================================= */
+.about-main-spread-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: clamp(1.25rem, 3.5vw, 2.5rem);
+  border-bottom: 3px solid #111116;
+}
+
+@media (min-width: 1024px) {
+  .about-main-spread-grid {
+    grid-template-columns: 5.5fr 6.5fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+}
+
+/* Left Page: Portrait Card */
+.about-page-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-portrait-card {
+  background: #111116;
+  padding: 4px;
+  border: 2px solid #111116;
+  box-shadow: 8px 8px 0 #111116, 0 16px 32px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+.about-portrait-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 12px 12px 0 #111116, 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.about-portrait-card:focus-visible {
+  outline: 3px solid #111116;
+  outline-offset: 4px;
+}
+
+.portrait-frame-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111116;
+  color: #F4EFE6;
+  padding: 0.35rem 0.65rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+.portrait-frame-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.portrait-kanji-stamp {
+  background: #FFFFFF;
+  color: #111116;
+  padding: 0.05rem 0.3rem;
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.about-art-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3.4;
+  background: #111116;
+  overflow: hidden;
+  border-top: 2px solid #FFFFFF;
+  border-bottom: 2px solid #FFFFFF;
+}
+
+.about-portrait-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  filter: grayscale(100%) contrast(135%);
+  transition: transform 0.4s ease, filter 0.3s ease;
+}
+
+.about-portrait-card:hover .about-portrait-image {
+  transform: scale(1.02);
+  filter: grayscale(100%) contrast(145%);
+}
+
+.about-screentone-layer {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#111116 18%, transparent 19%);
+  background-size: 5px 5px;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.about-vignette-layer {
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.75);
+  pointer-events: none;
+}
+
+.portrait-seal-stamp {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: #111116;
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  padding: 0.3rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.6);
+}
+
+.seal-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.seal-sub {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  margin-top: 2px;
+}
+
+.portrait-inspect-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(17, 17, 22, 0.85);
+  color: #F4EFE6;
+  padding: 0.25rem 0.55rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  border: 1px solid #FFFFFF;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.about-portrait-card:hover .portrait-inspect-hint {
+  background: #FFFFFF;
+  color: #111116;
+}
+
+.portrait-frame-bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F4EFE6;
+  color: #111116;
+  padding: 0.35rem 0.65rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+/* Right Page: Identity & Character File */
+.about-page-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.about-identity-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.about-protagonist-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #111116;
+  color: #F4EFE6;
+  padding: 0.2rem 0.6rem;
+  align-self: flex-start;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+}
+
+.pill-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.85rem;
+  background: #FFFFFF;
+  color: #111116;
+  padding: 0.05rem 0.3rem;
+}
+
+.about-name-title {
+  margin: 0.25rem 0 0;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  letter-spacing: 0.04em;
+  color: #111116;
+  line-height: 0.95;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.about-role-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #E8E2D5;
+  border-left: 4px solid #111116;
+  padding: 0.4rem 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.role-strip-bullet {
+  font-size: 0.7rem;
+  color: #111116;
+}
+
+.role-strip-text {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(0.75rem, 1.3vw, 0.95rem);
+  letter-spacing: 0.12em;
+  color: #111116;
+}
+
+.about-story-editorial {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.about-bio-paragraph {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.65;
+  color: #33333E;
+}
+
+/* Character File Box */
+.about-character-file-block {
+  background: #FFFFFF;
+  border: 3px solid #111116;
+  box-shadow: 6px 6px 0 #111116;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.char-file-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #111116;
+  padding-bottom: 0.4rem;
+}
+
+.char-file-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.95rem;
+  font-weight: 900;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.1rem 0.4rem;
+}
+
+.char-file-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: #111116;
+}
+
+.char-file-serial {
+  font-family: monospace;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #888894;
+}
+
+.char-file-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .char-file-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.char-file-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: #F4EFE6;
+  border: 1.5px solid #111116;
+  padding: 0.5rem 0.75rem;
+}
+
+.file-col-2 {
+  grid-column: 1 / -1;
+}
+
+.file-label {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: #888894;
+}
+
+.file-value {
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #111116;
+}
+
+.file-domain-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+}
+
+.domain-pill {
+  background: #111116;
+  color: #F4EFE6;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+}
+
+.char-file-highlight {
+  background: #EDE6D6;
+  border-left: 4px solid #111116;
+}
+
+.arc-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.arc-jp-badge {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.1rem 0.35rem;
+}
+
+.arc-content-text {
+  margin: 0.2rem 0 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #111116;
+  line-height: 1.45;
+}
+
+.status-active {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #111116;
+  display: inline-block;
+  animation: pulseDot 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.7); }
+}
+
+/* =========================================================
+   IDENTITY MAP SECTION
+   ========================================================= */
+.about-identity-map-section {
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3.5vw, 2.5rem);
+  border-bottom: 3px solid #111116;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.identity-map-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.identity-map-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  color: #888894;
+}
+
+.map-kicker-kanji {
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.1rem 0.35rem;
+}
+
+.identity-map-title {
+  margin: 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  letter-spacing: 0.08em;
+  color: #111116;
+}
+
+.identity-map-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #555560;
+  max-width: 680px;
+  line-height: 1.5;
+}
+
+.identity-map-canvas {
+  position: relative;
+  width: 100%;
+  min-height: 380px;
+  background: #FFFFFF;
+  border: 3px solid #111116;
+  box-shadow: 8px 8px 0 #111116;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  overflow: hidden;
+}
+
+.identity-map-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#111116 12%, transparent 13%);
+  background-size: 12px 12px;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.identity-map-connecting-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.identity-map-core-hub {
+  position: relative;
+  z-index: 5;
+  background: #111116;
+  color: #F4EFE6;
+  padding: 1.25rem 1.75rem;
+  border: 3px solid #FFFFFF;
+  outline: 3px solid #111116;
+  box-shadow: 6px 6px 0 #555560;
+  text-align: center;
+}
+
+.core-hub-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.core-hub-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.2rem;
+  color: #FFFFFF;
+}
+
+.core-hub-name {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+}
+
+.core-hub-role {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: #888894;
+}
+
+.identity-stamps-constellation {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 1fr;
+  padding: 1.5rem;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.map-stamp-node {
+  pointer-events: auto;
+  background: #F4EFE6;
+  border: 2px solid #111116;
+  box-shadow: 4px 4px 0 #111116;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  max-width: 220px;
+}
+
+.map-stamp-node:hover {
+  transform: scale(1.06) rotate(0deg) !important;
+  box-shadow: 6px 6px 0 #111116;
+  background: #FFFFFF;
+}
+
+.map-stamp-node.is-selected {
+  background: #111116;
+  color: #F4EFE6;
+  border-color: #111116;
+  box-shadow: 5px 5px 0 #888894;
+  transform: scale(1.08) rotate(0deg) !important;
+}
+
+.map-stamp-node.is-special {
+  border-width: 2.5px;
+}
+
+.stamp-node-border {
+  width: 100%;
+}
+
+.stamp-node-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.2rem;
+}
+
+.stamp-node-num {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  color: #888894;
+}
+
+.map-stamp-node.is-selected .stamp-node-num {
+  color: #F4EFE6;
+}
+
+.stamp-node-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.8rem;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.05rem 0.3rem;
+}
+
+.map-stamp-node.is-selected .stamp-node-kanji {
+  background: #FFFFFF;
+  color: #111116;
+}
+
+.stamp-node-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: #111116;
+}
+
+.map-stamp-node.is-selected .stamp-node-title {
+  color: #FFFFFF;
+}
+
+.stamp-node-sub {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #555560;
+  margin-top: 2px;
+}
+
+.map-stamp-node.is-selected .stamp-node-sub {
+  color: #888894;
+}
+
+/* Dossier Card Below Map */
+.stamp-dossier-card {
+  background: #FFFFFF;
+  border: 3px solid #111116;
+  box-shadow: 6px 6px 0 #111116;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: dossierFade 0.25s ease-out;
+}
+
+@keyframes dossierFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dossier-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #111116;
+  padding-bottom: 0.4rem;
+}
+
+.dossier-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dossier-num {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.1rem 0.4rem;
+}
+
+.dossier-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1rem;
+}
+
+.dossier-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  color: #111116;
+}
+
+.dossier-close-btn {
+  background: #F4EFE6;
+  border: 1.5px solid #111116;
+  padding: 0.2rem 0.55rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dossier-close-btn:hover {
+  background: #111116;
+  color: #FFFFFF;
+}
+
+.dossier-description {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #33333E;
+  font-weight: 500;
+}
+
+.dossier-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.dossier-tag-pill {
+  background: #EDE6D6;
+  border: 1px solid #111116;
+  padding: 0.2rem 0.5rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: #111116;
+}
+
+/* =========================================================
+   FOUR CORE TRAITS PANELS (BUILD, CREATE, LEAD, EXPLORE)
+   ========================================================= */
+.about-traits-section {
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 3.5vw, 2.5rem);
+  border-bottom: 3px solid #111116;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.traits-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.traits-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  color: #888894;
+}
+
+.traits-kicker-kanji {
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.1rem 0.35rem;
+}
+
+.traits-section-title {
+  margin: 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  letter-spacing: 0.08em;
+  color: #111116;
+}
+
+.traits-section-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #555560;
+  max-width: 680px;
+  line-height: 1.5;
+}
+
+.traits-panels-composition-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .traits-panels-composition-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+.trait-manga-panel {
+  background: #111116;
+  padding: 4px;
+  border: 2px solid #111116;
+  box-shadow: 6px 6px 0 #111116;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+.trait-manga-panel:hover {
+  transform: translate(-3px, -3px) scale(1.02) !important;
+  box-shadow: 10px 10px 0 #111116;
+}
+
+.trait-manga-panel:focus-visible {
+  outline: 3px solid #111116;
+  outline-offset: 4px;
+}
+
+.trait-panel-inner {
+  background: #F4EFE6;
+  display: flex;
+  flex-direction: column;
+}
+
+.trait-panel-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111116;
+  color: #F4EFE6;
+  padding: 0.35rem 0.65rem;
+  border-bottom: 2px solid #FFFFFF;
+}
+
+.trait-num-kanji {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.trait-idx {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+.trait-kanji-badge {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.8rem;
+  background: #FFFFFF;
+  color: #111116;
+  padding: 0.05rem 0.35rem;
+  font-weight: 900;
+}
+
+.trait-tag-label {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #888894;
+  letter-spacing: 0.05em;
+}
+
+.trait-art-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #111116;
+  overflow: hidden;
+}
+
+.trait-panel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(135%);
+  transition: transform 0.35s ease, filter 0.3s ease;
+}
+
+.trait-manga-panel:hover .trait-panel-img {
+  transform: scale(1.03);
+  filter: grayscale(100%) contrast(145%);
+}
+
+.trait-screentone-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#111116 16%, transparent 17%);
+  background-size: 5px 5px;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.trait-manga-sfx {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: 'Reggae One', 'Dela Gothic One', sans-serif;
+  font-size: 1.25rem;
+  color: #FFFFFF;
+  text-shadow: 2px 2px 0 #111116;
+  background: rgba(17, 17, 22, 0.8);
+  padding: 0.15rem 0.45rem;
+  border: 1px solid #FFFFFF;
+  letter-spacing: 0.1em;
+}
+
+.trait-panel-content {
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.trait-title-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.trait-title-main {
+  margin: 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.08em;
+  color: #111116;
+}
+
+.trait-sub-headline {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: #888894;
+}
+
+.trait-description-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #33333E;
+  font-weight: 500;
+}
+
+.trait-panel-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  background: #E8E2D5;
+  border-top: 1.5px solid #111116;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: #555560;
+}
+
+.trait-inspect-prompt {
+  color: #111116;
+}
+
+/* =========================================================
+   AKOGARE SECTION (PHILOSOPHICAL ENGINE / NEGATIVE SPACE)
+   ========================================================= */
+.about-akogare-section {
+  padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 3.5vw, 2.5rem);
+  background: #F4EFE6;
+  border-bottom: 3px solid #111116;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.akogare-negative-space-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.akogare-screentone-subtle {
+  position: absolute;
+  inset: -20px;
+  background-image: radial-gradient(#111116 8%, transparent 9%);
+  background-size: 10px 10px;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.akogare-indicator-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: #888894;
+  margin-bottom: 1.5rem;
+}
+
+.indicator-kanji {
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.15rem 0.45rem;
+}
+
+.indicator-line {
+  width: 30px;
+  height: 2px;
+  background: #111116;
+}
+
+.akogare-center-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 1.5rem;
+  border: 3px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.akogare-center-stage:hover {
+  border-color: #111116;
+  background: #FFFFFF;
+  box-shadow: 8px 8px 0 #111116;
+}
+
+.akogare-center-stage:focus-visible {
+  outline: 3px solid #111116;
+}
+
+.akogare-giant-kanji-wrap {
+  margin: 0;
+}
+
+.akogare-giant-glyph {
+  margin: 0;
+  font-family: 'Yuji Boku', 'Yuji Syuku', serif;
+  font-size: clamp(5.5rem, 14vw, 9rem);
+  font-weight: 900;
+  color: #111116;
+  line-height: 0.9;
+  letter-spacing: 0.05em;
+  text-shadow: 4px 4px 0 #888894;
+  transition: transform 0.3s ease;
+}
+
+.akogare-center-stage:hover .akogare-giant-glyph {
+  transform: scale(1.03);
+}
+
+.akogare-romaji-headline {
+  margin-top: 0.75rem;
+}
+
+.romaji-text {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  letter-spacing: 0.35em;
+  color: #111116;
+}
+
+.akogare-subtitle-badge {
+  margin-top: 0.5rem;
+  background: #111116;
+  color: #FFFFFF;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  padding: 0.3rem 0.85rem;
+}
+
+.akogare-interactive-hint {
+  margin-top: 1.25rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: #888894;
+}
+
+/* Statement Reveal */
+.akogare-statement-reveal {
+  display: none;
+  width: 100%;
+  max-width: 680px;
+  margin-top: 1.75rem;
+  animation: statementSlide 0.35s ease-out;
+}
+
+.akogare-statement-reveal.is-visible {
+  display: block;
+}
+
+@keyframes statementSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.akogare-statement-card {
+  background: #FFFFFF;
+  border: 3px solid #111116;
+  box-shadow: 6px 6px 0 #111116;
+  padding: 1.5rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.statement-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #111116;
+  padding-bottom: 0.4rem;
+}
+
+.statement-badge {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: #888894;
+}
+
+.statement-quote-symbol {
+  font-family: serif;
+  font-size: 2rem;
+  line-height: 0.8;
+  color: #111116;
+}
+
+.statement-body-text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #33333E;
+  font-weight: 500;
+}
+
+.statement-footer-signature {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1.5px dashed #888894;
+  padding-top: 0.6rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: #111116;
+}
+
+.sig-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1rem;
+}
+
+/* =========================================================
+   CHAPTER 03 ARSENAL TRANSITION FOOTER
+   ========================================================= */
+.about-transition-footer {
+  background: #EDE6D6;
+  padding: 1.5rem clamp(1.25rem, 3.5vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.page-turn-gutter {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.gutter-line-left,
+.gutter-line-right {
+  flex: 1;
+  height: 2px;
+  background: #111116;
+}
+
+.gutter-center-stamp {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: #111116;
+}
+
+.gutter-kanji {
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.1rem 0.4rem;
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.8rem;
+}
+
+.chapter-next-teaser-card {
+  background: #111116;
+  color: #F4EFE6;
+  border: 3px solid #111116;
+  box-shadow: 6px 6px 0 #555560;
+  padding: 1.25rem 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.teaser-left-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.teaser-chapter-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  color: #888894;
+}
+
+.teaser-title {
+  margin: 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  color: #FFFFFF;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.teaser-sub-text {
+  margin: 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #888894;
+  letter-spacing: 0.1em;
+}
+
+.about-manga-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #F4EFE6;
+  color: #111116;
+  border: 2px solid #FFFFFF;
+  padding: 0.65rem 1.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #FFFFFF;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.about-manga-cta-btn:hover {
+  background: #FFFFFF;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #FFFFFF;
+}
+
+.about-manga-cta-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #FFFFFF;
+}
+
+.btn-jp {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.85rem;
+}
+
+/* =========================================================
+   MODAL OVERLAY DIALOGS
+   ========================================================= */
+.about-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: rgba(10, 10, 14, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 3vw, 2.5rem);
+}
+
+.about-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  max-height: 90vh;
+  background: #F4EFE6;
+  border: 4px solid #111116;
+  box-shadow: 16px 16px 0 #111116, 0 30px 60px rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.about-modal-folio-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111116;
+  color: #F4EFE6;
+  padding: 0.6rem 1.25rem;
+  border-bottom: 2px solid #111116;
+}
+
+.modal-folio-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modal-folio-kanji {
+  background: #F4EFE6;
+  color: #111116;
+  font-family: 'Yuji Boku', serif;
+  font-weight: 900;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.8rem;
+}
+
+.modal-folio-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+}
+
+.about-modal-close-btn {
+  background: #F4EFE6;
+  color: #111116;
+  border: 1.5px solid #111116;
+  padding: 0.25rem 0.65rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #888894;
+  transition: all 0.15s ease;
+}
+
+.about-modal-close-btn:hover {
+  background: #FFFFFF;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 #FFFFFF;
+}
+
+.about-modal-viewport {
+  padding: clamp(1.25rem, 3vw, 2.25rem);
+  overflow-y: auto;
+  max-height: calc(90vh - 100px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .about-modal-viewport {
+    grid-template-columns: 1fr 1.2fr;
+    align-items: center;
+  }
+}
+
+.modal-image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3.2;
+  background: #111116;
+  border: 3px solid #111116;
+  box-shadow: 6px 6px 0 #111116;
+  overflow: hidden;
+}
+
+.modal-zoom-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(140%);
+}
+
+.modal-screentone-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#111116 16%, transparent 17%);
+  background-size: 5px 5px;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.modal-content-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal-category-tag {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: #888894;
+}
+
+.modal-headline {
+  margin: 0;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  color: #111116;
+  line-height: 1.15;
+}
+
+.modal-body-text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #33333E;
+}
+
+.modal-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.modal-tag-pill {
+  background: #111116;
+  color: #FFFFFF;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.6rem;
+  padding: 0.2rem 0.45rem;
+}
+
+.modal-actions-row {
+  margin-top: 0.5rem;
+}
+
+.about-modal-dismiss-btn {
+  background: #111116;
+  color: #F4EFE6;
+  border: 2px solid #111116;
+  padding: 0.5rem 1rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #888894;
+  transition: all 0.15s ease;
+}
+
+.about-modal-dismiss-btn:hover {
+  background: #FFFFFF;
+  color: #111116;
+  transform: translate(-1px, -1px);
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN SYSTEM
+   ========================================================= */
+
+/* Tablets and Medium Screens (768px - 1023px) */
+@media (max-width: 1023px) {
+  .about-section-root {
+    padding: clamp(1rem, 3vw, 2rem) clamp(0.5rem, 2vw, 1.5rem);
+  }
+
+  .about-chapter-headline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .about-title-group {
+    align-items: flex-start;
+  }
+
+  .identity-map-canvas {
+    min-height: 480px;
+  }
+
+  .identity-stamps-constellation {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+}
+
+/* Mobile Devices (320px - 640px) */
+@media (max-width: 640px) {
+  .about-section-root {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .about-top-folio {
+    font-size: 0.62rem;
+    padding: 0.35rem 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .about-folio-center {
+    display: none;
+  }
+
+  .about-chapter-headline {
+    padding: 1rem 0.85rem;
+  }
+
+  .about-main-title {
+    font-size: 1.85rem;
+  }
+
+  .about-main-spread-grid {
+    padding: 1rem 0.85rem;
+    gap: 1.25rem;
+  }
+
+  .about-name-title {
+    font-size: 2rem;
+  }
+
+  .about-bio-paragraph {
+    font-size: 0.88rem;
+  }
+
+  /* Identity Map Mobile Stacking */
+  .identity-map-canvas {
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem 0.85rem;
+  }
+
+  .identity-map-connecting-lines {
+    display: none;
+  }
+
+  .identity-stamps-constellation {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0;
+    width: 100%;
+  }
+
+  .map-stamp-node {
+    max-width: 100%;
+    transform: none !important;
+  }
+
+  /* Traits Panels Mobile */
+  .traits-panels-composition-grid {
+    gap: 1rem;
+  }
+
+  .trait-manga-panel {
+    transform: none !important;
+  }
+
+  /* Akogare Mobile */
+  .akogare-giant-glyph {
+    font-size: 4.8rem;
+  }
+
+  .romaji-text {
+    font-size: 1.1rem;
+    letter-spacing: 0.2em;
+  }
+
+  .akogare-subtitle-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* Next Chapter Card Mobile */
+  .chapter-next-teaser-card {
+    padding: 1rem;
+  }
+
+  .teaser-title {
+    font-size: 1.75rem;
+  }
+
+  .about-manga-cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Reduced Motion Mode */
+@media (prefers-reduced-motion: reduce) {
+  .about-manga-spread-container,
+  .about-portrait-card,
+  .map-stamp-node,
+  .trait-manga-panel,
+  .about-portrait-image,
+  .trait-panel-img,
+  .about-manga-cta-btn {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}

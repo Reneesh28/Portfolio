@@ -1,260 +1,439 @@
-import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import LottieLib from 'lottie-react';
-import { Volume2, VolumeX } from 'lucide-react';
-import KineticTitle from '../components/comic/KineticTitle';
-import codewalker from '../assets/images/codewalker.webp';
-import particleExplosion from '../assets/particle.explosion.lottie.json';
+import MangaBook3D from '../components/intro/MangaBook3D';
+import MangaPanels from '../components/intro/MangaPanels';
+import MangaOverlay from '../components/intro/MangaOverlay';
+import { introAudio } from '../components/intro/IntroAudio';
 import './Intro.css';
-import './IntroLottie.css';
 
-// Extract the Lottie component regardless of how Vite/Rollup resolves the CJS/ESM interop
-const Lottie = typeof LottieLib === 'function' ? LottieLib : (LottieLib?.default?.default || LottieLib?.default || LottieLib);
-
-const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
-const DimensionCharacterGlitch = lazy(() => import('../components/three/DimensionCharacterGlitch'));
-
-const codeFragments = ['<idea />', 'npm run build', 'const future = now()', '{ systems: alive }', '01 10 11 01'];
-
-const Intro = ({ onFinish }) => {
+export default function Intro({ onFinish }) {
   const rootRef = useRef(null);
+  const panelsRef = useRef(null);
   const timelineRef = useRef(null);
-  const audioRef = useRef(null);
-  const explosionRef = useRef(null);
-  const [soundEnabled, setSoundEnabled] = useState(false);
-  const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  // The rift/glitch layers are full WebGL canvases with postprocessing — expensive.
-  // They're only visually relevant for the ~2s collision beat, so we don't mount
-  // them until the timeline actually reaches that scene (see the tl.call below).
-  // We DO warm the lazy chunk immediately so there's no download hitch later.
-  const [showCollisionFX, setShowCollisionFX] = useState(false);
 
-  useEffect(() => {
-    if (reducedMotion) return;
-    import('../components/three/DimensionRift');
-    import('../components/three/DimensionCharacterGlitch');
-  }, [reducedMotion]);
+  const [isMuted, setIsMuted] = useState(false);
+  const [timelineProgress, setTimelineProgress] = useState(0);
 
-  useEffect(() => {
-    if (!soundEnabled) return undefined;
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return undefined;
-    const ctx = audioRef.current || new AudioContext();
-    audioRef.current = ctx;
-    ctx.resume();
-    const oscillator = ctx.createOscillator();
-    const pulse = ctx.createOscillator();
-    const gain = ctx.createGain();
-    oscillator.type = 'sawtooth';
-    pulse.type = 'sine';
-    oscillator.frequency.value = 48;
-    pulse.frequency.value = 96;
-    gain.gain.value = 0.018;
-    oscillator.connect(gain);
-    pulse.connect(gain);
-    gain.connect(ctx.destination);
-    oscillator.start();
-    pulse.start();
-    return () => {
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
-      oscillator.stop(ctx.currentTime + 0.1);
-      pulse.stop(ctx.currentTime + 0.1);
-    };
-  }, [soundEnabled]);
+  // 3D Book State driven by GSAP
+  const [bookState, setBookState] = useState({
+    openProgress: 0,
+    bookRotation: [0.25, -0.35, 0.05],
+    scale: 1,
+    opacity: 0,
+  });
 
-  const finish = useCallback(() => {
-    timelineRef.current?.kill();
-    gsap.to(rootRef.current, {
-      opacity: 0,
-      scale: 1.04,
-      duration: reducedMotion ? 0.25 : 0.65,
-      ease: 'power3.inOut',
-      onComplete: onFinish,
-    });
+  const reducedMotion = typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Clean finish handler
+  const handleFinish = useCallback(() => {
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+    introAudio.fadeAndStop(500);
+
+    if (rootRef.current) {
+      gsap.to(rootRef.current, {
+        opacity: 0,
+        scale: 1.05,
+        duration: reducedMotion ? 0.3 : 0.6,
+        ease: 'power3.inOut',
+        onComplete: () => {
+          introAudio.cleanup();
+          onFinish?.();
+        },
+      });
+    } else {
+      introAudio.cleanup();
+      onFinish?.();
+    }
   }, [onFinish, reducedMotion]);
 
+  // Toggle audio mute
+  const toggleMute = useCallback(() => {
+    const muted = introAudio.toggleMute();
+    setIsMuted(muted);
+  }, []);
+
+  // Keyboard accessibility: ESC to skip
   useEffect(() => {
-    const onKeyDown = (event) => event.key === 'Escape' && finish();
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [finish]);
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleFinish();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleFinish]);
 
+  // Autoplay audio with interaction fallback for browser restrictions
   useEffect(() => {
-    if (reducedMotion) {
-      const reduced = gsap.timeline({ onComplete: finish });
-      reduced.set('.intro-title-scene', { opacity: 1 }).to({}, { duration: 1.4 });
-      timelineRef.current = reduced;
-      return () => reduced.kill();
-    }
+    introAudio.play();
 
-    const q = gsap.utils.selector(rootRef);
-    const tl = gsap.timeline({ defaults: { ease: 'power3.inOut', force3D: true }, onComplete: finish });
-
-    // Reusable camera-shake — keeps every impact beat consistent and lets us
-    // dial amplitude/repeats down in one place for a calmer, smoother feel.
-    const shake = (position, { x = 8, y = 0, duration = 0.035, repeat = 4 } = {}) => {
-      tl.to(rootRef.current, { x: `random(-${x},${x})`, y: y ? `random(-${y},${y})` : 0, duration, repeat, yoyo: true }, position)
-        .set(rootRef.current, { x: 0, y: 0 });
+    const handleFirstInteraction = () => {
+      introAudio.play();
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
     };
 
-    gsap.set(q('.dimension-scene, .intro-title-scene, .intro-codewalker, .collision-field'), { opacity: 0 });
-    gsap.set(q('.portal-shell'), { scale: 0, rotation: -35 });
+    window.addEventListener('click', handleFirstInteraction);
+    window.addEventListener('keydown', handleFirstInteraction);
+    window.addEventListener('touchstart', handleFirstInteraction);
 
-    // Cold open: the transmission struggles to lock onto Earth-28.
-    tl.to(q('.boot-line'), { opacity: 1, x: 0, duration: 0.18, stagger: 0.12, ease: 'steps(2)' })
-      .to(q('.intro-scanline'), { yPercent: 115, duration: 0.75, ease: 'none' }, '<');
-    shake('-=0.2', { x: 6, repeat: 3 });
-    tl.to(q('.boot-screen'), { opacity: 0, duration: 0.18 });
+    return () => {
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
+    };
+  }, []);
 
-    // Earth 01: hand-drawn student dimension.
-    tl.set(q('.student-scene'), { opacity: 1 })
-      .to(q('.student-scene .portal-shell'), { scale: 1, rotation: 0, duration: 0.58, ease: 'back.out(1.45)' })
-      .fromTo(q('.sketch-line'), { scaleX: 0 }, { scaleX: 1, duration: 0.34, stagger: 0.045, ease: 'steps(4)' }, '-=0.35')
-      .fromTo(q('.dimension-word.student'), { xPercent: -130, rotation: -12 }, { xPercent: 0, rotation: -4, duration: 0.4, ease: 'back.out(1.8)' }, '-=0.2')
-      .fromTo(q('.student-note'), { y: 70, opacity: 0 }, { y: 0, opacity: 1, stagger: 0.05, duration: 0.25 }, '<')
-      .to(q('.student-scene .portal-shell'), { scale: 7, rotation: 18, duration: 0.58, ease: 'power4.in' }, '+=0.22')
-      .to(q('.student-scene'), { opacity: 0, duration: 0.2 }, '-=0.15');
+  // Master GSAP Animation Timeline
+  useEffect(() => {
+    if (!rootRef.current) return;
 
-    // Earth 02: code blocks assemble into the builder identity.
-    tl.fromTo(q('.builder-scene'), { opacity: 0, scale: 1.35 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power3.out' }, '-=0.15')
-      .fromTo(q('.code-fragment'), { z: -500, opacity: 0, rotateX: 70 }, { z: 0, opacity: 1, rotateX: 0, stagger: 0.065, duration: 0.42, ease: 'back.out(1.4)' })
-      .fromTo(q('.dimension-word.builder'), { scale: 2.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.32, ease: 'steps(4)' }, '-=0.25')
-      .to(q('.builder-grid'), { x: 80, y: 80, duration: 0.55, ease: 'none' }, '<')
-      .to(q('.builder-scene'), { clipPath: 'circle(0% at 82% 22%)', rotate: 7, duration: 0.58, ease: 'power4.in' }, '+=0.24')
-      .to(q('.builder-scene'), { opacity: 0, duration: 0.16 }, '-=0.1');
+    const ctx = gsap.context(() => {
+      // Reduced motion timeline
+      if (reducedMotion) {
+        const tl = gsap.timeline({
+          paused: false,
+          onComplete: handleFinish,
+        });
 
-    // Earth 03: technical geometry and circuitry surge toward camera.
-    tl.set(q('.engineer-scene'), { opacity: 1, clipPath: 'circle(0% at 82% 22%)' })
-      .to(q('.engineer-scene'), { clipPath: 'circle(145% at 82% 22%)', duration: 0.58, ease: 'power4.out' }, '-=0.5')
-      .fromTo(q('.engineer-ring'), { scale: 0, rotate: -120 }, { scale: 1, rotate: 0, stagger: 0.08, duration: 0.55, ease: 'back.out(1.4)' }, '-=0.32')
-      .fromTo(q('.circuit-line'), { scaleX: 0 }, { scaleX: 1, stagger: 0.035, duration: 0.28, ease: 'steps(3)' }, '<')
-      .fromTo(q('.dimension-word.engineer'), { scale: 1.15, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.42, ease: 'steps(5)' }, '-=0.15')
-      .to(q('.engineer-core'), { scale: 14, rotate: 90, duration: 0.62, ease: 'power4.in' }, '+=0.22')
-      .to(q('.engineer-scene'), { opacity: 0, duration: 0.22 }, '-=0.2');
+        tl.set('.manga-phase-climax', { opacity: 1, display: 'flex' })
+          .fromTo('.manga-double-page-spread', { opacity: 0 }, { opacity: 1, duration: 1.2 })
+          .to({}, { duration: 2.0 });
 
-    // The dimensions collide; portals orbit the rift before imploding.
-    tl.call(() => setShowCollisionFX(true))
-      .set(q('.collision-field'), { opacity: 1 })
-      .fromTo(q('.collision-portal'), { scale: 0, rotate: -60 }, { scale: 1, rotate: 0, stagger: 0.08, duration: 0.42, ease: 'back.out(1.7)' })
-      .to(q('.collision-orbit'), { rotate: 115, scale: 1.18, duration: 0.7, ease: 'power2.inOut' }, '<')
-      .fromTo(q('.collision-label'), { opacity: 0, y: 20 }, { opacity: 1, y: 0, stagger: 0.08, duration: 0.2, ease: 'steps(2)' }, '-=0.45');
-    shake('+=0.1', { x: 11, y: 7, repeat: 6 });
-    tl.to(q('.collision-portal'), { x: 0, y: 0, scale: 0, duration: 0.34, stagger: 0.035, ease: 'power4.in' }, '<')
-      .call(() => explosionRef.current?.goToAndPlay(0, true))
-      .fromTo(q('.particle-explosion'), { opacity: 0, scale: 0.35 }, { opacity: 1, scale: 1.45, duration: 0.34, ease: 'power4.out' }, '<')
-      .to(q('.collision-flash'), { opacity: 1, scale: 2.5, duration: 0.08, ease: 'steps(1)' })
-      .to(q('.collision-field'), { opacity: 0, duration: 0.12 });
+        timelineRef.current = tl;
+        return;
+      }
 
-    // Codewalker breaks through and freezes into the comic cover.
-    tl.set(q('.intro-title-scene'), { opacity: 1 })
-      .fromTo(q('.intro-codewalker'), { opacity: 0, yPercent: 80, scale: 0.4, rotate: -18 }, { opacity: 1, yPercent: 0, scale: 1, rotate: 0, duration: 0.62, ease: 'back.out(1.55)' })
-      .fromTo(q('.ink-shard'), { scale: 0, opacity: 1 }, { scale: 'random(1.2,2.4)', opacity: 0, stagger: 0.025, duration: 0.42 }, '<')
-      .fromTo(q('.cover-kicker'), { x: -80, opacity: 0 }, { x: 0, opacity: 1, duration: 0.24, ease: 'steps(3)' }, '-=0.18')
-      .fromTo(q('.cover-title'), { scale: 2.6, opacity: 0, rotate: -7 }, { scale: 1, opacity: 1, rotate: 0, duration: 0.3, ease: 'steps(5)' })
-      .fromTo(q('.cover-subtitle'), { y: 35, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, ease: 'back.out(1.6)' }, '-=0.08')
-      .fromTo(q('.impact-word'), { scale: 3, opacity: 0, rotate: 15 }, { scale: 1, opacity: 1, rotate: -8, duration: 0.16, ease: 'power4.in' }, '<');
-    shake('<', { x: 8, y: 5, duration: 0.04, repeat: 4 });
-    tl.to(q('.impact-word'), { opacity: 0, scale: 1.35, duration: 0.3 }, '+=0.35')
-      .to({}, { duration: 0.4 });
+      // Full Master Manga Cinematic Sequence (~15.0 seconds matching the music structure)
+      const tl = gsap.timeline({
+        paused: false,
+        defaults: { ease: 'power3.out' },
+        onUpdate: () => {
+          setTimelineProgress(tl.progress());
+        },
+        onComplete: handleFinish,
+      });
 
-    timelineRef.current = tl;
-    return () => tl.kill();
-  }, [finish, reducedMotion]);
+      // Initial States
+      gsap.set('.intro-sublayer', { opacity: 0, display: 'none' });
+      gsap.set('.manga-book-3d-wrapper', { opacity: 0 });
+      gsap.set('.identity-stamp', { opacity: 0, scale: 2.2 });
+      gsap.set('.ink-mark', { opacity: 0, scale: 0 });
 
-  const accelerate = () => {
-    const tl = timelineRef.current;
-    if (!tl) return;
-    const next = Math.min(2, tl.timeScale() + 0.25);
-    gsap.to(tl, { timeScale: next, duration: 0.3, ease: 'power2.out' });
-  };
+      // =========================================================
+      // BEAT 01 & IDENTITY (0.0s → ~3.75s): BRUSH REVEAL / 憧 / 憧れ / 一匹狼 / IPPIKI ŌKAMI
+      // =========================================================
+      tl.set('.manga-phase-1', { display: 'flex', opacity: 1 })
+        .fromTo(
+          '.prologue-header',
+          { opacity: 0, y: -20 },
+          { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+          0.1
+        )
+        .fromTo(
+          '.brush-path',
+          { strokeDasharray: 800, strokeDashoffset: 800 },
+          { strokeDashoffset: 0, duration: 1.4, ease: 'power1.inOut' },
+          0.2
+        )
+        // Primary 憧 mark emerges organically from ink in negative space
+        .fromTo(
+          '.primary-akogare-stage',
+          { opacity: 0, scale: 0.85, filter: 'blur(8px)' },
+          { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.2, ease: 'power2.out' },
+          0.8
+        )
+        .fromTo(
+          '.akogare-ink-aura',
+          { scale: 0.5, opacity: 0 },
+          { scale: 1.4, opacity: 0.25, duration: 1.2, ease: 'power2.out' },
+          0.8
+        )
+        .fromTo(
+          '.ippiki-identity-strip',
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' },
+          2.0
+        )
+        .to('.manga-phase-1', { opacity: 0, duration: 0.35, ease: 'power2.in' }, 3.35);
+
+      // =========================================================
+      // BEAT 02 (Around 3.75s → 5.0s): HANKO SEAL VISUAL IMPRESSION
+      // =========================================================
+      tl.set('.manga-phase-hanko', { display: 'flex', opacity: 1 }, 3.7)
+        .fromTo(
+          '.hanko-seal-slam-target',
+          { opacity: 0, scale: 2.6, rotation: -12 },
+          { opacity: 1, scale: 1, rotation: 0, duration: 0.32, ease: 'back.out(2.4)' },
+          3.75
+        )
+        .fromTo(
+          '.hanko-ink-spread-ring',
+          { scale: 0.5, opacity: 1 },
+          { scale: 2.0, opacity: 0, duration: 0.45, ease: 'power2.out' },
+          3.75
+        )
+        .to('.manga-phase-hanko', { opacity: 0, scale: 0.95, duration: 0.35, ease: 'power2.in' }, 4.7);
+
+      // =========================================================
+      // BEAT 03 & 04 (5.0s → 6.5s): 3D MANGA VOLUME & BOOK OPENS
+      // =========================================================
+      const bookProxy = {
+        rotX: 0.28,
+        rotY: -0.45,
+        rotZ: 0.05,
+        scale: 0.85,
+        open: 0,
+        opacity: 0,
+      };
+
+      tl.set('.manga-book-3d-wrapper', { display: 'block', opacity: 1 }, 5.0)
+        // Book appears & camera approaches (5.0s -> 5.8s)
+        .to(bookProxy, {
+          opacity: 1,
+          scale: 1,
+          rotX: 0.15,
+          rotY: -0.2,
+          duration: 0.8,
+          ease: 'power2.out',
+          onUpdate: () => {
+            setBookState({
+              openProgress: bookProxy.open,
+              bookRotation: [bookProxy.rotX, bookProxy.rotY, bookProxy.rotZ],
+              scale: bookProxy.scale,
+              opacity: bookProxy.opacity,
+            });
+          },
+        }, 5.0)
+        // BEAT 04: Book cover swings open naturally on spine (5.8s -> 6.5s)
+        .to(bookProxy, {
+          open: 1,
+          rotX: 0.0,
+          rotY: 0.0,
+          scale: 1.4,
+          duration: 0.7,
+          ease: 'power2.inOut',
+          onUpdate: () => {
+            setBookState({
+              openProgress: bookProxy.open,
+              bookRotation: [bookProxy.rotX, bookProxy.rotY, bookProxy.rotZ],
+              scale: bookProxy.scale,
+              opacity: bookProxy.opacity,
+            });
+          },
+        }, 5.8)
+        .to('.manga-book-3d-wrapper', { opacity: 0, duration: 0.25, ease: 'power2.in' }, 6.5);
+
+      // =========================================================
+      // BEAT 05 & STAMPS (6.5s → 12.5s): RAPID PAGES, 6 STAMPS, 7 INK MARKS
+      // =========================================================
+      tl.set('.manga-phase-spread', { display: 'flex', opacity: 1 }, 6.5)
+        // Panels enter
+        .fromTo(
+          '.panel-top',
+          { opacity: 0, y: -40, clipPath: 'polygon(0 0, 100% 0, 100% 0, 0 0)' },
+          { opacity: 1, y: 0, clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)', duration: 0.45, ease: 'power3.out' },
+          6.6
+        )
+        .fromTo(
+          '.sfx-gogogo',
+          { opacity: 0, scale: 0.5, rotation: -10 },
+          { opacity: 1, scale: 1, rotation: 0, duration: 0.25, ease: 'back.out(2)' },
+          6.8
+        )
+        // Stamp 01: CEO
+        .fromTo(
+          '.stamp-ceo',
+          { opacity: 0, scale: 2.2, rotation: -8 },
+          { opacity: 1, scale: 1, rotation: -3, duration: 0.28, ease: 'back.out(2.2)' },
+          7.1
+        )
+        .fromTo(
+          '.panel-mid-left',
+          { opacity: 0, x: -50 },
+          { opacity: 1, x: 0, duration: 0.4, ease: 'power3.out' },
+          7.3
+        )
+        // Stamp 02: STARTUP INTERN & Stamp 03: FREELANCER
+        .fromTo(
+          '.stamp-intern',
+          { opacity: 0, scale: 2.2, rotation: 10 },
+          { opacity: 1, scale: 1, rotation: 4, duration: 0.28, ease: 'back.out(2.2)' },
+          7.8
+        )
+        .fromTo(
+          '.stamp-freelancer',
+          { opacity: 0, scale: 2.2, rotation: -6 },
+          { opacity: 1, scale: 1, rotation: -2, duration: 0.28, ease: 'back.out(2.2)' },
+          8.4
+        )
+        .fromTo(
+          '.panel-mid-right',
+          { opacity: 0, x: 50 },
+          { opacity: 1, x: 0, duration: 0.4, ease: 'power3.out' },
+          8.5
+        )
+        .fromTo(
+          '.sfx-don',
+          { opacity: 0, scale: 2.2 },
+          { opacity: 1, scale: 1, duration: 0.2, ease: 'steps(4)' },
+          8.7
+        )
+        // Stamp 04: CO-FOUNDER & Stamp 05: INDIE GAME DEVELOPER
+        .fromTo(
+          '.stamp-cofounder',
+          { opacity: 0, scale: 2.2, rotation: 8 },
+          { opacity: 1, scale: 1, rotation: 2, duration: 0.28, ease: 'back.out(2.2)' },
+          9.1
+        )
+        .fromTo(
+          '.stamp-gamedev',
+          { opacity: 0, scale: 2.2, rotation: -10 },
+          { opacity: 1, scale: 1, rotation: -5, duration: 0.28, ease: 'back.out(2.2)' },
+          9.7
+        )
+        .fromTo(
+          '.panel-bottom',
+          { opacity: 0, y: 50 },
+          { opacity: 1, y: 0, duration: 0.4, ease: 'back.out(1.4)' },
+          10.0
+        )
+        .fromTo(
+          '.sfx-zuba',
+          { opacity: 0, x: 100 },
+          { opacity: 1, x: 0, duration: 0.25, ease: 'power4.out' },
+          10.2
+        )
+        // Stamp 06: 憧れ / Akogare
+        .fromTo(
+          '.stamp-akogare',
+          { opacity: 0, scale: 2.2, rotation: 6 },
+          { opacity: 1, scale: 1, rotation: 1, duration: 0.28, ease: 'back.out(2.2)' },
+          10.5
+        );
+
+      // SEVEN SHORT ABSTRACT VISUAL INK MARKS (Rhythmic punctuation ~7.5s - 11.25s)
+      const inkMarkTimings = [7.5, 8.125, 8.75, 9.375, 10.0, 10.625, 11.25];
+      inkMarkTimings.forEach((startTime, idx) => {
+        tl.fromTo(
+          `.mark-${idx}`,
+          { opacity: 0, scale: 0.3, rotation: idx * 45 },
+          { opacity: 1, scale: 1.2, duration: 0.12, ease: 'power4.out' },
+          startTime
+        ).to(
+          `.mark-${idx}`,
+          { opacity: 0, scale: 1.6, duration: 0.18, ease: 'power2.in' },
+          startTime + 0.12
+        );
+      });
+
+      // Panels collide & accelerate toward major impact
+      tl.to(
+        '.manga-page-frame',
+        { scale: 1.18, duration: 1.1, ease: 'power2.in' },
+        11.4
+      ).to('.manga-phase-spread', { opacity: 0, duration: 0.15 }, 12.45);
+
+      // =========================================================
+      // BEAT 06 & 07 (12.5s → 15.0s): MAJOR IMPACT / FREEZE / FINAL SPREAD / TRANSFORMATION
+      // =========================================================
+      tl.set('.manga-phase-climax', { display: 'flex', opacity: 1 }, 12.5)
+        // Major Visual Impact on downbeat at 12.5s
+        .fromTo(
+          '.climax-speed-burst',
+          { opacity: 0, scale: 0.4 },
+          { opacity: 1, scale: 1.5, duration: 0.2, ease: 'power4.out' },
+          12.5
+        )
+        // Sudden Freeze & Final Double-Page Spread Appearance
+        .fromTo(
+          '.manga-double-page-spread',
+          { opacity: 0, scale: 0.9 },
+          { opacity: 1, scale: 1, duration: 0.3, ease: 'power3.out' },
+          12.55
+        )
+        .fromTo(
+          '.spread-left, .spread-right',
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, stagger: 0.08, duration: 0.35, ease: 'power2.out' },
+          12.65
+        )
+        // BEAT 07 (13.25s → 15.0s): Final Ink/Paper Transition into the Website
+        .fromTo(
+          '.break-top, .break-bottom',
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.6, ease: 'power4.out' },
+          13.25
+        )
+        .fromTo(
+          '.break-left, .break-right',
+          { scaleY: 0 },
+          { scaleY: 1, duration: 0.6, ease: 'power4.out' },
+          13.25
+        )
+        .to(
+          '.manga-double-page-spread',
+          { scale: 1.04, duration: 1.4, ease: 'power1.inOut' },
+          13.4
+        )
+        .to({}, { duration: 0.2 }, 15.0);
+
+      timelineRef.current = tl;
+    }, rootRef);
+
+    return () => {
+      ctx.revert();
+    };
+  }, [handleFinish, reducedMotion]);
+
+  // Clean up audio and timeline on component unmount
+  useEffect(() => {
+    return () => {
+      introAudio.cleanup();
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+      }
+    };
+  }, []);
 
   return (
-    <div ref={rootRef} className="codeverse-intro" onClick={accelerate}>
-      <div className="intro-controls">
-        <button onClick={(e) => { e.stopPropagation(); setSoundEnabled((value) => !value); }} aria-label={soundEnabled ? 'Mute sound' : 'Enable sound'}>
-          {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-        </button>
-        <button onClick={(e) => { e.stopPropagation(); finish(); }} className="skip-intro">Skip <span>Esc</span></button>
-      </div>
+    <div
+      ref={rootRef}
+      className="manga-intro-root"
+      role="region"
+      aria-label="Portfolio Manga Intro Cinematic"
+    >
+      {/* 2D Manga Panels Layer */}
+      <MangaPanels panelsRef={panelsRef} />
 
-      <div className="boot-screen intro-layer">
-        <div className="intro-scanline" />
-        <p className="boot-line">MULTIVERSE_LINK::SEARCHING</p>
-        <p className="boot-line">ANOMALY_DETECTED / EARTH-28</p>
-        <p className="boot-line boot-alert">IDENTITY SIGNAL UNSTABLE</p>
-      </div>
-
-      <section className="dimension-scene student-scene intro-layer">
-        <div className="portal-shell student-portal">
-          <div className="notebook-grid" />
-          {[12, 28, 46, 64, 82].map((top) => <i key={top} className="sketch-line" style={{ top: `${top}%` }} />)}
-          <span className="student-note note-one">ideas?</span><span className="student-note note-two">learn.</span><span className="student-note note-three">iterate!</span>
-          <h2 className="dimension-word student">Student</h2>
-        </div>
-        <div className="earth-tag">EARTH-01 / ORIGIN</div>
-      </section>
-
-      <section className="dimension-scene builder-scene intro-layer">
-        <div className="builder-grid" />
-        {codeFragments.map((fragment, index) => <code key={fragment} className={`code-fragment fragment-${index}`}>{fragment}</code>)}
-        <div className="builder-cursor" />
-        <h2 className="dimension-word builder">Builder</h2>
-        <div className="earth-tag">EARTH-02 / CONSTRUCTION</div>
-      </section>
-
-      <section className="dimension-scene engineer-scene intro-layer">
-        <div className="suit-block-sash intro-engineer-sash" aria-hidden="true" />
-        <div className="engineer-core">
-          <i className="engineer-ring ring-a" /><i className="engineer-ring ring-b" /><i className="engineer-ring ring-c" />
-        </div>
-        {[18, 34, 50, 66, 82].map((top) => <i key={top} className="circuit-line" style={{ top: `${top}%` }} />)}
-        <h2 className="dimension-word engineer">Engineer</h2>
-        <div className="earth-tag">EARTH-03 / SYSTEMS</div>
-      </section>
-
-      <section className="collision-field intro-layer">
-        <div className="bleed-seam intro-collision-seam" aria-hidden="true" />
-        {showCollisionFX && (
-          <>
-            <Suspense fallback={null}><DimensionRift density={8} glitch={false} className="intro-rift" /></Suspense>
-            <Suspense fallback={null}><DimensionCharacterGlitch interval={[600, 1200]} maxVisible={2} /></Suspense>
-          </>
+      {/* 3D Manga Volume Canvas Layer (Rendered only during 3D phase for high performance) */}
+      <div
+        className="manga-book-3d-wrapper"
+        style={{
+          opacity: bookState.opacity,
+          pointerEvents: 'none',
+        }}
+      >
+        {!reducedMotion && (
+          <MangaBook3D
+            openProgress={bookState.openProgress}
+            bookRotation={bookState.bookRotation}
+            scale={bookState.scale}
+          />
         )}
-        <div className="collision-orbit">
-          <div className="collision-portal collision-a"><span className="collision-label">ORIGIN</span></div>
-          <div className="collision-portal collision-b"><span className="collision-label">BUILD</span></div>
-          <div className="collision-portal collision-c"><span className="collision-label">SYSTEM</span></div>
-        </div>
-        <Lottie
-          lottieRef={explosionRef}
-          animationData={particleExplosion}
-          autoplay={false}
-          loop={false}
-          className="particle-explosion"
-          aria-hidden="true"
-        />
-        <div className="collision-flash" />
-        <p className="collision-warning">DIMENSIONAL COLLISION IMMINENT</p>
-      </section>
+      </div>
 
-      <section className="intro-title-scene intro-layer">
-        <div className="title-rift" />
-        <div className="rangoli-corner spray-edge intro-fusion-mark" aria-hidden="true" />
-        {Array.from({ length: 10 }, (_, index) => <i key={index} className={`ink-shard shard-${index}`} />)}
-        <img src={codewalker} alt="The Codewalker" className="intro-codewalker" />
-        <div className="cover-copy">
-          <p className="cover-kicker">ISSUE #01 · EARTH-28 PRESENTS</p>
-          <h1 className="cover-title"><KineticTitle as="span">RENEESH</KineticTitle></h1>
-          <h2 className="cover-subtitle">ACROSS THE CODEVERSE</h2>
-        </div>
-        <span className="impact-word" aria-hidden="true">THWIP!</span>
-      </section>
-
-      <div className="intro-grain" />
-      <div className="intro-vignette" />
-      <p className="accelerate-hint">CLICK TO ACCELERATE</p>
+      {/* Overlay & Interactive Controls */}
+      <MangaOverlay
+        onSkip={handleFinish}
+        isMuted={isMuted}
+        onToggleMute={toggleMute}
+        progress={timelineProgress}
+      />
     </div>
   );
-};
-
-export default Intro;
+}

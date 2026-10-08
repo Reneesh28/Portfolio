@@ -4,8 +4,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * ComicSpread — Fusion Edition
+/*
+ *   ComicSpread — Fusion Edition
  * Every section now gets:
  *  - Diagonal web-line motion streaks (Miles/Brooklyn)
  *  - A dimension-membrane tear seam at the top edge (Spider-Verse dimension boundary)

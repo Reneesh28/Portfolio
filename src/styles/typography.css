@@ -6,6 +6,11 @@
   --font-display: 'Bangers', cursive;
   --font-label: 'Oswald', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --font-brush: 'Yuji Boku', 'Yuji Syuku', serif;
+  --font-manga: 'Dela Gothic One', 'RocknRoll One', sans-serif;
+  --font-manga-impact: 'Reggae One', 'Dela Gothic One', sans-serif;
+  --font-serif-jp: 'Shippori Mincho', 'Kaisei Tokumin', serif;
+  --font-japanese: 'Noto Sans JP', 'Zen Kaku Gothic New', sans-serif;
 }
 
 :root {

@@ -1,0 +1,932 @@
+/* =========================================================
+   CHAPTER 04 — JOURNEY (EXPERIENCE SECTION)
+   - 50% Seinen Manga × 30% Editorial × 20% Technical
+   - Tankobon Double-Page Spread & Progression Map
+   - Pure Monochrome Sumi-e Ink & Washi Paper (#F4EFE6 / #111116)
+   - FOLLOW → OPEN → UNDERSTAND Progression Narrative
+   ========================================================= */
+
+.journey-section-root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0A0A0E;
+  color: #111116;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: clamp(2rem, 5vw, 4.5rem) clamp(1rem, 3vw, 2.5rem);
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+/* Ambient Grain Texture */
+.journey-ambient-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  z-index: 1;
+  background-image: radial-gradient(#FFFFFF 15%, transparent 16%);
+  background-size: 8px 8px;
+}
+
+/* =========================================================
+   MANGA DOUBLE-PAGE SPREAD CONTAINER
+   ========================================================= */
+.journey-manga-spread-container {
+  position: relative;
+  width: 100%;
+  max-width: 1560px;
+  background: #F4EFE6;
+  border: 4px solid #111116;
+  box-shadow: 12px 12px 0 #111116, 0 24px 48px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* =========================================================
+   TOP EDITORIAL FOLIO BAR
+   ========================================================= */
+.journey-top-folio {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.25rem;
+  background: #111116;
+  color: #F4EFE6;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  border-bottom: 2px solid #111116;
+  user-select: none;
+}
+
+.journey-folio-left,
+.journey-folio-right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.journey-folio-tag,
+.journey-folio-badge {
+  background: #F4EFE6;
+  color: #111116;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.65rem;
+}
+
+.journey-folio-sep {
+  color: #888894;
+}
+
+.journey-folio-center {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: #888894;
+}
+
+/* =========================================================
+   CHAPTER 04 HEADLINE
+   ========================================================= */
+.journey-chapter-headline {
+  padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1.25rem, 3.5vw, 2.5rem) 1.25rem;
+  border-bottom: 2px solid #111116;
+  background: #EDE6D6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.journey-chapter-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid #111116;
+}
+
+.journey-chapter-badge .badge-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #FFFFFF;
+}
+
+.journey-chapter-badge .badge-en {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+}
+
+.journey-title-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.journey-main-title {
+  margin: 0;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  color: #111116;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.journey-japanese-accent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: 0.85rem;
+  color: #555560;
+  letter-spacing: 0.15em;
+}
+
+.journey-japanese-accent .kanji-accent {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.1rem;
+  color: #111116;
+}
+
+/* =========================================================
+   JOURNEY PATH MAP (THE INK PATH / 墨の軌跡)
+   ========================================================= */
+.journey-path-map-container {
+  padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 3.5vw, 2.5rem);
+  border-bottom: 3px solid #111116;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.path-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #111116;
+  padding-bottom: 0.4rem;
+}
+
+.path-reg-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.path-kanji-stamp {
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.1rem 0.4rem;
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.path-reg-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: #111116;
+}
+
+.path-serial {
+  font-family: monospace;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #888894;
+}
+
+.path-stage-viewport {
+  position: relative;
+  width: 100%;
+  min-height: 240px;
+  background: #FDFBF7;
+  border: 2px solid #111116;
+  box-shadow: 4px 4px 0 #111116;
+  padding: 1.5rem 1rem;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.path-washi-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#111116 10%, transparent 11%);
+  background-size: 12px 12px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.journey-brush-path-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.journey-nodes-track {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.journey-arc-node-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.journey-arc-node-btn:hover {
+  transform: translateY(-4px);
+}
+
+.node-pin-wrapper {
+  position: relative;
+  margin-bottom: 0.85rem;
+}
+
+.node-pin-dot {
+  width: 44px;
+  height: 44px;
+  background: #F4EFE6;
+  border: 3px solid #111116;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow: 3px 3px 0 #111116;
+  transition: all 0.2s ease;
+}
+
+.journey-arc-node-btn:hover .node-pin-dot {
+  background: #FFFFFF;
+  box-shadow: 5px 5px 0 #111116;
+}
+
+.journey-arc-node-btn.is-active .node-pin-dot {
+  background: #111116;
+  border-color: #111116;
+  box-shadow: 4px 4px 0 #888894;
+  transform: scale(1.1);
+}
+
+.pin-kanji {
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #111116;
+}
+
+.journey-arc-node-btn.is-active .pin-kanji {
+  color: #FFFFFF;
+}
+
+.node-current-pulse-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px dashed #111116;
+  animation: pulseCurrentArc 1.6s infinite linear;
+}
+
+@keyframes pulseCurrentArc {
+  from { transform: rotate(0deg) scale(1); opacity: 0.8; }
+  to { transform: rotate(360deg) scale(1.2); opacity: 0; }
+}
+
+.node-label-card {
+  width: 100%;
+  background: #FFFFFF;
+  border: 2px solid #111116;
+  box-shadow: 3px 3px 0 #111116;
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.journey-arc-node-btn:hover .node-label-card {
+  box-shadow: 5px 5px 0 #111116;
+  background: #FDFBF7;
+}
+
+.journey-arc-node-btn.is-active .node-label-card {
+  background: #111116;
+  color: #F4EFE6;
+  border-color: #111116;
+  box-shadow: 4px 4px 0 #888894;
+}
+
+.node-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #111116;
+  padding-bottom: 0.2rem;
+}
+
+.journey-arc-node-btn.is-active .node-header-row {
+  border-bottom-color: rgba(244, 239, 230, 0.3);
+}
+
+.node-arc-num {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  color: #888894;
+}
+
+.node-stage-badge {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.55rem;
+  background: #E8E2D5;
+  color: #111116;
+  padding: 0.05rem 0.3rem;
+}
+
+.journey-arc-node-btn.is-active .node-stage-badge {
+  background: #FFFFFF;
+  color: #111116;
+}
+
+.node-role-title {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: #111116;
+  margin-top: 0.2rem;
+  line-height: 1.2;
+}
+
+.journey-arc-node-btn.is-active .node-role-title {
+  color: #FFFFFF;
+}
+
+.node-org-name {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #555560;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.journey-arc-node-btn.is-active .node-org-name {
+  color: #888894;
+}
+
+.node-period-tag {
+  font-family: monospace;
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: #888894;
+}
+
+.path-footer-prompt-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: #888894;
+}
+
+.path-direction-marker {
+  color: #111116;
+}
+
+/* =========================================================
+   ACTIVE ARC STORY PANEL (MANGA CHRONICLE PANEL)
+   ========================================================= */
+.active-arc-story-panel {
+  padding: clamp(1.25rem, 3.5vw, 2.5rem);
+  background: #F4EFE6;
+  border-bottom: 3px solid #111116;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: arcPanelReveal 0.25s ease-out;
+}
+
+@keyframes arcPanelReveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.arc-panel-top-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #111116;
+  color: #F4EFE6;
+  padding: 0.5rem 1rem;
+  border-bottom: 2px solid #111116;
+}
+
+.arc-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.arc-stage-kanji {
+  background: #FFFFFF;
+  color: #111116;
+  font-family: 'Yuji Boku', serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  padding: 0.05rem 0.4rem;
+}
+
+.arc-stage-name {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+}
+
+.arc-status-stamp {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  background: #E8E2D5;
+  color: #111116;
+  padding: 0.15rem 0.5rem;
+  letter-spacing: 0.08em;
+}
+
+/* Body Grid */
+.arc-panel-body-grid {
+  background: #FFFFFF;
+  border: 3px solid #111116;
+  box-shadow: 6px 6px 0 #111116;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.arc-main-role-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border-bottom: 2px solid #111116;
+  padding-bottom: 0.85rem;
+}
+
+.arc-env-kicker {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: #888894;
+}
+
+.arc-role-title {
+  margin: 0;
+  font-family: 'Dela Gothic One', 'Noto Sans JP', sans-serif;
+  font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+  color: #111116;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+}
+
+.arc-org-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.2rem;
+}
+
+.org-bullet {
+  color: #111116;
+  font-size: 0.7rem;
+}
+
+.org-name-text {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  color: #111116;
+}
+
+.org-period-text {
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #888894;
+}
+
+/* Narrative Block */
+.arc-narrative-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.narrative-section-label,
+.toolkit-section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: #888894;
+}
+
+.label-kanji {
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.05rem 0.3rem;
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.75rem;
+}
+
+.arc-narrative-text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: #33333E;
+  font-weight: 500;
+}
+
+.arc-impact-highlight {
+  background: #EDE6D6;
+  border-left: 4px solid #111116;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.impact-badge {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: #888894;
+}
+
+.impact-text {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #111116;
+  line-height: 1.45;
+}
+
+/* Toolkit Block */
+.arc-toolkit-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.arc-focus-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.focus-chip {
+  background: #111116;
+  color: #FFFFFF;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  padding: 0.2rem 0.5rem;
+  letter-spacing: 0.08em;
+}
+
+.arc-tools-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tool-chip {
+  background: #F4EFE6;
+  border: 1px solid #111116;
+  color: #111116;
+  font-family: 'Noto Sans JP', 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+}
+
+/* Leadership Progression Ladder */
+.arc-progression-ladder-block {
+  border-top: 2px dashed #888894;
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.ladder-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: #888894;
+}
+
+.ladder-kanji {
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.05rem 0.3rem;
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.75rem;
+}
+
+.ladder-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.65rem;
+}
+
+.ladder-step-card {
+  background: #EDE6D6;
+  border: 1.5px solid #111116;
+  box-shadow: 2px 2px 0 #111116;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+}
+
+.step-num-badge {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.65rem;
+  background: #111116;
+  color: #FFFFFF;
+  padding: 0.05rem 0.3rem;
+}
+
+.step-title-text {
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: #111116;
+}
+
+.step-year-tag {
+  font-family: monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #555560;
+}
+
+/* Current Arc Vision Block */
+.arc-current-vision-block {
+  background: #111116;
+  color: #F4EFE6;
+  padding: 1rem 1.25rem;
+  border: 2px solid #FFFFFF;
+  outline: 2px solid #111116;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vision-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: #FFFFFF;
+}
+
+.vision-kanji {
+  background: #FFFFFF;
+  color: #111116;
+  padding: 0.05rem 0.3rem;
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.85rem;
+}
+
+.vision-text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #F4EFE6;
+  font-weight: 600;
+}
+
+.arc-panel-bottom-folio {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: #888894;
+}
+
+/* =========================================================
+   CHAPTER 05 THE WORK TRANSITION FOOTER
+   ========================================================= */
+.journey-transition-footer {
+  background: #EDE6D6;
+  padding: 1.5rem clamp(1.25rem, 3.5vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.journey-manga-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #F4EFE6;
+  color: #111116;
+  border: 2px solid #FFFFFF;
+  padding: 0.65rem 1.4rem;
+  font-family: 'Dela Gothic One', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #FFFFFF;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.journey-manga-cta-btn:hover {
+  background: #FFFFFF;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #FFFFFF;
+}
+
+.journey-manga-cta-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #FFFFFF;
+}
+
+.journey-manga-cta-btn .btn-jp {
+  font-family: 'Yuji Boku', serif;
+  font-size: 0.85rem;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN SYSTEM (MOBILE, TABLET, DESKTOP)
+   ========================================================= */
+
+/* Tablets (768px - 1023px) */
+@media (max-width: 1023px) {
+  .journey-section-root {
+    padding: clamp(1rem, 3vw, 2rem) clamp(0.5rem, 2vw, 1.5rem);
+  }
+
+  .journey-chapter-headline {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .journey-title-group {
+    align-items: flex-start;
+  }
+
+  .journey-nodes-track {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+/* Mobile Devices (320px - 640px) */
+@media (max-width: 640px) {
+  .journey-section-root {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .journey-top-folio {
+    font-size: 0.62rem;
+    padding: 0.35rem 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .journey-folio-center {
+    display: none;
+  }
+
+  .journey-chapter-headline {
+    padding: 1rem 0.85rem;
+  }
+
+  .journey-main-title {
+    font-size: 1.85rem;
+  }
+
+  /* Path Stage on Mobile */
+  .journey-path-map-container {
+    padding: 1rem 0.85rem;
+  }
+
+  .path-stage-viewport {
+    min-height: auto;
+    padding: 1rem 0.5rem;
+  }
+
+  .journey-brush-path-svg {
+    display: none;
+  }
+
+  .journey-nodes-track {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .journey-arc-node-btn {
+    flex-direction: row;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .node-pin-wrapper {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .node-pin-dot {
+    width: 36px;
+    height: 36px;
+  }
+
+  .pin-kanji {
+    font-size: 0.9rem;
+  }
+
+  /* Story Panel on Mobile */
+  .active-arc-story-panel {
+    padding: 1rem 0.85rem;
+    gap: 1rem;
+  }
+
+  .arc-panel-body-grid {
+    padding: 1rem 0.85rem;
+    gap: 1rem;
+  }
+
+  .arc-role-title {
+    font-size: 1.5rem;
+  }
+
+  .ladder-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Transition Card on Mobile */
+  .chapter-next-teaser-card {
+    padding: 1rem;
+  }
+
+  .chapter-next-teaser-card .teaser-title {
+    font-size: 1.75rem;
+  }
+
+  .journey-manga-cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Reduced Motion Mode */
+@media (prefers-reduced-motion: reduce) {
+  .journey-manga-spread-container,
+  .journey-arc-node-btn,
+  .node-current-pulse-ring,
+  .journey-manga-cta-btn {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
