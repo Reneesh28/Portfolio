@@ -37,6 +37,27 @@ Locked decisions are listed in `THE_WORLD_FORGE_AUTONOMOUS_DOCS/14_DECISION_LOG.
 - Date: 2026-11-21 · The owner reviewed the running build and approved ("it's good… proceed"). M1-R9 is complete. M1's architecture (single store, single camera writer, input priority) is now a locked contract for M4–M9.
 - Status: **OWNER-APPROVED**
 
+## DEC-007 — M4 direction approved: "The Crucible of Worlds"
+- Date: 2026-11-21 · Owner reply "approve all", which accepts every recommended option in `proposals/M4-world-forge-design-proposal.md` §6:
+  1. the direction;
+  2. up to 5 orbit fragments plus the four sentinels;
+  3. a static crown;
+  4. the world sky gradient in M4.6, fading in as the Void glow fades;
+  5. 7 monument plinths, final count confirmed in M5.
+- Status: **OWNER-APPROVED**. The design is locked for M4.
+
+## DEC-008 — M4 implementation refinements (within the approved direction)
+Recorded before implementation, as doc 16 requires:
+- **Monument plinths on T1's walkable ring (y 6, r ≈ 22), not T2.** T2's walkable ring is only about 3.5 units wide and already carries the sentinels. T1's is about 6 units wide, fits 7 plinths with real spacing, and the M5 focus camera can frame them against the core.
+- **Stairs aligned to octagon faces.** The tiers keep their approved orientation, so the south grand stair faces world bearing −9.5° (the face nearest the Void) and the east stair faces 125.5° (the face nearest the Archive avenue).
+- **Route connection.** A paved forecourt in front of the south stair, plus M3-style paving from the existing route ends (`sanctum-forge` at [38, 0, 31], `forge-archive` at [46, 0, −14]) to the stair feet. M3 route data is unchanged.
+- **Camera integration (M4.7/M4.8).**
+  - `RegionFraming` gains an optional narrow-screen variant.
+  - `createJourneyPath` gains an optional per-segment travel arc, so the Sanctum → Forge arrival can dip and rise.
+  - Both are backward-compatible extensions; every other stop and segment behaves exactly as before.
+- **The placeholder `regions/void/DistantForge.tsx` is retired** and replaced by `regions/forge/`, the same object at the same place and in the same orientation.
+- Status: **IMPLEMENTATION DECISION**. Reviewed with M4.9.
+
 ## Open items carried forward (not decided)
 - **World Map:** master doc §8/§9 make it the "primary navigation entry" (a clean illustrated SVG map), and the master M3 lists "World map reflecting geography". Not built (doc 05: not in M1). It needs a design and scheduling decision.
 - **Controls fading after inactivity** (master doc §9): not implemented. It's UI polish with rules (no fading while focused, open or interacting).

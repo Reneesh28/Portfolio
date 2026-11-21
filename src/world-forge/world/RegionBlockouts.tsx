@@ -54,7 +54,7 @@ function OriginSanctum() {
 
 /* ---------------------------------------------------------------------------
  * 02 — FORGE WARD: a broken ring wall around the Forge, open toward the Void.
- * (The Forge itself is the DistantForge placeholder at the origin; M4 builds it.)
+ * (The Forge itself is `regions/forge/ForgeRegion`, M4.)
  * ------------------------------------------------------------------------- */
 function ForgeWard() {
   const walls = useMemo<InstancePlacement[]>(() => {

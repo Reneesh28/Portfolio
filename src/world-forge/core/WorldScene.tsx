@@ -4,6 +4,8 @@ import { computeVoidLayout, REFERENCE_YAW } from '../regions/void/layout';
 import { PALETTE } from '../regions/void/materials';
 import VoidRegion from '../regions/void/VoidRegion';
 import WorldGeography from '../world/WorldGeography';
+import ForgeRegion from '../regions/forge/ForgeRegion';
+import DevRenderStats from './DevRenderStats';
 import CameraRig from '../camera/CameraRig';
 import type { ExperienceStore } from '../experience/experienceStore';
 import { ExperienceContext } from '../experience/ExperienceContext';
@@ -34,8 +36,10 @@ export default function WorldScene({ animate, store }: WorldSceneProps) {
       </group>
 
       <WorldGeography />
+      <ForgeRegion />
       <VoidRegion layout={layout} animate={animate} />
       <CameraRig />
+      {import.meta.env.DEV && <DevRenderStats />}
     </ExperienceContext>
   );
 }

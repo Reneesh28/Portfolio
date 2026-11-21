@@ -1,9 +1,19 @@
 import type { ExperienceStore } from './experienceStore';
 
+/** Renderer counters for the last frame (development only, for performance budgets). */
+export interface DevRenderStats {
+  calls: number;
+  triangles: number;
+  points: number;
+  geometries: number;
+  textures: number;
+  programs: number;
+}
+
 declare global {
   interface Window {
     /** Development-only test handle (absent from production builds). */
-    __worldForge?: { store: ExperienceStore };
+    __worldForge?: { store: ExperienceStore; render?: DevRenderStats };
   }
 }
 

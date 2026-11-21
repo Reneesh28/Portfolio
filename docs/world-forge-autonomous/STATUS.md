@@ -2,7 +2,7 @@
 
 Last updated: 2026-11-21
 Current branch: `the-world-forge` (repository: `portfolio/`). `main` untouched; nothing pushed.
-Working tree: uncommitted. Stage 1 (mode isolation), Stage 2 (Void), M3 (geography) and M1 recovery are all uncommitted; no commit authorization in this run.
+Working tree: clean at checkpoint `dd349d0` (Stage 1, M2 Void, M3 geography, M1 foundation, tests, docs). Committed locally; nothing pushed.
 
 ## Milestone overview
 | Milestone | Status | Evidence / report |
@@ -34,7 +34,6 @@ Next: on approval, M4.1 blockout and silhouette
 - [ ] M4 monument plinth count (7 proposed; confirmed in M5)
 - [ ] World Map timing/design (master doc §8 primary navigation entry)
 - [ ] Optional: `@types/node` dev dependency (DEC-004)
-- [ ] Commit authorization. Stage 1, Stage 2, M3 and M1 are all still uncommitted
 
 ## Incidents
 - 2026-11-21 — Owner saw `Cannot read properties of undefined (reading 'setWakeHandler')` at `CameraRig.tsx:31` followed by `THREE.WebGLRenderer: Context Lost.` Root cause: the dev server kept a hot-reloaded, superseded `CameraRig` (prop-based `{ store }`, which puts that call on line 31) alongside the current `WorldScene` that renders `<CameraRig />` without props. The current code cannot reach that state, because `useExperienceStore()` throws on a missing provider. Context Lost is R3F's deliberate `forceContextLoss()` when the error boundary unmounts the canvas. Reproduced exactly by hot-swapping the legacy variant in, then verified: clean startup, idle, travel, resize, refresh, Classic round-trip, and HMR saves of all 7 chain files. No source change was needed; remedy: restart the dev server and hard-reload.

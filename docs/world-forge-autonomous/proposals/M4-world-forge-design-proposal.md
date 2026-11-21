@@ -1,6 +1,6 @@
 # M4 THE WORLD FORGE: design proposal (design gate)
 
-Status: **PROPOSED, waiting on owner approval.** No centrepiece geometry will be created or replaced until you approve it.
+Status: **OWNER-APPROVED 2026-11-21 ("approve all").** All recommended options in §6 were accepted (DEC-007). Implementation refinements are in DEC-008.
 Date: 2026-11-21 · Governing rules: doc 06 §02, doc 16 M4 design gate, master doc M4.
 
 ## 1. Audit summary (what exists today)
