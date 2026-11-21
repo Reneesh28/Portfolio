@@ -5,6 +5,11 @@ import {
   apothem,
   buttresses,
   CORE,
+  connectionEnds,
+  parapetSegments,
+  pavePath,
+  ROUTE_ENDS,
+  stairCheeks,
   CROWN,
   CRUCIBLE,
   pillarRadiusAt,
@@ -27,7 +32,7 @@ import {
 } from '../../src/world-forge/regions/forge/forgeLayout.ts';
 import { REFERENCE_YAW } from '../../src/world-forge/regions/void/layout.ts';
 import { createRandom } from '../../src/world-forge/core/random.ts';
-import { FORGE_WARD } from '../../src/world-forge/data/worldGeography.ts';
+import { FORGE_WARD, WORLD_ROUTES } from '../../src/world-forge/data/worldGeography.ts';
 
 const DEG = Math.PI / 180;
 /** Largest projection of a local [x, z] point onto the octagon's face normals (≤ apothem ⇔ inside). */
@@ -152,6 +157,44 @@ describe('forge layout', () => {
         return rel > 0.02 && rel < length - 0.02;
       });
       assert.ok(covered, `pillar at ${f.toFixed(3)} turn has a segment to carry`);
+    }
+  });
+
+  it('joins the existing M3 route ends exactly, without touching the route data', () => {
+    const sanctumRoute = WORLD_ROUTES.find((r) => r.id === 'sanctum-forge');
+    const archiveRoute = WORLD_ROUTES.find((r) => r.id === 'forge-archive');
+    assert.deepEqual(sanctumRoute?.points.at(-1), ROUTE_ENDS.sanctum);
+    assert.deepEqual(archiveRoute?.points[0], ROUTE_ENDS.archive);
+    const { sanctum, archive } = connectionEnds();
+    const near = (a: [number, number], world: Vec3) => {
+      const [x, , z] = toLocal(world);
+      return Math.hypot(a[0] - x, a[1] - z) < 1e-9;
+    };
+    assert.ok(near(sanctum[0], ROUTE_ENDS.sanctum));
+    assert.ok(near(archive[1], ROUTE_ENDS.archive));
+    // Paving keeps off the foundation: every slab stays outside the T1 base (with the rubble skirt).
+    for (const [from, to] of [sanctum, archive]) {
+      for (const slab of pavePath(from, to, createRandom(1))) {
+        assert.ok(octagonExtent(slab.position[0], slab.position[2]) > apothem(TIERS[0].bottomRadius) + 1.5, 'slab clear of T1');
+      }
+    }
+  });
+
+  it('opens the parapet where each stair arrives, and keeps cheeks clear of the plinths', () => {
+    for (const flight of ALL_FLIGHTS.filter((f) => f.top === TIERS[0].top)) {
+      for (const wall of parapetSegments()) {
+        if (Math.abs(wall.bearing - flight.bearing) > 1e-6) continue;
+        const [x, , z] = wall.position;
+        const lateral = Math.abs(x * Math.cos(flight.bearing * DEG) - z * Math.sin(flight.bearing * DEG));
+        assert.ok(lateral - wall.size[0] / 2 > flight.width / 2 + 0.9, 'parapet leaves the stair (and its cheeks) open');
+      }
+    }
+    const corner = (MONUMENT_RING.plinthSize[0] / 2) * Math.SQRT2;
+    for (const cheek of ALL_FLIGHTS.flatMap(stairCheeks)) {
+      for (const site of PLINTH_SITES) {
+        const d = Math.hypot(cheek.position[0] - site.position[0], cheek.position[2] - site.position[2]);
+        assert.ok(d > corner + 0.45 || Math.abs(cheek.position[1] - site.position[1]) > 3, 'cheek clear of plinth');
+      }
     }
   });
 

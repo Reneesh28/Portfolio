@@ -133,11 +133,12 @@ export interface Rubble {
 
 /** Seeded rubble skirt around the base of T1, kept clear of both stairs: the tiers grow from the ground. */
 export function rubbleSkirt(rand: () => number): Rubble[] {
-  const stairBearings = [faceBearing(7), faceBearing(2)];
+  // Keep-clear half-angles: the south stair also has its forecourt in front of it.
+  const keepClear: Vec2[] = [[faceBearing(7), 20], [faceBearing(2), 13]];
   const items: Rubble[] = [];
   for (let i = 0; i < 64; i++) {
     const bearing = rand() * 360;
-    const nearStair = stairBearings.some((b) => Math.abs(((bearing - b + 540) % 360) - 180) < 13);
+    const nearStair = keepClear.some(([b, half]) => Math.abs(((bearing - b + 540) % 360) - 180) < half);
     if (nearStair) continue;
     const distance = 31 + rand() * 4;
     const size = 0.5 + rand() * 1.1;
@@ -291,8 +292,109 @@ export const ROUTE_ENDS = {
   archive: [46, 0, -14] as Vec3,
 } as const;
 
-/** Forecourt in front of the south stair: [lateral width, depth], centred at `distance` along the south face. */
-export const FORECOURT = { distance: 36.5, width: 18, depth: 9, thickness: 0.16 } as const;
+/** Forecourt in front of the south stair: lateral width and depth, centred at `distance` along the south face. */
+export const FORECOURT = { bearing: SOUTH_FACE, distance: 36, width: 18, depth: 9, thickness: 0.16 } as const;
+
+export interface Cheek {
+  /** Local centre, the flight's bearing (degrees), its downward pitch toward the outside (radians), box size. */
+  position: Vec3;
+  bearing: number;
+  pitch: number;
+  size: Vec3;
+}
+
+/** Side walls running up both sides of each flight, so every stair reads as built, not stacked. */
+export function stairCheeks(flight: StairFlight): Cheek[] {
+  const run = flight.from - flight.to;
+  const rise = flight.top - flight.bottom;
+  const pitch = Math.atan2(rise, run);
+  const length = Math.hypot(run, rise) + 1.2;
+  const mid = (flight.from + flight.to) / 2;
+  const y = (flight.bottom + flight.top) / 2 + 0.35;
+  const width = 0.9;
+  return [-1, 1].map((side) => {
+    const lateral = side * (flight.width / 2 + width / 2);
+    const [ax, az] = polar(flight.bearing, mid);
+    const [lx, lz] = polar(flight.bearing + 90, lateral);
+    return { position: [ax + lx, y, az + lz], bearing: flight.bearing, pitch, size: [width, 1.3, length] };
+  });
+}
+
+export interface WallSegment {
+  /** Local centre, bearing of the face it runs along (degrees), and box size [length, height, thickness]. */
+  position: Vec3;
+  bearing: number;
+  size: Vec3;
+}
+
+/** Low parapet along the T1 rim, open where the stairs arrive. */
+export const PARAPET = { vertexRadius: 25.7, height: 0.9, thickness: 0.5, gapMargin: 1.4 } as const;
+
+export function parapetSegments(): WallSegment[] {
+  const centre = apothem(PARAPET.vertexRadius);
+  const edge = 2 * PARAPET.vertexRadius * Math.sin(Math.PI / OCTAGON_SIDES);
+  const base = TIERS[0].top + CORNICE.lift;
+  const segments: WallSegment[] = [];
+  for (let k = 0; k < OCTAGON_SIDES; k++) {
+    const bearing = faceBearing(k);
+    const flight = ALL_FLIGHTS.find((f) => f.top === TIERS[0].top && Math.abs(f.bearing - bearing) < 1e-6);
+    // Pieces along the face as [offset from the face centre, length]; split around an arriving stair.
+    const pieces: Vec2[] = [];
+    if (flight) {
+      const gap = flight.width / 2 + 0.9 + PARAPET.gapMargin;
+      const piece = edge / 2 - gap;
+      pieces.push([-(gap + piece / 2), piece], [gap + piece / 2, piece]);
+    } else {
+      pieces.push([0, edge]);
+    }
+    for (const [offset, length] of pieces) {
+      const [cx, cz] = polar(bearing, centre);
+      const [ox, oz] = polar(bearing + 90, offset);
+      segments.push({ position: [cx + ox, base + PARAPET.height / 2, cz + oz], bearing, size: [length, PARAPET.height, PARAPET.thickness] });
+    }
+  }
+  return segments;
+}
+
+export interface PaveSlab {
+  position: Vec3;
+  /** Rotation about Y (radians) and size [width, thickness, length]. */
+  yaw: number;
+  size: Vec3;
+}
+
+/** M3-style paving (same slab size and spacing as WorldPaths' `route` style), in the local frame. */
+export function pavePath(from: Vec2, to: Vec2, rand: () => number): PaveSlab[] {
+  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  const yaw = Math.atan2(to[0] - from[0], to[1] - from[1]);
+  const steps = Math.max(1, Math.round(length / 2.6));
+  const slabs: PaveSlab[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    if (i > 0 && i < steps && rand() < 0.08) continue; // a few missing slabs, like the M3 routes
+    slabs.push({
+      position: [from[0] + (to[0] - from[0]) * t, 0.1, from[1] + (to[1] - from[1]) * t],
+      yaw: yaw + (rand() - 0.5) * 0.12,
+      size: [2.3 * (0.85 + rand() * 0.3), 0.3, 1.7 * (0.85 + rand() * 0.3)],
+    });
+  }
+  return slabs;
+}
+
+/** Where the connecting paths meet the Forge: the forecourt's east edge, and the east stair foot. */
+export function connectionEnds(): { sanctum: [Vec2, Vec2]; archive: [Vec2, Vec2] } {
+  const toLocal2 = ([x, y, z]: Vec3): Vec2 => {
+    const [lx, , lz] = toLocal([x, y, z]);
+    return [lx, lz];
+  };
+  const [fx, fz] = polar(FORECOURT.bearing, FORECOURT.distance + 1);
+  const [ex, ez] = polar(FORECOURT.bearing + 90, FORECOURT.width / 2 + 1.6);
+  const eastFoot = polar(STAIRS.east[0].bearing, STAIRS.east[0].from + 1.6);
+  return {
+    sanctum: [toLocal2(ROUTE_ENDS.sanctum), [fx + ex, fz + ez]],
+    archive: [eastFoot, toLocal2(ROUTE_ENDS.archive)],
+  };
+}
 
 /* ---------------------------------------------------------------- Quality */
 
