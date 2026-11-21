@@ -86,6 +86,71 @@ export const CORE = {
   lightY: 27,
 } as const;
 
+/** Radius of the 4-sided pillar shaft at height `y` in the pillar's own frame (centre = 0). */
+export function pillarRadiusAt(y: number): number {
+  const t = (y + CORE.pillarHeight / 2) / CORE.pillarHeight;
+  return CORE.pillarBottomRadius + (CORE.pillarTopRadius - CORE.pillarBottomRadius) * t;
+}
+
+/** Bracing bands on each pillar, at heights in the pillar's frame. */
+export const PILLAR_BANDS = [-6, 2.5] as const;
+
+/** Low octagonal basin on the dais that the seam rises from (kept low: the seam's foot is visible from the Void). */
+export const CRUCIBLE = { daisTop: 16, height: 0.5, topRadius: 2.4, bottomRadius: 2.8 } as const;
+
+/* ---------------------------------------------------------------- Foundation structure */
+
+/** Cut-stone cornice capping each tier: an octagonal lip just proud of the tier top. */
+export const CORNICE = { height: 0.35, overhang: 0.25, lift: 0.04 } as const;
+
+export interface Buttress {
+  /** Local bearing (a tier vertex), distance of the block centre, and its box. */
+  bearing: number;
+  distance: number;
+  y: number;
+  size: Vec3;
+}
+
+/** Stepped buttresses at the vertices of T1 and T2: they read as retaining structure, not decoration. */
+export function buttresses(): Buttress[] {
+  const items: Buttress[] = [];
+  for (let k = 0; k < OCTAGON_SIDES; k++) {
+    const bearing = k * 45;
+    // T1: two steps against the 45° wall.
+    items.push({ bearing, distance: 30.4, y: 1.5, size: [2.2, 3, 3.4] });
+    items.push({ bearing, distance: 27.9, y: 4.1, size: [1.7, 2.2, 2.6] });
+    // T2: one step.
+    items.push({ bearing, distance: 18.7, y: 8.2, size: [1.6, 4.4, 2.6] });
+  }
+  return items;
+}
+
+export interface Rubble {
+  position: Vec3;
+  rotation: Vec3;
+  scale: Vec3;
+}
+
+/** Seeded rubble skirt around the base of T1, kept clear of both stairs: the tiers grow from the ground. */
+export function rubbleSkirt(rand: () => number): Rubble[] {
+  const stairBearings = [faceBearing(7), faceBearing(2)];
+  const items: Rubble[] = [];
+  for (let i = 0; i < 64; i++) {
+    const bearing = rand() * 360;
+    const nearStair = stairBearings.some((b) => Math.abs(((bearing - b + 540) % 360) - 180) < 13);
+    if (nearStair) continue;
+    const distance = 31 + rand() * 4;
+    const size = 0.5 + rand() * 1.1;
+    const [x, z] = polar(bearing, distance);
+    items.push({
+      position: [x, size * 0.3, z],
+      rotation: [rand() * 3, rand() * 3, rand() * 3],
+      scale: [size * (0.8 + rand() * 0.8), size * (0.5 + rand() * 0.5), size * (0.8 + rand() * 0.6)],
+    });
+  }
+  return items;
+}
+
 /* ---------------------------------------------------------------- Crown */
 
 export const CROWN = {

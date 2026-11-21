@@ -3,6 +3,11 @@ import assert from 'node:assert/strict';
 import {
   ALL_FLIGHTS,
   apothem,
+  buttresses,
+  CORE,
+  CRUCIBLE,
+  pillarRadiusAt,
+  rubbleSkirt,
   FORGE_YAW,
   FORGE_YAW_DEG,
   flightSteps,
@@ -18,6 +23,7 @@ import {
   type Vec3,
 } from '../../src/world-forge/regions/forge/forgeLayout.ts';
 import { REFERENCE_YAW } from '../../src/world-forge/regions/void/layout.ts';
+import { createRandom } from '../../src/world-forge/core/random.ts';
 import { FORGE_WARD } from '../../src/world-forge/data/worldGeography.ts';
 
 const DEG = Math.PI / 180;
@@ -103,6 +109,29 @@ describe('forge layout', () => {
         assert.ok(Math.hypot(ax - bx, az - bz) > 2 * corner + 1, 'plinths keep a walkable gap');
       }
     }
+  });
+
+  it('keeps buttresses and rubble clear of every stair flight', () => {
+    const clearOf = (x: number, z: number, margin: number) =>
+      ALL_FLIGHTS.every((flight) => {
+        const along = x * Math.sin(flight.bearing * DEG) + z * Math.cos(flight.bearing * DEG);
+        const lateral = Math.abs(x * Math.cos(flight.bearing * DEG) - z * Math.sin(flight.bearing * DEG));
+        return along < 0 || lateral > flight.width / 2 + margin;
+      });
+    for (const b of buttresses()) {
+      const [x, z] = polar(b.bearing, b.distance);
+      assert.ok(clearOf(x, z, b.size[0] / 2 + 0.5), `buttress at ${b.bearing}°`);
+    }
+    for (const r of rubbleSkirt(createRandom(211))) {
+      assert.ok(clearOf(r.position[0], r.position[2], 1.6), 'rubble keeps off the stairs');
+    }
+  });
+
+  it('seats the core coherently: crucible wider than the seam, inside the pillar ring, pillars taper upward', () => {
+    assert.ok(CRUCIBLE.topRadius > 1.5 && CRUCIBLE.bottomRadius < CORE.pillarRadius);
+    assert.ok(CRUCIBLE.daisTop === TIERS[2].top);
+    assert.ok(pillarRadiusAt(-CORE.pillarHeight / 2) === CORE.pillarBottomRadius);
+    assert.ok(Math.abs(pillarRadiusAt(CORE.pillarHeight / 2) - CORE.pillarTopRadius) < 1e-9);
   });
 
   it('keeps the whole centrepiece inside the Forge ward', () => {
