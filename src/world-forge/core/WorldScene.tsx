@@ -36,7 +36,7 @@ export default function WorldScene({ animate, store }: WorldSceneProps) {
       </group>
 
       <WorldGeography />
-      <ForgeRegion />
+      <ForgeRegion animate={animate} />
       <VoidRegion layout={layout} animate={animate} />
       <CameraRig />
       {import.meta.env.DEV && <DevRenderStats />}

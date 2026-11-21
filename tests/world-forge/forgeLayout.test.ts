@@ -15,6 +15,8 @@ import {
   forgeQuality,
   MONUMENT_RING,
   ORBIT_FRAGMENTS,
+  SENTINELS,
+  SENTINEL_BASE_Y,
   PLINTH_SITES,
   polar,
   STAIRS,
@@ -163,6 +165,12 @@ describe('forge layout', () => {
     assert.ok(ORBIT_FRAGMENTS.length <= 5);
     for (const f of ORBIT_FRAGMENTS) {
       assert.ok(f.distance >= 14 && f.distance <= 20 && f.y >= 38 && f.y <= 52);
+    }
+    for (const f of ORBIT_FRAGMENTS) {
+      const reach = Math.hypot(...f.size) / 2;
+      assert.ok(f.distance - reach > CROWN.radius + CROWN.tube + 1, 'fragment clears the crown');
+      const sentinelTop = SENTINEL_BASE_Y + Math.max(...SENTINELS.map((t) => t.height)) + 1.1;
+      assert.ok(f.y - reach > sentinelTop + 1, 'fragment orbits above the sentinels');
     }
     assert.deepEqual(forgeQuality(1440, 900), { fragments: 5, embers: 320 });
     assert.equal(forgeQuality(390, 844).fragments, 3);
