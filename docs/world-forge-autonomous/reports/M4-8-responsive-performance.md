@@ -13,13 +13,19 @@ Reduced detail and quality scaling where needed; test all views.
 - **Reduced motion:** no orbit motion, no breathing, no activation, no embers. The demand frameloop renders still images.
 
 ## Performance (dev renderer counters, whole visible scene)
-| View | Draw calls | Triangles | Points | Programs |
-|---|---|---|---|---|
-| Void stop, 1440×900 | 143 | 10.8k | 640 | 11 |
-| World Forge stop, 1440×900 | 84 | 10.8k | 320 | 12 |
-| World Forge stop, 390×844 | 81 | 10.6k | 110 | 12 |
+**Correction to the first version of this report:** it estimated the Forge's own share at about 35 draw calls without measuring. Counting properly against the pre-M4 scene showed **65**, above the approved budget of 40.
+- **Fix (follow-up commit):** `regions/forge/mergeStatic.ts` bakes every static piece that shares a material into one geometry, using three.js's own `BufferGeometryUtils` (part of the installed `three` package; no new dependency).
+- **Merged per layer:** Foundation 4 draws, Core 4, Crown 3, Orbit 3, Terraces 3, Atmosphere 2.
+- **Visual change:** the orbit fragments now turn together as one ring and no longer tumble individually. Otherwise the result is identical: the Void comparison numbers match the unbaked build exactly, and the World Forge stop differs only by motion.
 
-The Forge's own share is within the approved budget (≤ 40 draw calls, ≤ 40k triangles): about 35 draw calls and about 5.5k triangles, thanks to instancing. There is one new light (range-limited) and one particle draw.
+| View | Before baking | After baking |
+|---|---|---|
+| Void stop, 1440×900 (whole scene) | 143 calls | **97 calls**, 10.8k triangles, 640 points, 10 programs |
+| World Forge stop, 1440×900 | 84 calls | **38 calls**, 10.8k triangles, 320 points, 11 programs |
+| World Forge stop, 390×844 | 81 calls | **30 calls**, 9.5k triangles, 110 points |
+| **Forge's own share** | 65 | **19** (budget ≤ 40), about 5.5k triangles (budget ≤ 40k) |
+
+There is 1 new light (range-limited) and 1 particle draw.
 
 ## Validation
 | Check | Result |
@@ -33,4 +39,4 @@ The Forge's own share is within the approved budget (≤ 40 draw calls, ≤ 40k 
 | Full-motion Void (desktop and mobile), legacy `?mode=world` | 1 canvas, 0 console problems |
 
 ## Git checkpoint
-Committed as "M4.8 …".
+Committed as "M4.8 …" plus the follow-up "M4.8 bake static Forge geometry …".
