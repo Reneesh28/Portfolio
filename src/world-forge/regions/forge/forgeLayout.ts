@@ -86,6 +86,22 @@ export const CORE = {
   lightY: 27,
 } as const;
 
+/** The seam's light: a narrower white-hot core inside a soft additive glow, and the warm core light. */
+export const SEAM = {
+  // The approved core's width, so the opening keeps its bright focal line.
+  coreTop: 1.1,
+  coreBottom: 1.5,
+  /** Ramp exponent for the core: white-hot over most of its height, amber only near the crown. */
+  coreCurve: 1.6,
+  glowTop: 2,
+  glowBottom: 2.6,
+  glowOpacity: 0.2,
+  /** Slow breathing of the glow (seconds per cycle) and its depth. */
+  pulsePeriod: 6,
+  pulseDepth: 0.05,
+  light: { color: '#ffb36b', intensity: 650, distance: 70, decay: 2 },
+} as const;
+
 /** Radius of the 4-sided pillar shaft at height `y` in the pillar's own frame (centre = 0). */
 export function pillarRadiusAt(y: number): number {
   const t = (y + CORE.pillarHeight / 2) / CORE.pillarHeight;
@@ -397,6 +413,12 @@ export function connectionEnds(): { sanctum: [Vec2, Vec2]; archive: [Vec2, Vec2]
 }
 
 /* ---------------------------------------------------------------- Quality */
+
+/** Amber seams where each tier meets the one above it (just proud of the upper tier's foot). */
+export const TIER_SEAMS = TIERS.slice(1).map((tier) => ({ radius: tier.bottomRadius + 0.05, y: tier.bottom + 0.16, height: 0.16 }));
+
+/** Embers rising through the seam. */
+export const EMBERS = { radius: 1.6, bottom: 17, top: 44, minSpeed: 0.9, maxSpeed: 2.1, size: 0.22 } as const;
 
 export interface ForgeQuality {
   fragments: number;

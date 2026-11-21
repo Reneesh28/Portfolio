@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { AdditiveBlending, type Mesh, type MeshBasicMaterial, type Points } from 'three';
 import { createRandom, range } from '../../core/random';
+import { voidBackdropOpacity } from '../../atmosphere/voidFade';
 import { useExperienceStore } from '../../experience/ExperienceContext';
 import Floating from './Floating';
 import { BACKDROP_Z, backdropScale, CAMERA_HEIGHT, GATE_Z, sightLineX, type VoidLayout } from './layout';
@@ -121,9 +122,6 @@ function Dust({ count, centerX, animate }: { count: number; centerX: number; ani
   );
 }
 
-/** Journey distance (in stops) over which the opening backdrop fades out. */
-const GLOW_FADE_STOPS = 0.45;
-
 /**
  * Pale glow behind the Forge, far beyond the whole world. Scaled along camera rays
  * from its original depth, so the opening shot sees exactly the same glow.
@@ -142,8 +140,7 @@ function HorizonGlow({ layout }: { layout: VoidLayout }) {
 
   useFrame(({ invalidate }) => {
     if (!material.current || !mesh.current) return;
-    const t = Math.min(1, store.getJourney().position / GLOW_FADE_STOPS);
-    const opacity = 1 - t * t * (3 - 2 * t);
+    const opacity = voidBackdropOpacity(store.getJourney().position);
     if (opacity === material.current.opacity) return;
     material.current.opacity = opacity;
     mesh.current.visible = opacity > 0;

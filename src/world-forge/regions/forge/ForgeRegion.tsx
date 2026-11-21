@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useThree } from '@react-three/fiber';
+import ForgeAtmosphere from './ForgeAtmosphere';
 import ForgeCore from './ForgeCore';
 import ForgeCrown from './ForgeCrown';
 import ForgeFoundation from './ForgeFoundation';
@@ -29,6 +30,7 @@ export default function ForgeRegion({ animate }: ForgeRegionProps) {
       <ForgeCrown />
       <ForgeOrbit fragments={quality.fragments} animate={animate} />
       <ForgeTerraces />
+      <ForgeAtmosphere embers={quality.embers} animate={animate} />
     </group>
   );
 }

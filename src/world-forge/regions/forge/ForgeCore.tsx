@@ -1,5 +1,8 @@
-import { darkStoneMaterial, forgeBeamMaterial, forgeCoreMaterial, stoneMaterial, unitBox, unitShard } from '../void/materials';
-import { BEAM, CORE, CRUCIBLE, pillarRadiusAt, PILLAR_BANDS } from './forgeLayout';
+import { useEffect, useMemo } from 'react';
+import { darkStoneMaterial, forgeBeamMaterial, stoneMaterial, unitBox, unitShard } from '../void/materials';
+import { BEAM, CORE, CRUCIBLE, pillarRadiusAt, PILLAR_BANDS, SEAM } from './forgeLayout';
+import { forgeSeamCoreMaterial, SEAM_COOL, SEAM_HOT } from './forgeMaterials';
+import { createGradientCylinder } from './seamGeometry';
 
 /** One fractured pillar: tapered shaft, bracing bands, a broken crown shard and a foot block on the dais. */
 function Pillar({ angle }: { angle: number }) {
@@ -33,6 +36,12 @@ function Pillar({ angle }: { angle: number }) {
 
 /** Core: three leaning fractured pillars around the molten seam, the crucible at its foot, and the light column above. */
 export default function ForgeCore() {
+  const seam = useMemo(
+    () => createGradientCylinder(SEAM.coreTop, SEAM.coreBottom, CORE.seamTop - CORE.seamBottom, 10, SEAM_HOT, SEAM_COOL, false, SEAM.coreCurve),
+    [],
+  );
+  useEffect(() => () => seam.dispose(), [seam]);
+
   return (
     <group>
       {CORE.pillarAngles.map((angle) => (
@@ -42,9 +51,8 @@ export default function ForgeCore() {
       <mesh material={darkStoneMaterial} position={[0, CRUCIBLE.daisTop + CRUCIBLE.height / 2, 0]}>
         <cylinderGeometry args={[CRUCIBLE.topRadius, CRUCIBLE.bottomRadius, CRUCIBLE.height, 8]} />
       </mesh>
-      <mesh material={forgeCoreMaterial} position={[0, (CORE.seamBottom + CORE.seamTop) / 2, 0]}>
-        <cylinderGeometry args={[1.1, 1.5, CORE.seamTop - CORE.seamBottom, 8]} />
-      </mesh>
+      {/* The molten seam: white-hot at the crucible, cooling to amber toward the crown. */}
+      <mesh geometry={seam} material={forgeSeamCoreMaterial} position={[0, (CORE.seamBottom + CORE.seamTop) / 2, 0]} />
       <mesh material={forgeBeamMaterial} position={[0, BEAM.y, 0]}>
         <cylinderGeometry args={[BEAM.topRadius, BEAM.bottomRadius, BEAM.height, 12, 1, true]} />
       </mesh>

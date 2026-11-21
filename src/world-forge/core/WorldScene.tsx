@@ -6,6 +6,7 @@ import VoidRegion from '../regions/void/VoidRegion';
 import WorldGeography from '../world/WorldGeography';
 import ForgeRegion from '../regions/forge/ForgeRegion';
 import DevRenderStats from './DevRenderStats';
+import WorldSky from '../atmosphere/WorldSky';
 import CameraRig from '../camera/CameraRig';
 import type { ExperienceStore } from '../experience/experienceStore';
 import { ExperienceContext } from '../experience/ExperienceContext';
@@ -35,6 +36,7 @@ export default function WorldScene({ animate, store }: WorldSceneProps) {
         <directionalLight position={[-18, 14, 30]} intensity={0.9} color={PALETTE.fill} />
       </group>
 
+      <WorldSky />
       <WorldGeography />
       <ForgeRegion animate={animate} />
       <VoidRegion layout={layout} animate={animate} />

@@ -15,6 +15,7 @@ import {
   polar,
   stairCheeks,
 } from './forgeLayout';
+import { forgeSeamMaterial } from './forgeMaterials';
 
 const DEG = Math.PI / 180;
 
@@ -52,13 +53,17 @@ export default function ForgeTerraces() {
     const [w, h, d] = MONUMENT_RING.plinthSize;
     const bases: InstancePlacement[] = [];
     const tops: InstancePlacement[] = [];
+    const inlays: InstancePlacement[] = [];
     for (const site of PLINTH_SITES) {
       const [x, y, z] = site.position;
       const rotation: [number, number, number] = [0, site.bearing * DEG, 0];
       bases.push({ position: [x, y + h * 0.3, z], rotation, scale: [w, h * 0.6, d] });
       tops.push({ position: [x, y + h * 0.8, z], rotation, scale: [w * 0.8, h * 0.4, d * 0.8] });
+      // Amber inlay along the outward face of the base: the site waits for its monument (M5).
+      const [ox, oz] = polar(site.bearing, d / 2 + 0.01);
+      inlays.push({ position: [x + ox, y + h * 0.3, z + oz], rotation, scale: [w * 0.7, 0.07, 0.02] });
     }
-    return { bases, tops };
+    return { bases, tops, inlays };
   }, []);
 
   const paving = useMemo<InstancePlacement[]>(() => {
@@ -79,6 +84,7 @@ export default function ForgeTerraces() {
       <InstancedSet geometry={unitBox} material={darkStoneMaterial} items={walls} />
       <InstancedSet geometry={unitBox} material={darkStoneMaterial} items={plinths.bases} />
       <InstancedSet geometry={unitBox} material={stoneMaterial} items={plinths.tops} />
+      <InstancedSet geometry={unitBox} material={forgeSeamMaterial} items={plinths.inlays} />
       <InstancedSet geometry={unitBox} material={darkStoneMaterial} items={paving} />
       {/* Forecourt: a paved apron at the foot of the grand stair. */}
       <mesh

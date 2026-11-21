@@ -15,7 +15,7 @@ Locked decisions are listed in `THE_WORLD_FORGE_AUTONOMOUS_DOCS/14_DECISION_LOG.
 - Decision: the flat `HorizonGlow` backdrop (built for the opening camera only) fades to invisible over the first 0.45 stops. It's fully opaque at the Void, so the opening is pixel-identical.
 - Why: seen from any other camera its billboard edges appeared as hard wedges across the sky.
 - Consequence: views other than the Void now have a flat dark sky, including the Horizon, whose name implies horizon light. **A world sky/horizon treatment for non-Void views is an open creative decision** (likely part of the M4 atmosphere and M8 Horizon design).
-- Status: **Fade ACCEPTED with M1 approval.** The sky treatment is proposed as an optional M4.6 item (see the M4 proposal §3.4) and needs your decision.
+- Status: **RESOLVED in M4.6 (owner-approved via DEC-007).** `atmosphere/WorldSky.tsx`: a gradient dome (dark zenith, faint cold horizon band brightest toward the north) fades in exactly as the glow fades out, through one shared `voidBackdropOpacity`. The opening is unchanged.
 
 ## DEC-003 — Narrow-layout hero raised to clear the bottom navigation
 - Date: 2026-11-21 · Area: Void UI (mobile/portrait)
