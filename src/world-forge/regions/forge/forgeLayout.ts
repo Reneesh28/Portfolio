@@ -159,10 +159,14 @@ export const CROWN = {
   tube: 0.55,
   /** Tilt of the ring plane (approved): rotation about X of π/2 − 0.08. */
   tilt: Math.PI / 2 - 0.08,
-  /** Segmented halo: deliberately unfinished. [start, length] of each segment, as fractions of the full turn. */
+  /**
+   * Segmented halo, deliberately unfinished: [start, length] of each stone segment as
+   * fractions of a full turn (in-ring angle, same convention as the pillar angles).
+   * Every pillar angle (0, ⅓, ⅔) falls inside a segment, so each strut has stone to carry.
+   */
   segments: [
-    [0.0, 0.1], [0.115, 0.085], [0.215, 0.12], [0.355, 0.075], [0.445, 0.11],
-    [0.57, 0.095], [0.68, 0.115], [0.81, 0.07], [0.895, 0.09],
+    [-0.05, 0.13], [0.1, 0.09], [0.21, 0.15], [0.38, 0.07],
+    [0.475, 0.105], [0.6, 0.13], [0.75, 0.07], [0.845, 0.085],
   ] as ReadonlyArray<Vec2>,
   filamentRadius: 8.05,
   filamentTube: 0.09,

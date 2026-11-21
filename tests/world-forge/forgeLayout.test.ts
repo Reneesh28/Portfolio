@@ -5,6 +5,7 @@ import {
   apothem,
   buttresses,
   CORE,
+  CROWN,
   CRUCIBLE,
   pillarRadiusAt,
   rubbleSkirt,
@@ -132,6 +133,24 @@ describe('forge layout', () => {
     assert.ok(CRUCIBLE.daisTop === TIERS[2].top);
     assert.ok(pillarRadiusAt(-CORE.pillarHeight / 2) === CORE.pillarBottomRadius);
     assert.ok(Math.abs(pillarRadiusAt(CORE.pillarHeight / 2) - CORE.pillarTopRadius) < 1e-9);
+  });
+
+  it('leaves deliberate gaps in the crown but keeps stone above every pillar strut', () => {
+    const segs = [...CROWN.segments].sort((a, b) => a[0] - b[0]);
+    for (let i = 0; i < segs.length; i++) {
+      const [start, length] = segs[i];
+      const next = segs[(i + 1) % segs.length][0] + (i === segs.length - 1 ? 1 : 0);
+      const gap = next - (start + length);
+      assert.ok(gap >= 0.015 && gap <= 0.04, `gap after segment ${i}: ${gap.toFixed(3)}`);
+    }
+    for (const angle of CORE.pillarAngles) {
+      const f = angle / (2 * Math.PI);
+      const covered = segs.some(([start, length]) => {
+        const rel = ((f - start) % 1 + 1) % 1;
+        return rel > 0.02 && rel < length - 0.02;
+      });
+      assert.ok(covered, `pillar at ${f.toFixed(3)} turn has a segment to carry`);
+    }
   });
 
   it('keeps the whole centrepiece inside the Forge ward', () => {
