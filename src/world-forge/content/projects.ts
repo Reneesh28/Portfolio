@@ -4,8 +4,9 @@
  * Every field records where it came from and how far it is confirmed (doc 11:
  * never invent facts). The dossier shows a field only when `isDisplayable` allows
  * it: owner-confirmed text, or the repository text the Classic portfolio already
- * publishes. Conflicts, unconfirmed CV figures and missing content are never shown.
- * There are no pictures (DEC-015).
+ * publishes. Conflicts and missing content are never shown. The owner named the CV
+ * as the source of truth (DEC-025), so CV text, figures included, counts as
+ * owner-confirmed. There are no pictures (DEC-015).
  */
 export type FieldStatus =
   /** Confirmed by the owner. */
@@ -45,12 +46,16 @@ export interface Project {
   status: Field<string>;
   overview: Field<string>;
   tech: Field<string[]>;
+  /** Master-doc dossier fields; each entry is one point, shown only when filled. */
+  approach: Field<string[]>;
+  architecture: Field<string[]>;
   links: Field<ProjectLink[]>;
 }
 
 const repo = <T,>(value: T): Field<T> => ({ value, status: 'repo', source: 'src/data/projects.js (also shown by Classic)' });
+/** The owner's CV, which the owner confirmed as the source of truth ("Everything is in CV", DEC-025). */
+const cv = <T,>(value: T): Field<T> => ({ value, status: 'owner', source: 'public/resume.pdf (owner-confirmed, DEC-025)' });
 const missing = <T,>(value: T): Field<T> => ({ value, status: 'missing', source: 'none' });
-const conflict = <T,>(value: T, note: string): Field<T> => ({ value, status: 'conflict', source: note });
 
 export const PROJECTS: readonly Project[] = [
   {
@@ -61,9 +66,17 @@ export const PROJECTS: readonly Project[] = [
     emblem: 'twin-rings',
     built: true,
     category: repo('Generative AI'),
-    status: conflict('In Development', 'repo says "In Development"; CV says Jan–May 2026'),
-    overview: conflict('', 'repo (generative AI engine) and CV (digital-twin gameplay platform) disagree'),
-    tech: conflict([], 'repo and CV list different stacks'),
+    status: cv('Jan – May 2026'),
+    overview: cv(
+      'A multi-domain Digital Twin intelligence platform for behavioral gameplay analysis, with 200+ execution tasks spanning AI, ML, backend, memory and deployment systems.',
+    ),
+    tech: cv(['Python', 'FastAPI', 'MERN', 'LangGraph', 'FAISS', 'Machine Learning']),
+    approach: cv([
+      'An ML + GenAI intelligence stack using 8D behavioral embeddings, HDBSCAN clustering, LangGraph agents and ~28,000 gameplay samples for adaptive simulations and AI-driven coaching insights.',
+    ]),
+    architecture: cv([
+      'An async distributed architecture with 5-stage execution pipelines, BullMQ workers, FastAPI orchestration and domain-isolated FAISS retrieval systems, enabling deterministic and fault-tolerant AI processing workflows.',
+    ]),
     links: repo([
       { label: 'GitHub', href: 'https://github.com/Reneesh28/NeuroPlay' },
       { label: 'Live demo', href: 'https://neuroplay.vercel.app' },
@@ -79,7 +92,12 @@ export const PROJECTS: readonly Project[] = [
     category: repo('Full Stack'),
     status: repo('Prototype'),
     overview: repo('AETHERION is an AI-powered trading intelligence engine that reads the market in real time and adapts strategies instantly.'),
-    tech: conflict(['React', 'Tailwind', 'Django', 'FastAPI', 'MongoDB', 'Flask', 'MySQL'], 'CV lists more (ML, Kafka, Redis, Docker, WebSockets)'),
+    tech: cv(['Python', 'Machine Learning', 'FastAPI', 'Django', 'Flask', 'React', 'Kafka', 'Redis', 'MongoDB', 'MySQL', 'Docker', 'WebSockets']),
+    approach: cv([
+      'ML-based market regime detection, improving strategy adaptability and prediction accuracy by ~30%.',
+      'Quantitative analytics modules (risk analysis, liquidity stress, anomaly detection), enabling data-driven trading decisions at scale.',
+    ]),
+    architecture: cv(['A microservices architecture with real-time data ingestion and WebSocket streaming, achieving low latency (<200 ms) for live market data.']),
     links: repo([
       { label: 'GitHub (frontend)', href: 'https://github.com/Reneesh28/AETHERION_FRONTEND' },
       { label: 'GitHub (backend)', href: 'https://github.com/Reneesh28/AETHERION_BACKEND' },
@@ -98,6 +116,8 @@ export const PROJECTS: readonly Project[] = [
       'An AI-powered assistant that delivers personalized fitness and nutrition recommendations using health data. Built with multi-turn conversational memory and Retrieval-Augmented Generation (RAG).',
     ),
     tech: repo(['Python', 'LangChain', 'FAISS', 'Streamlit', 'FastAPI', 'Sentence Transformers', 'Groq API']),
+    approach: missing([]),
+    architecture: missing([]),
     links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/Nutrifit-AI' }]),
   },
   {
@@ -111,6 +131,8 @@ export const PROJECTS: readonly Project[] = [
     status: repo('In Development'),
     overview: repo('An AI-driven financial literacy and advisory platform leveraging LLMs to simplify complex economic principles into personalized advice.'),
     tech: repo(['Python', 'Pandas', 'LLMs', 'FastAPI']),
+    approach: missing([]),
+    architecture: missing([]),
     links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/FinLit-AI' }]),
   },
   {
@@ -124,6 +146,8 @@ export const PROJECTS: readonly Project[] = [
     status: repo('Prototype'),
     overview: repo('A real-time safety and behavioral intelligence platform that processes live video feeds using computer vision to detect anomalies.'),
     tech: repo(['Python', 'Computer Vision', 'Real-Time Processing']),
+    approach: missing([]),
+    architecture: missing([]),
     links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/PARAS' }]),
   },
   {
@@ -137,6 +161,8 @@ export const PROJECTS: readonly Project[] = [
     status: repo('Source Available'),
     overview: repo('An interactive Streamlit dashboard that analyzes gameplay data from Excel files and generates personalized game recommendations using LLMs.'),
     tech: repo(['Python', 'Streamlit', 'Pandas', 'NumPy', 'Groq API', 'Matplotlib', 'Plotly']),
+    approach: missing([]),
+    architecture: missing([]),
     links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/Game_Stats_Dashboard_Recommendation-System' }]),
   },
   {
@@ -152,6 +178,8 @@ export const PROJECTS: readonly Project[] = [
       'An advanced Machine Learning-powered statistics dashboard designed to analyze sales performance, uncover trends, and generate predictive insights using large-scale datasets.',
     ),
     tech: repo(['Python', 'Machine Learning', 'Data Analytics', 'Statistics', 'Dashboarding']),
+    approach: missing([]),
+    architecture: missing([]),
     links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/Project_ML' }]),
   },
   {
@@ -165,6 +193,8 @@ export const PROJECTS: readonly Project[] = [
     status: missing(''),
     overview: missing(''),
     tech: missing([]),
+    approach: missing([]),
+    architecture: missing([]),
     links: missing([]),
   },
 ];

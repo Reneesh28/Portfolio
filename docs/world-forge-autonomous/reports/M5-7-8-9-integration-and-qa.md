@@ -1,7 +1,7 @@
 # M5.7–M5.9 report: navigation, responsive / accessibility / performance, QA
 
 Date: 2026-11-21 · Branch `the-world-forge` (uncommitted; commits remain off) · Decision: DEC-024
-Status: **M5.7 and M5.8 done; M5.9 QA done. Waiting on your M5 lock.**
+Status: **M5 LOCKED** ("PRoceed", DEC-025, 2026-11-22). Committed as `ee17210`.
 
 ## What changed for you
 - **Desktop Works index** is now a vertical list at the lower right. The old centred block covered the Projects terrace, and so the very works it named. With the Forge framed left of centre, the whole terrace stays visible (`m5-review/m59-forge-desktop.jpg`).
@@ -78,3 +78,8 @@ Review images (`m5-review/`): `m59-forge-desktop.jpg` (Works list on the right, 
 
 ## For the lock
 To lock M5, please confirm the eight monuments, the Works index (right-hand list on desktop, row on phones), and the focus, switch and close behaviour. The content answers can come later: they only fill in dossiers. Still open: NeuroPlay (site or CV), AETHERION's tech list, CV figures, Chronoshift's details, the short names, link-testing permission, commit permission.
+
+## After the lock: CV content (DEC-025)
+- NeuroPlay's overview, tech and dates, and AETHERION's tech, now come from the CV. The CV's project bullets fill the master-doc fields **Approach** and **Architecture**, figures included. A single point shows as a paragraph, several as a list with amber markers.
+- Checks: `npm test` 101/101 (new test: NeuroPlay and AETHERION fields come from the CV and are displayable) · typecheck, lint and build clean · M5 probe 41/41 (its NeuroPlay check now expects the CV content) · M5.8 probe 19/19.
+- Images: `m5-review/m5-cv-neuroplay-desktop.jpg`, `m5-cv-neuroplay-phone.jpg`, `m5-cv-aetherion-desktop.jpg`.

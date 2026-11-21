@@ -608,6 +608,19 @@
   line-height: 1.6;
   color: #ddd6f5;
 }
+.wf-root .wf-dossier-points {
+  margin: 0;
+  padding-left: 1.1rem;
+  list-style: disc outside;
+  line-height: 1.6;
+  color: #ddd6f5;
+}
+.wf-root .wf-dossier-points li::marker {
+  color: #d8a35c;
+}
+.wf-root .wf-dossier-points li + li {
+  margin-top: 0.4rem;
+}
 .wf-root .wf-dossier-tech,
 .wf-root .wf-dossier-links {
   display: flex;

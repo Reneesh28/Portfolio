@@ -2,9 +2,11 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { PerspectiveCamera, Vector3 } from 'three';
 import { approach, computeProjectFocusPose, easeFocus, FOCUS_MOTION, focusGlideLift } from '../../src/world-forge/camera/cameraTargets.ts';
-import { builtProjects, isDisplayable, PROJECTS, projectById } from '../../src/world-forge/content/projects.ts';
+import { builtProjects, isDisplayable, PROJECTS, projectById, type Project } from '../../src/world-forge/content/projects.ts';
 import { PLINTH, PLINTH_SITES, PROJECTS_TERRACE } from '../../src/world-forge/regions/forge/hubLayout.ts';
 import { buildTerrace } from '../../src/world-forge/regions/forge/monumentGeometry.ts';
+
+const fields = (p: Project) => [p.category, p.status, p.overview, p.tech, p.approach, p.architecture, p.links];
 
 describe('project content (M5, doc 11 rules)', () => {
   it('has 8 projects, one per Projects-terrace plinth, featured works in the centre', () => {
@@ -15,20 +17,26 @@ describe('project content (M5, doc 11 rules)', () => {
   });
 
   it('never shows conflicting, unconfirmed or missing content', () => {
-    const neuro = projectById('neuroplay');
-    assert.ok(neuro);
-    assert.equal(isDisplayable(neuro.overview), false, 'NeuroPlay description conflicts with the CV');
-    assert.equal(isDisplayable(neuro.tech), false);
-    assert.equal(isDisplayable(neuro.status), false);
-    const aetherion = projectById('aetherion');
-    assert.equal(aetherion && isDisplayable(aetherion.tech), false, 'AETHERION tech list awaits the owner');
     const chrono = projectById('chronoshift');
-    assert.ok(chrono && [chrono.category, chrono.status, chrono.overview, chrono.tech, chrono.links].every((f) => !isDisplayable(f)), 'nothing invented for Chronoshift');
+    assert.ok(chrono && fields(chrono).every((f) => !isDisplayable(f)), 'nothing invented for Chronoshift');
     for (const p of PROJECTS) {
-      for (const f of [p.category, p.status, p.overview, p.tech, p.links]) {
+      for (const f of fields(p)) {
         if (isDisplayable(f)) assert.ok(f.status === 'owner' || f.status === 'repo', `${p.id}: only owner or published repo text`);
       }
     }
+  });
+
+  it('takes NeuroPlay and AETHERION from the owner-confirmed CV (DEC-025)', () => {
+    const neuro = projectById('neuroplay');
+    const aetherion = projectById('aetherion');
+    assert.ok(neuro && aetherion);
+    for (const f of [neuro.overview, neuro.status, neuro.tech, neuro.approach, neuro.architecture, aetherion.tech, aetherion.approach, aetherion.architecture]) {
+      assert.equal(f.status, 'owner');
+      assert.match(f.source, /resume\.pdf/);
+      assert.ok(isDisplayable(f));
+    }
+    assert.ok(neuro.tech.value.includes('LangGraph') && aetherion.tech.value.includes('Kafka'), 'the CV stacks');
+    assert.ok(aetherion.approach.value.some((t) => t.includes('~30%')) && neuro.approach.value.some((t) => t.includes('~28,000')), 'the CV figures');
   });
 
   it('uses no pictures (DEC-015) and only secure external links', () => {

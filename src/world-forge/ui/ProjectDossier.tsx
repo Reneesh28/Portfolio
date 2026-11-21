@@ -1,7 +1,26 @@
 import { useEffect, useId, useRef, type KeyboardEvent } from 'react';
-import { builtProjects, isDisplayable, projectById } from '../content/projects';
+import { builtProjects, isDisplayable, projectById, type Field } from '../content/projects';
 import { useExperienceStore } from '../experience/ExperienceContext';
 import { useDismissLayer } from './useDismissLayer';
+
+/** A master-doc detail field (approach, architecture): one point as a paragraph, several as a list. */
+function Points({ title, field }: { title: string; field: Field<string[]> }) {
+  if (!isDisplayable(field)) return null;
+  return (
+    <section>
+      <h3>{title}</h3>
+      {field.value.length === 1 ? (
+        <p>{field.value[0]}</p>
+      ) : (
+        <ul className="wf-dossier-points">
+          {field.value.map((point) => (
+            <li key={point}>{point}</li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
 
 interface ProjectDossierProps {
   projectId: string;
@@ -86,6 +105,8 @@ export default function ProjectDossier({ projectId, onRestoreFocus }: ProjectDos
             // No confirmed description yet (doc 11: nothing invented): say so plainly.
             <p className="wf-dossier-pending">Details to follow.</p>
           )}
+          <Points title="Approach" field={project.approach} />
+          <Points title="Architecture" field={project.architecture} />
           {isDisplayable(project.tech) && (
             <section>
               <h3>Tech stack</h3>

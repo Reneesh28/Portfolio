@@ -3,7 +3,7 @@
 Doc 11 rules apply: no invented facts, metrics, descriptions, links or media.
 
 **Sources, in priority order:**
-1. Owner confirmation (none yet).
+1. Owner confirmation. The owner named the CV as the source of truth ("Everything is in CV", DEC-025), so CV text counts as owner-confirmed.
 2. The repository: `src/data/projects.js`, Classic's data.
 3. The owner's CV: `public/resume.pdf`.
 
@@ -14,18 +14,18 @@ The external links were **not opened**: fetching them would send your GitHub use
 ## Project-by-project
 | Project | Item | Current content (source) | Issue | Status |
 |---|---|---|---|---|
-| NeuroPlay Engine | Description | "Generative AI engine … dynamic interactive experiences" (repo) | **Conflicts with the CV**, which describes a Digital Twin intelligence platform for behavioural gameplay analysis | NEEDS OWNER |
-| NeuroPlay Engine | Tech | Repo: Python, LangChain, Generative AI, React. CV: Python, FastAPI, MERN, LangGraph, FAISS, ML (BullMQ, HDBSCAN in text) | Two different stacks | NEEDS OWNER |
-| NeuroPlay Engine | Status / dates | Repo: "In Development". CV: Jan–May 2026 (ended) | Conflict | NEEDS OWNER |
+| NeuroPlay Engine | Description | The CV's Digital Twin platform for behavioural gameplay analysis (the site's "generative AI engine" text is dropped) | Resolved: "Cv" (DEC-025) | VERIFIED |
+| NeuroPlay Engine | Tech | CV: Python, FastAPI, MERN, LangGraph, FAISS, Machine Learning | Resolved (DEC-025) | VERIFIED |
+| NeuroPlay Engine | Status / dates | CV: Jan – May 2026 | Resolved (DEC-025) | VERIFIED |
 | NeuroPlay Engine | Links | Code `github.com/…/NeuroPlay`, live `neuroplay.vercel.app` (repo) | Not tested | NEEDS OWNER |
 | NeuroPlay Engine | Image | `sales_analytics.webp` (repo) | **Wrong image** (it is SPAE's) | OMIT unless replaced |
-| NeuroPlay Engine | Detail fields | The CV has architecture, approach and figures (200+ tasks, ~28,000 samples) | Figures need your confirmation before display | NEEDS OWNER |
+| NeuroPlay Engine | Approach / Architecture | CV bullets, figures included (200+ tasks, ~28,000 samples) | Shown (DEC-025) | VERIFIED |
 | AETHERION | Description | "AI-powered trading intelligence engine …" (repo); the CV agrees on the substance | Consistent | DRAFT (confirm) |
-| AETHERION | Tech | Repo: React, Tailwind, Django, FastAPI, MongoDB, Flask, MySQL. The CV adds ML, Kafka, Redis, Docker, WebSockets | The repo list is incomplete | NEEDS OWNER |
+| AETHERION | Tech | CV: Python, Machine Learning, FastAPI, Django, Flask, React, Kafka, Redis, MongoDB, MySQL, Docker, WebSockets | Resolved: the CV's list (DEC-025) | VERIFIED |
 | AETHERION | Status | "Prototype" (repo); CV: Jan 2026 – present | Consistent | DRAFT (confirm) |
 | AETHERION | Links | Frontend and backend repositories (repo); no live demo | Not tested | NEEDS OWNER |
 | AETHERION | Image | `smart_cities.webp` (repo) | **Wrong image** (shared with FinLit, unrelated subject) | OMIT unless replaced |
-| AETHERION | Results | CV: "~30%" accuracy improvement, "<200 ms" latency | Metrics shown only if you confirm them | NEEDS OWNER |
+| AETHERION | Approach / Architecture | CV bullets, figures included (~30%, <200 ms) | Shown (DEC-025) | VERIFIED |
 | NutriFit AI | Description, tech, status | RAG fitness and nutrition assistant; Python, LangChain, FAISS, Streamlit, FastAPI, Sentence Transformers, Groq API; "Source Available" (repo) | Repo only | DRAFT (confirm) |
 | NutriFit AI | Links | Code repository (repo) | Not tested | NEEDS OWNER |
 | NutriFit AI | Image | `nutrifit_ai.webp` | Matches the project | DRAFT (confirm) |

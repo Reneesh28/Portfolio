@@ -218,6 +218,28 @@ Recorded before implementation, as doc 16 requires:
   - **Fixes from the new probes:** the phone Works row couldn't reach its first works (centred overflow); the phone World Map clipped the Void's marker; the dossier overlapped the bottom navigation by 2–3 px; Previous/Next now name the neighbouring work for screen readers.
 - Status: **OWNER DIRECTION** / **IMPLEMENTATION DECISIONS (M5.7–M5.8)**
 
+## DEC-025 — CV as the content source; M5 locked; commits allowed
+- Date: 2026-11-22 · Owner, in reply to the M5.9 report (which asked for the M5 lock and listed the open content, link-testing and commit questions): "Cv" · "Everything is in CV" · "PRoceed" · "Commit permssion granted".
+- **Taken as:**
+  - **"Cv":** NeuroPlay uses the CV's version. Overview, tech stack and dates (Jan – May 2026) now come from `public/resume.pdf`. The site's older "generative AI engine" text is no longer used in the World Forge.
+  - **"Everything is in CV":** the CV is the owner-confirmed source for every open content question it answers:
+    - AETHERION's tech list is the CV's list. Tailwind, which only the site listed, drops out.
+    - The CV figures are shown (~30%, <200 ms, 200+ tasks, ~28,000 samples).
+    - The CV's project bullets fill the master-doc dossier fields **Approach** and **Architecture**, close to verbatim. For NeuroPlay, the first bullet becomes the overview.
+    - The short name "AETHERION" matches the CV ("Aetherion").
+  - **"PRoceed":** the **M5 lock**, since it came in reply to the lock request. M6 starts with its first gate: the Origin Sanctum content audit and design proposal (doc 16 M6.1).
+  - **"Commit permssion granted":** commits on `the-world-forge` are allowed. The work QA'd in M5.9 was committed as it stood (`ee17210`); later work is committed stage by stage.
+- **Not in the CV, so unchanged:**
+  - Chronoshift (its dossier still says "Details to follow");
+  - the name "NutriFit AI";
+  - the other five works' repository text (still marked DRAFT in development builds);
+  - NeuroPlay's display name, which keeps the site's spelling "NeuroPlay Engine" (CV: "Neuro Play Engine").
+- **Not taken as:**
+  - permission to test the project links (still needs an explicit yes);
+  - permission to push, merge or deploy;
+  - permission to change Classic. Classic still shows the site's NeuroPlay text and a CGPA of 6.91 (the CV says 6.86); correcting it is a Classic change.
+- Status: **OWNER DECISION** (content source, M5 lock, commits)
+
 ## Open items carried forward (not decided)
 - **World Map:** master doc §8/§9 make it the "primary navigation entry" (a clean illustrated SVG map), and the master M3 lists "World map reflecting geography". Not built (doc 05: not in M1). It needs a design and scheduling decision.
 - **Controls fading after inactivity** (master doc §9): not implemented. It's UI polish with rules (no fading while focused, open or interacting).
