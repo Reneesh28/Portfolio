@@ -24,6 +24,23 @@ export interface CameraPose {
   fov: number;
 }
 
+/**
+ * Narrow-screen variant of a framing (aspect below `NARROW_ASPECT`): its own camera
+ * placement, and a vertical field of view derived from a fixed horizontal coverage,
+ * so the landmark's full width holds at any portrait ratio.
+ */
+interface NarrowFraming {
+  offset: Vec3;
+  aim: Vec3;
+  /** Horizontal field of view to keep, degrees. */
+  horizontalFov: number;
+  /** Lower bound for the vertical field of view, degrees. */
+  minFov: number;
+}
+
+/** Below this aspect a framing's `narrow` variant applies (matches the Void layout and CSS threshold, 5/4). */
+export const NARROW_ASPECT = 5 / 4;
+
 interface RegionFraming {
   /** Camera position relative to the region anchor. */
   offset: Vec3;
@@ -33,6 +50,7 @@ interface RegionFraming {
   fov: number;
   /** `provisional` (M1 functional framing) or the milestone whose approved design set it. */
   status: 'provisional' | 'M4';
+  narrow?: NarrowFraming;
 }
 
 /** Provisional framings for every stop after the Void (route order). */
@@ -43,7 +61,14 @@ export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionF
   // about terrace height. The Forge sits left of centre and fills ≈ 60% of the frame
   // height; the monument ring is in the lower foreground and the right side stays
   // clear for the M5 dossier panel.
-  'world-forge': { offset: [33.8, 18, 72.5], aim: [12.7, 22, -5.9], fov: 50, status: 'M4' },
+  // Narrow screens: centred, pulled back and higher, so the whole silhouette fits (M4.8).
+  'world-forge': {
+    offset: [33.8, 18, 72.5],
+    aim: [12.7, 22, -5.9],
+    fov: 50,
+    status: 'M4',
+    narrow: { offset: [38.9, 26, 83.4], aim: [0, 21, 0], horizontalFov: 33, minFov: 50 },
+  },
   // The archive skyline from the Forge avenue.
   'blueprint-archive': { offset: [-51, 28, 67], aim: [2, 8, -1], fov: 50, status: 'provisional' },
   // The terrace spiral and summit seen from high above the north-west shoulder.
@@ -122,9 +147,19 @@ export function computeRegionPose(id: RegionId, width: number, height: number): 
   if (id === 'void') return computeVoidPose(width, height);
   const anchor = anchorOf(id);
   const framing = REGION_FRAMINGS[id];
+  const aspect = width / Math.max(height, 1);
+  const narrow = aspect < NARROW_ASPECT ? framing.narrow : undefined;
+  if (narrow) {
+    const vertical = toDeg(2 * Math.atan(Math.tan(toRad(narrow.horizontalFov / 2)) / aspect));
+    return {
+      position: add(anchor, narrow.offset),
+      target: add(anchor, narrow.aim),
+      fov: Math.min(MAX_FOV, Math.max(narrow.minFov, vertical)),
+    };
+  }
   return {
     position: add(anchor, framing.offset),
     target: add(anchor, framing.aim),
-    fov: responsiveFov(framing.fov, width / Math.max(height, 1)),
+    fov: responsiveFov(framing.fov, aspect),
   };
 }

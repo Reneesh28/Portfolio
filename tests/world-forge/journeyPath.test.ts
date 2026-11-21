@@ -95,6 +95,30 @@ describe('journey camera path', () => {
     assert.ok(crown.y < 0.95 && axisBottom.y > -0.95, 'base and crown both in frame');
   });
 
+  it('on narrow screens, centres the whole Forge and keeps every transition clear', () => {
+    for (const [w, h] of [[390, 844], [360, 640], [820, 1180]]) {
+      const narrowPoses = JOURNEY_ROUTE.map((region) => computeRegionPose(region.id, w, h));
+      const forge = narrowPoses[JOURNEY_ROUTE.findIndex((r) => r.id === 'world-forge')];
+      const camera = new PerspectiveCamera(forge.fov, w / h, 0.1, 1200);
+      camera.position.fromArray(forge.position);
+      camera.lookAt(new Vector3().fromArray(forge.target));
+      camera.updateMatrixWorld();
+      const ndc = (p: [number, number, number]) => new Vector3(...p).project(camera);
+      for (const p of [[0, 0, 0], [0, 48, 0], [-22, 6, 0], [22, 6, 0], [0, 6, 22]] as Array<[number, number, number]>) {
+        const v = ndc(p);
+        assert.ok(Math.abs(v.x) < 1 && Math.abs(v.y) < 1, `${w}×${h}: Forge point ${p} in frame (${v.x.toFixed(2)}, ${v.y.toFixed(2)})`);
+      }
+      const narrowPath = createJourneyPath(narrowPoses, routeSegmentArcs(JOURNEY_ROUTE, TRAVEL_ARC));
+      const sample = fresh();
+      for (let p = 0; p <= narrowPoses.length - 1; p += 0.01) {
+        narrowPath.sample(p, sample);
+        assert.ok(sample.position.y >= 2, `${w}×${h}: camera above ground at ${p.toFixed(2)}`);
+        const r = Math.hypot(sample.position.x, sample.position.z);
+        assert.ok(!(r < 34 && sample.position.y < 50) && !(r < 24 && sample.position.y < 58), `${w}×${h}: clear of the Forge at ${p.toFixed(2)}`);
+      }
+    }
+  });
+
   it('clamps out-of-range and invalid positions to the route ends', () => {
     assert.deepEqual(path.sample(-3, fresh()).position.toArray(), poses[0].position);
     assert.deepEqual(path.sample(99, fresh()).position.toArray(), poses[poses.length - 1].position);
