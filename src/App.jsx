@@ -10,8 +10,15 @@ import Experience from "./sections/Experience";
 import Contact from "./sections/Contact";
 import Footer from "./components/Footer";
 import GlobalControls from "./components/GlobalControls";
+import WorldForge from "./world-forge/WorldForge";
+import { resolveMode } from "./world-forge/mode";
 
 function App() {
+  // Exactly one experience mounts. World Forge is the default; Classic needs ?mode=classic.
+  if (resolveMode() === "world") {
+    return <WorldForge />;
+  }
+
   return (
     <div className="bg-bg min-h-screen text-text font-body">
       <Navigation />
