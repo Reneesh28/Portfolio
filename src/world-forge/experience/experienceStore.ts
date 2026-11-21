@@ -49,6 +49,8 @@ export interface ExperienceSnapshot {
   sanctumView: string | null;
   /** The Blueprint Archive panel's open skill category (M6.2), or null when closed. */
   archiveCategory: string | null;
+  /** The Path of Ascension's chosen milestone (M6.3; the camera focuses it), or null when closed. */
+  ascensionMilestone: string | null;
 }
 
 /**
@@ -97,6 +99,11 @@ export interface ExperienceStore {
    */
   openArchive(category: string | null): void;
   /**
+   * Choose a Path of Ascension milestone (focus and timeline panel), or close it (null). Only
+   * honoured at the Path of Ascension while idle; direct navigation clears it.
+   */
+  openAscension(milestone: string | null): void;
+  /**
    * Travel to the World Forge and open a work's dossier once the camera arrives there idle
    * (M6.2 evidence links). Any other navigation, or arriving anywhere else, cancels it.
    */
@@ -119,6 +126,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
   let focusedProject: string | null = null;
   let sanctumView: string | null = null;
   let archiveCategory: string | null = null;
+  let ascensionMilestone: string | null = null;
   let pendingProject: string | null = null;
   const listeners = new Set<() => void>();
 
@@ -132,6 +140,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     focusedProject,
     sanctumView,
     archiveCategory,
+    ascensionMilestone,
   });
 
   let snapshot = buildSnapshot();
@@ -145,7 +154,8 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       next.reducedMotion === snapshot.reducedMotion &&
       next.focusedProject === snapshot.focusedProject &&
       next.sanctumView === snapshot.sanctumView &&
-      next.archiveCategory === snapshot.archiveCategory
+      next.archiveCategory === snapshot.archiveCategory &&
+      next.ascensionMilestone === snapshot.ascensionMilestone
     ) {
       return;
     }
@@ -175,6 +185,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     focusedProject = null;
     sanctumView = null;
     archiveCategory = null;
+    ascensionMilestone = null;
     pendingProject = null;
   };
 
@@ -228,6 +239,13 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       if (category !== null && (snapshot.currentRegion !== 'blueprint-archive' || journey.phase !== 'idle')) return;
       if (category === archiveCategory) return;
       archiveCategory = category;
+      wake?.();
+      publish();
+    },
+    openAscension(milestone) {
+      if (milestone !== null && (snapshot.currentRegion !== 'path-of-ascension' || journey.phase !== 'idle')) return;
+      if (milestone === ascensionMilestone) return;
+      ascensionMilestone = milestone;
       wake?.();
       publish();
     },

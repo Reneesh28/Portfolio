@@ -8,6 +8,7 @@ import JourneyNav from './ui/JourneyNav';
 import WorksPanel from './ui/WorksPanel';
 import SanctumPanel from './ui/SanctumPanel';
 import ArchivePanel from './ui/ArchivePanel';
+import AscensionPanel from './ui/AscensionPanel';
 import WorldStage from './ui/WorldStage';
 import { useJourneyInput } from './input/useJourneyInput';
 import VoidHero from './regions/void/VoidHero';
@@ -55,6 +56,7 @@ function WorldForgeExperience() {
         </a>
         <SanctumPanel />
         <ArchivePanel />
+        <AscensionPanel />
         <WorksPanel />
         <JourneyNav />
       </WorldStage>

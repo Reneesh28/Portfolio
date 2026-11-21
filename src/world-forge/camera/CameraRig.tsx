@@ -7,6 +7,7 @@ import { JOURNEY_ROUTE } from '../experience/route';
 import {
   approach,
   computeFragmentFocusPose,
+  computeMilestoneFocusPose,
   computeProjectFocusPose,
   type CameraPose,
   computeRegionPose,
@@ -20,12 +21,14 @@ import { INTRO, introRemaining } from './intro';
 import { createJourneyPath, TRAVEL_ARC, type SampledPose } from './journeyPath';
 import type { ExperienceSnapshot } from '../experience/experienceStore';
 import type { FragmentId } from '../regions/sanctum/sanctumLayout';
+import { isMilestone } from '../content/timeline';
 
 const FRAGMENTS: readonly string[] = ['engineer', 'creator', 'explorer'];
 
 /**
- * What the camera focuses on, if anything: a project's monument at the Forge (M5), or an
- * identity fragment at the Origin Sanctum (M6.1; the Sanctum's overview has no focus).
+ * What the camera focuses on, if anything: a project's monument at the Forge (M5), an identity
+ * fragment at the Origin Sanctum (M6.1; the Sanctum's overview has no focus), or a milestone on
+ * the Path of Ascension (M6.3). The Blueprint Archive never moves the camera (M6.2).
  */
 function focusTarget(snap: ExperienceSnapshot, width: number, height: number): { id: string; pose: () => CameraPose | null } | null {
   if (snap.focusedProject) {
@@ -35,6 +38,10 @@ function focusTarget(snap: ExperienceSnapshot, width: number, height: number): {
   if (snap.sanctumView && FRAGMENTS.includes(snap.sanctumView)) {
     const fragment = snap.sanctumView as FragmentId;
     return { id: `fragment:${fragment}`, pose: () => computeFragmentFocusPose(fragment, width, height) };
+  }
+  if (isMilestone(snap.ascensionMilestone)) {
+    const milestone = snap.ascensionMilestone;
+    return { id: `milestone:${milestone}`, pose: () => computeMilestoneFocusPose(milestone, width, height) };
   }
   return null;
 }

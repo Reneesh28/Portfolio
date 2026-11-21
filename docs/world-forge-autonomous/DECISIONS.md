@@ -285,6 +285,28 @@ Recorded before implementation, as doc 16 requires:
 - Not taken as: link testing, Classic changes, or push/merge/deploy.
 - Status: **OWNER DIRECTION**
 
+## DEC-030 — M6.2 locked; M6.3 Path of Ascension design approved with its defaults
+- Date: 2026-11-22 · Owner: "We can proceed with this Good to go", in reply to the report that asked for the M6.2 lock and the four M6.3 decisions.
+- **M6.2 Blueprint Archive is LOCKED** (commit `2f56215`).
+- **M6.3 "The Lit Ascent" is approved as proposed**, with the proposal's stated defaults:
+  - five milestones in the proposed grouping and order: Foundations, University, Leadership, Professional, Building;
+  - the CV-based lines, figures included; HackerRank under University;
+  - **left out** (only Classic has them): secondary school, the freeCodeCamp certificate, the AniCos dates, and the Algo Tutor Academy training.
+- **Consequence for the locked Archive:** the "Training" label came only from that Classic training entry, so it is removed from RAG and Docker. RAG keeps NutriFit AI as evidence, and Docker keeps AETHERION. No other Archive change.
+- **Correction to the proposal:** §2.1 said the extra floating platform sits between pa-3 and the summit, but its own table puts Leadership between pa-2 and pa-3. The table is followed.
+- Not taken as: link testing, Classic changes, or push/merge/deploy.
+- Next: M6.3 stages 3–7 autonomously, committed stage by stage; **M6.3 QA and lock is the owner's stop**.
+- Status: **OWNER DECISION** (lock and design gate)
+
+## DEC-031 — "Proceed" during the M6.3 QA (M6.3 commit; M7 gate)
+- Date: 2026-11-22 · Owner: "Proceed", sent twice while the M6.3 QA run was in progress and before the M6.3 report.
+- **Taken as** (as in DEC-029):
+  - finish the M6.3 QA, fix what it finds, and commit. One fix was needed: the desktop timeline card overlapped the navigation by 4 px;
+  - prepare **M7 Worlds Beyond's design gate**: the interest audit (M7.1), the Convergence design (M7.2) and six territory concepts (M7.5). These are documents only, with no code until approval.
+- **Not taken as the M6.3 lock.** The owner hasn't seen the M6.3 results, so the lock stays open.
+- Not taken as: link testing, Classic changes, or push/merge/deploy.
+- Status: **OWNER DIRECTION**
+
 ## Open items carried forward (not decided)
 - **World Map:** master doc §8/§9 make it the "primary navigation entry" (a clean illustrated SVG map), and the master M3 lists "World map reflecting geography". Not built (doc 05: not in M1). It needs a design and scheduling decision.
 - **Controls fading after inactivity** (master doc §9): not implemented. It's UI polish with rules (no fading while focused, open or interacting).

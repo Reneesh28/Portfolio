@@ -20,6 +20,8 @@ import { PLINTH, PLINTH_SITES } from '../regions/forge/hubLayout';
 import { projectById } from '../content/projects';
 import { fragmentCentre, toWorldDirection, type FragmentId } from '../regions/sanctum/sanctumLayout';
 import { toWorldDirection as archiveDirection } from '../regions/archive/archiveLayout';
+import { CLIMB_CENTRE, CLIMB_DIRECTION, TOWARD_HUB, waystone } from '../regions/ascension/ascensionLayout';
+import type { MilestoneId } from '../content/timeline';
 
 export interface CameraPose {
   position: Vec3;
@@ -136,6 +138,44 @@ const archiveFraming: RegionFraming = {
   },
 };
 
+/**
+ * The Path of Ascension (M6.3, DEC-030): from the hub side, turned a third of the way down the
+ * climb, so all four islands and the five waystones read as an ascent, the summit rising to the
+ * left and behind. It is centred: choosing
+ * a milestone always moves the camera to that milestone (master doc §6), which clears the panel.
+ */
+export const ASCENSION_VIEW = {
+  /** Radians the view turns from square-on toward the foot of the climb (a three-quarter view up the ascent). */
+  turn: 0.6,
+  /** `aimAlong`: metres the aim sits down the climb from its centre (the near foot needs more of the frame). */
+  wide: { distance: 255, height: 62, aimHeight: 6, aimAlong: -34, fov: 50 },
+  narrow: { distance: 470, height: 135, aimHeight: -16, aimAlong: -14, horizontalFov: 62, minFov: 50 },
+} as const;
+
+const ascensionFraming: RegionFraming = (() => {
+  const anchor = REGIONS.find((r) => r.id === 'path-of-ascension')?.position ?? [0, 0, 0];
+  const c = Math.cos(ASCENSION_VIEW.turn);
+  const s = Math.sin(ASCENSION_VIEW.turn);
+  const hx = TOWARD_HUB[0] * c - CLIMB_DIRECTION[0] * s;
+  const hz = TOWARD_HUB[1] * c - CLIMB_DIRECTION[1] * s;
+  const rel = (d: number, h: number, aim: number, aimAlong: number) => ({
+    offset: [CLIMB_CENTRE[0] + hx * d - anchor[0], CLIMB_CENTRE[1] + h - anchor[1], CLIMB_CENTRE[2] + hz * d - anchor[2]] as Vec3,
+    aim: [
+      CLIMB_CENTRE[0] + CLIMB_DIRECTION[0] * aimAlong - anchor[0],
+      CLIMB_CENTRE[1] + aim - anchor[1],
+      CLIMB_CENTRE[2] + CLIMB_DIRECTION[1] * aimAlong - anchor[2],
+    ] as Vec3,
+  });
+  const wide = rel(ASCENSION_VIEW.wide.distance, ASCENSION_VIEW.wide.height, ASCENSION_VIEW.wide.aimHeight, ASCENSION_VIEW.wide.aimAlong);
+  const narrow = rel(ASCENSION_VIEW.narrow.distance, ASCENSION_VIEW.narrow.height, ASCENSION_VIEW.narrow.aimHeight, ASCENSION_VIEW.narrow.aimAlong);
+  return {
+    ...wide,
+    fov: ASCENSION_VIEW.wide.fov,
+    status: 'M6',
+    narrow: { ...narrow, horizontalFov: ASCENSION_VIEW.narrow.horizontalFov, minFov: ASCENSION_VIEW.narrow.minFov },
+  };
+})();
+
 /** Framings for every stop after the Void (route order). */
 export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionFraming>> = {
   'origin-sanctum': sanctumFraming,
@@ -149,7 +189,7 @@ export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionF
     narrow: { offset: [-186, 210, 695], aim: [0, 150, 0], horizontalFov: 44, minFov: 50 },
   },
   'blueprint-archive': archiveFraming,
-  'path-of-ascension': islandFraming('path-of-ascension', 0.4),
+  'path-of-ascension': ascensionFraming,
   'worlds-beyond': islandFraming('worlds-beyond'),
   horizon: islandFraming('horizon'),
 };
@@ -307,6 +347,36 @@ export function computeFragmentFocusPose(id: FragmentId, width: number, height: 
     ? [centre[0], centre[1] - reach * FRAGMENT_FOCUS.narrowDropShare, centre[2]]
     : [centre[0] + right[0] * FRAGMENT_FOCUS.wideShift, centre[1], centre[2] + right[2] * FRAGMENT_FOCUS.wideShift];
   return { position, target, fov: narrow ? settled.fov * FRAGMENT_FOCUS.narrowFovScale : FRAGMENT_FOCUS.wideFov };
+}
+
+/** Milestone focus (M6.3): a three-quarter view of the waystone from beside the path, on the hub side. */
+export const MILESTONE_FOCUS = { turn: 0.35, base: 30, perHeight: 1.2, wideFov: 42, narrowFov: 56, wideShift: 0.2, narrowDrop: 0.3 } as const;
+
+/**
+ * Focus view of a Path of Ascension milestone (M6.3): from the hub side of the path, turned a
+ * little down the climb, so the waystone and the path rising beyond it both read. Wide screens
+ * put the waystone left of centre (the panel takes the right side); narrow screens put it in
+ * the upper part, above the sheet.
+ */
+export function computeMilestoneFocusPose(id: MilestoneId, width: number, height: number): CameraPose {
+  const w = waystone(id);
+  const narrow = width / Math.max(height, 1) < NARROW_ASPECT;
+  const [hx, hz] = TOWARD_HUB;
+  const [dx, dz] = CLIMB_DIRECTION;
+  const c = Math.cos(MILESTONE_FOCUS.turn);
+  const s = Math.sin(MILESTONE_FOCUS.turn);
+  const vx = hx * c - dx * s;
+  const vz = hz * c - dz * s;
+  const reach = (MILESTONE_FOCUS.base + w.height * MILESTONE_FOCUS.perHeight) * (narrow ? 1.35 : 1);
+  const [px, py, pz] = w.position;
+  const position: Vec3 = [px + vx * reach, py + 8 + w.height * 0.6, pz + vz * reach];
+  // The camera's right when facing the waystone (looking along −v): forward × up.
+  const right: Vec3 = [vz, 0, -vx];
+  const mid = py + w.height * 0.55;
+  const target: Vec3 = narrow
+    ? [px, mid - reach * MILESTONE_FOCUS.narrowDrop, pz]
+    : [px + right[0] * reach * MILESTONE_FOCUS.wideShift, mid, pz + right[2] * reach * MILESTONE_FOCUS.wideShift];
+  return { position, target, fov: narrow ? MILESTONE_FOCUS.narrowFov : MILESTONE_FOCUS.wideFov };
 }
 
 /**

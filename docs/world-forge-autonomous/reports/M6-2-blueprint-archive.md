@@ -1,7 +1,7 @@
 # M6.2 report: The Blueprint Archive ("The Drafting Hall")
 
 Date: 2026-11-22. Branch `the-world-forge`, committed when QA passes. Decision: DEC-028.
-Status: **M6.2 stages 4–8 done; QA done. Waiting on your M6.2 lock.**
+Status: **M6.2 LOCKED** ("We can proceed with this Good to go", DEC-030, 2026-11-22). Commit `2f56215`. After the lock, the "Training" label was removed from RAG and Docker, because its only source was Classic's training entry, which DEC-030 leaves out.
 
 ## What you'll see
 - **The island.** After the overview pan, the camera settles over the blue archive island from the hub side.

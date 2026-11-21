@@ -11,7 +11,7 @@
 export type SkillCategoryId = 'ai' | 'software' | 'data' | 'games';
 export type SkillTier = 'in-use' | 'exploring';
 /** Roles, training and credentials shown beside a skill (the CV and the image are sources, not shown). */
-export type EvidenceLabel = 'Freelance' | 'Internship' | 'Training' | 'Certificate';
+export type EvidenceLabel = 'Freelance' | 'Internship' | 'Certificate';
 
 export interface Skill {
   name: string;
@@ -46,7 +46,7 @@ export const SKILL_CATEGORIES: readonly SkillCategory[] = [
     skills: [
       skill('Machine learning', ['aetherion', 'neuroplay', 'spae'], ['machine learning', 'ml-based'], ['Internship'], `${CV}; ${WORKS}`),
       skill('LLM applications', ['nutrifit', 'finlit', 'game-stats'], ['llm', 'groq'], [], WORKS),
-      skill('Retrieval-augmented generation (RAG)', ['nutrifit'], ['retrieval-augmented', 'rag'], ['Training'], `${WORKS}; Classic experience.js (training)`),
+      skill('Retrieval-augmented generation (RAG)', ['nutrifit'], ['retrieval-augmented', 'rag'], [], WORKS),
       skill('Embeddings and vector search', ['neuroplay', 'nutrifit'], ['embedding', 'faiss', 'sentence transformers'], [], `${CV}; ${WORKS}`),
       skill('AI agents (LangGraph)', ['neuroplay'], ['langgraph'], [], CV),
       skill('LangChain', ['nutrifit'], ['langchain'], [], `${CV}; ${WORKS}`),
@@ -87,7 +87,7 @@ export const SKILL_CATEGORIES: readonly SkillCategory[] = [
       skill('Redis', ['aetherion'], ['redis'], ['Freelance'], CV),
       skill('Kafka', ['aetherion'], ['kafka'], [], CV),
       skill('Task queues (Celery, BullMQ)', ['neuroplay'], ['bullmq'], ['Freelance'], CV),
-      skill('Docker', ['aetherion'], ['docker'], ['Training'], `${CV}; Classic experience.js (training)`),
+      skill('Docker', ['aetherion'], ['docker'], [], CV),
       skill('AWS (EC2, RDS, S3)', [], [], ['Freelance', 'Certificate'], `${CV} (freelance; AWS Certified Cloud Practitioner, Apr 2026)`),
       skill('Git and GitHub', [], [], ['Freelance'], `${CV}; ${IMAGE}`),
       skill('Netlify', [], [], [], IMAGE),

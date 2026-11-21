@@ -13,18 +13,18 @@ Commits: allowed on this branch since 2026-11-22 (DEC-025). P1–P5 and M5 are c
 | M3 | REOPENED. P2 archipelago owner-approved (DEC-018); World Map data in place (UI in P5) | `reports/P2-geography.md` |
 | M4 | REOPENED. P3 golden spire-city hub owner-approved (DEC-019) | `reports/P3-world-forge-hub.md` |
 | M5 | **LOCKED** ("PRoceed", DEC-025); NeuroPlay and AETHERION content from the CV | `reports/M5-7-8-9-integration-and-qa.md` (and `M5-5-6-works-and-dossier.md`) |
-| M6 | IN PROGRESS. M6.1 Origin Sanctum **LOCKED** (DEC-027). M6.2 Blueprint Archive built and QA'd (DEC-028); **waiting on your M6.2 lock**. M6.3 Path of Ascension: timeline audit done; **design proposal waiting on your approval** | `reports/M6-2-blueprint-archive.md`, `proposals/M6-3-path-of-ascension-design-proposal.md` |
-| M7 | NOT STARTED | — |
+| M6 | M6.1 **LOCKED** (DEC-027) · M6.2 **LOCKED** (DEC-030) · M6.3 Path of Ascension built and QA'd (DEC-030); **waiting on your M6.3 lock** | `reports/M6-3-path-of-ascension.md` |
+| M7 | GATE. Interest audit, Convergence design and six territory concepts written; **waiting on your approval and your content per zone** | `proposals/M7-worlds-beyond-design-proposal.md` |
 | M8 | NOT STARTED | — |
 | M9 | NOT STARTED | — |
 
 ## Current stage
-Stage: M6.2 Blueprint Archive: stages 4–8 and QA done, **lock is yours**. M6.3 Path of Ascension: timeline audit and design proposal written, **approval is yours** (DEC-029)
-Objective (M6.2): "The Drafting Hall" built as approved: four structures that stand as drawings and build when chosen, no camera travel between categories, skills as in use (with works and roles) or exploring, work buttons opening dossiers in the Forge
-Files: `regions/archive/*`, `content/skills.ts`, `ui/ArchivePanel.tsx`, `camera/cameraTargets.ts`, `experience/experienceStore.ts`, `core/WorldCanvas.tsx`; report `reports/M6-2-blueprint-archive.md`
-Validation: `npm test` 122/122 · typecheck/lint/build clean · M6.2 probe 105/105 (high and low) · M6.1 105/105 · M5 41/41 · M5.7 39/39 · M5.8 19/19 (high and low) · map 21/21 · regression 70/70 · Classic Δ 0 against the M6.1 capture
-Blockers: **M6.2 lock (owner)**; **M6.3 design approval (owner)**: direction, Classic-only items (secondary school, freeCodeCamp, AniCos dates, Algo Tutor training), the milestone content
-Next: on the M6.3 approval, the M6.3 blockout (`proposals/M6-3-path-of-ascension-design-proposal.md`)
+Stage: M6.3 Path of Ascension: stages 3–7 and QA done, **lock is yours**. M7 Worlds Beyond: design gate written (DEC-031), **approval and content are yours**
+Objective (M6.3): "The Lit Ascent" built as approved: path and stair spans over four islands, five waystones, lanterns lighting up to the chosen milestone, a timeline selector and panel with CV facts, milestone focus
+Files: `regions/ascension/*`, `content/timeline.ts`, `ui/AscensionPanel.tsx`, `camera/{cameraTargets,CameraRig}`, `experience/experienceStore.ts`; report `reports/M6-3-path-of-ascension.md`
+Validation: `npm test` 130/130 · typecheck/lint/build clean · M6.3 probe 105/105 (high and low) · M6.2 105/105 · M6.1 105/105 · M5 41/41 · M5.7 39/39 · M5.8 19/19 (high and low) · map 21/21 · regression 70/70 · Classic Δ 0 against the M6.2 capture
+Blockers: **M6.3 lock (owner)**; **M7 concept approval and one to three lines of content per zone (owner)**
+Next: on the M7 approval, the Convergence build (M7.3–M7.4), then one representative territory and your review (M7.6–M7.7)
 
 ## Owner decisions needed
 - [x] P1 look approved ("Proceed with phase 2, we are good to go")
@@ -39,8 +39,9 @@ Next: on the M6.3 approval, the M6.3 blockout (`proposals/M6-3-path-of-ascension
 - [x] M6.1 design approved: "proceed" (DEC-026); the three unsourced items left out
 - [x] M6.1 lock: "Proceed, M6.1 Locked and good" (DEC-027)
 - [x] M6.2 design approved: "The Drafting hall - Proceed with everything"; skills = CV + the owner's image (DEC-028)
-- [ ] **M6.2 lock**: the Drafting Hall, build-on-select, the skills panel, the work hand-off
-- [ ] **M6.3 Path of Ascension design**: direction, Classic-only items, milestone content (proposal §4)
+- [x] M6.2 lock and M6.3 design: "We can proceed with this Good to go" (DEC-030)
+- [ ] **M6.3 lock**: the Lit Ascent, the timeline selector and panel, the milestone focus and lanterns
+- [ ] **M7 Worlds Beyond**: concept set, content per zone, build order (proposal §4)
 - [ ] Assets: procedural only, or present CC0/licensed candidates
 - [ ] Chronoshift content: description, stack, status, links
 - [ ] Update docs 02/06, or keep overrides only in DECISIONS.md

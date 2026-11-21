@@ -30,6 +30,7 @@ describe('experience store', () => {
       focusedProject: null,
       sanctumView: null,
       archiveCategory: null,
+      ascensionMilestone: null,
     });
   });
 

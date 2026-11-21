@@ -1,4 +1,4 @@
-# Content Inventory — World Forge projects (M5.1), Origin Sanctum (M6.1), Blueprint Archive (M6.2), Path of Ascension (M6.3)
+# Content Inventory — World Forge projects (M5.1), Origin Sanctum (M6.1), Blueprint Archive (M6.2), Path of Ascension (M6.3), Worlds Beyond (M7.1)
 
 Doc 11 rules apply: no invented facts, metrics, descriptions, links or media.
 
@@ -150,13 +150,33 @@ Notes:
 | Path of Ascension | Certificates (2024) | The Bits and Bytes of Computer Networking (Sep 2024); Fundamentals of Network Communication, Coursera (Oct 2024) | CV (Classic agrees: Google and University of Colorado, via Coursera, 2024) | CV (DEC-025) | VERIFIED |
 | Path of Ascension | AniCos leadership | AniCos Student Organization: Volunteer → Board Member → Co-CEO, over two years | CV | CV (DEC-025) | VERIFIED |
 | Path of Ascension | AniCos title conflict | Co-CEO (CV) vs "CEO" (Classic) | CV wins (DEC-025) | — | Resolved |
-| Path of Ascension | AniCos dates | Classic: Aug 2023 – present; the CV says only "over two years" | Classic only | — | NEEDS OWNER (default: no dates shown) |
+| Path of Ascension | AniCos dates | Classic: Aug 2023 – present; the CV says only "over two years" | Classic only | DEC-030 | OMIT (shown as "over two years") |
 | Path of Ascension | HackerRank | 5 stars in various programming languages (undated) | CV | CV (DEC-025) | VERIFIED |
 | Path of Ascension | Machine Learning Intern | MacBease Connections Private Limited · Nov 2025 – present · admin dashboard (React + Node.js), ~35% better data visibility and decision-making efficiency; data visualisation pipelines and user management, ~40% less manual processing; testing and backend tuning, ~25% faster load times | CV (Classic agrees on role and start) | CV (DEC-025) | VERIFIED |
 | Path of Ascension | Full Stack Developer (freelance) | Jan 2026 – present · hybrid B2B + B2C marketplace (role-based access, catalogue, checkout; 1000+ projected users); credit-based ledger and order lifecycle pipelines; Redis, Celery and AWS (EC2, RDS, S3), API responses 40–60% faster under load | CV | CV (DEC-025) | VERIFIED |
 | Path of Ascension | AWS Certified Cloud Practitioner | CLF-C02 · Apr 2026 | CV | CV (DEC-025) | VERIFIED |
 | Path of Ascension | Projects | AETHERION (Jan 2026 – present); NeuroPlay Engine (Jan – May 2026) | CV | CV (DEC-025) | VERIFIED |
-| Path of Ascension | Secondary school (10th) | Vedanta Childhood High School, Anantapur · 2016 – 2021 · 99.6% | Classic only | — | NEEDS OWNER (default omit) |
-| Path of Ascension | Generative AI training | AI-Powered NLP & Generative AI Training, Algo Tutor Academy · Jun – Aug 2025 | Classic only (it also backs the Archive's "Training" label for RAG and Docker) | — | NEEDS OWNER (keep, or drop it here and in the Archive) |
-| Path of Ascension | freeCodeCamp certificate | Legacy Responsive Web Design (2023) | Classic only | — | NEEDS OWNER (default omit) |
+| Path of Ascension | Secondary school (10th) | Vedanta Childhood High School, Anantapur · 2016 – 2021 · 99.6% | Classic only | DEC-030 | OMIT |
+| Path of Ascension | Generative AI training | AI-Powered NLP & Generative AI Training, Algo Tutor Academy · Jun – Aug 2025 | Classic only | DEC-030 | OMIT (here, and as the Archive's "Training" label) |
+| Path of Ascension | freeCodeCamp certificate | Legacy Responsive Web Design (2023) | Classic only | DEC-030 | OMIT |
 | Path of Ascension | "Future development" | — | Belongs to the Horizon (M8), with the owner's ambitions | — | Not here |
+
+## Worlds Beyond (M7.1 interest audit, 2026-11-22)
+**Sources:**
+- the master doc §6 Region 05 (owner-written: it names the six zones and what each should reveal);
+- the CV (AniCos only);
+- Classic: nothing about interests.
+
+doc 06: "Audit content to verify six interests. Do not invent hobbies."
+
+| Region | Item | Proposed content | Source | Owner confirmation | Status |
+|---|---|---|---|---|---|
+| Worlds Beyond | The six interests | Anime & Manga · Story-driven Games · Formula 1 · Gaming & Content Creation · The Guild (AniCos) · The Training Grounds (fitness) | Master doc §6 | Owner-written | VERIFIED (names only) |
+| Worlds Beyond | Anime & Manga: what to say | — (which series or genres; text only, no character art) | None | — | NEEDS OWNER |
+| Worlds Beyond | Story-driven Games: what to say | — (which games or narrative interests) | None | — | NEEDS OWNER |
+| Worlds Beyond | Formula 1: what to say | — (what draws you: teams, engineering, racing) | None | — | NEEDS OWNER |
+| Worlds Beyond | Gaming & Content Creation | The master doc names "gaming, streaming, YouTube, Amarok, and creative experiments"; no detail, links or channel names anywhere else | Master doc only | — | NEEDS OWNER (what Amarok is; any links) |
+| Worlds Beyond | The Guild: AniCos progression | Volunteer → Board Member → Co-CEO, over two years | CV (DEC-025) | CV | VERIFIED |
+| Worlds Beyond | The Guild: "leading 50+ members", events, coordination | Master doc asks to verify them; not in the CV | Master doc only | — | NEEDS OWNER |
+| Worlds Beyond | The Guild: title | Master doc says "leadership/CEO"; the CV says Co-CEO | CV wins (DEC-025) | — | Resolved: Co-CEO |
+| Worlds Beyond | Training Grounds: what to say | — (fitness, discipline, consistency, in your words; no body statistics) | None | — | NEEDS OWNER |

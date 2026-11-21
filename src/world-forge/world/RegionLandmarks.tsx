@@ -8,7 +8,7 @@ import { mergeParts, placement, type Part } from '../core/mergeStatic';
  * P2 landmark blockouts: one simple, recognisable silhouette per region so each
  * island reads from a distance. These are placeholders; each region's real design
  * belongs to its own milestone (M6–M8). The Origin Sanctum's was replaced in M6.1, the
- * Blueprint Archive's in M6.2. Stone is baked into one draw; glowing
+ * Blueprint Archive's in M6.2, the Path of Ascension's in M6.3. Stone is baked into one draw; glowing
  * accents are baked per colour.
  */
 const islandTop = (id: string): Vec3 => {
@@ -48,14 +48,9 @@ function build(): Built {
     }
   }
 
-  // 04 Path of Ascension: a pale peak on each climbing island; a beacon on the summit.
-  for (const id of ['pa-1', 'pa-2', 'pa-3']) {
-    const p = islandTop(id);
-    stone.push([peak, placement(at(p, 4, 9, -3), [0, rand() * 3, 0], [11, 18, 11])]);
-  }
-  const summit = islandTop('pa-summit');
-  stone.push([pillar, placement(at(summit, 0, 12, 0), [0, 0, 0], [2.4, 24, 2.4])]);
-  accent(accentOf('path-of-ascension'), [gem, placement(at(summit, 0, 28, 0), [0, 0, 0], [3, 4.5, 3])]);
+  // 04 Path of Ascension: built by its own region since M6.3 (`regions/ascension`). Its old peaks
+  // drew from the shared random sequence; consume the same draws so the later blockouts stay as approved.
+  for (let k = 0; k < 3; k++) rand();
 
   // 05 Worlds Beyond: the Convergence's standing stones and monolith; one landmark per territory.
   const wb = islandTop('wb-convergence');
