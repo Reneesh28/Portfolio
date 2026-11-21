@@ -414,6 +414,16 @@ export function connectionEnds(): { sanctum: [Vec2, Vec2]; archive: [Vec2, Vec2]
 
 /* ---------------------------------------------------------------- Quality */
 
+/** Forge activation on arrival (master P1): one swell of the seam, then it settles. Seconds. */
+export const ACTIVATION = { rise: 0.3, fall: 0.9, glowBoost: 0.3, lightBoost: 0.6, emberBoost: 0.8 } as const;
+
+/** Activation strength (0–1) `t` seconds after arrival: quick ease-in swell, slower ease-out settle, then 0. */
+export function activationEnvelope(t: number): number {
+  if (!(t >= 0) || t >= ACTIVATION.rise + ACTIVATION.fall) return 0;
+  const ease = (x: number) => x * x * (3 - 2 * x);
+  return t < ACTIVATION.rise ? ease(t / ACTIVATION.rise) : 1 - ease((t - ACTIVATION.rise) / ACTIVATION.fall);
+}
+
 /** Amber seams where each tier meets the one above it (just proud of the upper tier's foot). */
 export const TIER_SEAMS = TIERS.slice(1).map((tier) => ({ radius: tier.bottomRadius + 0.05, y: tier.bottom + 0.16, height: 0.16 }));
 

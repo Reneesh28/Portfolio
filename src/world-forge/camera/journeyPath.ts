@@ -27,10 +27,10 @@ export const TRAVEL_ARC = 0.13;
  * Smooth camera path through the stop poses. Positions and look-at points follow
  * centripetal Catmull-Rom curves (no cusps or loops, continuous through stops),
  * so travel never jerks when scroll carries the camera past a region. A travel
- * arc lifts the camera between stops. At an exact stop the registered pose is
- * returned unchanged.
+ * arc lifts the camera between stops (or, per segment via `segmentArcs`, dips it
+ * for a designed arrival). At an exact stop the registered pose is returned unchanged.
  */
-export function createJourneyPath(poses: readonly CameraPose[]): JourneyPath {
+export function createJourneyPath(poses: readonly CameraPose[], segmentArcs?: readonly number[]): JourneyPath {
   if (poses.length === 0) throw new Error('A journey path needs at least one pose');
   const last = poses.length - 1;
   const toVectors = (pick: (pose: CameraPose) => readonly number[]) =>
@@ -40,7 +40,9 @@ export function createJourneyPath(poses: readonly CameraPose[]): JourneyPath {
   const targets = toVectors((pose) => pose.target);
   const positionCurve = last > 0 ? new CatmullRomCurve3(positions, false, 'centripetal') : null;
   const targetCurve = last > 0 ? new CatmullRomCurve3(targets, false, 'centripetal') : null;
-  const arcHeights = positions.slice(1).map((to, i) => Math.hypot(to.x - positions[i].x, to.z - positions[i].z) * TRAVEL_ARC);
+  const arcHeights = positions
+    .slice(1)
+    .map((to, i) => Math.hypot(to.x - positions[i].x, to.z - positions[i].z) * (segmentArcs?.[i] ?? TRAVEL_ARC));
 
   return {
     stopCount: poses.length,

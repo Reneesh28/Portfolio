@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   ALL_FLIGHTS,
+  activationEnvelope,
   apothem,
   buttresses,
   CORE,
@@ -196,6 +197,16 @@ describe('forge layout', () => {
         assert.ok(d > corner + 0.45 || Math.abs(cheek.position[1] - site.position[1]) > 3, 'cheek clear of plinth');
       }
     }
+  });
+
+  it('activates once on arrival: a quick swell that settles back to rest', () => {
+    assert.equal(activationEnvelope(-1), 0);
+    assert.equal(activationEnvelope(0), 0);
+    assert.ok(Math.abs(activationEnvelope(0.3) - 1) < 1e-9);
+    assert.equal(activationEnvelope(1.2), 0);
+    assert.equal(activationEnvelope(Number.POSITIVE_INFINITY), 0);
+    assert.equal(activationEnvelope(Number.NaN), 0);
+    for (let t = 0; t <= 1.2; t += 0.05) assert.ok(activationEnvelope(t) >= 0 && activationEnvelope(t) <= 1);
   });
 
   it('keeps the whole centrepiece inside the Forge ward', () => {

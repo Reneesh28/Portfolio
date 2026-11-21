@@ -4,8 +4,8 @@ import { PerspectiveCamera } from '@react-three/drei';
 import { Vector3, type PerspectiveCamera as ThreePerspectiveCamera } from 'three';
 import { useExperienceStore } from '../experience/ExperienceContext';
 import { JOURNEY_ROUTE } from '../experience/route';
-import { computeRegionPose } from './cameraTargets';
-import { createJourneyPath, type SampledPose } from './journeyPath';
+import { computeRegionPose, routeSegmentArcs } from './cameraTargets';
+import { createJourneyPath, TRAVEL_ARC, type SampledPose } from './journeyPath';
 
 /**
  * The only camera writer in the World Forge.
@@ -23,7 +23,11 @@ export default function CameraRig() {
   const invalidate = useThree((state) => state.invalidate);
 
   const path = useMemo(
-    () => createJourneyPath(JOURNEY_ROUTE.map((region) => computeRegionPose(region.id, width, height))),
+    () =>
+      createJourneyPath(
+        JOURNEY_ROUTE.map((region) => computeRegionPose(region.id, width, height)),
+        routeSegmentArcs(JOURNEY_ROUTE, TRAVEL_ARC),
+      ),
     [width, height],
   );
   const pose = useMemo<SampledPose>(() => ({ position: new Vector3(), target: new Vector3(), fov: 50 }), []);

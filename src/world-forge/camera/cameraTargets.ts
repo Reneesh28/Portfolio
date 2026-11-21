@@ -31,15 +31,19 @@ interface RegionFraming {
   aim: Vec3;
   /** Vertical field of view at the reference aspect (16:10). */
   fov: number;
-  status: 'provisional';
+  /** `provisional` (M1 functional framing) or the milestone whose approved design set it. */
+  status: 'provisional' | 'M4';
 }
 
 /** Provisional framings for every stop after the Void (route order). */
 export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionFraming>> = {
   // Arriving from the Void approach: the terrace, colonnade and obelisk from the south-west.
   'origin-sanctum': { offset: [-48, 18, 63], aim: [0, 6, 0], fov: 50, status: 'provisional' },
-  // The Forge placeholder from the south-east, outside the ward ring (M4 replaces the Forge).
-  'world-forge': { offset: [48, 30, 82], aim: [0, 20, 0], fov: 50, status: 'provisional' },
+  // M4 settled view (DEC-007): three-quarter from the south-south-east (bearing ≈ 25°) at
+  // about terrace height. The Forge sits left of centre and fills ≈ 60% of the frame
+  // height; the monument ring is in the lower foreground and the right side stays
+  // clear for the M5 dossier panel.
+  'world-forge': { offset: [33.8, 18, 72.5], aim: [12.7, 22, -5.9], fov: 50, status: 'M4' },
   // The archive skyline from the Forge avenue.
   'blueprint-archive': { offset: [-51, 28, 67], aim: [2, 8, -1], fov: 50, status: 'provisional' },
   // The terrace spiral and summit seen from high above the north-west shoulder.
@@ -49,6 +53,21 @@ export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionF
   // The unfinished tip and its ledge, looking out toward the horizon light.
   horizon: { offset: [13, 16, 55], aim: [-3, 7, -45], fov: 50, status: 'provisional' },
 };
+
+/**
+ * Travel-arc overrides for the segment ARRIVING at a region (share of the segment's
+ * horizontal length; negative dips). Every other segment uses the default `TRAVEL_ARC`.
+ * - World Forge: the camera comes in low along the Sanctum avenue, then rises into
+ *   the settled view, so the crown climbs through the frame (the M4 reveal).
+ */
+export const ARRIVAL_ARCS: Readonly<Partial<Record<RegionId, number>>> = {
+  'world-forge': -0.08,
+};
+
+/** Per-segment travel arcs for a route (segment i runs from stop i to stop i + 1). */
+export function routeSegmentArcs(route: readonly { id: RegionId }[], fallback: number): number[] {
+  return route.slice(1).map((region) => ARRIVAL_ARCS[region.id] ?? fallback);
+}
 
 const REFERENCE_ASPECT = 16 / 10;
 const MAX_FOV = 72;
