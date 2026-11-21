@@ -2,17 +2,11 @@ import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import projectsData from '../data/projects';
-import ComicSpread from '../components/comic/ComicSpread';
-import ComicPanel from '../components/comic/ComicPanel';
-import InkButton from '../components/comic/InkButton';
-import TiltCard from '../components/comic/TiltCard';
-import StampReveal from '../components/comic/StampReveal';
-import FrameStutter from '../components/comic/FrameStutter';
-import KineticTitle from '../components/comic/KineticTitle';
-import { Network, FileText, Cpu, Layout, Play, Github } from 'lucide-react';
-import { SectionPortal } from '../components/comic/PortalTransition';
+import { Network, Cpu, Layout, Play, Github } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const linkButtonClass = "inline-flex w-full justify-center items-center gap-2 px-4 py-3 rounded-md text-xs md:text-sm font-medium transition-opacity hover:opacity-90";
 
 const Projects = () => {
   const sectionRef = useRef(null);
@@ -35,11 +29,11 @@ const Projects = () => {
       let { isDesktop, reduceMotion } = context.conditions;
 
       if (reduceMotion) {
-        gsap.set('.project-6panel', { opacity: 1 });
+        gsap.set('.project-card', { opacity: 1 });
         return;
       }
 
-      gsap.from('.project-6panel', {
+      gsap.from('.project-card', {
         y: isDesktop ? 100 : 30,
         opacity: 0,
         duration: 0.8,
@@ -56,48 +50,45 @@ const Projects = () => {
     return () => mm.revert();
   }, []);
 
+  const modeButtonClass = (active) =>
+    `px-4 py-2 rounded text-sm font-medium transition-colors flex items-center gap-2 ${active ? 'bg-accent text-accent-contrast' : 'text-text-muted hover:text-text'}`;
+
   return (
-    <ComicSpread id="projects" tearColor="var(--color-paper-light)" className="bg-[var(--color-ink-black)] text-[var(--color-text-on-dark)] border-t-8 border-b-8 border-[var(--color-paper)] z-30" ref={sectionRef}>
-      <SectionPortal colorA="var(--color-portal-cyan)" colorB="var(--color-saffron)" />
-
-      <div className="absolute inset-0 bg-halftone-cyan opacity-10 pointer-events-none mix-blend-screen"></div>
-
-      <div className="relative z-10 w-full max-w-[1920px] mx-auto flex flex-col items-center">
+    <section ref={sectionRef} id="projects" className="relative w-full min-h-screen flex flex-col py-24 px-4 md:px-12 lg:px-24 bg-surface text-text border-y border-border z-30">
+      <div className="relative w-full max-w-[1920px] mx-auto flex flex-col items-center">
 
         <div className="text-center mb-8 relative flex flex-col items-center">
-          <p className="font-label uppercase tracking-[0.3em] font-bold text-[var(--color-dimension-magenta)] mb-2">EXPLORE THE MULTIVERSE</p>
-          <FrameStutter steps={5}>
-            <StampReveal sfx="SNAP!" color="var(--color-dimension-magenta)" rotation={-5}>
-              <h2 className="font-display text-4xl md:text-7xl lg:text-8xl tracking-wider text-[var(--color-text-on-dark)] relative z-10 text-shadow-magenta">
-                <KineticTitle as="span">CASE STUDIES</KineticTitle>
-              </h2>
-            </StampReveal>
-          </FrameStutter>
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-text">
+            Projects
+          </h2>
 
-          <div className="mt-8 flex gap-4 bg-[var(--color-deep-navy)] p-1 rounded-sm border-2 border-[var(--color-portal-cyan)]">
+          <div className="mt-8 flex gap-2 bg-bg p-1 rounded-md border border-border">
             <button
               onClick={() => setTechMode(false)}
-              className={`px-4 py-2 font-label font-bold text-sm uppercase transition-colors flex items-center gap-2 ${!techMode ? 'bg-[var(--color-portal-cyan)] text-[var(--color-ink-black)]' : 'text-white hover:text-[var(--color-portal-cyan)]'}`}
+              className={modeButtonClass(!techMode)}
+              aria-pressed={!techMode}
             >
               <Layout size={16} /> Simplify Mode
             </button>
             <button
               onClick={() => setTechMode(true)}
-              className={`px-4 py-2 font-label font-bold text-sm uppercase transition-colors flex items-center gap-2 ${techMode ? 'bg-[var(--color-portal-cyan)] text-[var(--color-ink-black)]' : 'text-white hover:text-[var(--color-portal-cyan)]'}`}
+              className={modeButtonClass(techMode)}
+              aria-pressed={techMode}
             >
               <Cpu size={16} /> Technical Mode
             </button>
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4 mb-16 px-4">
+        <div className="flex flex-wrap justify-center gap-3 mb-16 px-4">
           {categories.map((cat, idx) => (
             <button
               key={idx}
               onClick={() => setFilter(cat)}
-              className={`font-label uppercase font-bold tracking-widest text-sm md:text-base px-4 py-2 border-4 transition-all duration-200 comic-focus ${filter === cat
-                ? 'bg-[var(--color-comic-yellow)] border-[var(--color-comic-yellow)] text-[var(--color-ink-black)] transform -translate-y-1 shadow-[4px_4px_0_var(--color-portal-cyan)]'
-                : 'bg-transparent border-[var(--color-text-muted-dark)] text-[var(--color-text-on-dark)] hover:border-[var(--color-portal-cyan)] hover:text-[var(--color-portal-cyan)]'
+              aria-pressed={filter === cat}
+              className={`text-sm md:text-base font-medium px-4 py-2 rounded-full border transition-colors duration-200 ${filter === cat
+                ? 'bg-accent border-accent text-accent-contrast'
+                : 'bg-transparent border-border text-text hover:bg-surface-raised'
                 }`}
             >
               {cat}
@@ -105,155 +96,125 @@ const Projects = () => {
           ))}
         </div>
 
-        <div className="w-full px-4 md:px-8 lg:px-12 flex flex-col gap-16">
+        <div className="w-full px-4 md:px-8 lg:px-12 flex flex-col gap-12">
           {filteredProjects.map((project, index) => {
-            let themeColor = 'var(--color-comic-yellow)';
-            if (project.palette === 'cyan') themeColor = 'var(--color-portal-cyan)';
-            if (project.palette === 'red') themeColor = 'var(--color-signal-red)';
-            if (project.palette === 'magenta') themeColor = 'var(--color-dimension-magenta)';
-            if (project.palette === 'acid') themeColor = 'var(--color-acid-green)';
+            const hasCodeLink = project.codeLink && project.codeLink !== "#" && !project.codeLink.includes("syncing");
+            const hasLiveLink = project.liveLink && project.liveLink !== "#" && !project.liveLink.includes("syncing");
+            const linksUnavailable = (!project.codeLink && !project.codeLinkBackend && !project.liveLink) || project.codeLink?.includes("syncing");
 
             return (
-              <TiltCard
+              <article
                 key={index}
-                maxTilt={5}
-                className="project-6panel w-full bg-[var(--color-deep-navy)] border-4 p-4 shadow-[12px_12px_0_rgba(0,0,0,1)]"
-                style={{ borderColor: themeColor }}
+                className="project-card w-full rounded-lg border border-border bg-bg p-4 md:p-6"
               >
-                {/* Comic page header */}
-                <div className="flex justify-between items-end border-b-4 pb-2 mb-4" style={{ borderColor: themeColor }}>
-                  <h3 className="font-display text-3xl md:text-5xl uppercase" style={{ color: themeColor }}>{project.title}</h3>
-                  <span className="font-label uppercase font-bold text-sm bg-white text-[var(--color-ink-black)] px-2 py-1 transform rotate-2">{project.category}</span>
+                <div className="flex flex-wrap justify-between items-end gap-3 border-b border-border pb-3 mb-4">
+                  <h3 className="text-2xl md:text-4xl font-bold">{project.title}</h3>
+                  <span className="text-xs font-medium rounded border border-border px-2 py-1 text-text-muted">{project.category}</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                  {/* Panel 1: Cover Image (Spans 2 cols on tablet, 1 on desktop) */}
-                  <div className="md:col-span-2 lg:col-span-1 border-4 border-[var(--color-ink-black)] relative overflow-hidden group min-h-[250px]">
+                  {/* Cover Image */}
+                  <div className="md:col-span-2 lg:col-span-1 rounded-md border border-border relative overflow-hidden min-h-[250px]">
                     <img
                       src={project.image}
                       alt={project.title}
-                      className="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-700"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-halftone-cyan opacity-40 mix-blend-overlay"></div>
-                    <div className="absolute top-2 left-2 bg-[var(--color-ink-black)] text-white text-xs font-bold px-2 py-1 border-2 border-white">COVER</div>
                     {project.featured && (
-                      <StampReveal
-                        sfx={null}
-                        color="var(--color-signal-red)"
-                        rotation={-18}
-                        className="absolute top-3 right-3 z-20"
-                      >
-                        <span
-                          className="inline-block font-display uppercase text-xs md:text-sm px-3 py-1 border-3 rounded-full"
-                          style={{
-                            color: 'var(--color-signal-red)',
-                            borderColor: 'var(--color-signal-red)',
-                            borderWidth: '3px',
-                            backgroundColor: 'rgba(8,8,10,0.7)',
-                            letterSpacing: '0.1em',
-                          }}
-                        >
-                          FEATURED
-                        </span>
-                      </StampReveal>
+                      <span className="absolute top-3 right-3 text-xs font-semibold uppercase tracking-wider rounded-full px-3 py-1 bg-bg/80 text-text border border-border">
+                        Featured
+                      </span>
                     )}
                   </div>
 
-                  {/* Panel 2: The Brief (Overview) */}
-                  <div className="border-4 border-[var(--color-ink-black)] bg-[var(--color-paper-light)] text-[var(--color-ink-black)] p-6 relative">
-                    <div className="absolute top-2 left-2 font-label font-bold text-xs text-[var(--color-pencil-gray)]">PANEL 2: THE BRIEF</div>
-                    <p className="font-body text-base md:text-lg mt-4 font-medium leading-tight">
+                  {/* Overview */}
+                  <div className="rounded-md border border-border bg-surface p-6">
+                    <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Overview</p>
+                    <p className="text-base md:text-lg mt-3 leading-snug">
                       {project.description}
                     </p>
-                    <div className="mt-4 font-label font-bold uppercase text-xs" style={{ color: themeColor }}>
+                    <p className="mt-4 text-xs font-medium uppercase text-text-muted">
                       Status: {project.status}
-                    </div>
+                    </p>
                   </div>
 
-                  {/* Panel 3: Architecture Map or Simplified Impact */}
-                  <div className="md:col-span-3 lg:col-span-1 border-4 border-[var(--color-ink-black)] bg-white p-6 relative flex flex-col justify-center items-center text-center overflow-hidden">
-                    <div className="absolute top-2 left-2 font-label font-bold text-xs text-[var(--color-pencil-gray)] z-10">PANEL 3: {techMode ? "ARCHITECTURE" : "IMPACT"}</div>
+                  {/* Architecture or Impact */}
+                  <div className="md:col-span-3 lg:col-span-1 rounded-md border border-border bg-surface p-6 flex flex-col">
+                    <p className="text-xs font-medium uppercase tracking-wider text-text-muted">{techMode ? "Architecture" : "Impact"}</p>
 
                     {techMode ? (
-                      <div className="w-full h-full border-2 border-dashed border-[var(--color-portal-cyan)] mt-4 p-4 flex flex-col items-center justify-center bg-[var(--color-deep-navy)] text-white bg-halftone-light bg-blend-overlay">
-                        <Network size={32} className="text-[var(--color-portal-cyan)] mb-2" />
-                        <span className="font-mono text-xs text-[var(--color-portal-cyan)]">SYSTEM_ARCH_MAP</span>
-                        <div className="text-[10px] font-mono opacity-50 mt-2">[Awaiting Data Uplink...]</div>
+                      <div className="flex-grow rounded border border-dashed border-border mt-3 p-4 flex flex-col items-center justify-center text-center">
+                        <Network size={32} className="text-text-muted mb-2" />
+                        <span className="text-xs text-text-muted">Architecture diagram coming soon</span>
                       </div>
                     ) : (
-                      <div className="mt-4">
-                        <h4 className="font-display text-3xl text-[var(--color-ink-black)]">USER VALUE</h4>
-                        <p className="font-body text-sm font-bold mt-2">Delivered streamlined experiences reducing manual friction and creating scalable digital solutions.</p>
+                      <div className="mt-3">
+                        <h4 className="text-xl font-semibold">User Value</h4>
+                        <p className="text-sm mt-2 text-text-muted">Delivered streamlined experiences reducing manual friction and creating scalable digital solutions.</p>
                       </div>
                     )}
                   </div>
 
-                  {/* Panel 4: Tech Stack (Only visible in Tech Mode or simplified in Simple Mode) */}
-                  <div className={`border-4 border-[var(--color-ink-black)] p-6 relative ${techMode ? 'bg-[var(--color-ink-black)] text-white' : 'bg-[var(--color-paper)] text-[var(--color-ink-black)]'}`}>
-                    <div className="absolute top-2 left-2 font-label font-bold text-xs opacity-50">PANEL 4: POWERS</div>
-                    <div className="mt-4 flex flex-wrap gap-2">
+                  {/* Tech Stack */}
+                  <div className="rounded-md border border-border bg-surface p-6">
+                    <p className="text-xs font-medium uppercase tracking-wider text-text-muted">Tech Stack</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
                       {project.tech.map((t, i) => (
-                        <span key={i} className={`font-mono text-xs font-bold px-2 py-1 ${techMode ? 'border-2 border-white' : 'bg-[var(--color-ink-black)] text-white'}`}>
-                          {techMode ? `[${t.toUpperCase()}]` : t}
+                        <span key={i} className="font-mono text-xs px-2 py-1 rounded border border-border bg-bg">
+                          {techMode ? t.toUpperCase() : t}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  {/* Panel 5: Links & Actions */}
-                  <div className="md:col-span-2 border-4 border-[var(--color-ink-black)] bg-[var(--color-ink-black)] p-6 relative flex items-center justify-center gap-4 flex-wrap">
-                    <div className="absolute top-2 left-2 font-label font-bold text-xs text-white opacity-50">PANEL 5: ACTIONS</div>
-
-                    {(project.codeLink && project.codeLink !== "#" && !project.codeLink.includes("syncing")) && (
-                      <a href={project.codeLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
-                        <InkButton variant="white" className="w-full text-xs md:text-sm py-3 flex justify-center items-center gap-2">
-                          <Github size={16} /> READ SOURCE
-                        </InkButton>
-                      </a>
-                    )}
-                    {(project.codeLinkBackend && project.codeLinkFrontend) && (
-                      <>
-                        <a href={project.codeLinkBackend} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
-                          <InkButton variant="white" className="w-full text-xs md:text-sm py-3 flex justify-center items-center gap-2">
-                            <Github size={16} /> BACKEND LOG
-                          </InkButton>
+                  {/* Links */}
+                  <div className="md:col-span-2 rounded-md border border-border bg-surface p-6">
+                    <p className="text-xs font-medium uppercase tracking-wider text-text-muted mb-3">Links</p>
+                    <div className="flex items-center justify-center gap-4 flex-wrap">
+                      {hasCodeLink && (
+                        <a href={project.codeLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
+                          <span className={`${linkButtonClass} bg-accent text-accent-contrast`}>
+                            <Github size={16} /> Source Code
+                          </span>
                         </a>
-                        <a href={project.codeLinkFrontend} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
-                          <InkButton variant="cyan" className="w-full text-xs md:text-sm py-3 flex justify-center items-center gap-2">
-                            <Github size={16} /> FRONTEND LOG
-                          </InkButton>
+                      )}
+                      {(project.codeLinkBackend && project.codeLinkFrontend) && (
+                        <>
+                          <a href={project.codeLinkBackend} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
+                            <span className={`${linkButtonClass} bg-accent text-accent-contrast`}>
+                              <Github size={16} /> Backend Code
+                            </span>
+                          </a>
+                          <a href={project.codeLinkFrontend} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
+                            <span className={`${linkButtonClass} border border-border text-text`}>
+                              <Github size={16} /> Frontend Code
+                            </span>
+                          </a>
+                        </>
+                      )}
+                      {hasLiveLink && (
+                        <a href={project.liveLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
+                          <span className={`${linkButtonClass} border border-border text-text`}>
+                            <Play size={16} /> Live Demo
+                          </span>
                         </a>
-                      </>
-                    )}
-                    {(project.liveLink && project.liveLink !== "#" && !project.liveLink.includes("syncing")) && (
-                      <a href={project.liveLink} target="_blank" rel="noreferrer" className="flex-1 min-w-[150px]">
-                        <InkButton variant="yellow" className="w-full text-xs md:text-sm py-3 flex justify-center items-center gap-2">
-                          <Play size={16} /> ENTER UNIVERSE
-                        </InkButton>
-                      </a>
-                    )}
-                    {(!project.codeLink && !project.codeLinkBackend && !project.liveLink) || project.codeLink?.includes("syncing") ? (
-                      <div className="font-mono text-sm text-[var(--color-signal-red)] uppercase border-2 border-[var(--color-signal-red)] px-4 py-2">
-                        Classified / Awaiting Sync
-                      </div>
-                    ) : null}
+                      )}
+                      {linksUnavailable ? (
+                        <div className="text-sm text-text-muted border border-border rounded px-4 py-2">
+                          Links not yet available
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
 
                 </div>
-              </TiltCard>
+              </article>
             );
           })}
         </div>
       </div>
-
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        .text-shadow-magenta {
-          text-shadow: 4px 4px 0 var(--color-dimension-magenta);
-        }
-      `}} />
-    </ComicSpread>
+    </section>
   );
 };
 

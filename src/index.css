@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Oswald:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "./styles/tokens.css";
 @import "./styles/typography.css";
-@import "./styles/textures.css";
 
 html {
   overflow-x: hidden;
@@ -14,12 +13,18 @@ body {
   margin: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: var(--color-ink-black);
-  color: var(--color-text-on-dark);
+  background-color: var(--color-bg);
+  color: var(--color-text);
   font-family: var(--font-body);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Visible keyboard focus */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 /* Custom Scrollbar */
@@ -28,21 +33,19 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-ink-black);
-  border-left: 2px solid var(--color-noir-black);
+  background: var(--color-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-comic-yellow);
-  border: 2px solid var(--color-ink-black);
+  background: var(--color-border);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-portal-cyan);
+  background: var(--color-text-muted);
 }
 
 /* Scrollbar Firefox Support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-comic-yellow) var(--color-ink-black);
-}
+  scrollbar-color: var(--color-border) var(--color-bg);
+}

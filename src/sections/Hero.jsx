@@ -1,246 +1,78 @@
-import React, { useRef, useEffect, lazy, Suspense } from 'react';
+import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import InkButton from '../components/comic/InkButton';
-import StampReveal from '../components/comic/StampReveal';
-import KineticTitle from '../components/comic/KineticTitle';
-import SpeedBurst from '../components/comic/SpeedBurst';
-import FrameStutter from '../components/comic/FrameStutter';
-import SpiderWebBackground from '../components/comic/SpiderWebBackground';
-import { SectionPortal } from '../components/comic/PortalTransition';
-import codewalkerImg from '../assets/images/codewalker.webp'; // Generated Codewalker art
 
-const DimensionRift = lazy(() => import('../components/three/DimensionRift'));
-const DimensionCharacterGlitch = lazy(() => import('../components/three/DimensionCharacterGlitch'));
-
-gsap.registerPlugin(ScrollTrigger);
-
-const Hero = ({ activateHeavyFX = true }) => {
+const Hero = () => {
   const sectionRef = useRef(null);
-  const leftColRef = useRef(null);
-  const rightColRef = useRef(null);
-  const tearRef = useRef(null);
-  const parallaxRef = useRef(null);
-
-  useEffect(() => {
-    // Warm the chunk immediately so there's no download hitch once activateHeavyFX
-    // flips true — the module is likely already cached from the Intro's own prefetch.
-    import('../components/three/DimensionRift');
-    import('../components/three/DimensionCharacterGlitch');
-  }, []);
+  const contentRef = useRef(null);
 
   useEffect(() => {
     const mm = gsap.matchMedia(sectionRef);
 
     mm.add({
-      isDesktop: "(min-width: 768px)",
-      isMobile: "(max-width: 767px)",
       reduceMotion: "(prefers-reduced-motion: reduce)"
     }, (context) => {
-      let { isDesktop, isMobile, reduceMotion } = context.conditions;
+      const { reduceMotion } = context.conditions;
 
       if (reduceMotion) {
-        gsap.set([leftColRef.current, rightColRef.current], { opacity: 1 });
+        gsap.set(contentRef.current, { opacity: 1 });
         return;
       }
 
       // Entrance animation
-      gsap.from(leftColRef.current, {
-        x: isDesktop ? -50 : 0,
-        y: isMobile ? 20 : 0,
+      gsap.from(contentRef.current, {
+        y: 20,
         opacity: 0,
         duration: 1,
         ease: "power3.out",
         delay: 0.2
       });
-
-      gsap.from(rightColRef.current, {
-        x: isDesktop ? 50 : 0,
-        y: isMobile ? 20 : 0,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out",
-        delay: 0.4
-      });
-
-      // Parallax mouse effect (subtle)
-      const parallaxLayers = parallaxRef.current?.querySelectorAll('.parallax-layer') ?? [];
-      const moveX = gsap.quickTo(parallaxLayers, 'x', { duration: 0.45, ease: 'power2.out' });
-      const moveY = gsap.quickTo(parallaxLayers, 'y', { duration: 0.45, ease: 'power2.out' });
-      const handleMouseMove = (e) => {
-        if (isMobile) return;
-        const { clientX, clientY } = e;
-        const xPos = (clientX / window.innerWidth - 0.5) * 20;
-        const yPos = (clientY / window.innerHeight - 0.5) * 20;
-
-        moveX(xPos);
-        moveY(yPos);
-      };
-
-      window.addEventListener('mousemove', handleMouseMove);
-
-      // Scroll out effect
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=80%",
-          scrub: true,
-          pin: isDesktop,
-        }
-      });
-
-      const heroCharacter = sectionRef.current?.querySelector('.hero-character');
-      if (heroCharacter && isDesktop) {
-        tl.to(heroCharacter, { x: 30, scale: 1.05, duration: 1 }, 0);
-      }
-      if (tearRef.current) {
-        gsap.set(tearRef.current, { rotateX: -22 });
-        const shadowEl = tearRef.current.parentElement?.querySelector('.tear-shadow');
-        tl.to(tearRef.current, { scaleY: 1, rotateX: 0, duration: 1, ease: 'none' }, 0.2);
-        if (shadowEl) {
-          tl.fromTo(shadowEl, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'none' }, 0.2)
-            .to(shadowEl, { opacity: 0, duration: 0.65, ease: 'none' }, 0.55);
-        }
-      }
-
-      return () => {
-        window.removeEventListener('mousemove', handleMouseMove);
-      };
     });
 
     return () => mm.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} id="hero" className="relative min-h-screen w-full bg-[var(--color-ink-black)] overflow-hidden flex items-center justify-center">
-      <SectionPortal colorA="var(--color-miles-red)" colorB="var(--color-saffron)" threshold={0.2} />
+    <section ref={sectionRef} id="hero" className="relative min-h-screen w-full bg-bg flex items-center justify-center">
+      <div className="relative w-full max-w-7xl mx-auto px-6 md:px-12 pt-24 pb-12">
+        <div ref={contentRef} className="flex flex-col max-w-3xl">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-text mb-6">
+            Reneesh
+          </h1>
 
-      <div className="absolute inset-0 bg-halftone-dark opacity-10 pointer-events-none"></div>
+          <h2 className="text-lg md:text-2xl font-semibold text-text-muted mb-6">
+            AI Systems Engineer building intelligent, full-stack experiences.
+          </h2>
 
-      {/* 3D dimension-rift backdrop — floating glitch shards behind everything.
-          Deferred until the intro is done: while the intro covers the screen,
-          this canvas + its postprocessing stack would just be burning frames
-          nobody can see, competing with the intro's own animation. */}
-      {activateHeavyFX && (
-        <div className="absolute inset-0 -z-0 opacity-70">
-          <Suspense fallback={null}><DimensionRift density={16} /></Suspense>
-        </div>
-      )}
-
-      {/* Spider-Verse multiverse portal — glowing dimensional rift */}
-      <SpiderWebBackground
-        ringCount={8}
-        sides={7}
-        originX={80}
-        originY={35}
-        maxRadius={420}
-        streakCount={16}
-        particleCount={35}
-        className="z-[1] parallax-layer"
-      />
-
-      {/* Inter-dimensional character hauntings — the core Spider-Verse mechanic */}
-      {activateHeavyFX && (
-        <Suspense fallback={null}>
-          <DimensionCharacterGlitch interval={[5000, 11000]} maxVisible={2} />
-        </Suspense>
-      )}
-
-
-      <div ref={parallaxRef} className="relative z-10 w-full h-full min-h-screen max-w-[1920px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center px-6 md:px-12 pt-24 pb-12">
-
-        {/* Left Column - Metadata & Copy */}
-        <div ref={leftColRef} className="lg:col-span-5 flex flex-col order-2 lg:order-1 relative z-20">
-          <div className="font-label uppercase font-bold tracking-widest text-[var(--color-comic-yellow)] mb-4 md:mb-6">
-            ISSUE #01 &middot; EARTH-28
-          </div>
-
-          <FrameStutter steps={6} distance={50} direction="left">
-            <StampReveal sfx="THWIP!" color="var(--color-miles-red)" rotation={-6} className="block w-full">
-              <h1 className="font-display text-4xl md:text-7xl lg:text-[6.5rem] leading-[0.9] tracking-wider text-[var(--color-text-on-dark)] mb-6 relative z-10">
-                <span className="relative inline-block w-full">
-                  <SpeedBurst color="var(--color-saffron)" className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] -z-20" />
-                  <KineticTitle as="span">RENEESH</KineticTitle>
-                </span>
-                <span className="block text-2xl md:text-5xl lg:text-5xl mt-4 text-[var(--color-text-muted-dark)] tracking-wide">
-                  ACROSS THE CODEVERSE
-                </span>
-              </h1>
-            </StampReveal>
-          </FrameStutter>
-
-          <div className="caption-box mb-6 w-fit" style={{ borderColor: 'var(--color-miles-black)', boxShadow: '4px 4px 0 var(--color-miles-red)' }}>
-            <h2 className="font-label uppercase font-bold text-sm md:text-base leading-tight m-0">
-              AI Systems Engineer building intelligent, full-stack experiences.
-            </h2>
-          </div>
-
-          <p className="font-body text-base md:text-lg text-[var(--color-text-on-dark)] mb-10 max-w-xl opacity-90 leading-relaxed">
+          <p className="text-base md:text-lg text-text mb-10 max-w-xl opacity-90 leading-relaxed">
             I combine generative AI, machine learning and modern interfaces to turn ambitious ideas into working systems.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 flex-wrap">
-            <StampReveal sfx="BAM!" color="var(--color-saffron)" rotation={-10} delay={0.15}>
-              <InkButton variant="cyan" onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}>
-                Explore the Codeverse
-              </InkButton>
-            </StampReveal>
-            <StampReveal sfx="POW!" color="var(--color-miles-red)" rotation={8} delay={0.3}>
-              <InkButton variant="magenta" onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}>
-                Send a Signal
-              </InkButton>
-            </StampReveal>
-            <a href="/resume.pdf" target="_blank" rel="noreferrer" className="flex items-center justify-center font-label uppercase font-bold tracking-widest px-6 py-3 border-4 border-transparent hover:border-[var(--color-comic-yellow)] hover:bg-[var(--color-ink-black)] transition-colors comic-focus text-[var(--color-text-on-dark)]">
-              Open Origin File
+            <button
+              type="button"
+              onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-accent text-accent-contrast font-medium hover:opacity-90 transition-opacity"
+            >
+              View Projects
+            </button>
+            <button
+              type="button"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-flex items-center justify-center px-6 py-3 rounded-md border border-border text-text font-medium hover:bg-surface-raised transition-colors"
+            >
+              Contact Me
+            </button>
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3 rounded-md text-text font-medium hover:bg-surface-raised transition-colors"
+            >
+              Resume
             </a>
           </div>
         </div>
-
-        {/* Right Column - Character Art */}
-        <div ref={rightColRef} className="lg:col-span-7 order-1 lg:order-2 relative h-[40vh] lg:h-[80vh] flex items-center justify-center mt-12 lg:mt-0">
-          {/* Comic Panel Frame — fused Miles spray-edge + Pavitr rangoli/sash, same frame */}
-          <div className="jagged-panel spray-edge absolute inset-0 border-8 border-[var(--color-ink-black)] bg-[var(--color-deep-navy)] transform rotate-2 overflow-hidden shadow-2xl mx-4 lg:mx-0">
-            <div className="absolute inset-0 bg-halftone-fusion opacity-15 mix-blend-overlay"></div>
-            {/* Dimension-bleed seam where the rift punches through */}
-            <div className="bleed-seam absolute top-0 left-0 w-full h-3 opacity-60"></div>
-            {/* Suit-block sash — Miles blocking + Pavitr dhoti-sash diagonal */}
-            <div className="suit-block-sash"></div>
-            {/* Rangoli corner mark — Pavitr/Mumbai */}
-            <div className="rangoli-corner top-3 left-3"></div>
-            {/* Background elements */}
-            <div className="parallax-layer absolute top-10 left-10 w-32 h-32 bg-[var(--color-miles-red)] rounded-full blur-3xl opacity-25"></div>
-            <div className="parallax-layer absolute bottom-10 right-10 w-48 h-48 bg-[var(--color-saffron)] rounded-full blur-3xl opacity-25"></div>
-            <div className="absolute bottom-0 right-0 w-full h-1/2 bg-gradient-to-t from-[var(--color-ink-black)] to-transparent opacity-80"></div>
-          </div>
-
-          {/* Character breaking out of panel */}
-          <div className="hero-character drip-edge relative z-10 w-2/3 max-w-sm lg:max-w-md parallax-layer transform -rotate-1 text-[var(--color-miles-black)]">
-            <img
-              src={codewalkerImg}
-              alt="The Codewalker"
-              className="w-full h-auto object-cover rounded-sm border-4 border-[var(--color-ink-black)] shadow-[8px_8px_0_var(--color-miles-red)] grayscale contrast-125"
-            />
-          </div>
-        </div>
-
       </div>
-
-      {/* Torn paper transition at bottom — same page-lift treatment as ComicSpread:
-          shadow fade underneath + rotateX on the flap, so Hero -> About matches
-          every other section boundary's page-turn feel. */}
-      <div className="absolute bottom-0 left-0 w-full z-30 pointer-events-none" style={{ perspective: '700px' }} aria-hidden="true">
-        <div
-          className="tear-shadow absolute left-0 w-full h-8 bottom-16 md:bottom-24 lg:bottom-32"
-          style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.35), transparent)', opacity: 0 }}
-        />
-        <div
-          ref={tearRef}
-          className="absolute bottom-0 left-0 w-full h-16 md:h-24 lg:h-32 bg-[var(--color-paper)] scale-y-0 torn-edge-bottom transform-gpu"
-          style={{ transformOrigin: 'bottom', willChange: 'transform' }}
-        ></div>
-      </div>
-
     </section>
   );
 };

@@ -1,90 +1,53 @@
 import { useState } from "react";
 import experienceData from "../data/experience";
-import ComicSpread from "../components/comic/ComicSpread";
-import StampReveal from "../components/comic/StampReveal";
-import FrameStutter from "../components/comic/FrameStutter";
-import KineticTitle from "../components/comic/KineticTitle";
-import { SectionPortal } from '../components/comic/PortalTransition';
 
-const palettes = {
-  cyan: {
-    accent: "var(--color-portal-cyan)",
-    accentClass: "bg-[var(--color-portal-cyan)]",
-    textClass: "text-[var(--color-portal-cyan)]",
-  },
-  red: {
-    accent: "var(--color-signal-red)",
-    accentClass: "bg-[var(--color-signal-red)]",
-    textClass: "text-[var(--color-signal-red)]",
-  },
-  magenta: {
-    accent: "var(--color-dimension-magenta)",
-    accentClass: "bg-[var(--color-dimension-magenta)]",
-    textClass: "text-[var(--color-dimension-magenta)]",
-  },
-};
-
-const getPalette = (palette) => palettes[palette] ?? palettes.cyan;
-
-function IssueNumber({ index }) {
-  return `ISSUE #${String(experienceData.length - index).padStart(2, "0")}`;
-}
-
-function StatusStamp({ status }) {
+function StatusBadge({ status }) {
   const active = status.toLowerCase() === "active";
 
   return (
-    <StampReveal sfx={null} color="var(--color-signal-red)" rotation={-14} once={false}>
-      <span
-        className={`shrink-0 border-2 border-[var(--color-ink-black)] px-2 py-1 font-label text-[10px] font-bold uppercase tracking-wider ${active
-          ? "bg-[var(--color-comic-yellow)] text-[var(--color-ink-black)]"
-          : "bg-[var(--color-ink-black)] text-white"
-          }`}
-      >
-        {active ? "ONGOING" : status}
-      </span>
-    </StampReveal>
+    <span
+      className={`shrink-0 rounded border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider ${active
+        ? "border-accent bg-accent text-accent-contrast"
+        : "border-border text-text-muted"
+        }`}
+    >
+      {active ? "Ongoing" : status}
+    </span>
   );
 }
 
-function IssueSummary({ item, index, selected, controls, onSelect }) {
-  const palette = getPalette(item.palette);
-
+function ExperienceSummary({ item, selected, controls, onSelect }) {
   return (
     <button
       type="button"
       onClick={onSelect}
       aria-expanded={selected}
       aria-controls={controls}
-      className={`comic-focus relative w-full border-4 border-[var(--color-ink-black)] p-0 text-left transition-[transform,box-shadow,opacity] duration-300 ${selected
-        ? "translate-x-2 opacity-100 shadow-[8px_8px_0_var(--color-ink-black)]"
-        : "opacity-75 hover:translate-x-1 hover:opacity-100"
+      className={`relative w-full rounded-lg border p-4 text-left transition-colors duration-300 ${selected
+        ? "border-text-muted bg-surface-raised"
+        : "border-border bg-surface opacity-80 hover:opacity-100"
         }`}
     >
-      <span className={`block h-3 w-full ${palette.accentClass}`} aria-hidden="true" />
-      <span className="block bg-[var(--color-paper-light)] p-4 text-[var(--color-ink-black)]">
-        <span className="mb-3 flex items-start justify-between gap-3">
-          <span className="font-display text-2xl leading-none">
-            <IssueNumber index={index} />
-          </span>
-          <StatusStamp status={item.status} />
+      <span className="mb-3 flex items-start justify-between gap-3">
+        <span className="text-xs font-medium uppercase tracking-wider text-text-muted">
+          {item.type}
         </span>
-        <span className="block font-label text-lg font-bold uppercase leading-tight">
-          {item.role}
-        </span>
-        <span className="mt-1 block font-body text-sm font-semibold">
-          {item.organization}
-        </span>
-        <span className="mt-3 block border-t-2 border-dashed border-[var(--color-pencil-gray)] pt-2 font-label text-xs font-bold text-[var(--color-pencil-gray)]">
-          {item.period}
-        </span>
+        <StatusBadge status={item.status} />
+      </span>
+      <span className="block text-lg font-semibold leading-tight">
+        {item.role}
+      </span>
+      <span className="mt-1 block text-sm text-text-muted">
+        {item.organization}
+      </span>
+      <span className="mt-3 block border-t border-border pt-2 text-xs text-text-muted">
+        {item.period}
       </span>
     </button>
   );
 }
 
-function IssueDetails({ item, index, id }) {
-  const palette = getPalette(item.palette);
+function ExperienceDetails({ item, id }) {
   const progression = item.role === "CEO"
     ? ["Volunteer", "Board Member", "Co-CEO", "CEO"]
     : null;
@@ -92,51 +55,44 @@ function IssueDetails({ item, index, id }) {
   return (
     <article
       id={id}
-      className="relative overflow-hidden border-4 border-[var(--color-ink-black)] bg-[var(--color-paper-light)] text-[var(--color-ink-black)] shadow-[12px_12px_0_var(--color-ink-black)]"
+      className="relative overflow-hidden rounded-lg border border-border bg-surface text-text"
       aria-live="polite"
     >
-      <div className={`h-4 w-full ${palette.accentClass}`} aria-hidden="true" />
-      <div className="relative border-b-4 border-[var(--color-ink-black)] p-6 md:p-8">
-        <div className="absolute inset-0 bg-halftone-light opacity-40" aria-hidden="true" />
-        <div className="relative z-10">
-          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-            <p className="font-display text-3xl md:text-4xl">
-              <IssueNumber index={index} />
-            </p>
-            <StatusStamp status={item.status} />
-          </div>
-          <p className={`mb-2 font-label text-xs font-bold uppercase tracking-[0.25em] ${palette.textClass}`}>
+      <div className="border-b border-border p-6 md:p-8">
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
             {item.type}
           </p>
-          <h3 className="font-display text-4xl leading-none md:text-6xl">{item.role}</h3>
-          <p className="mt-3 font-label text-lg font-bold uppercase md:text-xl">
-            {item.organization}
-          </p>
-          <p className="mt-2 font-body text-sm font-semibold text-[var(--color-text-muted-paper)]">
-            {item.period}
-          </p>
+          <StatusBadge status={item.status} />
         </div>
+        <h3 className="text-3xl font-bold leading-tight md:text-5xl">{item.role}</h3>
+        <p className="mt-3 text-lg font-semibold md:text-xl">
+          {item.organization}
+        </p>
+        <p className="mt-2 text-sm text-text-muted">
+          {item.period}
+        </p>
       </div>
 
       <div className="grid gap-6 p-6 md:grid-cols-2 md:p-8">
-        <StoryPanel label="Mission" color={palette.textClass}>
+        <DetailPanel label="Mission">
           {item.mission}
-        </StoryPanel>
-        <StoryPanel label="Action" color={palette.textClass}>
+        </DetailPanel>
+        <DetailPanel label="Action">
           {item.action}
-        </StoryPanel>
-        <StoryPanel label="Impact" color={palette.textClass}>
+        </DetailPanel>
+        <DetailPanel label="Impact">
           {item.impact}
-        </StoryPanel>
-        <div className="border-l-4 border-[var(--color-ink-black)] bg-[var(--color-paper)] p-4">
-          <p className={`mb-3 font-label text-xs font-bold uppercase tracking-[0.2em] ${palette.textClass}`}>
+        </DetailPanel>
+        <div className="rounded-md border border-border bg-bg p-4">
+          <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
             Tools & Methods
           </p>
           <div className="flex flex-wrap gap-2">
             {item.tools.map((tool) => (
               <span
                 key={tool}
-                className="border-2 border-[var(--color-ink-black)] bg-white px-2 py-1 font-mono text-xs font-bold"
+                className="rounded border border-border bg-surface px-2 py-1 font-mono text-xs"
               >
                 {tool}
               </span>
@@ -146,14 +102,14 @@ function IssueDetails({ item, index, id }) {
       </div>
 
       {progression && (
-        <div className="border-t-4 border-[var(--color-ink-black)] bg-[var(--color-ink-black)] p-6 text-white md:p-8">
-          <p className="mb-4 font-label text-xs font-bold uppercase tracking-[0.25em] text-[var(--color-comic-yellow)]">
+        <div className="border-t border-border bg-bg p-6 md:p-8">
+          <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
             Leadership Progression
           </p>
           <ol className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {progression.map((step, stepIndex) => (
-              <li key={step} className="relative border-2 border-white/40 p-3 font-label text-sm font-bold uppercase">
-                <span className="mr-2 text-[var(--color-comic-yellow)]">0{stepIndex + 1}</span>
+              <li key={step} className="relative rounded-md border border-border p-3 text-sm font-semibold">
+                <span className="mr-2 text-text-muted">0{stepIndex + 1}</span>
                 {step}
               </li>
             ))}
@@ -164,109 +120,85 @@ function IssueDetails({ item, index, id }) {
   );
 }
 
-function StoryPanel({ label, color, children }) {
+function DetailPanel({ label, children }) {
   return (
-    <div className="border-l-4 border-[var(--color-ink-black)] bg-[var(--color-paper)] p-4">
-      <p className={`mb-2 font-label text-xs font-bold uppercase tracking-[0.2em] ${color}`}>
+    <div className="rounded-md border border-border bg-bg p-4">
+      <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
         {label}
       </p>
-      <p className="font-body text-sm font-medium leading-relaxed md:text-base">{children}</p>
+      <p className="text-sm leading-relaxed md:text-base">{children}</p>
     </div>
   );
 }
 
 export default function Experience() {
-  const [activeIssue, setActiveIssue] = useState(0);
+  const [activeItem, setActiveItem] = useState(0);
 
-  const selectMobileIssue = (index) => {
-    setActiveIssue((current) => (current === index ? -1 : index));
+  const selectMobileItem = (index) => {
+    setActiveItem((current) => (current === index ? -1 : index));
   };
 
   return (
-    <ComicSpread
+    <section
       id="experience"
-      tearColor="var(--color-ink-black)"
-      className="relative z-20 overflow-visible bg-[var(--color-paper-light)] text-[var(--color-ink-black)]"
+      className="relative z-20 w-full min-h-screen flex flex-col py-24 px-4 md:px-12 lg:px-24 bg-bg text-text"
     >
-      <SectionPortal colorA="var(--color-dimension-magenta)" colorB="var(--color-miles-red)" />
-      <div className="pointer-events-none absolute inset-0 bg-halftone-light opacity-30 mix-blend-multiply" aria-hidden="true" />
-
-      <div className="relative z-10 mx-auto w-full max-w-7xl">
+      <div className="relative mx-auto w-full max-w-7xl">
         <header className="relative mb-14 text-center">
-          <p className="mb-2 font-label font-bold uppercase tracking-[0.3em] text-[var(--color-pencil-gray)]">
-            Operational History
-          </p>
-          <FrameStutter steps={5}>
-            <StampReveal sfx="ISSUE!" color="var(--color-dimension-magenta)" rotation={-5}>
-              <h2 className="font-display text-4xl tracking-wider md:text-7xl lg:text-8xl">
-                <KineticTitle as="span">CANON EVENTS</KineticTitle>
-              </h2>
-            </StampReveal>
-          </FrameStutter>
-          <svg
-            className="mx-auto mt-3 h-4 w-2/3 max-w-md text-[var(--color-dimension-magenta)]"
-            viewBox="0 0 200 10"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <path d="M0,5 Q50,0 100,6 T200,4" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-          </svg>
+          <h2 className="text-4xl font-bold tracking-tight md:text-6xl">
+            Experience
+          </h2>
         </header>
 
-        {/* Desktop: stable selector and persistent detail spread. */}
+        {/* Desktop: stable selector and persistent detail panel. */}
         <div className="hidden gap-12 lg:grid lg:grid-cols-[minmax(280px,0.8fr)_minmax(0,2fr)]">
-          <div className="relative space-y-8 pl-8">
-            <div className="absolute bottom-4 left-[11px] top-4 w-2 bg-[var(--color-ink-black)]" aria-hidden="true" />
+          <div className="relative space-y-6 pl-8">
+            <div className="absolute bottom-4 left-[11px] top-4 w-px bg-border" aria-hidden="true" />
             {experienceData.map((item, index) => (
               <div key={`${item.organization}-${item.role}`} className="relative">
                 <span
-                  className="absolute -left-[29px] top-8 z-10 h-6 w-6 rounded-full border-4 border-[var(--color-ink-black)]"
-                  style={{ backgroundColor: getPalette(item.palette).accent }}
+                  className={`absolute -left-[26px] top-8 z-10 h-3 w-3 rounded-full border border-text-muted ${activeItem === index ? "bg-accent" : "bg-bg"}`}
                   aria-hidden="true"
                 />
-                <IssueSummary
+                <ExperienceSummary
                   item={item}
-                  index={index}
-                  selected={activeIssue === index}
+                  selected={activeItem === index}
                   controls="experience-desktop-detail"
-                  onSelect={() => setActiveIssue(index)}
+                  onSelect={() => setActiveItem(index)}
                 />
               </div>
             ))}
           </div>
 
-          <IssueDetails
-            key={activeIssue}
-            item={experienceData[activeIssue < 0 ? 0 : activeIssue]}
-            index={activeIssue < 0 ? 0 : activeIssue}
+          <ExperienceDetails
+            key={activeItem}
+            item={experienceData[activeItem < 0 ? 0 : activeItem]}
             id="experience-desktop-detail"
           />
         </div>
 
-        {/* Mobile/tablet: one accessible issue accordion at a time. */}
-        <div className="relative space-y-8 pl-8 lg:hidden">
-          <div className="absolute bottom-4 left-[11px] top-4 w-2 bg-[var(--color-ink-black)]" aria-hidden="true" />
+        {/* Mobile/tablet: one accessible accordion item at a time. */}
+        <div className="relative space-y-6 pl-8 lg:hidden">
+          <div className="absolute bottom-4 left-[11px] top-4 w-px bg-border" aria-hidden="true" />
           {experienceData.map((item, index) => {
-            const selected = activeIssue === index;
+            const selected = activeItem === index;
             const detailId = `experience-mobile-detail-${index}`;
 
             return (
               <div key={`${item.organization}-${item.role}`} className="relative">
                 <span
-                  className="absolute -left-[29px] top-8 z-10 h-6 w-6 rounded-full border-4 border-[var(--color-ink-black)]"
-                  style={{ backgroundColor: getPalette(item.palette).accent }}
+                  className={`absolute -left-[26px] top-8 z-10 h-3 w-3 rounded-full border border-text-muted ${selected ? "bg-accent" : "bg-bg"}`}
                   aria-hidden="true"
                 />
-                <IssueSummary
+                <ExperienceSummary
                   item={item}
-                  index={index}
                   selected={selected}
                   controls={detailId}
-                  onSelect={() => selectMobileIssue(index)}
+                  onSelect={() => selectMobileItem(index)}
                 />
                 {selected && (
                   <div className="mt-6">
-                    <IssueDetails item={item} index={index} id={detailId} />
+                    <ExperienceDetails item={item} id={detailId} />
                   </div>
                 )}
               </div>
@@ -274,6 +206,6 @@ export default function Experience() {
           })}
         </div>
       </div>
-    </ComicSpread>
+    </section>
   );
 }

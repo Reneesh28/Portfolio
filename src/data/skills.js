@@ -54,7 +54,7 @@ const skills = [
   {
     category: "Frontend",
     items: [
-      { name: "React.js", icon: FaReact, level: "Core", evidence: "AETHERION and comic portfolio." },
+      { name: "React.js", icon: FaReact, level: "Core", evidence: "AETHERION and this portfolio." },
       { name: "Tailwind CSS", icon: SiTailwindcss, level: "Core", evidence: "Primary styling framework." },
       { name: "Bootstrap", icon: SiBootstrap, level: "Applied", evidence: "Legacy projects." },
       { name: "Chart.js", icon: SiChartdotjs, level: "Exploring", evidence: "Data visualizations." },

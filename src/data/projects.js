@@ -15,7 +15,6 @@ const projects = [
     status: "In Development",
     image: img4,
     featured: true,
-    palette: "cyan"
   },
   {
     title: "AETHERION - Real-Time Markets. Intelligent Decisions.",
@@ -27,7 +26,6 @@ const projects = [
     status: "Prototype",
     image: img3,
     featured: true,
-    palette: "red"
   },
   {
     title: "NutriFit AI - Personalized Fitness & Nutrition Assistant",
@@ -38,7 +36,6 @@ const projects = [
     status: "Source Available",
     image: img1,
     featured: true,
-    palette: "acid"
   },
   {
     title: "FinLit AI",
@@ -49,7 +46,6 @@ const projects = [
     status: "In Development",
     image: img3,
     featured: false,
-    palette: "yellow"
   },
   {
     title: "PARAS System",
@@ -60,7 +56,6 @@ const projects = [
     status: "Prototype",
     image: img2,
     featured: false,
-    palette: "red"
   },
   {
     title: "Game Stats Dashboard & Recommender",
@@ -71,7 +66,6 @@ const projects = [
     status: "Source Available",
     image: img2,
     featured: false,
-    palette: "magenta"
   },
   {
     title: "Sales Performance Analytics Engine (SPAE)",
@@ -82,7 +76,6 @@ const projects = [
     status: "Source Available",
     image: img4,
     featured: false,
-    palette: "yellow"
   }
 ];
 

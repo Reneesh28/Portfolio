@@ -10,7 +10,6 @@ const experience = [
     tools: ["Python", "Pandas", "Scikit-Learn", "Data Analytics"],
     impact: "Improved data processing efficiency and model reliability.",
     status: "Active",
-    palette: "cyan"
   },
   {
     type: "Work Experience",
@@ -23,7 +22,6 @@ const experience = [
     tools: ["Leadership", "Event Management", "Strategic Planning", "Team Coordination"],
     impact: "Significantly increased community engagement and streamlined organizational operations.",
     status: "Active",
-    palette: "red"
   },
   {
     type: "Training",
@@ -36,7 +34,6 @@ const experience = [
     tools: ["LangChain", "Hugging Face", "FAISS", "FastAPI", "Docker"],
     impact: "Gained applied expertise in developing and deploying end-to-end LLM solutions.",
     status: "Completed",
-    palette: "magenta"
   }
 ];
 
