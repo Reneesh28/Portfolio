@@ -13,18 +13,18 @@ Commits: allowed on this branch since 2026-11-22 (DEC-025). P1–P5 and M5 are c
 | M3 | REOPENED. P2 archipelago owner-approved (DEC-018); World Map data in place (UI in P5) | `reports/P2-geography.md` |
 | M4 | REOPENED. P3 golden spire-city hub owner-approved (DEC-019) | `reports/P3-world-forge-hub.md` |
 | M5 | **LOCKED** ("PRoceed", DEC-025); NeuroPlay and AETHERION content from the CV | `reports/M5-7-8-9-integration-and-qa.md` (and `M5-5-6-works-and-dossier.md`) |
-| M6 | IN PROGRESS. M6.1 Origin Sanctum **LOCKED** (DEC-027). M6.2 Blueprint Archive: skills inventory done; **design proposal waiting on your approval**. M6.3 not started | `reports/M6-1-origin-sanctum.md`, `proposals/M6-2-blueprint-archive-design-proposal.md` |
+| M6 | IN PROGRESS. M6.1 Origin Sanctum **LOCKED** (DEC-027). M6.2 Blueprint Archive built and QA'd (DEC-028); **waiting on your M6.2 lock**. M6.3 Path of Ascension: gate in preparation (DEC-029) | `reports/M6-1-origin-sanctum.md`, `reports/M6-2-blueprint-archive.md` |
 | M7 | NOT STARTED | — |
 | M8 | NOT STARTED | — |
 | M9 | NOT STARTED | — |
 
 ## Current stage
-Stage: M6.2 Blueprint Archive, design gate (doc 16): skills inventory and categorization done, design proposal written; **approval is yours**
-Objective: "The Drafting Hall": four category structures that stand as blueprint drawings and build into solid form when chosen; skills shown as in use (with the works and roles behind them) or exploring; work buttons open that work's dossier in the Forge
-Files: `proposals/M6-2-blueprint-archive-design-proposal.md`; `content/CONTENT_INVENTORY.md` (Blueprint Archive section). No code until approval.
-Validation (last code change, M6.1): `npm test` 112/112 · typecheck/lint/build clean · M6.1 probe 105/105 · all regressions pass
-Blockers: **M6.2 design approval (owner)**: direction, skills list (Classic-only items, TypeScript, fine-tuning), Game Development, evidence links
-Next: on approval, the M6.2 blockout and layout
+Stage: M6.2 Blueprint Archive: stages 4–8 and QA done, **lock is yours**. M6.3 Path of Ascension: gate documents in preparation (DEC-029)
+Objective (M6.2): "The Drafting Hall" built as approved: four structures that stand as drawings and build when chosen, no camera travel between categories, skills as in use (with works and roles) or exploring, work buttons opening dossiers in the Forge
+Files: `regions/archive/*`, `content/skills.ts`, `ui/ArchivePanel.tsx`, `camera/cameraTargets.ts`, `experience/experienceStore.ts`, `core/WorldCanvas.tsx`; report `reports/M6-2-blueprint-archive.md`
+Validation: `npm test` 122/122 · typecheck/lint/build clean · M6.2 probe 105/105 (high and low) · M6.1 105/105 · M5 41/41 · M5.7 39/39 · M5.8 19/19 (high and low) · map 21/21 · regression 70/70 · Classic Δ 0 against the M6.1 capture
+Blockers: **M6.2 lock (owner)**; M6.3 design approval (owner, once the proposal is ready)
+Next: M6.3 timeline audit and design proposal (documents only)
 
 ## Owner decisions needed
 - [x] P1 look approved ("Proceed with phase 2, we are good to go")
@@ -38,7 +38,8 @@ Next: on approval, the M6.2 blockout and layout
 - [x] M5 lock: "PRoceed" (DEC-025)
 - [x] M6.1 design approved: "proceed" (DEC-026); the three unsourced items left out
 - [x] M6.1 lock: "Proceed, M6.1 Locked and good" (DEC-027)
-- [ ] **M6.2 Blueprint Archive design**: direction, skills list, Game Development, evidence links (proposal §4)
+- [x] M6.2 design approved: "The Drafting hall - Proceed with everything"; skills = CV + the owner's image (DEC-028)
+- [ ] **M6.2 lock**: the Drafting Hall, build-on-select, the skills panel, the work hand-off
 - [ ] Assets: procedural only, or present CC0/licensed candidates
 - [ ] Chronoshift content: description, stack, status, links
 - [ ] Update docs 02/06, or keep overrides only in DECISIONS.md

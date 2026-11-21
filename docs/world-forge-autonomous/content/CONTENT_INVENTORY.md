@@ -82,7 +82,9 @@ Columns follow doc 11: Region | Item | Proposed content | Source | Owner confirm
 - every skill shown is backed by a work, a role, training, a certificate or the CV's skills list;
 - skills in use are kept apart from skills being explored.
 
-**Categories:** the master doc's four.
+**Categories:** the master doc's four. The fourth reads "Creative & Game Development", because it also holds Canva (DEC-028).
+
+**Owner's tech-stack image** (DEC-028): a profile page listing CSS3, C, C++, HTML5, JavaScript, Python, Netlify, Chart.js, Django, Django REST, Express.js, FastAPI, Flask, Node.js, Bootstrap, React, Streamlit, Three.js, Tailwind CSS, MongoDB, MySQL, Canva, Pandas, NumPy, Matplotlib, Plotly, Scikit-learn and GitHub. Skills = the CV plus this list.
 
 | Region | Item | Proposed content | Source / evidence | Owner confirmation | Status |
 |---|---|---|---|---|---|
@@ -93,10 +95,10 @@ Columns follow doc 11: Region | Item | Proposed content | Source | Owner confirm
 | AI & Intelligence | AI agents (LangGraph) | In use | NeuroPlay (CV: LangGraph agents); CV skills | CV (DEC-025) | VERIFIED |
 | AI & Intelligence | LangChain | In use | NutriFit (repo); CV skills | CV (DEC-025) | VERIFIED |
 | AI & Intelligence | Clustering (HDBSCAN) | In use | NeuroPlay (CV) | CV (DEC-025) | VERIFIED |
-| AI & Intelligence | Scikit-learn | In use | CV skills; Classic: SPAE models | CV (DEC-025) | VERIFIED |
+| AI & Intelligence | Scikit-learn | In use | CV skills; owner's image | DEC-025/028 | VERIFIED |
 | AI & Intelligence | Computer vision | In use | PARAS System (repo) | — | DRAFT (repo) |
-| AI & Intelligence | Deep learning (PyTorch) | Exploring | Classic: "Exploring" | — | DRAFT |
-| AI & Intelligence | Hugging Face | Exploring | Classic: "Exploring"; Algo Tutor training (Classic) | — | DRAFT |
+| AI & Intelligence | Deep learning (PyTorch) | — | Classic only; not in the CV or the owner's image | DEC-028 | OMIT |
+| AI & Intelligence | Hugging Face | — | Classic only; not in the CV or the owner's image | DEC-028 | OMIT |
 | AI & Intelligence | Fine-tuning | — | No source (only the master doc's candidate list) | — | OMIT |
 | **Software Engineering** | Python | In use | Every work with content; CV | CV (DEC-025) | VERIFIED |
 | Software Engineering | JavaScript | In use | CV; MERN in NeuroPlay and the internship (CV) | CV (DEC-025) | VERIFIED |
@@ -111,7 +113,7 @@ Columns follow doc 11: Region | Item | Proposed content | Source | Owner confirm
 | Software Engineering | Streamlit | In use | NutriFit, Game Stats (repo); CV skills | CV (DEC-025) | VERIFIED |
 | Software Engineering | HTML and CSS, Tailwind CSS, Bootstrap | In use | CV skills (no work names them) | CV (DEC-025) | VERIFIED |
 | Software Engineering | TypeScript | — | Listed by no source | — | OMIT unless confirmed |
-| Software Engineering | C | — | Classic only ("academic projects"); not in the CV | — | NEEDS OWNER (default omit) |
+| Software Engineering | C | In use | Owner's tech-stack image | DEC-028 | VERIFIED |
 | **Data & Infrastructure** | MongoDB, MySQL | In use | AETHERION (CV); CV skills | CV (DEC-025) | VERIFIED |
 | Data & Infrastructure | FAISS (vector store) | In use | NeuroPlay (CV), NutriFit (repo); CV skills | CV (DEC-025) | VERIFIED |
 | Data & Infrastructure | Redis | In use | AETHERION, freelance (CV) | CV (DEC-025) | VERIFIED |
@@ -122,10 +124,12 @@ Columns follow doc 11: Region | Item | Proposed content | Source | Owner confirm
 | Data & Infrastructure | Git and GitHub | In use | Freelance stack (CV: GitHub); every work's repository | CV (DEC-025) | VERIFIED |
 | Data & Infrastructure | Pandas, NumPy | In use | FinLit, Game Stats (repo); CV skills | CV (DEC-025) | VERIFIED |
 | Data & Infrastructure | Matplotlib, Plotly | In use | Game Stats (repo); CV skills (Matplotlib) | CV (DEC-025) | VERIFIED |
-| Data & Infrastructure | GitLab, Postman, Render, Netlify, Seaborn, Chart.js, Canva | — | Classic only, with no work or CV behind them | — | NEEDS OWNER (default omit) |
+| Data & Infrastructure | Netlify; Chart.js (with Matplotlib, Plotly) | In use | Owner's tech-stack image | DEC-028 | VERIFIED |
+| Data & Infrastructure | GitLab, Postman, Render, Seaborn | — | Classic only; not in the CV or the owner's image | DEC-028 | OMIT |
 | **Game Development** | Gameplay data and analysis | Experience | NeuroPlay (CV: behavioural gameplay analysis, ~28,000 gameplay samples); Game Stats Dashboard (repo) | CV (DEC-025) | VERIFIED |
-| Game Development | Three.js / WebGL | Exploring | Classic: "Exploring" | — | DRAFT |
-| Game Development | Game engines (e.g. Unity, Unreal, Godot) | — | No source names any engine | — | NEEDS OWNER |
+| Game Development | Three.js / WebGL | Exploring | Owner's image (Three.js); Classic: "Exploring"; no work uses it | DEC-028 | VERIFIED (exploring) |
+| Game Development | Canva (design) | In use | Owner's tech-stack image | DEC-028 | VERIFIED |
+| Game Development | Game engines | — | No source names any engine | DEC-028 | OMIT |
 
 Notes:
 - No percentages, levels or logos are carried over. Classic's Core / Applied labels are replaced by the honest split: **in use** (with its evidence) or **exploring**.

@@ -848,6 +848,172 @@
   }
 }
 
+/* ---------------------------------------------------------------- M6.2 Blueprint Archive */
+/* The Archive card: the Sanctum card's pattern, in the Archive's blue. */
+.wf-root .wf-archive-card {
+  position: absolute;
+  left: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  width: min(340px, calc(50vw - 260px));
+  min-width: 260px;
+  padding: 16px 18px;
+  border: 1px solid rgba(79, 180, 255, 0.4);
+  border-radius: 14px;
+  background: rgba(7, 12, 30, 0.82);
+  color: #e6efff;
+  backdrop-filter: blur(6px);
+  animation: wf-dossier-fade 320ms ease-out both;
+}
+.wf-root .wf-archive-title {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  color: #f2f7ff;
+}
+.wf-root .wf-archive-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8fd0ff;
+}
+.wf-root .wf-archive-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wf-root .wf-archive-categories button {
+  min-height: 44px;
+  padding: 0 0.95rem;
+  border: 1px solid rgba(79, 180, 255, 0.5);
+  border-radius: 999px;
+  background: rgba(10, 18, 40, 0.6);
+  color: #eef5ff;
+  font: inherit;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+.wf-root .wf-archive-categories button:hover {
+  border-color: rgba(143, 208, 255, 0.95);
+}
+.wf-root .wf-archive-categories button:focus-visible,
+.wf-root .wf-skill-work:focus-visible {
+  outline: 2px solid #8fd0ff;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-root .wf-archive-card { animation: none; }
+}
+/* The Archive panel: the dossier's shell in blue; skills as a readable list (no ratings, no logos). */
+.wf-root .wf-dossier--archive .wf-dossier-panel {
+  border-color: rgba(79, 180, 255, 0.4);
+}
+.wf-root .wf-dossier--archive .wf-dossier-count,
+.wf-root .wf-dossier--archive .wf-dossier-meta {
+  color: #8fd0ff;
+}
+.wf-root .wf-skills {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wf-root .wf-skill {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(143, 208, 255, 0.12);
+}
+.wf-root .wf-skill-name {
+  flex: 1 1 12rem;
+  color: #eef3ff;
+  font-size: 0.92rem;
+}
+.wf-root .wf-skill-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.wf-root .wf-skill-work {
+  min-height: 34px;
+  padding: 0 0.7rem;
+  border: 1px solid rgba(216, 163, 92, 0.55);
+  border-radius: 999px;
+  background: transparent;
+  color: #f2ede4;
+  font: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+.wf-root .wf-skill-work:hover {
+  border-color: rgba(255, 210, 122, 0.95);
+}
+.wf-root .wf-skill-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 0.6rem;
+  border-radius: 999px;
+  background: rgba(79, 180, 255, 0.12);
+  color: #b9dcff;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+.wf-root .wf-skills--exploring .wf-skill-name {
+  color: #b9c6e6;
+  font-style: italic;
+}
+.wf-root .wf-dossier-body .wf-archive-note {
+  margin: 1rem 0 0;
+  font-size: 0.72rem;
+  color: #8f9cc0;
+}
+/* Narrow and short screens: the compact card above the navigation (top left when sideways); touch-sized work buttons. */
+@media (max-aspect-ratio: 5/4), (max-height: 599px), (max-width: 1099px) {
+  .wf-root .wf-archive-card {
+    left: 16px;
+    right: 16px;
+    bottom: calc(max(16px, env(safe-area-inset-bottom)) + 84px);
+    width: auto;
+    min-width: 0;
+    padding: 12px 14px;
+  }
+  .wf-root .wf-archive-title {
+    display: inline;
+    font-size: 1rem;
+  }
+  .wf-root .wf-archive-subtitle {
+    display: inline;
+    margin: 0 0 0 0.7rem;
+  }
+  .wf-root .wf-archive-categories {
+    flex-wrap: nowrap;
+    margin-top: 0.6rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .wf-root .wf-archive-categories li {
+    flex: none;
+  }
+  .wf-root .wf-skill-work,
+  .wf-root .wf-skill-label {
+    min-height: 44px;
+  }
+}
+@media (max-height: 599px) and (min-aspect-ratio: 5/4) {
+  .wf-root .wf-archive-card {
+    top: max(12px, env(safe-area-inset-top));
+    bottom: auto;
+    right: auto;
+    width: min(440px, 58vw);
+  }
+}
+
 /* The bottom navigation stays above the dossier: direct navigation outranks an open panel. */
 .wf-root .wf-nav {
   z-index: 16;

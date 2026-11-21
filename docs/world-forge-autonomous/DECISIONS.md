@@ -258,6 +258,33 @@ Recorded before implementation, as doc 16 requires:
 - Not taken as: link testing, Classic changes, or push/merge/deploy.
 - Status: **OWNER DECISION** (lock)
 
+## DEC-028 — M6.2 Blueprint Archive design approved; skills = CV + the owner's tech-stack image
+- Date: 2026-11-22 · Owner: "The Drafting hall - Proceed with everything" and "Skills List are In Cv's and in the given images". An image was attached: a profile page with a short bio, social badges and a "Tech Stack" list.
+- **Taken as:**
+  1. **Direction:** "The Drafting Hall" approved as proposed: four structures that stand as drawings and build when chosen, no camera travel between categories, card and panel.
+  2. **Skills list:** the owner's skills are the CV's plus the image's tech stack:
+     - CSS3, C, C++, HTML5, JavaScript, Python, Netlify, Chart.js, Django, Django REST, Express.js, FastAPI, Flask, Node.js, Bootstrap, React, Streamlit, Three.js, Tailwind CSS, MongoDB, MySQL, Canva, Pandas, NumPy, Matplotlib, Plotly, Scikit-learn, GitHub.
+     - **Kept** (in the image): C, Netlify, Chart.js, Canva.
+     - **Dropped** (in neither the CV nor the image): GitLab, Postman, Render, Seaborn, TypeScript, fine-tuning, PyTorch, Hugging Face.
+     - Skills the CV ties to works or roles keep that evidence. Three.js keeps Classic's "Exploring" label, since no work uses it.
+  3. **Game Development:** as proposed: gameplay data and analysis (experience), and Three.js (exploring). Canva, a design tool, also goes here, so the category reads "Creative & Game Development" (doc 06's candidate name for it).
+  4. **Evidence links:** approved: a work button travels to the World Forge and opens that work's dossier.
+- **Not taken from the image:**
+  - the bio text (the Sanctum is locked; changing its copy needs the owner);
+  - the social links (contact belongs to the Horizon, M8).
+
+  Both are noted for later.
+- Status: **OWNER DECISION** (design gate)
+
+## DEC-029 — "Complete The QA and proceed" (M6.2 QA; M6.3 gate)
+- Date: 2026-11-22 · Owner: "Complete The QA and proceed", sent while the M6.2 QA run was in progress and before the M6.2 report.
+- **Taken as:**
+  - finish the M6.2 QA, fix what it finds, and commit. One fix was needed: the desktop framing of the rightmost structure;
+  - then start **M6.3 Path of Ascension at its gate** (doc 16): timeline and content verification, and a design proposal. These are documents only, with no code until approval.
+- **Not taken as the M6.2 lock.** The owner hasn't seen the M6.2 results. The lock stays open for the owner's review, and the M6.3 gate work doesn't depend on it.
+- Not taken as: link testing, Classic changes, or push/merge/deploy.
+- Status: **OWNER DIRECTION**
+
 ## Open items carried forward (not decided)
 - **World Map:** master doc §8/§9 make it the "primary navigation entry" (a clean illustrated SVG map), and the master M3 lists "World map reflecting geography". Not built (doc 05: not in M1). It needs a design and scheduling decision.
 - **Controls fading after inactivity** (master doc §9): not implemented. It's UI polish with rules (no fading while focused, open or interacting).

@@ -7,7 +7,8 @@ import { mergeParts, placement, type Part } from '../core/mergeStatic';
 /**
  * P2 landmark blockouts: one simple, recognisable silhouette per region so each
  * island reads from a distance. These are placeholders; each region's real design
- * belongs to its own milestone (M6–M8). The Origin Sanctum's was replaced in M6.1. Stone is baked into one draw; glowing
+ * belongs to its own milestone (M6–M8). The Origin Sanctum's was replaced in M6.1, the
+ * Blueprint Archive's in M6.2. Stone is baked into one draw; glowing
  * accents are baked per colour.
  */
 const islandTop = (id: string): Vec3 => {
@@ -38,17 +39,14 @@ function build(): Built {
 
   // 01 Origin Sanctum: built by its own region since M6.1 (`regions/sanctum`).
 
-  // 03 Blueprint Archive: an ordered skyline of towers, blue crystal on the tallest.
-  const ba = islandTop('blueprint-archive');
+  // 03 Blueprint Archive: built by its own region since M6.2 (`regions/archive`). Its old skyline
+  // drew from the shared random sequence; consume the same draws so the later blockouts stay as approved.
   for (let gx = -3; gx <= 3; gx++) {
     for (let gz = -3; gz <= 3; gz++) {
       if (Math.hypot(gx, gz) > 3.3 || rand() < 0.35) continue;
-      const h = 8 + rand() * 18 + (3 - Math.hypot(gx, gz)) * 5;
-      stone.push([box, placement(at(ba, gx * 11, h / 2, gz * 11), [0, 0, 0], [7, h, 7])]);
+      rand();
     }
   }
-  stone.push([box, placement(at(ba, 0, 24, 0), [0, 0, 0], [9, 48, 9])]);
-  accent(accentOf('blueprint-archive'), [gem, placement(at(ba, 0, 53, 0), [0, 0.6, 0], [3, 4.5, 3])]);
 
   // 04 Path of Ascension: a pale peak on each climbing island; a beacon on the summit.
   for (const id of ['pa-1', 'pa-2', 'pa-3']) {

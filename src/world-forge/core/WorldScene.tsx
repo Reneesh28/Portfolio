@@ -5,6 +5,7 @@ import VoidRegion from '../regions/void/VoidRegion';
 import WorldGeography from '../world/WorldGeography';
 import ForgeRegion from '../regions/forge/ForgeRegion';
 import SanctumRegion from '../regions/sanctum/SanctumRegion';
+import ArchiveRegion from '../regions/archive/ArchiveRegion';
 import DevRenderStats from './DevRenderStats';
 import BlueprintSky from '../look/BlueprintSky';
 import Bloom from '../look/Bloom';
@@ -51,6 +52,7 @@ export default function WorldScene({ animate, store, quality }: WorldSceneProps)
       <WorldGeography />
       <SanctumRegion animate={animate} motes={quality.embers >= 0.5 ? Math.round(60 * quality.embers) : 0} />
       <ForgeRegion animate={animate} emberShare={quality.embers} />
+      <ArchiveRegion animate={animate} />
       <VoidRegion layout={layout} animate={animate} />
       <CameraRig />
       {import.meta.env.DEV && <DevRenderStats />}

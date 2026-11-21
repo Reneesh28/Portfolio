@@ -19,6 +19,7 @@ import type { SegmentLook } from './journeyPath';
 import { PLINTH, PLINTH_SITES } from '../regions/forge/hubLayout';
 import { projectById } from '../content/projects';
 import { fragmentCentre, toWorldDirection, type FragmentId } from '../regions/sanctum/sanctumLayout';
+import { toWorldDirection as archiveDirection } from '../regions/archive/archiveLayout';
 
 export interface CameraPose {
   position: Vec3;
@@ -111,6 +112,30 @@ const sanctumFraming: RegionFraming = {
   },
 };
 
+/**
+ * The Blueprint Archive (M6.2, DEC-028): P5's three-quarter view from the hub side, sized to the
+ * Drafting Hall. Wide screens keep the four structures in an arc left of centre (the panel takes
+ * the right side); narrow screens centre them, pulled back and up. Selecting a category never
+ * moves the camera (master doc §8). Given in the Archive's local frame (+Z toward the hub).
+ */
+export const ARCHIVE_VIEW = {
+  wide: { camera: [8, 28, 78] as Vec3, aim: [21, 14, -12] as Vec3, fov: 50 },
+  narrow: { camera: [0, 46, 100] as Vec3, aim: [0, -9, -10] as Vec3, horizontalFov: 40, minFov: 50 },
+} as const;
+
+const archiveFraming: RegionFraming = {
+  offset: archiveDirection(ARCHIVE_VIEW.wide.camera),
+  aim: archiveDirection(ARCHIVE_VIEW.wide.aim),
+  fov: ARCHIVE_VIEW.wide.fov,
+  status: 'M6',
+  narrow: {
+    offset: archiveDirection(ARCHIVE_VIEW.narrow.camera),
+    aim: archiveDirection(ARCHIVE_VIEW.narrow.aim),
+    horizontalFov: ARCHIVE_VIEW.narrow.horizontalFov,
+    minFov: ARCHIVE_VIEW.narrow.minFov,
+  },
+};
+
 /** Framings for every stop after the Void (route order). */
 export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionFraming>> = {
   'origin-sanctum': sanctumFraming,
@@ -123,7 +148,7 @@ export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionF
     status: 'P5',
     narrow: { offset: [-186, 210, 695], aim: [0, 150, 0], horizontalFov: 44, minFov: 50 },
   },
-  'blueprint-archive': islandFraming('blueprint-archive'),
+  'blueprint-archive': archiveFraming,
   'path-of-ascension': islandFraming('path-of-ascension', 0.4),
   'worlds-beyond': islandFraming('worlds-beyond'),
   horizon: islandFraming('horizon'),

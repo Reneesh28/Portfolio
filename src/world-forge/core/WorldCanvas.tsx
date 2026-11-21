@@ -33,6 +33,10 @@ export default function WorldCanvas({ reducedMotion, store }: WorldCanvasProps) 
           gl={{ antialias: tier !== 'low', powerPreference: 'low-power' }}
           // Reduced motion: render on demand only — a still image except while the journey moves.
           frameloop={reducedMotion ? 'demand' : 'always'}
+          // The Blueprint Archive (M6.2) reveals a structure from its base up with a per-material clipping plane.
+          onCreated={({ gl }) => {
+            gl.localClippingEnabled = true;
+          }}
         >
           <WorldScene animate={!reducedMotion} store={store} quality={preset} />
           <QualityGovernor active={!locked && !reducedMotion && tier !== 'low'} onStepDown={() => setTier(stepDown)} />

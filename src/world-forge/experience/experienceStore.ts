@@ -47,6 +47,8 @@ export interface ExperienceSnapshot {
    * ('engineer', 'creator', 'explorer', which the camera focuses), or null when closed.
    */
   sanctumView: string | null;
+  /** The Blueprint Archive panel's open skill category (M6.2), or null when closed. */
+  archiveCategory: string | null;
 }
 
 /**
@@ -89,6 +91,16 @@ export interface ExperienceStore {
    * Origin Sanctum while idle; direct navigation clears it (it outranks panels).
    */
   openSanctum(view: string | null): void;
+  /**
+   * Open the Blueprint Archive panel on a skill category, or close it (null). Only honoured
+   * at the Blueprint Archive while idle; direct navigation clears it.
+   */
+  openArchive(category: string | null): void;
+  /**
+   * Travel to the World Forge and open a work's dossier once the camera arrives there idle
+   * (M6.2 evidence links). Any other navigation, or arriving anywhere else, cancels it.
+   */
+  visitWork(projectId: string): void;
   /** Advance journey time; camera controller only. */
   advance(dt: number): void;
   setReducedMotion(reduced: boolean): void;
@@ -106,6 +118,8 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
   let scrollBlocks = 0;
   let focusedProject: string | null = null;
   let sanctumView: string | null = null;
+  let archiveCategory: string | null = null;
+  let pendingProject: string | null = null;
   const listeners = new Set<() => void>();
 
   const config = () => (reducedMotion ? REDUCED_MOTION_JOURNEY_CONFIG : JOURNEY_CONFIG);
@@ -117,6 +131,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     reducedMotion,
     focusedProject,
     sanctumView,
+    archiveCategory,
   });
 
   let snapshot = buildSnapshot();
@@ -129,7 +144,8 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       next.phase === snapshot.phase &&
       next.reducedMotion === snapshot.reducedMotion &&
       next.focusedProject === snapshot.focusedProject &&
-      next.sanctumView === snapshot.sanctumView
+      next.sanctumView === snapshot.sanctumView &&
+      next.archiveCategory === snapshot.archiveCategory
     ) {
       return;
     }
@@ -137,11 +153,29 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     listeners.forEach((listener) => listener());
   };
 
+  // A work waiting to be opened (`visitWork`): opened on arriving idle at the Forge, dropped on arriving elsewhere.
+  const settlePending = () => {
+    if (pendingProject === null || journey.phase !== 'idle') return;
+    if (regionAtStop(currentStop(journey)).id === 'world-forge') {
+      focusedProject = pendingProject;
+      wake?.();
+    }
+    pendingProject = null;
+  };
+
   const update = (next: JourneyState) => {
     if (next === journey) return;
     journey = next;
     if (journey.phase !== 'idle') wake?.();
+    settlePending();
     publish();
+  };
+
+  const clearPanels = () => {
+    focusedProject = null;
+    sanctumView = null;
+    archiveCategory = null;
+    pendingProject = null;
   };
 
   return {
@@ -167,14 +201,12 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     },
     isScrollBlocked: () => scrollBlocks > 0,
     navigateTo(region) {
-      focusedProject = null;
-      sanctumView = null;
+      clearPanels();
       update(navigateJourney(journey, stopOfRegion(region), config()));
       publish();
     },
     stepRegion(direction) {
-      focusedProject = null;
-      sanctumView = null;
+      clearPanels();
       update(navigateJourney(journey, destinationStop(journey, config()) + direction, config()));
       publish();
     },
@@ -190,6 +222,20 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       if (view === sanctumView) return;
       sanctumView = view;
       wake?.();
+      publish();
+    },
+    openArchive(category) {
+      if (category !== null && (snapshot.currentRegion !== 'blueprint-archive' || journey.phase !== 'idle')) return;
+      if (category === archiveCategory) return;
+      archiveCategory = category;
+      wake?.();
+      publish();
+    },
+    visitWork(projectId) {
+      clearPanels();
+      update(navigateJourney(journey, stopOfRegion('world-forge'), config()));
+      pendingProject = projectId;
+      settlePending();
       publish();
     },
     advance(dt) {

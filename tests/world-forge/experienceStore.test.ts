@@ -29,6 +29,7 @@ describe('experience store', () => {
       reducedMotion: false,
       focusedProject: null,
       sanctumView: null,
+      archiveCategory: null,
     });
   });
 
