@@ -1,8 +1,8 @@
 # THE WORLD FORGE Status
 
-Last updated: 2026-11-21
+Last updated: 2026-11-22
 Current branch: `the-world-forge` (repository: `portfolio/`). `main` untouched; nothing pushed.
-Working tree: commits up to `105812c` (made on an inferred authorization, pending your confirmation). The reconciliation documents, P1–P5 and M5.2–M5.9 QA are **uncommitted** (P5 was re-applied after a rewind to the end of P4). Nothing pushed.
+Commits: allowed on this branch since 2026-11-22 (DEC-025). P1–P5 and M5 are committed (`ee17210`, `37e4581`); the M6.1 gate documents are committed after them. Nothing pushed.
 
 ## Milestone overview
 | Milestone | Status | Evidence / report |
@@ -12,19 +12,19 @@ Working tree: commits up to `105812c` (made on an inferred authorization, pendin
 | M2 | REOPENED. P4 portal realm owner-approved (DEC-020) | `reports/P4-void-portal-realm.md` |
 | M3 | REOPENED. P2 archipelago owner-approved (DEC-018); World Map data in place (UI in P5) | `reports/P2-geography.md` |
 | M4 | REOPENED. P3 golden spire-city hub owner-approved (DEC-019) | `reports/P3-world-forge-hub.md` |
-| M5 | M5.1–M5.8 done, M5.9 QA done; **waiting on your M5 lock** | `reports/M5-7-8-9-integration-and-qa.md` (and `M5-5-6-works-and-dossier.md`) |
-| M6 | NOT STARTED | — |
+| M5 | **LOCKED** ("PRoceed", DEC-025); NeuroPlay and AETHERION content from the CV | `reports/M5-7-8-9-integration-and-qa.md` (and `M5-5-6-works-and-dossier.md`) |
+| M6 | IN PROGRESS. M6.1 Origin Sanctum: content audit done; **design proposal waiting on your approval** | `proposals/M6-1-origin-sanctum-design-proposal.md` |
 | M7 | NOT STARTED | — |
 | M8 | NOT STARTED | — |
 | M9 | NOT STARTED | — |
 
 ## Current stage
-Stage: P6 = M5 Project System — M5.7 navigation, M5.8 responsive / accessibility / performance, M5.9 QA done; **M5 lock is yours**
-Objective: every route into and out of a work verified; desktop Works list moved off the terrace; phone Works row and map reachability fixed; monuments in 2 draw calls and 8,900 triangles
-Files: `regions/forge/{monumentGeometry (new),Monuments}`, `ui/{ProjectDossier,WorldMap,mapLayout}`, `WorldForge.css`, dev-only `core/DevRenderStats.tsx` + `experience/devHandle.ts`, tests `monuments.test.ts` (new) + `projects.test.ts`; report `reports/M5-7-8-9-integration-and-qa.md`
-Validation: `npm test` 100/100 · typecheck/lint/build exit 0 · M5 probe 41/41 · M5.7 probe 39/39 · M5.8 probe 19/19 (high and low) · map 21/21 · regression 70/70 · Classic pixel-identical to P3 capture
-Blockers: **M5 lock (owner)**; content answers still open (they only fill in dossiers)
-Next: on the M5 lock, M6 starts with its design gate (Origin Sanctum first, doc 16)
+Stage: M6.1 Origin Sanctum, design gate (doc 16): content audit done, design proposal written; **approval is yours**
+Objective: "The Quiet Court": a pillar ring around a still pool, three suspended identity fragments (Engineer, Creator, Explorer), waterfalls, and the Forge on the horizon; a screen-space Sanctum card and a four-view panel
+Files: `proposals/M6-1-origin-sanctum-design-proposal.md`; `content/CONTENT_INVENTORY.md` (Origin Sanctum section). No code until approval.
+Validation (last code change, CV content): `npm test` 101/101 · typecheck/lint/build clean · M5 probe 41/41 · M5.8 probe 19/19
+Blockers: **M6.1 design approval (owner)**: direction, DRAFT copy (three items have no source), the camera turn, and assets
+Next: on approval, the M6.1 blockout and layout
 
 ## Owner decisions needed
 - [x] P1 look approved ("Proceed with phase 2, we are good to go")
@@ -35,17 +35,20 @@ Next: on the M5 lock, M6 starts with its design gate (Origin Sanctum first, doc 
 - [x] M5.4 prototype accepted and M5.5 directed ("add all the other projects as well", DEC-022)
 - [x] M5.6 directed ("Proceed with next phase", DEC-023)
 - [x] M5.5–M5.6 review: "Go with what is best" (DEC-024), taken as keeping the recommended defaults and continuing
-- [ ] **M5 lock** (M5.9): the eight works, the Works index, and the focus / switch / close behaviour
+- [x] M5 lock: "PRoceed" (DEC-025)
+- [ ] **M6.1 Origin Sanctum design**: direction, copy, camera, assets (proposal §4)
 - [ ] Assets: procedural only, or present CC0/licensed candidates
 - [ ] Chronoshift content: description, stack, status, links
 - [ ] Update docs 02/06, or keep overrides only in DECISIONS.md
-- [ ] Commit permission for approved phases (not yet given explicitly)
-- [ ] M5 content items (NeuroPlay conflict, AETHERION stack, CV figures, link testing) still open
+- [x] Commit permission: "Commit permssion granted" (DEC-025); push, merge and deploy not included
+- [x] M5 content: "Cv" / "Everything is in CV" (DEC-025)
+- [ ] Link testing (GitHub and Vercel) still needs an explicit yes
+- [ ] Classic corrections (NeuroPlay text, CGPA 6.91 → 6.86): a Classic change, needs your yes
 - [ ] Optional: `@types/node` dev dependency (DEC-004)
 
 ## Forced or inferred items flagged by the owner's audit (2026-11-21)
 - M1 approval and DEC-001/002/003 were inferred from "it's good… proceed". Superseded by the M1 reopen.
-- Commits `dd349d0` … `105812c` were made on an inferred authorization. Confirmation is pending; nothing was pushed.
+- Commits `dd349d0` … `105812c` were made on an inferred authorization. Commit permission was given on 2026-11-22 (DEC-025); nothing was pushed.
 - DEC-008 refinements and the M4 changes to the Void were made before approval. Superseded by the M4/M2 reopen.
 - Not built although locked in the master doc: World Map, control fading, display font, mobile simplified camera for all regions. Now planned in P5, except the font, which is still open.
 - Verification limits: no real-device or GPU testing; the browser probes are not in the repo; tests are not typechecked.

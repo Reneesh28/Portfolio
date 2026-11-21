@@ -1,4 +1,4 @@
-# Content Inventory — World Forge projects (M5.1 audit)
+# Content Inventory — World Forge projects (M5.1) and Origin Sanctum (M6.1)
 
 Doc 11 rules apply: no invented facts, metrics, descriptions, links or media.
 
@@ -49,3 +49,24 @@ Per the master doc, empty fields are simply not shown. Nothing will be invented 
 
 ## Classic portfolio note
 The image mismatches above also appear in the Classic portfolio, which reads the same `projects.js`. Correcting Classic is a Classic change and needs your approval (M5 proposal, decision 5).
+
+## Origin Sanctum (M6.1 audit, 2026-11-22)
+Columns follow doc 11: Region | Item | Proposed content | Source | Owner confirmation | Status. The exact copy is in `../proposals/M6-1-origin-sanctum-design-proposal.md` §2.5.
+
+| Region | Item | Proposed content | Source | Owner confirmation | Status |
+|---|---|---|---|---|---|
+| Origin Sanctum | Name | Balam Reneesh | CV; Classic `profile.js` (`name`) | CV is the source (DEC-025) | VERIFIED |
+| Origin Sanctum | Identity line | Engineer · Creator · World Builder | Master doc §1 | Owner-written | VERIFIED |
+| Origin Sanctum | Hero statement | "I build systems, create experiences, and explore ideas that haven't yet taken form." | Master doc §1 | Owner-written | VERIFIED |
+| Origin Sanctum | Role | AI Systems Engineer & Full-Stack Developer | Classic `profile.js` (published) | Pending (M6.1 gate) | DRAFT |
+| Origin Sanctum | Mission | "Building systems that learn, remember, and respond." | Classic `profile.js` (published) | Pending (M6.1 gate) | DRAFT |
+| Origin Sanctum | Biography | Two paragraphs; paragraph 1 without its opening "I'm Reneesh Balam," because the name is the heading | Classic `profile.js` (published) | Pending (M6.1 gate) | DRAFT |
+| Origin Sanctum | Education (summary) | B.Tech, Computer Science and Engineering, Lovely Professional University, Aug 2023 – present | CV | CV is the source (DEC-025) | VERIFIED |
+| Origin Sanctum | CGPA | 6.86 (CV) vs 6.91 (Classic) | CV wins (DEC-025) | — | Path of Ascension (M6.3), not the Sanctum |
+| Origin Sanctum | Current work | Machine Learning Intern, MacBease Connections (Nov 2025 – present); Full Stack Developer, freelance (Jan 2026 – present) | CV | CV is the source (DEC-025) | VERIFIED |
+| Origin Sanctum | Specialization and languages | Generative AI, ML, React architecture; C++, JavaScript, Python | Classic `profile.js`; CV | Partly (CV) | DRAFT |
+| Origin Sanctum | Problem-solving approach | — | None | — | NEEDS OWNER (omitted unless supplied) |
+| Origin Sanctum | Creator and game-development ambitions | — | None | — | NEEDS OWNER (omitted unless supplied) |
+| Origin Sanctum | Availability | "Actively seeking roles" | Classic, marked in code as a placeholder to verify; not in the CV | — | OMIT unless confirmed |
+| Origin Sanctum | Resume link | `/resume.pdf` | Repository file | — | VERIFIED (local file) |
+| Origin Sanctum | Phone, email | — | CV | — | OMIT here (contact belongs to the Horizon, M8) |
