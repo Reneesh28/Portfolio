@@ -13,18 +13,18 @@ Commits: allowed on this branch since 2026-11-22 (DEC-025). P1–P5 and M5 are c
 | M3 | REOPENED. P2 archipelago owner-approved (DEC-018); World Map data in place (UI in P5) | `reports/P2-geography.md` |
 | M4 | REOPENED. P3 golden spire-city hub owner-approved (DEC-019) | `reports/P3-world-forge-hub.md` |
 | M5 | **LOCKED** ("PRoceed", DEC-025); NeuroPlay and AETHERION content from the CV | `reports/M5-7-8-9-integration-and-qa.md` (and `M5-5-6-works-and-dossier.md`) |
-| M6 | IN PROGRESS. M6.1 Origin Sanctum **LOCKED** (DEC-027). M6.2 Blueprint Archive built and QA'd (DEC-028); **waiting on your M6.2 lock**. M6.3 Path of Ascension: gate in preparation (DEC-029) | `reports/M6-1-origin-sanctum.md`, `reports/M6-2-blueprint-archive.md` |
+| M6 | IN PROGRESS. M6.1 Origin Sanctum **LOCKED** (DEC-027). M6.2 Blueprint Archive built and QA'd (DEC-028); **waiting on your M6.2 lock**. M6.3 Path of Ascension: timeline audit done; **design proposal waiting on your approval** | `reports/M6-2-blueprint-archive.md`, `proposals/M6-3-path-of-ascension-design-proposal.md` |
 | M7 | NOT STARTED | — |
 | M8 | NOT STARTED | — |
 | M9 | NOT STARTED | — |
 
 ## Current stage
-Stage: M6.2 Blueprint Archive: stages 4–8 and QA done, **lock is yours**. M6.3 Path of Ascension: gate documents in preparation (DEC-029)
+Stage: M6.2 Blueprint Archive: stages 4–8 and QA done, **lock is yours**. M6.3 Path of Ascension: timeline audit and design proposal written, **approval is yours** (DEC-029)
 Objective (M6.2): "The Drafting Hall" built as approved: four structures that stand as drawings and build when chosen, no camera travel between categories, skills as in use (with works and roles) or exploring, work buttons opening dossiers in the Forge
 Files: `regions/archive/*`, `content/skills.ts`, `ui/ArchivePanel.tsx`, `camera/cameraTargets.ts`, `experience/experienceStore.ts`, `core/WorldCanvas.tsx`; report `reports/M6-2-blueprint-archive.md`
 Validation: `npm test` 122/122 · typecheck/lint/build clean · M6.2 probe 105/105 (high and low) · M6.1 105/105 · M5 41/41 · M5.7 39/39 · M5.8 19/19 (high and low) · map 21/21 · regression 70/70 · Classic Δ 0 against the M6.1 capture
-Blockers: **M6.2 lock (owner)**; M6.3 design approval (owner, once the proposal is ready)
-Next: M6.3 timeline audit and design proposal (documents only)
+Blockers: **M6.2 lock (owner)**; **M6.3 design approval (owner)**: direction, Classic-only items (secondary school, freeCodeCamp, AniCos dates, Algo Tutor training), the milestone content
+Next: on the M6.3 approval, the M6.3 blockout (`proposals/M6-3-path-of-ascension-design-proposal.md`)
 
 ## Owner decisions needed
 - [x] P1 look approved ("Proceed with phase 2, we are good to go")
@@ -40,6 +40,7 @@ Next: M6.3 timeline audit and design proposal (documents only)
 - [x] M6.1 lock: "Proceed, M6.1 Locked and good" (DEC-027)
 - [x] M6.2 design approved: "The Drafting hall - Proceed with everything"; skills = CV + the owner's image (DEC-028)
 - [ ] **M6.2 lock**: the Drafting Hall, build-on-select, the skills panel, the work hand-off
+- [ ] **M6.3 Path of Ascension design**: direction, Classic-only items, milestone content (proposal §4)
 - [ ] Assets: procedural only, or present CC0/licensed candidates
 - [ ] Chronoshift content: description, stack, status, links
 - [ ] Update docs 02/06, or keep overrides only in DECISIONS.md

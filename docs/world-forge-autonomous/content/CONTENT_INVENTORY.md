@@ -1,4 +1,4 @@
-# Content Inventory — World Forge projects (M5.1), Origin Sanctum (M6.1) and Blueprint Archive (M6.2)
+# Content Inventory — World Forge projects (M5.1), Origin Sanctum (M6.1), Blueprint Archive (M6.2), Path of Ascension (M6.3)
 
 Doc 11 rules apply: no invented facts, metrics, descriptions, links or media.
 
@@ -134,3 +134,29 @@ Columns follow doc 11: Region | Item | Proposed content | Source | Owner confirm
 Notes:
 - No percentages, levels or logos are carried over. Classic's Core / Applied labels are replaced by the honest split: **in use** (with its evidence) or **exploring**.
 - Chronoshift appears in the blueprint infographic as an "ML + RAG Platform". That is illustration text, not owner content, so it is not used as evidence.
+
+## Path of Ascension (M6.3 timeline audit, 2026-11-22)
+**Sources:**
+- the CV (owner-confirmed, DEC-025; it wins conflicts);
+- Classic's `education.js`, `experience.js` and `certifications.js`.
+
+**Rule** (master doc §6, M6C): verified facts and accurate dates only; concise. Items only Classic has are left out by default, as for the skills (DEC-028), unless the owner keeps them.
+
+| Region | Item | Proposed content | Source | Owner confirmation | Status |
+|---|---|---|---|---|---|
+| Path of Ascension | Intermediate | FIITJEE Junior College, Hyderabad, Telangana · Jun 2021 – Mar 2023 · Percentage 83.5% | CV (Classic agrees: 2021–2023, 83.5%) | CV (DEC-025) | VERIFIED |
+| Path of Ascension | B.Tech | Computer Science and Engineering, Lovely Professional University, Phagwara, Punjab · Aug 2023 – present · CGPA 6.86 | CV | CV (DEC-025) | VERIFIED |
+| Path of Ascension | CGPA conflict | 6.86 (CV) vs 6.91 (Classic) | CV wins (DEC-025) | — | Resolved |
+| Path of Ascension | Certificates (2024) | The Bits and Bytes of Computer Networking (Sep 2024); Fundamentals of Network Communication, Coursera (Oct 2024) | CV (Classic agrees: Google and University of Colorado, via Coursera, 2024) | CV (DEC-025) | VERIFIED |
+| Path of Ascension | AniCos leadership | AniCos Student Organization: Volunteer → Board Member → Co-CEO, over two years | CV | CV (DEC-025) | VERIFIED |
+| Path of Ascension | AniCos title conflict | Co-CEO (CV) vs "CEO" (Classic) | CV wins (DEC-025) | — | Resolved |
+| Path of Ascension | AniCos dates | Classic: Aug 2023 – present; the CV says only "over two years" | Classic only | — | NEEDS OWNER (default: no dates shown) |
+| Path of Ascension | HackerRank | 5 stars in various programming languages (undated) | CV | CV (DEC-025) | VERIFIED |
+| Path of Ascension | Machine Learning Intern | MacBease Connections Private Limited · Nov 2025 – present · admin dashboard (React + Node.js), ~35% better data visibility and decision-making efficiency; data visualisation pipelines and user management, ~40% less manual processing; testing and backend tuning, ~25% faster load times | CV (Classic agrees on role and start) | CV (DEC-025) | VERIFIED |
+| Path of Ascension | Full Stack Developer (freelance) | Jan 2026 – present · hybrid B2B + B2C marketplace (role-based access, catalogue, checkout; 1000+ projected users); credit-based ledger and order lifecycle pipelines; Redis, Celery and AWS (EC2, RDS, S3), API responses 40–60% faster under load | CV | CV (DEC-025) | VERIFIED |
+| Path of Ascension | AWS Certified Cloud Practitioner | CLF-C02 · Apr 2026 | CV | CV (DEC-025) | VERIFIED |
+| Path of Ascension | Projects | AETHERION (Jan 2026 – present); NeuroPlay Engine (Jan – May 2026) | CV | CV (DEC-025) | VERIFIED |
+| Path of Ascension | Secondary school (10th) | Vedanta Childhood High School, Anantapur · 2016 – 2021 · 99.6% | Classic only | — | NEEDS OWNER (default omit) |
+| Path of Ascension | Generative AI training | AI-Powered NLP & Generative AI Training, Algo Tutor Academy · Jun – Aug 2025 | Classic only (it also backs the Archive's "Training" label for RAG and Docker) | — | NEEDS OWNER (keep, or drop it here and in the Archive) |
+| Path of Ascension | freeCodeCamp certificate | Legacy Responsive Web Design (2023) | Classic only | — | NEEDS OWNER (default omit) |
+| Path of Ascension | "Future development" | — | Belongs to the Horizon (M8), with the owner's ambitions | — | Not here |
