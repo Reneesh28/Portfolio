@@ -258,7 +258,8 @@ export function computeProjectFocusPose(projectId: string, width: number, height
 }
 
 /** How far the camera moves toward a focused fragment ("minimal focus", master §8; proposal §2.3). */
-export const FRAGMENT_FOCUS = { approach: 0.2, wideFov: 36, narrowFovScale: 0.82, wideShift: 7, narrowDrop: 6 } as const;
+/** Narrow screens aim below the fragment by a share of the distance, so it sits in the top third, above the sheet. */
+export const FRAGMENT_FOCUS = { approach: 0.2, wideFov: 36, narrowFovScale: 0.82, wideShift: 7, narrowDropShare: 0.22 } as const;
 
 /**
  * Focus view of an Origin Sanctum fragment (M6.1): the settled view, moved a fifth of the way
@@ -276,8 +277,9 @@ export function computeFragmentFocusPose(id: FragmentId, width: number, height: 
   const flat = Math.hypot(dx, dz) || 1;
   // The camera's right when facing the fragment: forward × up.
   const right: Vec3 = [-dz / flat, 0, dx / flat];
+  const reach = Math.hypot(centre[0] - position[0], centre[1] - position[1], centre[2] - position[2]);
   const target: Vec3 = narrow
-    ? [centre[0], centre[1] - FRAGMENT_FOCUS.narrowDrop, centre[2]]
+    ? [centre[0], centre[1] - reach * FRAGMENT_FOCUS.narrowDropShare, centre[2]]
     : [centre[0] + right[0] * FRAGMENT_FOCUS.wideShift, centre[1], centre[2] + right[2] * FRAGMENT_FOCUS.wideShift];
   return { position, target, fov: narrow ? settled.fov * FRAGMENT_FOCUS.narrowFovScale : FRAGMENT_FOCUS.wideFov };
 }

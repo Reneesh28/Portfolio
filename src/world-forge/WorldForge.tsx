@@ -6,6 +6,7 @@ import { exposeDevHandle } from './experience/devHandle';
 import { ExperienceContext } from './experience/ExperienceContext';
 import JourneyNav from './ui/JourneyNav';
 import WorksPanel from './ui/WorksPanel';
+import SanctumPanel from './ui/SanctumPanel';
 import WorldStage from './ui/WorldStage';
 import { useJourneyInput } from './input/useJourneyInput';
 import VoidHero from './regions/void/VoidHero';
@@ -51,6 +52,7 @@ function WorldForgeExperience() {
         <a className="wf-classic-link" href={classicHref()}>
           Classic portfolio
         </a>
+        <SanctumPanel />
         <WorksPanel />
         <JourneyNav />
       </WorldStage>

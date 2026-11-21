@@ -13,18 +13,18 @@ Commits: allowed on this branch since 2026-11-22 (DEC-025). P1–P5 and M5 are c
 | M3 | REOPENED. P2 archipelago owner-approved (DEC-018); World Map data in place (UI in P5) | `reports/P2-geography.md` |
 | M4 | REOPENED. P3 golden spire-city hub owner-approved (DEC-019) | `reports/P3-world-forge-hub.md` |
 | M5 | **LOCKED** ("PRoceed", DEC-025); NeuroPlay and AETHERION content from the CV | `reports/M5-7-8-9-integration-and-qa.md` (and `M5-5-6-works-and-dossier.md`) |
-| M6 | IN PROGRESS. M6.1 Origin Sanctum: content audit done; **design proposal waiting on your approval** | `proposals/M6-1-origin-sanctum-design-proposal.md` |
+| M6 | IN PROGRESS. M6.1 Origin Sanctum built and QA'd (DEC-026); **waiting on your M6.1 lock**. M6.2 and M6.3 not started | `reports/M6-1-origin-sanctum.md` |
 | M7 | NOT STARTED | — |
 | M8 | NOT STARTED | — |
 | M9 | NOT STARTED | — |
 
 ## Current stage
-Stage: M6.1 Origin Sanctum, design gate (doc 16): content audit done, design proposal written; **approval is yours**
-Objective: "The Quiet Court": a pillar ring around a still pool, three suspended identity fragments (Engineer, Creator, Explorer), waterfalls, and the Forge on the horizon; a screen-space Sanctum card and a four-view panel
-Files: `proposals/M6-1-origin-sanctum-design-proposal.md`; `content/CONTENT_INVENTORY.md` (Origin Sanctum section). No code until approval.
-Validation (last code change, CV content): `npm test` 101/101 · typecheck/lint/build clean · M5 probe 41/41 · M5.8 probe 19/19
-Blockers: **M6.1 design approval (owner)**: direction, DRAFT copy (three items have no source), the camera turn, and assets
-Next: on approval, the M6.1 blockout and layout
+Stage: M6.1 Origin Sanctum — stages 3–8 and QA done; **M6.1 lock is yours**
+Objective: "The Quiet Court" built as approved (DEC-026): court, pool, pillars, three fragments, halo, waterfalls, Forge on the horizon; Sanctum card and four-view panel; fragment focus; exit flight keeps the Forge ahead
+Files: `regions/sanctum/*`, `content/sanctum.ts`, `ui/{FocusPanel,SanctumPanel,ProjectDossier}`, `camera/{cameraTargets,CameraRig}`, `experience/experienceStore.ts`; report `reports/M6-1-origin-sanctum.md`
+Validation: `npm test` 112/112 · typecheck/lint/build clean · M6.1 probe 105/105 (high and low) · M5 41/41 · M5.7 39/39 · M5.8 19/19 (high and low) · map 21/21 · regression 70/70 · Classic Δ 0 against the M5.9 capture
+Blockers: **M6.1 lock (owner)**
+Next: on the lock, M6.2 Blueprint Archive starts at its gate (skills inventory and design proposal, doc 16)
 
 ## Owner decisions needed
 - [x] P1 look approved ("Proceed with phase 2, we are good to go")
@@ -36,7 +36,8 @@ Next: on approval, the M6.1 blockout and layout
 - [x] M5.6 directed ("Proceed with next phase", DEC-023)
 - [x] M5.5–M5.6 review: "Go with what is best" (DEC-024), taken as keeping the recommended defaults and continuing
 - [x] M5 lock: "PRoceed" (DEC-025)
-- [ ] **M6.1 Origin Sanctum design**: direction, copy, camera, assets (proposal §4)
+- [x] M6.1 design approved: "proceed" (DEC-026); the three unsourced items left out
+- [ ] **M6.1 lock**: the Quiet Court, the card and panel, the fragment focus
 - [ ] Assets: procedural only, or present CC0/licensed candidates
 - [ ] Chronoshift content: description, stack, status, links
 - [ ] Update docs 02/06, or keep overrides only in DECISIONS.md

@@ -96,7 +96,8 @@ describe('Origin Sanctum camera (M6.1, DEC-026)', () => {
         const p = project(pose, w, h, c);
         assert.ok(Math.abs(p.x) < 0.8 && Math.abs(p.y) < 0.8, `${w}x${h}: ${f.id} framed`);
         if (w > h) assert.ok(p.x < 0, `${f.id} left of centre on wide screens`);
-        else assert.ok(p.y > 0, `${f.id} in the upper half on narrow screens`);
+        // The sheet covers the lower ~52%: the fragment must sit in the top third.
+        else assert.ok(p.y > 0.33, `${f.id} in the top third on narrow screens (${p.y.toFixed(2)})`);
       }
     }
   });
@@ -122,5 +123,37 @@ describe('Origin Sanctum panel state (M6.1)', () => {
     const forge = createExperienceStore('world-forge');
     forge.openSanctum('overview');
     assert.equal(forge.getSnapshot().sanctumView, null, 'refused at the Forge');
+  });
+});
+
+describe('Origin Sanctum content (M6.1, doc 11)', async () => {
+  const { SANCTUM_CONTENT, SANCTUM_IDENTITY, SANCTUM_VIEWS } = await import('../../src/world-forge/content/sanctum.ts');
+  const { isDisplayable, builtProjects } = await import('../../src/world-forge/content/projects.ts');
+
+  it('has the overview and the three fragments, in order', () => {
+    assert.deepEqual([...SANCTUM_VIEWS], ['overview', 'engineer', 'creator', 'explorer']);
+    assert.deepEqual(SANCTUM_VIEWS.map((v) => SANCTUM_CONTENT[v].title), ['Balam Reneesh', 'The Engineer', 'The Creator', 'The Explorer']);
+  });
+
+  it('shows only sourced, approved lines', () => {
+    const fields = [
+      ...Object.values(SANCTUM_IDENTITY),
+      ...SANCTUM_VIEWS.flatMap((v) => [...SANCTUM_CONTENT[v].entries.map((e) => e.field), ...(SANCTUM_CONTENT[v].quote ? [SANCTUM_CONTENT[v].quote] : [])]),
+    ];
+    for (const f of fields) {
+      assert.ok(isDisplayable(f), f.value);
+      assert.ok(f.source.length > 10, `"${f.value}" names its source`);
+    }
+  });
+
+  it('leaves out what no source has (DEC-026) and keeps contact details for the Horizon', () => {
+    const text = JSON.stringify(SANCTUM_CONTENT).toLowerCase();
+    for (const absent of ['problem-solving', 'game-development', 'seeking roles', 'availability', '@', '+91', 'cgpa']) assert.ok(!text.includes(absent), absent);
+  });
+
+  it('counts and names the works from the project data', () => {
+    const line = SANCTUM_CONTENT.creator.entries[0].field.value;
+    assert.equal(builtProjects().length, 8);
+    assert.equal(line, 'Eight works stand in the World Forge, led by NeuroPlay Engine, AETHERION and NutriFit AI.');
   });
 });

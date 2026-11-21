@@ -703,6 +703,151 @@
   }
 }
 
+/* ---------------------------------------------------------------- M6.1 Origin Sanctum */
+/* The Sanctum card: lower left on wide screens (the court is framed left of centre, above it). */
+.wf-root .wf-sanctum-card {
+  position: absolute;
+  left: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  width: min(340px, calc(50vw - 260px));
+  min-width: 260px;
+  padding: 16px 18px;
+  border: 1px solid rgba(63, 208, 138, 0.35);
+  border-radius: 14px;
+  background: rgba(8, 10, 24, 0.82);
+  color: #e9e3ff;
+  backdrop-filter: blur(6px);
+  animation: wf-dossier-fade 320ms ease-out both;
+}
+.wf-root .wf-sanctum-name {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  color: #f4f8f2;
+}
+.wf-root .wf-sanctum-identity {
+  margin: 0.25rem 0 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #6fe0a8;
+}
+.wf-root .wf-sanctum-mission {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #d6d1ef;
+}
+.wf-root .wf-sanctum-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wf-root .wf-sanctum-views button,
+.wf-root .wf-sanctum-actions button {
+  min-height: 44px;
+  padding: 0 0.95rem;
+  border: 1px solid rgba(63, 208, 138, 0.45);
+  border-radius: 999px;
+  background: rgba(10, 14, 28, 0.6);
+  color: #eef6f1;
+  font: inherit;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+.wf-root .wf-sanctum-views .wf-sanctum-about {
+  border-color: rgba(111, 224, 168, 0.85);
+  background: rgba(63, 208, 138, 0.16);
+}
+.wf-root .wf-sanctum-views button:hover,
+.wf-root .wf-sanctum-actions button:hover {
+  border-color: rgba(111, 224, 168, 0.95);
+}
+.wf-root .wf-sanctum-views button:focus-visible,
+.wf-root .wf-sanctum-actions button:focus-visible {
+  outline: 2px solid #6fe0a8;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-root .wf-sanctum-card { animation: none; }
+}
+/* The Sanctum panel: the dossier's shell in the Sanctum's emerald. */
+.wf-root .wf-dossier--sanctum .wf-dossier-panel {
+  border-color: rgba(63, 208, 138, 0.35);
+}
+.wf-root .wf-dossier--sanctum .wf-dossier-count,
+.wf-root .wf-dossier--sanctum .wf-dossier-meta {
+  color: #6fe0a8;
+}
+.wf-root .wf-dossier-body .wf-sanctum-entry {
+  margin: 0 0 0.85rem;
+}
+.wf-root .wf-sanctum-label {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.64rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #d8a35c;
+}
+.wf-root .wf-sanctum-quote {
+  margin: 0.4rem 0 1rem;
+  padding: 0.2rem 0 0.2rem 0.9rem;
+  border-left: 2px solid rgba(63, 208, 138, 0.7);
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.55;
+  color: #f1eefc;
+}
+.wf-root .wf-sanctum-actions {
+  margin-top: 1rem;
+}
+/* Phones, portrait tablets and short landscape screens: a compact card above the navigation. */
+@media (max-aspect-ratio: 5/4), (max-height: 599px), (max-width: 1099px) {
+  .wf-root .wf-sanctum-card {
+    left: 16px;
+    right: 16px;
+    bottom: calc(max(16px, env(safe-area-inset-bottom)) + 84px);
+    width: auto;
+    min-width: 0;
+    padding: 12px 14px;
+  }
+  .wf-root .wf-sanctum-name {
+    display: inline;
+    font-size: 1rem;
+  }
+  .wf-root .wf-sanctum-identity {
+    display: inline;
+    margin: 0 0 0 0.7rem;
+  }
+  .wf-root .wf-sanctum-mission {
+    display: none;
+  }
+  .wf-root .wf-sanctum-views {
+    flex-wrap: nowrap;
+    margin-top: 0.6rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .wf-root .wf-sanctum-views li {
+    flex: none;
+  }
+}
+/* Short landscape screens (phones turned sideways): the court fills the lower middle, so the
+   card moves up into the sky at the top left instead of covering it. */
+@media (max-height: 599px) and (min-aspect-ratio: 5/4) {
+  .wf-root .wf-sanctum-card {
+    top: max(12px, env(safe-area-inset-top));
+    bottom: auto;
+    right: auto;
+    width: min(440px, 58vw);
+  }
+}
+
 /* The bottom navigation stays above the dossier: direct navigation outranks an open panel. */
 .wf-root .wf-nav {
   z-index: 16;
