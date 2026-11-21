@@ -251,6 +251,13 @@ Recorded before implementation, as doc 16 requires:
 - Next: M6.1 stages 3–8 autonomously, committed stage by stage, with non-blocking screenshot checkpoints after the blockout and the environment. **M6.1 QA and lock is the owner's stop.**
 - Status: **OWNER DECISION** (design gate)
 
+## DEC-027 — M6.1 locked; M6.2 begins at its gate
+- Date: 2026-11-22 · Owner: "Proceed, M6.1 Locked and good" (in reply to the M6.1 QA report).
+- **M6.1 Origin Sanctum is LOCKED** as built (commits `09e2dae`, `7e5d2eb`).
+- **"Proceed"** is taken as starting M6.2 Blueprint Archive at its first gate (doc 16): skills inventory verification, categorization, and a design proposal for owner approval. **No Archive code until that approval.**
+- Not taken as: link testing, Classic changes, or push/merge/deploy.
+- Status: **OWNER DECISION** (lock)
+
 ## Open items carried forward (not decided)
 - **World Map:** master doc §8/§9 make it the "primary navigation entry" (a clean illustrated SVG map), and the master M3 lists "World map reflecting geography". Not built (doc 05: not in M1). It needs a design and scheduling decision.
 - **Controls fading after inactivity** (master doc §9): not implemented. It's UI polish with rules (no fading while focused, open or interacting).

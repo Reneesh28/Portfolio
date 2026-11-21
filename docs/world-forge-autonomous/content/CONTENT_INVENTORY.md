@@ -1,4 +1,4 @@
-# Content Inventory — World Forge projects (M5.1) and Origin Sanctum (M6.1)
+# Content Inventory — World Forge projects (M5.1), Origin Sanctum (M6.1) and Blueprint Archive (M6.2)
 
 Doc 11 rules apply: no invented facts, metrics, descriptions, links or media.
 
@@ -70,3 +70,63 @@ Columns follow doc 11: Region | Item | Proposed content | Source | Owner confirm
 | Origin Sanctum | Availability | "Actively seeking roles" | Classic, marked in code as a placeholder to verify; not in the CV | — | OMIT unless confirmed |
 | Origin Sanctum | Resume link | `/resume.pdf` | Repository file | — | VERIFIED (local file) |
 | Origin Sanctum | Phone, email | — | CV | — | OMIT here (contact belongs to the Horizon, M8) |
+
+## Blueprint Archive (M6.2 skills inventory, 2026-11-22)
+**Sources:**
+- the CV (`public/resume.pdf`, owner-confirmed, DEC-025);
+- the works' content (`src/world-forge/content/projects.ts`: CV text for NeuroPlay and AETHERION, repository text for the others);
+- Classic's `src/data/skills.js` and `experience.js`, which carry Classic's own levels: Core, Applied, Exploring.
+
+**Rule** (master doc §6 and M6B; doc 06):
+- no percentages or ratings;
+- every skill shown is backed by a work, a role, training, a certificate or the CV's skills list;
+- skills in use are kept apart from skills being explored.
+
+**Categories:** the master doc's four.
+
+| Region | Item | Proposed content | Source / evidence | Owner confirmation | Status |
+|---|---|---|---|---|---|
+| **AI & Intelligence** | Machine learning | In use | AETHERION (CV: ML-based regime detection), NeuroPlay (CV), SPAE (repo); ML internship (CV) | CV (DEC-025) | VERIFIED |
+| AI & Intelligence | LLM applications | In use | NutriFit (Groq API), FinLit (LLMs), Game Stats (LLM recommendations) (repo) | — | DRAFT (repo) |
+| AI & Intelligence | Retrieval-augmented generation (RAG) | In use | NutriFit (repo); AI-powered NLP and generative AI training, Algo Tutor Academy (Classic `experience.js`) | — | DRAFT (repo) |
+| AI & Intelligence | Embeddings and vector search | In use | NeuroPlay (CV: 8D behavioural embeddings, FAISS retrieval); NutriFit (Sentence Transformers, FAISS) | CV (DEC-025) | VERIFIED |
+| AI & Intelligence | AI agents (LangGraph) | In use | NeuroPlay (CV: LangGraph agents); CV skills | CV (DEC-025) | VERIFIED |
+| AI & Intelligence | LangChain | In use | NutriFit (repo); CV skills | CV (DEC-025) | VERIFIED |
+| AI & Intelligence | Clustering (HDBSCAN) | In use | NeuroPlay (CV) | CV (DEC-025) | VERIFIED |
+| AI & Intelligence | Scikit-learn | In use | CV skills; Classic: SPAE models | CV (DEC-025) | VERIFIED |
+| AI & Intelligence | Computer vision | In use | PARAS System (repo) | — | DRAFT (repo) |
+| AI & Intelligence | Deep learning (PyTorch) | Exploring | Classic: "Exploring" | — | DRAFT |
+| AI & Intelligence | Hugging Face | Exploring | Classic: "Exploring"; Algo Tutor training (Classic) | — | DRAFT |
+| AI & Intelligence | Fine-tuning | — | No source (only the master doc's candidate list) | — | OMIT |
+| **Software Engineering** | Python | In use | Every work with content; CV | CV (DEC-025) | VERIFIED |
+| Software Engineering | JavaScript | In use | CV; MERN in NeuroPlay and the internship (CV) | CV (DEC-025) | VERIFIED |
+| Software Engineering | C++ | In use | CV skills (no work names it) | CV (DEC-025) | VERIFIED |
+| Software Engineering | React | In use | AETHERION (CV); internship admin dashboard, React + Node.js (CV) | CV (DEC-025) | VERIFIED |
+| Software Engineering | Next.js | In use | Freelance marketplace (CV) | CV (DEC-025) | VERIFIED |
+| Software Engineering | Node.js and Express (MERN) | In use | Internship (CV); NeuroPlay (CV: MERN) | CV (DEC-025) | VERIFIED |
+| Software Engineering | FastAPI | In use | NeuroPlay, AETHERION (CV); NutriFit, FinLit (repo) | CV (DEC-025) | VERIFIED |
+| Software Engineering | Django and Django REST Framework | In use | AETHERION (CV: Django); freelance (CV: Django, DRF) | CV (DEC-025) | VERIFIED |
+| Software Engineering | Flask | In use | AETHERION (CV) | CV (DEC-025) | VERIFIED |
+| Software Engineering | WebSockets | In use | AETHERION (CV) | CV (DEC-025) | VERIFIED |
+| Software Engineering | Streamlit | In use | NutriFit, Game Stats (repo); CV skills | CV (DEC-025) | VERIFIED |
+| Software Engineering | HTML and CSS, Tailwind CSS, Bootstrap | In use | CV skills (no work names them) | CV (DEC-025) | VERIFIED |
+| Software Engineering | TypeScript | — | Listed by no source | — | OMIT unless confirmed |
+| Software Engineering | C | — | Classic only ("academic projects"); not in the CV | — | NEEDS OWNER (default omit) |
+| **Data & Infrastructure** | MongoDB, MySQL | In use | AETHERION (CV); CV skills | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | FAISS (vector store) | In use | NeuroPlay (CV), NutriFit (repo); CV skills | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | Redis | In use | AETHERION, freelance (CV) | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | Kafka | In use | AETHERION (CV) | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | Task queues (Celery, BullMQ) | In use | Freelance (CV: Celery); NeuroPlay (CV: BullMQ) | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | Docker | In use | AETHERION (CV); Algo Tutor training (Classic) | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | AWS (EC2, RDS, S3) | In use | Freelance (CV); AWS Certified Cloud Practitioner, Apr 2026 (CV) | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | Git and GitHub | In use | Freelance stack (CV: GitHub); every work's repository | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | Pandas, NumPy | In use | FinLit, Game Stats (repo); CV skills | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | Matplotlib, Plotly | In use | Game Stats (repo); CV skills (Matplotlib) | CV (DEC-025) | VERIFIED |
+| Data & Infrastructure | GitLab, Postman, Render, Netlify, Seaborn, Chart.js, Canva | — | Classic only, with no work or CV behind them | — | NEEDS OWNER (default omit) |
+| **Game Development** | Gameplay data and analysis | Experience | NeuroPlay (CV: behavioural gameplay analysis, ~28,000 gameplay samples); Game Stats Dashboard (repo) | CV (DEC-025) | VERIFIED |
+| Game Development | Three.js / WebGL | Exploring | Classic: "Exploring" | — | DRAFT |
+| Game Development | Game engines (e.g. Unity, Unreal, Godot) | — | No source names any engine | — | NEEDS OWNER |
+
+Notes:
+- No percentages, levels or logos are carried over. Classic's Core / Applied labels are replaced by the honest split: **in use** (with its evidence) or **exploring**.
+- Chronoshift appears in the blueprint infographic as an "ML + RAG Platform". That is illustration text, not owner content, so it is not used as evidence.

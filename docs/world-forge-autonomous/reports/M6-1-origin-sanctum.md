@@ -2,7 +2,7 @@
 
 Date: 2026-11-22.
 Branch: `the-world-forge`, committed stage by stage. Decisions: DEC-025 (content source) and DEC-026 (design approved).
-Status: **M6.1 stages 3–8 done; QA done. Waiting on your M6.1 lock.**
+Status: **M6.1 LOCKED** ("Proceed, M6.1 Locked and good", DEC-027, 2026-11-22). Commits `09e2dae`, `7e5d2eb`.
 
 ## What you'll see
 - **Arrival.** After the reveal, the camera settles on the island's outer side and looks back across the Sanctum toward the hub. The golden Forge fills the horizon behind the court.
