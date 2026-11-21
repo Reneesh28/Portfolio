@@ -58,6 +58,14 @@ Recorded before implementation, as doc 16 requires:
 - **The placeholder `regions/void/DistantForge.tsx` is retired** and replaced by `regions/forge/`, the same object at the same place and in the same orientation.
 - Status: **IMPLEMENTATION DECISION**. Reviewed with M4.9.
 
+## DEC-009 — M4 locked
+- Date: 2026-11-21 · Owner reply: "Approve m4".
+- Approves the World Forge centrepiece as built (M4.1–M4.8), including:
+  - the small changes it brings to the Void opening (seam halo, fractured pillar tips, crown breaks and strut, orbit fragments, tier lines);
+  - the DEC-008 refinements.
+- The Forge's layout (`regions/forge/forgeLayout.ts`), framing and arrival are now locked contracts for M5–M9. The M5 monuments use the 7 reserved plinth sites (count confirmed in M5).
+- Status: **OWNER-APPROVED, LOCKED**
+
 ## Open items carried forward (not decided)
 - **World Map:** master doc §8/§9 make it the "primary navigation entry" (a clean illustrated SVG map), and the master M3 lists "World map reflecting geography". Not built (doc 05: not in M1). It needs a design and scheduling decision.
 - **Controls fading after inactivity** (master doc §9): not implemented. It's UI polish with rules (no fading while focused, open or interacting).

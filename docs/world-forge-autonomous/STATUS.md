@@ -11,25 +11,29 @@ Working tree: M4 committed stage by stage (`8a282eb` … `f78f267`, plus the M4.
 | M1 | COMPLETE, owner-approved (2026-11-21), LOCKED. Framings stay provisional (DEC-001) and are refined per region milestone | `reports/M1-milestone-report.md` |
 | M2 | COMPLETE, owner-approved, LOCKED | Opening scene verified pixel-identical after M1 |
 | M3 | Owner-declared complete | Geography files untouched; now reachable through the journey |
-| M4 | PARTIAL — M4.1–M4.8 implemented and validated; **M4.9 waiting on owner visual review** | `reports/M4-milestone-report.md` |
-| M5 | NOT STARTED | — |
+| M4 | COMPLETE, owner-approved (2026-11-21), LOCKED (DEC-009) | `reports/M4-milestone-report.md` |
+| M5 | DESIGN GATE: content audit done, proposal submitted, **waiting on owner approval** | `proposals/M5-project-system-design-proposal.md`, `content/CONTENT_INVENTORY.md` |
 | M6 | NOT STARTED | — |
 | M7 | NOT STARTED | — |
 | M8 | NOT STARTED | — |
 | M9 | NOT STARTED | — |
 
 ## Current stage
-Stage: M4.9 Acceptance and lock
-Objective: owner visual review of the World Forge centrepiece and of the small changes it brings to the Void opening; lock M4
-Files: see `reports/M4-milestone-report.md`; review images in `reports/m4-review/`
-Validation: `npm test` 70/70 · typecheck/lint/build exit 0 · real-input regression 70/70 ×3 · Classic pixel-identical · Forge 19 draw calls (budget 40)
-Acceptance: all engineering criteria met; owner visual approval outstanding
-Blockers: owner review (doc 16 M4.9; doc 10)
-Next: on approval, lock M4 and start the M5 content and interaction design gate (proposal only)
+Stage: M5 content and interaction design gate (pre-implementation)
+Objective: audit real project content; propose the monument treatment and the selection/dossier behaviour
+Files: `proposals/M5-project-system-design-proposal.md`, `content/CONTENT_INVENTORY.md` (documentation only; no source changes)
+Validation: n/a (proposal). Audit sources: `src/data/projects.js`, Classic usage, `public/resume.pdf`; links not fetched (needs permission)
+Acceptance: covers content status, monument visual treatment, selection, focus, dossier, data model, camera and input integration, mobile, reduced motion, assets, performance
+Blockers: owner approval and content decisions (doc 16 M5: owner approves before coding)
+Next: on approval, M5.2 monument system architecture, then M5.3 prototype and the M5.4 review stop
 
 ## Owner decisions needed
-- [ ] Approve and lock M4 (or list changes)
-- [ ] Accept the Void-opening changes listed in the M4 report (seam halo, fractured pillar tips, crown breaks and strut, orbit fragments, tier lines), or keep any of them out of the opening
+- [ ] M5 direction "The Forged Works": approve or redirect (emblems adjustable one by one)
+- [ ] M5 content: NeuroPlay conflict, AETHERION tech list, whether to show CV figures, confirm the other 5 projects
+- [ ] M5 selection and order: all 7, featured three at the central sites?
+- [ ] M5 permission to test the project links (sends requests to GitHub and Vercel)
+- [ ] M5 images: use only the 3 matching images, or provide new ones? Fix Classic's image mismatches?
+- [ ] M5 dossier detail: keep concise, or supply problem/contribution/results text
 - [ ] World Map timing/design (master doc §8 primary navigation entry)
 - [ ] Optional: `@types/node` dev dependency (DEC-004)
 
@@ -52,6 +56,6 @@ Next: on approval, lock M4 and start the M5 content and interaction design gate 
 - [x] M2 The Void composition (preserved; scene pixel-identical)
 - [x] M3 geography, anchors, terrain, routes (untouched)
 - [x] M1 foundation: journey store, single camera rig, scroll/keyboard/touch input, bottom-centre nav (owner-approved 2026-11-21)
-- [x] M4 design direction "The Crucible of Worlds" (DEC-007); implementation awaiting M4.9 review
+- [x] M4 The World Forge centrepiece, layout, framing and arrival (owner-approved 2026-11-21, DEC-009)
 - [x] World Forge default; Classic at `?mode=classic`
 - [x] No free roam; screen-space UI; audio off; no fake skill metrics

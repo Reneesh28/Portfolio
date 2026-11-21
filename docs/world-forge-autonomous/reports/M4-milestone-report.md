@@ -15,7 +15,7 @@ The approved centrepiece, "The Crucible of Worlds" (DEC-007), was built in its s
 | M4.6 Materials, lighting, atmosphere (+ world sky, DEC-002) | Implemented, tested, agent-inspected | `M4-6-materials-lighting-atmosphere.md` | `d813836` |
 | M4.7 Reveal and interaction | Implemented, tested, real-navigation inspected | `M4-7-reveal-interaction.md` | `efde112` |
 | M4.8 Responsive and performance | Implemented, tested, real-input regression | `M4-8-responsive-performance.md` | `1495932`, `f78f267` |
-| M4.9 Acceptance and lock | **Waiting on owner visual review** | this report | (this commit) |
+| M4.9 Acceptance and lock | **Owner-approved 2026-11-21 (DEC-009)** | this report | `12f8ed7` |
 
 ## Master-plan M4 acceptance (§15)
 | Criterion | Evidence |
@@ -74,7 +74,7 @@ npm run dev
 2. **The Void-opening changes listed above:** accept, or keep any element unchanged from the Void.
 3. Carried from DEC-008: monument plinths on the T1 ring (not T2), and stairs aligned to the octagon faces.
 
-## Milestone status: PARTIAL — implementation complete, waiting on owner visual review and lock (M4.9)
+## Milestone status: COMPLETE — owner-approved and LOCKED (DEC-009), including the listed Void-opening changes
 
 ## Next milestone
 **M5 Project System.** It starts with its required content and interaction design gate: audit the real project content, then design the monument treatment and the selection/dossier behaviour, then your approval before coding.
