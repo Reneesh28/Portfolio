@@ -109,7 +109,7 @@ export const ISLANDS: readonly Island[] = [
   { id: 'forge', region: 'world-forge', position: [0, 0, 0], radius: HUB.islandRadius, thickness: 34, depth: 320, irregularity: 0.08, jagged: 0.85, shards: 18, top: '#34324a', seed: 11 },
   // The Void: the portal realm's island (P4), carrying the arrival platform, the portal and the opening camera.
   { id: 'void', region: 'void', position: [0, 0, 795], radius: 74, thickness: 18, depth: 130, irregularity: 0.16, jagged: 0.95, shards: 11, top: '#2a2440', seed: 3 },
-  { id: 'origin-sanctum', region: 'origin-sanctum', position: OS, radius: 70, thickness: 14, depth: 120, irregularity: 0.22, jagged: 0.85, shards: 9, top: '#1f5c40', seed: 23 },
+  { id: 'origin-sanctum', region: 'origin-sanctum', position: OS, radius: 70, thickness: 14, depth: 120, irregularity: 0.22, jagged: 0.85, shards: 9, top: '#2b6c46', seed: 23 },
   { id: 'blueprint-archive', region: 'blueprint-archive', position: BA, radius: 72, thickness: 16, depth: 120, irregularity: 0.14, jagged: 0.8, shards: 9, top: '#25385a', seed: 31 },
   // The Path of Ascension: four islands climbing to the summit.
   { id: 'pa-1', region: 'path-of-ascension', position: atBearing(132, 480, 15), radius: 34, thickness: 10, depth: 60, irregularity: 0.25, jagged: 0.9, shards: 4, top: '#6f7a90', seed: 41 },

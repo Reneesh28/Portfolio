@@ -6,7 +6,9 @@ import { useExperienceStore } from '../experience/ExperienceContext';
 import { JOURNEY_ROUTE } from '../experience/route';
 import {
   approach,
+  computeFragmentFocusPose,
   computeProjectFocusPose,
+  type CameraPose,
   computeRegionPose,
   easeFocus,
   FOCUS_MOTION,
@@ -16,6 +18,26 @@ import {
 } from './cameraTargets';
 import { INTRO, introRemaining } from './intro';
 import { createJourneyPath, TRAVEL_ARC, type SampledPose } from './journeyPath';
+import type { ExperienceSnapshot } from '../experience/experienceStore';
+import type { FragmentId } from '../regions/sanctum/sanctumLayout';
+
+const FRAGMENTS: readonly string[] = ['engineer', 'creator', 'explorer'];
+
+/**
+ * What the camera focuses on, if anything: a project's monument at the Forge (M5), or an
+ * identity fragment at the Origin Sanctum (M6.1; the Sanctum's overview has no focus).
+ */
+function focusTarget(snap: ExperienceSnapshot, width: number, height: number): { id: string; pose: () => CameraPose | null } | null {
+  if (snap.focusedProject) {
+    const project = snap.focusedProject;
+    return { id: `project:${project}`, pose: () => computeProjectFocusPose(project, width, height) };
+  }
+  if (snap.sanctumView && FRAGMENTS.includes(snap.sanctumView)) {
+    const fragment = snap.sanctumView as FragmentId;
+    return { id: `fragment:${fragment}`, pose: () => computeFragmentFocusPose(fragment, width, height) };
+  }
+  return null;
+}
 
 /**
  * The only camera writer in the World Forge.
@@ -96,12 +118,13 @@ export default function CameraRig() {
         }
       }
     }
-    // Project focus: ease toward the focused monument (and back on release). Reduced motion: short.
+    // Focus (a monument or a fragment): ease toward it, and back on release. Reduced motion: short.
     const snap = store.getSnapshot();
     const f = focus.current;
-    const key = snap.focusedProject ? `${snap.focusedProject}@${width}x${height}` : null;
-    if (snap.focusedProject && key !== f.key) {
-      const goal = computeProjectFocusPose(snap.focusedProject, width, height);
+    const target = focusTarget(snap, width, height);
+    const key = target ? `${target.id}@${width}x${height}` : null;
+    if (target && key !== f.key) {
+      const goal = target.pose();
       if (goal) {
         // Already (partly) focused: glide on from where the focus pose is now. Otherwise start there.
         const gliding = f.key !== null && f.blend > 0;
@@ -124,10 +147,10 @@ export default function CameraRig() {
     f.target.lerpVectors(f.from.target, f.to.target, g);
     f.fov = f.from.fov + (f.to.fov - f.from.fov) * g;
 
-    const wanted = snap.focusedProject && f.key ? 1 : 0;
+    const wanted = target && f.key ? 1 : 0;
     const rate = 1 / (short || FOCUS_MOTION.openSeconds);
     f.blend = approach(f.blend, wanted, delta * rate);
-    if (f.blend === 0 && !snap.focusedProject) f.key = null;
+    if (f.blend === 0 && !target) f.key = null;
     let fov = pose.fov;
     if (f.blend > 0) {
       const k = easeFocus(f.blend);

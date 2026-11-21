@@ -18,6 +18,7 @@ import { computeVoidLayout, computeVoidPlacement } from '../regions/void/layout'
 import type { SegmentLook } from './journeyPath';
 import { PLINTH, PLINTH_SITES } from '../regions/forge/hubLayout';
 import { projectById } from '../content/projects';
+import { fragmentCentre, toWorldDirection, type FragmentId } from '../regions/sanctum/sanctumLayout';
 
 export interface CameraPose {
   position: Vec3;
@@ -52,7 +53,7 @@ interface RegionFraming {
   /** Vertical field of view at the reference aspect (16:10). */
   fov: number;
   /** `provisional` (M1 functional framing) or the milestone whose approved design set it. */
-  status: 'provisional' | 'M4' | 'P5';
+  status: 'provisional' | 'M4' | 'P5' | 'M6';
   narrow?: NarrowFraming;
 }
 
@@ -86,9 +87,33 @@ function islandFraming(id: RegionId, lean = 0): RegionFraming {
   };
 }
 
+/**
+ * The Origin Sanctum (M6.1, DEC-026): from the island's outer side, looking back across the
+ * court toward the hub, so the Forge stands on the horizon. Wide screens keep the court left of
+ * centre (the panel takes the right side); narrow screens centre it, pulled back and up.
+ * Given in the Sanctum's local frame (+Z away from the hub, +X the camera's right).
+ */
+export const SANCTUM_VIEW = {
+  wide: { camera: [10, 32, 86] as Vec3, aim: [17, 8, -20] as Vec3, fov: 50 },
+  narrow: { camera: [0, 42, 112] as Vec3, aim: [0, 0, -12] as Vec3, horizontalFov: 40, minFov: 50 },
+} as const;
+
+const sanctumFraming: RegionFraming = {
+  offset: toWorldDirection(SANCTUM_VIEW.wide.camera),
+  aim: toWorldDirection(SANCTUM_VIEW.wide.aim),
+  fov: SANCTUM_VIEW.wide.fov,
+  status: 'M6',
+  narrow: {
+    offset: toWorldDirection(SANCTUM_VIEW.narrow.camera),
+    aim: toWorldDirection(SANCTUM_VIEW.narrow.aim),
+    horizontalFov: SANCTUM_VIEW.narrow.horizontalFov,
+    minFov: SANCTUM_VIEW.narrow.minFov,
+  },
+};
+
 /** Framings for every stop after the Void (route order). */
 export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionFraming>> = {
-  'origin-sanctum': islandFraming('origin-sanctum'),
+  'origin-sanctum': sanctumFraming,
   // The golden spire-city hub from outside the Projects gate (bearing ≈ 345°): the city sits left of
   // centre and the right ≈ 40% stays clear for the M5 dossier. Narrow screens: centred, pulled back.
   'world-forge': {
@@ -108,6 +133,7 @@ export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionF
  * Designed journey moves (P5, DEC-020), keyed by the region a segment ARRIVES at.
  * - Origin Sanctum, the reveal: leaving the Void, the camera rises high over the portal
  *   and looks toward the hub mid-flight, so the archipelago and the golden Forge appear below.
+ * - World Forge (M6.1): leaving the Sanctum, the view holds on the Forge's core.
  * - Blueprint Archive, the overview: leaving the Forge, the camera climbs higher still and
  *   looks back over the hub before diving to the Archive.
  * Arcs are shares of the segment's horizontal length; other segments use `TRAVEL_ARC`.
@@ -119,6 +145,8 @@ export const ARRIVAL_ARCS: Readonly<Partial<Record<RegionId, number>>> = {
 
 export const ARRIVAL_LOOKS: Readonly<Partial<Record<RegionId, SegmentLook>>> = {
   'origin-sanctum': { point: [0, 120, 0], strength: 0.75 },
+  // M6.1: leaving the Sanctum from its outer side, the Forge stays ahead the whole way.
+  'world-forge': { point: [0, 150, 0], strength: 0.9 },
   'blueprint-archive': { point: [0, 60, 0], strength: 0.8 },
 };
 
@@ -227,6 +255,31 @@ export function computeProjectFocusPose(projectId: string, width: number, height
     target: [px + right[0] * shift, top + (narrow ? -4.8 : 5), pz + right[1] * shift],
     fov: narrow ? 55 : 40,
   };
+}
+
+/** How far the camera moves toward a focused fragment ("minimal focus", master §8; proposal §2.3). */
+export const FRAGMENT_FOCUS = { approach: 0.2, wideFov: 36, narrowFovScale: 0.82, wideShift: 7, narrowDrop: 6 } as const;
+
+/**
+ * Focus view of an Origin Sanctum fragment (M6.1): the settled view, moved a fifth of the way
+ * toward the fragment and narrowed onto it. Wide screens put the fragment left of centre (the
+ * panel takes the right side); narrow screens put it in the upper part, above the sheet.
+ */
+export function computeFragmentFocusPose(id: FragmentId, width: number, height: number): CameraPose {
+  const settled = computeRegionPose('origin-sanctum', width, height);
+  const centre = fragmentCentre(id);
+  const narrow = width / Math.max(height, 1) < NARROW_ASPECT;
+  const [sx, sy, sz] = settled.position;
+  const position: Vec3 = [sx + (centre[0] - sx) * FRAGMENT_FOCUS.approach, sy + (centre[1] - sy) * FRAGMENT_FOCUS.approach, sz + (centre[2] - sz) * FRAGMENT_FOCUS.approach];
+  const dx = centre[0] - position[0];
+  const dz = centre[2] - position[2];
+  const flat = Math.hypot(dx, dz) || 1;
+  // The camera's right when facing the fragment: forward × up.
+  const right: Vec3 = [-dz / flat, 0, dx / flat];
+  const target: Vec3 = narrow
+    ? [centre[0], centre[1] - FRAGMENT_FOCUS.narrowDrop, centre[2]]
+    : [centre[0] + right[0] * FRAGMENT_FOCUS.wideShift, centre[1], centre[2] + right[2] * FRAGMENT_FOCUS.wideShift];
+  return { position, target, fov: narrow ? settled.fov * FRAGMENT_FOCUS.narrowFovScale : FRAGMENT_FOCUS.wideFov };
 }
 
 /**

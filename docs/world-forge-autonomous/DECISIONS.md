@@ -240,6 +240,17 @@ Recorded before implementation, as doc 16 requires:
   - permission to change Classic. Classic still shows the site's NeuroPlay text and a CGPA of 6.91 (the CV says 6.86); correcting it is a Classic change.
 - Status: **OWNER DECISION** (content source, M5 lock, commits)
 
+## DEC-026 — M6.1 Origin Sanctum design approved ("proceed")
+- Date: 2026-11-22 · Owner: "proceed", in reply to the M6.1 gate report, which asked four questions (direction, copy, camera, assets) and recommended an answer for each.
+- **Taken as approving the proposal as written** (`proposals/M6-1-origin-sanctum-design-proposal.md`) with its recommendations:
+  1. **Direction:** "The Quiet Court" as proposed.
+  2. **Copy:** the DRAFT copy in §2.5 is approved. No text was supplied for the problem-solving approach, the creator and game-development ambitions, or availability, so all three are **left out**, as the proposal said they would be.
+  3. **Camera:** the Sanctum's settled view turns to look back toward the Forge, a change to P5's framing for this stop only.
+  4. **Assets:** procedural only.
+- **Not taken as:** link testing, Classic changes, or push/merge/deploy.
+- Next: M6.1 stages 3–8 autonomously, committed stage by stage, with non-blocking screenshot checkpoints after the blockout and the environment. **M6.1 QA and lock is the owner's stop.**
+- Status: **OWNER DECISION** (design gate)
+
 ## Open items carried forward (not decided)
 - **World Map:** master doc §8/§9 make it the "primary navigation entry" (a clean illustrated SVG map), and the master M3 lists "World map reflecting geography". Not built (doc 05: not in M1). It needs a design and scheduling decision.
 - **Controls fading after inactivity** (master doc §9): not implemented. It's UI polish with rules (no fading while focused, open or interacting).

@@ -42,6 +42,11 @@ export interface ExperienceSnapshot {
   reducedMotion: boolean;
   /** The project whose monument the camera focuses on (its dossier is open), or null (M5). */
   focusedProject: string | null;
+  /**
+   * The Origin Sanctum panel's open view (M6.1): 'overview' or an identity fragment
+   * ('engineer', 'creator', 'explorer', which the camera focuses), or null when closed.
+   */
+  sanctumView: string | null;
 }
 
 /**
@@ -79,6 +84,11 @@ export interface ExperienceStore {
    * honoured at the World Forge while idle; direct navigation clears it (it outranks panels).
    */
   focusProject(id: string | null): void;
+  /**
+   * Open the Origin Sanctum panel on a view, or close it (null). Only honoured at the
+   * Origin Sanctum while idle; direct navigation clears it (it outranks panels).
+   */
+  openSanctum(view: string | null): void;
   /** Advance journey time; camera controller only. */
   advance(dt: number): void;
   setReducedMotion(reduced: boolean): void;
@@ -95,6 +105,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
   let wake: (() => void) | null = null;
   let scrollBlocks = 0;
   let focusedProject: string | null = null;
+  let sanctumView: string | null = null;
   const listeners = new Set<() => void>();
 
   const config = () => (reducedMotion ? REDUCED_MOTION_JOURNEY_CONFIG : JOURNEY_CONFIG);
@@ -105,6 +116,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     phase: journey.phase,
     reducedMotion,
     focusedProject,
+    sanctumView,
   });
 
   let snapshot = buildSnapshot();
@@ -116,7 +128,8 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       next.destinationRegion === snapshot.destinationRegion &&
       next.phase === snapshot.phase &&
       next.reducedMotion === snapshot.reducedMotion &&
-      next.focusedProject === snapshot.focusedProject
+      next.focusedProject === snapshot.focusedProject &&
+      next.sanctumView === snapshot.sanctumView
     ) {
       return;
     }
@@ -155,11 +168,13 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     isScrollBlocked: () => scrollBlocks > 0,
     navigateTo(region) {
       focusedProject = null;
+      sanctumView = null;
       update(navigateJourney(journey, stopOfRegion(region), config()));
       publish();
     },
     stepRegion(direction) {
       focusedProject = null;
+      sanctumView = null;
       update(navigateJourney(journey, destinationStop(journey, config()) + direction, config()));
       publish();
     },
@@ -167,6 +182,13 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       if (id !== null && (snapshot.currentRegion !== 'world-forge' || journey.phase !== 'idle')) return;
       if (id === focusedProject) return;
       focusedProject = id;
+      wake?.();
+      publish();
+    },
+    openSanctum(view) {
+      if (view !== null && (snapshot.currentRegion !== 'origin-sanctum' || journey.phase !== 'idle')) return;
+      if (view === sanctumView) return;
+      sanctumView = view;
       wake?.();
       publish();
     },

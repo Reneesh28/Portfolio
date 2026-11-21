@@ -7,7 +7,7 @@ import { mergeParts, placement, type Part } from '../core/mergeStatic';
 /**
  * P2 landmark blockouts: one simple, recognisable silhouette per region so each
  * island reads from a distance. These are placeholders; each region's real design
- * belongs to its own milestone (M6–M8). Stone is baked into one draw; glowing
+ * belongs to its own milestone (M6–M8). The Origin Sanctum's was replaced in M6.1. Stone is baked into one draw; glowing
  * accents are baked per colour.
  */
 const islandTop = (id: string): Vec3 => {
@@ -36,14 +36,7 @@ function build(): Built {
   const accents = new Map<string, Part[]>();
   const accent = (color: string, part: Part) => accents.set(color, [...(accents.get(color) ?? []), part]);
 
-  // 01 Origin Sanctum: ring colonnade, central obelisk, an emerald crystal above it.
-  const os = islandTop('origin-sanctum');
-  for (let i = 0; i < 12; i++) {
-    const a = (i / 12) * Math.PI * 2;
-    stone.push([pillar, placement(at(os, Math.sin(a) * 24, 6, Math.cos(a) * 24), [0, a, 0], [1.6, 12, 1.6])]);
-  }
-  stone.push([pillar, placement(at(os, 0, 14, 0), [0, 0, 0], [2.6, 28, 2.6])]);
-  accent(accentOf('origin-sanctum'), [gem, placement(at(os, 0, 33, 0), [0, 0.4, 0], [3, 4.5, 3])]);
+  // 01 Origin Sanctum: built by its own region since M6.1 (`regions/sanctum`).
 
   // 03 Blueprint Archive: an ordered skyline of towers, blue crystal on the tallest.
   const ba = islandTop('blueprint-archive');

@@ -28,6 +28,7 @@ describe('experience store', () => {
       phase: 'idle',
       reducedMotion: false,
       focusedProject: null,
+      sanctumView: null,
     });
   });
 

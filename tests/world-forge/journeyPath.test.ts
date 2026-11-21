@@ -53,9 +53,9 @@ describe('journey camera path', () => {
       const [x, y, z] = island.position;
       return { name: island.id, x, z, r: island.radius * 1.02, bottom: y - island.thickness - island.depth, top: y + 3 };
     });
-    // Landmarks standing on the islands (P2 blockouts), generous radii and heights.
+    // Landmarks standing on the islands (P2 blockouts; the M6.1 Sanctum), generous radii and heights.
     const landmark: Record<string, [number, number]> = {
-      'origin-sanctum': [30, 40], 'blueprint-archive': [42, 62], 'pa-1': [10, 22], 'pa-2': [10, 22], 'pa-3': [10, 22],
+      'origin-sanctum': [44, 34], 'blueprint-archive': [42, 62], 'pa-1': [10, 22], 'pa-2': [10, 22], 'pa-3': [10, 22],
       'pa-summit': [8, 34], 'wb-convergence': [24, 32], horizon: [16, 30],
     };
     for (const island of ISLANDS) {
