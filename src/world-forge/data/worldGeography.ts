@@ -1,21 +1,16 @@
 /**
- * THE WORLD FORGE — world geography (M3 blockout).
+ * THE WORLD FORGE — world geography (P2 archipelago, DEC-010/011/016).
  *
- * World frame: the Forge sits at the origin; +Y is up. THE VOID lies due
- * "south" along +Z (≈199 units from the Forge) and looks north toward it.
- * The narrative journey spirals clockwise around the Forge:
+ * A floating archipelago above a sea of violet cloud, laid out hub and spokes as in
+ * the owner's blueprint images. THE WORLD FORGE island is the hub at the origin; the
+ * other regions are islands around it in the locked order, spiralling clockwise from
+ * the Void (south). Golden routes run from the hub to every island.
  *
- *   VOID (S) → ORIGIN SANCTUM (SE) → WORLD FORGE (centre) → BLUEPRINT ARCHIVE (NE)
- *   → PATH OF ASCENSION (spiralling up to the east cliffs) → WORLDS BEYOND (floating
- *   in the eastern abyss) → HORIZON (northern tip, facing the horizon light)
+ * World frame: +Y up; bearings in degrees from +Z (south, toward the Void) clockwise
+ * toward +X (east). Units are metres. Island tops are the walkable surfaces; all
+ * island tops sit well above the cloud sea.
  *
- * Opening-shot protection: from the Void camera (≈[0, 2.2, 226]) the view spans
- * roughly 60° left to 23.5° right of the Forge on the widest screens. Distant
- * objects don't vanish in fog — they turn into dark silhouettes against the
- * horizon glow — so everything tall sits east of that cone, or directly behind
- * the Forge (the Horizon), where the Forge itself hides it. The west stays an
- * open, dormant plain with low hills, matching the approved horizon.
- *
+ * This file is the single source of truth for the 3D world and the World Map (P5).
  * Geography only: no camera settings live here.
  */
 export type Vec2 = [number, number]; // [x, z]
@@ -35,174 +30,164 @@ export interface RegionGeography {
   index: number;
   name: string;
   role: string;
-  /** Anchor point: centre of the region's main platform, at its ground elevation. */
+  /** Anchor point: centre of the region's main island, at its top surface. */
   position: Vec3;
-  landmass: 'mainland' | 'floating';
-  /** Approximate footprint radius, for future camera targets and map markers. */
+  /** Approximate radius of everything the region occupies (camera framing, map markers). */
   footprint: number;
+  /** Blueprint biome accent (plan §3). */
+  accent: string;
 }
 
-export const REGIONS: readonly RegionGeography[] = [
-  { id: 'void', index: 0, name: 'THE VOID', role: 'Entry & identity', position: [0, 0, 199], landmass: 'mainland', footprint: 40 },
-  { id: 'origin-sanctum', index: 1, name: 'THE ORIGIN SANCTUM', role: 'About', position: [110, 8, 95], landmass: 'mainland', footprint: 30 },
-  { id: 'world-forge', index: 2, name: 'THE WORLD FORGE', role: 'Projects', position: [0, 0, 0], landmass: 'mainland', footprint: 60 },
-  { id: 'blueprint-archive', index: 3, name: 'THE BLUEPRINT ARCHIVE', role: 'Skills', position: [155, 4, -45], landmass: 'mainland', footprint: 34 },
-  { id: 'path-of-ascension', index: 4, name: 'THE PATH OF ASCENSION', role: 'Experience & education', position: [235, 56, -78], landmass: 'mainland', footprint: 60 },
-  { id: 'worlds-beyond', index: 5, name: 'THE WORLDS BEYOND', role: 'Interests', position: [410, 36, -150], landmass: 'floating', footprint: 130 },
-  { id: 'horizon', index: 6, name: 'THE HORIZON', role: 'Ambitions & contact', position: [25, 0, -345], landmass: 'mainland', footprint: 24 },
-];
+/** Point at `distance` along world `bearing` (degrees) at height `y`. */
+export function atBearing(bearing: number, distance: number, y = 0): Vec3 {
+  const a = (bearing * Math.PI) / 180;
+  return [Math.sin(a) * distance, y, Math.cos(a) * distance];
+}
 
-/**
- * The mainland: one organic landmass (top surface at y = 0) carrying the Void
- * plain, the Forge and the central regions. Its east coast drops into the abyss
- * where the Worlds Beyond float; a narrow northern peninsula reaches toward the Horizon.
- */
-export const MAINLAND = {
-  /** Sheer cliff band below the surface. */
-  depth: 40,
-  /** The underside narrows in steps as it descends into the abyss: [outline scale, bottom y]. */
-  underside: [
-    [0.82, -110],
-    [0.56, -190],
-    [0.26, -250],
-  ] as Vec2[],
-  outline: [
-    [-380, 120], [-330, 300], [-170, 410], [0, 430], [160, 405], [310, 320],
-    [370, 170], [345, 40], [300, -50], [290, -120], [270, -190], [215, -230],
-    [150, -235], [95, -255], [70, -310], [45, -360], [10, -370], [-15, -330],
-    [-25, -265], [-90, -245], [-170, -220], [-250, -175], [-310, -110], [-355, -20],
-  ] as Vec2[],
-} as const;
-
-/**
- * Low, half-buried ridges and hills on the mainland plain. The western group sits
- * on the opening shot's horizon (replacing the old Void-local ridges); the rest
- * give the plain height variation elsewhere. [x, z, sizeX, height, sizeZ, yaw]
- */
-export const MAINLAND_HILLS: ReadonlyArray<[number, number, number, number, number, number]> = [
-  [-85, -30, 50, 12, 26, 0.6],
-  [-140, 40, 60, 15, 30, 2.1],
-  [-205, 5, 70, 18, 32, 4.0],
-  [-125, -70, 45, 10, 22, 1.3],
-  [-70, 60, 40, 9, 20, 5.2],
-  [65, -75, 36, 9, 20, 0.4],
-  [240, 60, 70, 20, 34, 1.7],
-  [-180, -150, 70, 16, 30, 2.8],
-  [-262, 200, 80, 20, 36, 0.9],
-  [205, 252, 60, 14, 30, 2.6],
-  [-300, 120, 60, 18, 30, 4.4],
-];
-
-/** Highland rocks behind the Ascension, on the north-east shoulder. [x, z, height] */
-export const HIGHLANDS: ReadonlyArray<Vec3> = [
-  [205, -200, 36], [237, -192, 30], [190, -214, 26], [282, -88, 22],
-];
-
-/** Origin Sanctum: a quiet raised terrace east of the Void approach. */
-export const ORIGIN_SANCTUM = {
-  top: 8,
-  outline: [
-    [84, 99], [92, 75], [114, 67], [134, 77], [140, 97], [132, 117], [112, 123], [94, 117],
-  ] as Vec2[],
-} as const;
-
-/** Blueprint Archive: a rectilinear platform north-east of the Forge. */
-export const BLUEPRINT_ARCHIVE = {
-  top: 4,
-  outline: [
-    [125, -67], [183, -70], [187, -27], [151, -21], [127, -25],
-  ] as Vec2[],
-} as const;
-
-/** Forge ward: broken ring wall around the Forge, open toward the Void and the avenues. */
-export const FORGE_WARD = {
-  radius: 58,
-  /** Bearing ranges (degrees from +Z, clockwise seen from above) left open. */
-  openings: [
-    [-62, 62], // south — toward the Void approach and the Sanctum avenue
-    [94, 116], // east — Blueprint Archive avenue
-  ] as Vec2[],
-} as const;
-
-/** Path of Ascension: terraces spiralling up from the Archive to a summit on the east cliffs. */
-export const ASCENSION_TERRACES: ReadonlyArray<{ center: Vec2; top: number; radius: number }> = [
-  { center: [150, -95], top: 6, radius: 19 },
-  { center: [178, -118], top: 13, radius: 18 },
-  { center: [208, -138], top: 21, radius: 18 },
-  { center: [238, -158], top: 29, radius: 17 },
-  { center: [262, -136], top: 37, radius: 16 },
-  { center: [252, -104], top: 46, radius: 16 },
-  { center: [235, -78], top: 56, radius: 20 },
-];
-
-/** The Horizon: the unfinished northern tip, directly behind the Forge as seen from the Void. */
-export const HORIZON = {
-  anchor: [25, 0, -345] as Vec3,
-  /** Fragments drifting out beyond the edge: the world continues. */
-  beyond: [
-    [40, -6, -430], [58, -10, -505], [70, -16, -590], [92, -22, -690],
-  ] as Vec3[],
-} as const;
-
-/** Worlds Beyond: the Convergence hub and the floating territories around it. */
-export const CONVERGENCE = {
-  position: [410, 36, -150] as Vec3,
-  radius: 24,
-};
-
-export interface FloatingTerritory {
+export interface Island {
   id: string;
+  region: RegionId;
+  /** Centre of the island's top surface. */
   position: Vec3;
   radius: number;
-  /** Depth of the rocky underside. */
+  thickness: number;
   depth: number;
-  stretch: Vec2;
-  tilt: Vec2;
-  yaw: number;
+  irregularity: number;
+  jagged: number;
+  shards: number;
+  /** Top-surface colour (biome). */
+  top: string;
+  seed: number;
 }
 
-export const FLOATING_TERRITORIES: readonly FloatingTerritory[] = [
-  { id: 'territory-north', position: [470, 55, -240], radius: 30, depth: 34, stretch: [1.25, 0.9], tilt: [0.05, -0.04], yaw: 0.4 },
-  { id: 'territory-east', position: [510, 18, -110], radius: 22, depth: 22, stretch: [1.5, 0.7], tilt: [-0.03, 0.05], yaw: -0.5 },
-  { id: 'territory-south', position: [425, 22, -35], radius: 26, depth: 28, stretch: [1, 1.2], tilt: [0.04, 0.03], yaw: 1.1 },
-  { id: 'territory-high', position: [355, 74, -250], radius: 15, depth: 24, stretch: [1, 1], tilt: [-0.05, -0.03], yaw: 0.2 },
+/**
+ * The World Forge hub at the blueprint scale (images: total ≈ 400 m, main platform
+ * ≈ 180 m, core ≈ 320 m, 3 levels, 7 gates). Island top is y = 0.
+ */
+export const HUB = {
+  islandRadius: 210,
+  platformRadius: 90,
+  coreHeight: 320,
+  /** Gates stand on this ring, near the island's rim. */
+  gateRadius: 182,
+  /** The 7th gate opens onto the Projects terrace (DEC-018). */
+  projectsBearing: 330,
+} as const;
+
+const OS = atBearing(48, 470, 25);
+const BA = atBearing(98, 520, 10);
+const PA_SUMMIT = atBearing(162, 600, 95);
+const WB = atBearing(212, 640, 30);
+const HZ = atBearing(268, 880, 62);
+
+/** The seven regions, in the locked order (DEC-011). */
+export const REGIONS: readonly RegionGeography[] = [
+  { id: 'void', index: 0, name: 'THE VOID', role: 'Entry & identity', position: [0, 0, 800], footprint: 74, accent: '#a46bff' },
+  { id: 'origin-sanctum', index: 1, name: 'THE ORIGIN SANCTUM', role: 'About', position: OS, footprint: 70, accent: '#3fd08a' },
+  { id: 'world-forge', index: 2, name: 'THE WORLD FORGE', role: 'Projects', position: [0, 0, 0], footprint: 210, accent: '#ffc861' },
+  { id: 'blueprint-archive', index: 3, name: 'THE BLUEPRINT ARCHIVE', role: 'Skills', position: BA, footprint: 72, accent: '#4fb4ff' },
+  { id: 'path-of-ascension', index: 4, name: 'THE PATH OF ASCENSION', role: 'Experience & education', position: PA_SUMMIT, footprint: 120, accent: '#dfe9ff' },
+  { id: 'worlds-beyond', index: 5, name: 'THE WORLDS BEYOND', role: 'Interests', position: WB, footprint: 170, accent: '#b06bff' },
+  { id: 'horizon', index: 6, name: 'THE HORIZON', role: 'Ambitions & contact', position: HZ, footprint: 60, accent: '#f2d38a' },
 ];
 
-/** The six future Worlds Beyond zones and the territory reserved for each. */
-export const WORLDS_BEYOND_ZONES: ReadonlyArray<{ id: string; name: string; territory: string }> = [
-  { id: 'anime-manga', name: 'Anime & Manga', territory: 'territory-north' },
-  { id: 'story-games', name: 'Story Games', territory: 'territory-north' },
-  { id: 'formula-1', name: 'Formula 1', territory: 'territory-east' },
-  { id: 'amarok', name: 'Gaming & Content Creation — AMAROK', territory: 'territory-south' },
-  { id: 'guild', name: 'The Guild — AniCos', territory: 'territory-south' },
-  { id: 'training-grounds', name: 'Training Grounds', territory: 'territory-high' },
+/** The six Worlds Beyond territories around the Convergence (biomes from the images; final six follow the M7 audit). */
+export const WORLDS_BEYOND_TERRITORIES: ReadonlyArray<{ id: string; bearing: number; distance: number; y: number; radius: number; top: string; accent: string }> = [
+  { id: 'wb-ember', bearing: 20, distance: 135, y: 12, radius: 26, top: '#4a2420', accent: '#ff5a3c' },
+  { id: 'wb-temporal', bearing: 80, distance: 140, y: 45, radius: 24, top: '#33244f', accent: '#b06bff' },
+  { id: 'wb-sunken', bearing: 140, distance: 130, y: 5, radius: 28, top: '#1f3f3c', accent: '#3fc9b0' },
+  { id: 'wb-dunes', bearing: 200, distance: 140, y: 30, radius: 25, top: '#4d3f28', accent: '#e3b35a' },
+  { id: 'wb-steel', bearing: 260, distance: 135, y: 55, radius: 22, top: '#383d47', accent: '#9aa7b8' },
+  { id: 'wb-shadow', bearing: 320, distance: 140, y: 20, radius: 24, top: '#241f42', accent: '#5d4bd6' },
 ];
 
-export type RouteStyle = 'route' | 'bridge' | 'stones';
+const offset = ([x, y, z]: Vec3, [dx, dy, dz]: Vec3): Vec3 => [x + dx, y + dy, z + dz];
+
+/** Every island in the world. */
+export const ISLANDS: readonly Island[] = [
+  // Hub: the World Forge island at the blueprint scale (≈ 420 m across, P3).
+  { id: 'forge', region: 'world-forge', position: [0, 0, 0], radius: HUB.islandRadius, thickness: 34, depth: 320, irregularity: 0.08, jagged: 0.85, shards: 18, top: '#34324a', seed: 11 },
+  // The Void: the portal realm's island (P4), carrying the arrival platform, the portal and the opening camera.
+  { id: 'void', region: 'void', position: [0, 0, 795], radius: 74, thickness: 18, depth: 130, irregularity: 0.16, jagged: 0.95, shards: 11, top: '#2a2440', seed: 3 },
+  { id: 'origin-sanctum', region: 'origin-sanctum', position: OS, radius: 70, thickness: 14, depth: 120, irregularity: 0.22, jagged: 0.85, shards: 9, top: '#1f5c40', seed: 23 },
+  { id: 'blueprint-archive', region: 'blueprint-archive', position: BA, radius: 72, thickness: 16, depth: 120, irregularity: 0.14, jagged: 0.8, shards: 9, top: '#25385a', seed: 31 },
+  // The Path of Ascension: four islands climbing to the summit.
+  { id: 'pa-1', region: 'path-of-ascension', position: atBearing(132, 480, 15), radius: 34, thickness: 10, depth: 60, irregularity: 0.25, jagged: 0.9, shards: 4, top: '#6f7a90', seed: 41 },
+  { id: 'pa-2', region: 'path-of-ascension', position: atBearing(142, 520, 38), radius: 32, thickness: 10, depth: 58, irregularity: 0.25, jagged: 0.9, shards: 4, top: '#7d889e', seed: 42 },
+  { id: 'pa-3', region: 'path-of-ascension', position: atBearing(152, 560, 64), radius: 30, thickness: 10, depth: 56, irregularity: 0.25, jagged: 0.9, shards: 4, top: '#8c97ad', seed: 43 },
+  { id: 'pa-summit', region: 'path-of-ascension', position: PA_SUMMIT, radius: 40, thickness: 12, depth: 80, irregularity: 0.22, jagged: 0.95, shards: 6, top: '#9aa6bd', seed: 44 },
+  // The Worlds Beyond: the Convergence and six territories.
+  { id: 'wb-convergence', region: 'worlds-beyond', position: WB, radius: 48, thickness: 12, depth: 90, irregularity: 0.15, jagged: 0.85, shards: 7, top: '#2e2550', seed: 51 },
+  ...WORLDS_BEYOND_TERRITORIES.map((t, i): Island => {
+    const [dx, , dz] = atBearing(t.bearing, t.distance);
+    return { id: t.id, region: 'worlds-beyond', position: offset(WB, [dx, t.y - WB[1], dz]), radius: t.radius, thickness: 8, depth: t.radius * 1.9, irregularity: 0.28, jagged: 1, shards: 4, top: t.top, seed: 60 + i };
+  }),
+  // The Horizon: the farthest island, facing open sky.
+  { id: 'horizon', region: 'horizon', position: HZ, radius: 55, thickness: 14, depth: 100, irregularity: 0.2, jagged: 0.9, shards: 7, top: '#4d4560', seed: 71 },
+];
+
+/** Fragments drifting out beyond the Horizon's edge: the world continues. */
+export const HORIZON_BEYOND: readonly Vec3[] = [atBearing(271, 980, 50), atBearing(274, 1060, 36), atBearing(277, 1140, 22), atBearing(280, 1230, 6)];
+
+export type RouteKind = 'spoke' | 'link';
 
 export interface WorldRoute {
   id: string;
-  style: RouteStyle;
-  /** Control points; y is interpolated along the route (stairs and ramps). */
-  points: Vec3[];
+  kind: RouteKind;
+  from: Vec3;
+  to: Vec3;
+  /** Height of the route's arc at its middle (m). */
+  lift: number;
 }
 
-/** Geographical connections between regions (no navigation behaviour). */
+const islandById = (id: string): Island => {
+  const island = ISLANDS.find((i) => i.id === id);
+  if (!island) throw new Error(`Unknown island ${id}`);
+  return island;
+};
+
+/** Point on an island's rim facing a target point (just inside the edge, on the top surface). */
+export function rimToward(island: Island, target: Vec3, inset = 6): Vec3 {
+  const [x, y, z] = island.position;
+  const a = Math.atan2(target[0] - x, target[2] - z);
+  return [x + Math.sin(a) * (island.radius - inset), y + 0.4, z + Math.cos(a) * (island.radius - inset)];
+}
+
+/** Hub gate for a region: on the gate ring, facing the region's island (DEC-018). */
+export function gateToward(target: Vec3): { bearing: number; position: Vec3 } {
+  const bearing = (Math.atan2(target[0], target[2]) * 180) / Math.PI;
+  return { bearing, position: atBearing(bearing, HUB.gateRadius, 0.4) };
+}
+
+function spoke(regionIsland: string, region: RegionId): WorldRoute {
+  const island = islandById(regionIsland);
+  const from = gateToward(island.position).position;
+  const to = rimToward(island, [0, 0, 0]);
+  const length = Math.hypot(to[0] - from[0], to[2] - from[2]);
+  return { id: `spoke-${region}`, kind: 'spoke', from, to, lift: Math.min(60, length * 0.08) };
+}
+
+function link(a: string, b: string): WorldRoute {
+  const ia = islandById(a);
+  const ib = islandById(b);
+  const from = rimToward(ia, ib.position, 4);
+  const to = rimToward(ib, ia.position, 4);
+  return { id: `link-${a}-${b}`, kind: 'link', from, to, lift: Math.hypot(to[0] - from[0], to[2] - from[2]) * 0.1 };
+}
+
+/** Golden routes: a spoke from the hub to every region, plus links within multi-island regions. */
 export const WORLD_ROUTES: readonly WorldRoute[] = [
-  { id: 'void-sanctum', style: 'route', points: [[0, 0, 140], [30, 0, 128], [60, 0, 117], [80, 0, 109], [88, 4, 104], [95, 8, 100]] },
-  { id: 'sanctum-forge', style: 'route', points: [[96, 8, 78], [86, 4, 70], [74, 0, 57], [55, 0, 42], [38, 0, 31]] },
-  { id: 'forge-archive', style: 'route', points: [[46, 0, -14], [78, 0, -25], [108, 0, -35], [127, 4, -42]] },
-  { id: 'archive-ascension', style: 'route', points: [[155, 4, -68], [153, 2, -74], [151, 6, -80]] },
-  {
-    id: 'summit-convergence',
-    style: 'bridge',
-    points: [[255, 56, -84], [300, 52, -100], [340, 46, -118], [370, 40, -132], [387, 37, -141]],
-  },
-  {
-    // Descends below the mainland's edge line before crossing behind the Forge,
-    // so it stays out of the opening shot.
-    id: 'convergence-horizon',
-    style: 'stones',
-    points: [[395, 32, -175], [335, 18, -245], [262, 6, -292], [190, -1, -325], [110, -1.5, -345], [55, -1, -358]],
-  },
+  spoke('void', 'void'),
+  spoke('origin-sanctum', 'origin-sanctum'),
+  spoke('blueprint-archive', 'blueprint-archive'),
+  spoke('pa-1', 'path-of-ascension'),
+  spoke('wb-convergence', 'worlds-beyond'),
+  spoke('horizon', 'horizon'),
+  link('pa-1', 'pa-2'),
+  link('pa-2', 'pa-3'),
+  link('pa-3', 'pa-summit'),
+  ...WORLDS_BEYOND_TERRITORIES.map((t) => link('wb-convergence', t.id)),
 ];
+
+/** Cloud-sea layers (heights of the three sheets) — island undersides dip into them, tops stay clear. */
+export const CLOUD_LAYERS = [-150, -95, -55] as const;

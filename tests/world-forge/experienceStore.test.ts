@@ -27,7 +27,27 @@ describe('experience store', () => {
       destinationRegion: 'void',
       phase: 'idle',
       reducedMotion: false,
+      focusedProject: null,
     });
+  });
+
+  it('focuses a project only at the idle World Forge; direct navigation clears it (M5)', () => {
+    const store = createExperienceStore();
+    store.focusProject('nutrifit');
+    assert.equal(store.getSnapshot().focusedProject, null, 'not at the Forge: ignored');
+    const forge = createExperienceStore('world-forge');
+    let notified = 0;
+    forge.subscribe(() => notified++);
+    let woke = 0;
+    forge.setWakeHandler(() => woke++);
+    forge.focusProject('nutrifit');
+    assert.equal(forge.getSnapshot().focusedProject, 'nutrifit');
+    assert.ok(notified >= 1 && woke >= 1, 'UI notified and frames requested');
+    forge.focusProject(null);
+    assert.equal(forge.getSnapshot().focusedProject, null);
+    forge.focusProject('nutrifit');
+    forge.navigateTo('horizon');
+    assert.equal(forge.getSnapshot().focusedProject, null, 'direct navigation outranks the dossier');
   });
 
   it('tracks current region and destination during navigation', () => {

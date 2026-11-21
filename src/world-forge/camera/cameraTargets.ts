@@ -8,13 +8,16 @@
  * - THE VOID pose is computed from the approved M2 opening layout
  *   (`computeVoidLayout` + `computeVoidPlacement`), so the opening shot is exactly
  *   the one the static Void camera produced, at every viewport size.
- * - All other poses are PROVISIONAL functional framings, expressed relative to the
- *   M3 region anchors. They exist so the world can be traversed and inspected in
- *   M1; final framing belongs to each region's approved design (M4–M8) and the
- *   owner-approved route (decision log: "Exact scroll-camera route").
+ * - The World Forge hub (P3) has its own provisional framing, sized to the spire city.
+ * - All other poses are PROVISIONAL island framings computed from the P2
+ *   archipelago geography (`islandFraming`). Final framings belong to P5 and each
+ *   region's own milestone.
  */
 import { REGIONS, type RegionId, type Vec3 } from '../data/worldGeography';
 import { computeVoidLayout, computeVoidPlacement } from '../regions/void/layout';
+import type { SegmentLook } from './journeyPath';
+import { PLINTH, PLINTH_SITES } from '../regions/forge/hubLayout';
+import { projectById } from '../content/projects';
 
 export interface CameraPose {
   position: Vec3;
@@ -49,45 +52,80 @@ interface RegionFraming {
   /** Vertical field of view at the reference aspect (16:10). */
   fov: number;
   /** `provisional` (M1 functional framing) or the milestone whose approved design set it. */
-  status: 'provisional' | 'M4';
+  status: 'provisional' | 'M4' | 'P5';
   narrow?: NarrowFraming;
 }
 
-/** Provisional framings for every stop after the Void (route order). */
-export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionFraming>> = {
-  // Arriving from the Void approach: the terrace, colonnade and obelisk from the south-west.
-  'origin-sanctum': { offset: [-48, 18, 63], aim: [0, 6, 0], fov: 50, status: 'provisional' },
-  // M4 settled view (DEC-007): three-quarter from the south-south-east (bearing ≈ 25°) at
-  // about terrace height. The Forge sits left of centre and fills ≈ 60% of the frame
-  // height; the monument ring is in the lower foreground and the right side stays
-  // clear for the M5 dossier panel.
-  // Narrow screens: centred, pulled back and higher, so the whole silhouette fits (M4.8).
-  'world-forge': {
-    offset: [33.8, 18, 72.5],
-    aim: [12.7, 22, -5.9],
+/**
+ * Island framing (P5 final, DEC-020): a three-quarter view from the hub side, scaled
+ * to the region's footprint, so the island, its landmark and the open archipelago
+ * behind it all read. Narrow screens pull back and up with a fixed horizontal coverage.
+ */
+function islandFraming(id: RegionId, lean = 0): RegionFraming {
+  const region = REGIONS.find((r) => r.id === id);
+  if (!region) throw new Error(`Unknown region ${id}`);
+  const [cx, , cz] = region.position;
+  const r = region.footprint;
+  const toHub = Math.atan2(-cx, -cz);
+  const a = toHub + (28 * Math.PI) / 180;
+  const distance = r * 1.9 + 45;
+  const height = r * 0.55 + 22;
+  // `lean` pulls the aim toward the hub and down (the Path of Ascension frames its climb, not just the summit).
+  const aim: Vec3 = [Math.sin(toHub) * r * lean, r * 0.12 + 8 - lean * 60, Math.cos(toHub) * r * lean];
+  return {
+    offset: [Math.sin(a) * distance, height, Math.cos(a) * distance],
+    aim,
     fov: 50,
-    status: 'M4',
-    narrow: { offset: [38.9, 26, 83.4], aim: [0, 21, 0], horizontalFov: 33, minFov: 50 },
+    status: 'P5',
+    narrow: {
+      offset: [Math.sin(a) * distance * 1.3, height * 1.3, Math.cos(a) * distance * 1.3],
+      aim,
+      horizontalFov: 40,
+      minFov: 50,
+    },
+  };
+}
+
+/** Framings for every stop after the Void (route order). */
+export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionFraming>> = {
+  'origin-sanctum': islandFraming('origin-sanctum'),
+  // The golden spire-city hub from outside the Projects gate (bearing ≈ 345°): the city sits left of
+  // centre and the right ≈ 40% stays clear for the M5 dossier. Narrow screens: centred, pulled back.
+  'world-forge': {
+    offset: [-145, 175, 541],
+    aim: [106, 150, 28],
+    fov: 50,
+    status: 'P5',
+    narrow: { offset: [-186, 210, 695], aim: [0, 150, 0], horizontalFov: 44, minFov: 50 },
   },
-  // The archive skyline from the Forge avenue.
-  'blueprint-archive': { offset: [-51, 28, 67], aim: [2, 8, -1], fov: 50, status: 'provisional' },
-  // The terrace spiral and summit seen from high above the north-west shoulder.
-  'path-of-ascension': { offset: [-115, 54, -72], aim: [-20, -26, -32], fov: 50, status: 'provisional' },
-  // The Convergence and its territories from the summit bridge side.
-  'worlds-beyond': { offset: [-92, 50, 62], aim: [15, 2, 0], fov: 52, status: 'provisional' },
-  // The unfinished tip and its ledge, looking out toward the horizon light.
-  horizon: { offset: [13, 16, 55], aim: [-3, 7, -45], fov: 50, status: 'provisional' },
+  'blueprint-archive': islandFraming('blueprint-archive'),
+  'path-of-ascension': islandFraming('path-of-ascension', 0.4),
+  'worlds-beyond': islandFraming('worlds-beyond'),
+  horizon: islandFraming('horizon'),
 };
 
 /**
- * Travel-arc overrides for the segment ARRIVING at a region (share of the segment's
- * horizontal length; negative dips). Every other segment uses the default `TRAVEL_ARC`.
- * - World Forge: the camera comes in low along the Sanctum avenue, then rises into
- *   the settled view, so the crown climbs through the frame (the M4 reveal).
+ * Designed journey moves (P5, DEC-020), keyed by the region a segment ARRIVES at.
+ * - Origin Sanctum, the reveal: leaving the Void, the camera rises high over the portal
+ *   and looks toward the hub mid-flight, so the archipelago and the golden Forge appear below.
+ * - Blueprint Archive, the overview: leaving the Forge, the camera climbs higher still and
+ *   looks back over the hub before diving to the Archive.
+ * Arcs are shares of the segment's horizontal length; other segments use `TRAVEL_ARC`.
  */
 export const ARRIVAL_ARCS: Readonly<Partial<Record<RegionId, number>>> = {
-  'world-forge': -0.08,
+  'origin-sanctum': 0.32,
+  'blueprint-archive': 0.42,
 };
+
+export const ARRIVAL_LOOKS: Readonly<Partial<Record<RegionId, SegmentLook>>> = {
+  'origin-sanctum': { point: [0, 120, 0], strength: 0.75 },
+  'blueprint-archive': { point: [0, 60, 0], strength: 0.8 },
+};
+
+/** Per-segment look-at biases for a route (segment i runs from stop i to stop i + 1). */
+export function routeSegmentLooks(route: readonly { id: RegionId }[]): Array<SegmentLook | null> {
+  return route.slice(1).map((region) => ARRIVAL_LOOKS[region.id] ?? null);
+}
 
 /** Per-segment travel arcs for a route (segment i runs from stop i to stop i + 1). */
 export function routeSegmentArcs(route: readonly { id: RegionId }[], fallback: number): number[] {
@@ -163,3 +201,55 @@ export function computeRegionPose(id: RegionId, width: number, height: number): 
     fov: responsiveFov(framing.fov, aspect),
   };
 }
+
+/**
+ * Focus view of a project monument (M5): from in front of its plinth (outward, toward
+ * the Projects gate), a little above it. Wide screens put the monument left of centre
+ * (the dossier takes the right side); narrow screens centre it above the dossier sheet.
+ */
+export function computeProjectFocusPose(projectId: string, width: number, height: number): CameraPose | null {
+  const project = projectById(projectId);
+  const site = project ? PLINTH_SITES[project.plinth] : undefined;
+  if (!site) return null;
+  const narrow = width / Math.max(height, 1) < NARROW_ASPECT;
+  const a = (site.facing * Math.PI) / 180;
+  const out = [Math.sin(a), Math.cos(a)];
+  // The camera's right when it faces the monument (looking along −out): forward × up.
+  const right = [Math.cos(a), -Math.sin(a)];
+  const [px, py, pz] = site.position;
+  const top = py + PLINTH.size[1];
+  // Narrow: aim below the monument, so it sits in the upper part, above the dossier sheet.
+  // Wide: far enough back that the work reads whole, with the Forge's city rising behind it.
+  const back = narrow ? 30 : 34;
+  const shift = narrow ? 0 : 7.5;
+  return {
+    position: [px + out[0] * back, top + (narrow ? 10 : 9), pz + out[1] * back],
+    target: [px + right[0] * shift, top + (narrow ? -4.8 : 5), pz + right[1] * shift],
+    fov: narrow ? 55 : 40,
+  };
+}
+
+/**
+ * Project focus motion (M5.6). Opening eases from the journey pose to the work; switching
+ * works glides from the current focus pose to the next one, lifted slightly mid-way so the
+ * camera arcs over the terrace instead of cutting across it. Reduced motion: short moves.
+ */
+export const FOCUS_MOTION = {
+  openSeconds: 1.1,
+  glideSeconds: 0.9,
+  reducedSeconds: 0.3,
+  /** Mid-glide lift as a share of the distance travelled, capped. */
+  liftShare: 0.12,
+  maxLift: 6,
+} as const;
+
+/** Moves `value` toward `goal` by at most `step`, never overshooting (and staying put once there). */
+export const approach = (value: number, goal: number, step: number): number =>
+  value < goal ? Math.min(goal, value + step) : Math.max(goal, value - step);
+
+/** Smoothstep easing used by every focus move. */
+export const easeFocus = (t: number): number => t * t * (3 - 2 * t);
+
+/** Height added to the camera at glide progress `t` for a glide of `distance` world units. */
+export const focusGlideLift = (t: number, distance: number): number =>
+  Math.min(FOCUS_MOTION.maxLift, distance * FOCUS_MOTION.liftShare) * Math.sin(Math.PI * t);

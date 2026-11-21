@@ -15,3 +15,14 @@ export function classicHref(href: string = window.location.href): string {
   url.searchParams.set('mode', 'classic');
   return `${url.pathname}${url.search}${url.hash}`;
 }
+
+/**
+ * Development-only look-development view (`?lookdev` or `?lookdev=2`): the 0-based
+ * view index, or null when not requested. Production builds never mount it.
+ */
+export function lookDevView(search: string = window.location.search): number | null {
+  const params = new URLSearchParams(search);
+  if (!params.has('lookdev')) return null;
+  const n = Number(params.get('lookdev'));
+  return Number.isFinite(n) && n >= 1 ? Math.floor(n) - 1 : 0;
+}

@@ -1,36 +1,43 @@
 import { useMemo } from 'react';
 import { useThree } from '@react-three/fiber';
-import ForgeAtmosphere from './ForgeAtmosphere';
+import { atBearing } from '../../data/worldGeography';
+import Waterfall from '../../look/Waterfall';
 import ForgeCore from './ForgeCore';
-import ForgeCrown from './ForgeCrown';
-import ForgeFoundation from './ForgeFoundation';
-import ForgeOrbit from './ForgeOrbit';
-import ForgeTerraces from './ForgeTerraces';
-import { FORGE_YAW, forgeQuality } from './forgeLayout';
+import HubGates from './HubGates';
+import Monuments from './Monuments';
+import { hubQuality, HUB, WATERFALLS } from './hubLayout';
+import ProjectsTerrace from './ProjectsTerrace';
+import SpireCity from './SpireCity';
 
 interface ForgeRegionProps {
-  /** False under reduced motion: no ambient motion in the centrepiece. */
+  /** False under reduced motion: no ambient motion in the hub. */
   animate: boolean;
+  /** Share of the full ember count (quality tier). */
+  emberShare?: number;
 }
 
 /**
- * 02 — THE WORLD FORGE centrepiece ("The Crucible of Worlds", DEC-007), built in
- * layers: Foundation, Core, Crown, Orbit, Terraces, Atmosphere. It sits at the
- * world origin in the orientation the approved opening shot sees.
+ * 02 — THE WORLD FORGE: the golden spire-city hub (P3, blueprint images). It stands
+ * on the hub island (the archipelago draws the island itself): the spire city on its
+ * terraces, the Forge Core, the observation rings, seven gates with archive halls,
+ * the Projects terrace, and waterfalls pouring off the island's edge.
  */
-export default function ForgeRegion({ animate }: ForgeRegionProps) {
+export default function ForgeRegion({ animate, emberShare = 1 }: ForgeRegionProps) {
   const width = useThree((state) => state.size.width);
   const height = useThree((state) => state.size.height);
-  const quality = useMemo(() => forgeQuality(width, height), [width, height]);
+  const quality = useMemo(() => hubQuality(width, height), [width, height]);
 
   return (
-    <group rotation={[0, FORGE_YAW, 0]}>
-      <ForgeFoundation />
-      <ForgeCore />
-      <ForgeCrown />
-      <ForgeOrbit fragments={quality.fragments} animate={animate} />
-      <ForgeTerraces />
-      <ForgeAtmosphere embers={quality.embers} animate={animate} />
+    <group>
+      <SpireCity />
+      <ForgeCore embers={Math.round(quality.embers * emberShare)} animate={animate} />
+      <HubGates />
+      <ProjectsTerrace />
+      <Monuments animate={animate} />
+      {WATERFALLS.map((w) => {
+        const [x, , z] = atBearing(w.bearing, HUB.islandRadius - 6);
+        return <Waterfall key={w.bearing} position={[x, -8, z]} rotationY={(w.bearing * Math.PI) / 180} width={w.width} height={w.height} animate={animate} />;
+      })}
     </group>
   );
 }

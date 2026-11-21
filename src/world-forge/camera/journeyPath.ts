@@ -27,10 +27,21 @@ export const TRAVEL_ARC = 0.13;
  * Smooth camera path through the stop poses. Positions and look-at points follow
  * centripetal Catmull-Rom curves (no cusps or loops, continuous through stops),
  * so travel never jerks when scroll carries the camera past a region. A travel
- * arc lifts the camera between stops (or, per segment via `segmentArcs`, dips it
- * for a designed arrival). At an exact stop the registered pose is returned unchanged.
+ * arc lifts the camera between stops (per segment via `segmentArcs`: higher for a
+ * reveal, negative for a dip), and `segmentLooks` can turn the view toward a point
+ * mid-flight (an overview). At an exact stop the registered pose is returned unchanged.
  */
-export function createJourneyPath(poses: readonly CameraPose[], segmentArcs?: readonly number[]): JourneyPath {
+/** Optional per-segment look-at bias: mid-segment, the look-at point is pulled toward `point` (sin² weight × `strength`). */
+export interface SegmentLook {
+  point: readonly [number, number, number];
+  strength: number;
+}
+
+export function createJourneyPath(
+  poses: readonly CameraPose[],
+  segmentArcs?: readonly number[],
+  segmentLooks?: ReadonlyArray<SegmentLook | null | undefined>,
+): JourneyPath {
   if (poses.length === 0) throw new Error('A journey path needs at least one pose');
   const last = poses.length - 1;
   const toVectors = (pick: (pose: CameraPose) => readonly number[]) =>
@@ -64,6 +75,13 @@ export function createJourneyPath(poses: readonly CameraPose[], segmentArcs?: re
       out.position.y += lift;
       // The look-at point rises less, so the camera tips gently down over the crossing.
       out.target.y += lift * 0.5;
+      const look = segmentLooks?.[from];
+      if (look) {
+        const w = Math.sin(Math.PI * f) ** 2 * look.strength;
+        out.target.x += (look.point[0] - out.target.x) * w;
+        out.target.y += (look.point[1] - out.target.y) * w;
+        out.target.z += (look.point[2] - out.target.z) * w;
+      }
       out.fov = poses[from].fov + (poses[from + 1].fov - poses[from].fov) * smoothstep(f);
       return out;
     },

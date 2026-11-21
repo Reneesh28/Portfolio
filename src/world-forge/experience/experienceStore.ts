@@ -40,6 +40,8 @@ export interface ExperienceSnapshot {
   destinationRegion: RegionId;
   phase: JourneyPhase;
   reducedMotion: boolean;
+  /** The project whose monument the camera focuses on (its dossier is open), or null (M5). */
+  focusedProject: string | null;
 }
 
 /**
@@ -72,6 +74,11 @@ export interface ExperienceStore {
   navigateTo(region: RegionId): void;
   /** Direct navigation one region forward/back from the current destination. */
   stepRegion(direction: -1 | 1): void;
+  /**
+   * Focus a project's monument (opens its dossier) or clear the focus (null). Only
+   * honoured at the World Forge while idle; direct navigation clears it (it outranks panels).
+   */
+  focusProject(id: string | null): void;
   /** Advance journey time; camera controller only. */
   advance(dt: number): void;
   setReducedMotion(reduced: boolean): void;
@@ -87,6 +94,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
   let reducedMotion = false;
   let wake: (() => void) | null = null;
   let scrollBlocks = 0;
+  let focusedProject: string | null = null;
   const listeners = new Set<() => void>();
 
   const config = () => (reducedMotion ? REDUCED_MOTION_JOURNEY_CONFIG : JOURNEY_CONFIG);
@@ -96,6 +104,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     destinationRegion: regionAtStop(destinationStop(journey, config())).id,
     phase: journey.phase,
     reducedMotion,
+    focusedProject,
   });
 
   let snapshot = buildSnapshot();
@@ -106,7 +115,8 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       next.currentRegion === snapshot.currentRegion &&
       next.destinationRegion === snapshot.destinationRegion &&
       next.phase === snapshot.phase &&
-      next.reducedMotion === snapshot.reducedMotion
+      next.reducedMotion === snapshot.reducedMotion &&
+      next.focusedProject === snapshot.focusedProject
     ) {
       return;
     }
@@ -144,10 +154,21 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     },
     isScrollBlocked: () => scrollBlocks > 0,
     navigateTo(region) {
+      focusedProject = null;
       update(navigateJourney(journey, stopOfRegion(region), config()));
+      publish();
     },
     stepRegion(direction) {
+      focusedProject = null;
       update(navigateJourney(journey, destinationStop(journey, config()) + direction, config()));
+      publish();
+    },
+    focusProject(id) {
+      if (id !== null && (snapshot.currentRegion !== 'world-forge' || journey.phase !== 'idle')) return;
+      if (id === focusedProject) return;
+      focusedProject = id;
+      wake?.();
+      publish();
     },
     advance(dt) {
       update(stepJourney(journey, dt, config()));
@@ -162,4 +183,11 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       if (handler && journey.phase !== 'idle') handler();
     },
   };
+}
+
+// Development only: the store lives in React state, which Fast Refresh preserves, so a hot
+// update of this module would leave the page holding an old store (e.g. one without a newer
+// method). Reload the page instead whenever this module changes. Not part of production builds.
+if (import.meta.hot) {
+  import.meta.hot.accept(() => window.location.reload());
 }

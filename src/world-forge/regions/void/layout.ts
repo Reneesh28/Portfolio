@@ -1,30 +1,29 @@
 /**
  * Opening-shot composition for THE VOID.
  *
- * The camera looks down -Z. The gateway sits on a sight line from the camera,
- * and the distant Forge sits further along that same line — so the Forge is
- * always framed inside the gateway opening, whatever the viewport shape.
+ * P4 portal realm (DEC-019). The camera looks down -Z. The portal ring stands on a
+ * sight line from the camera, and the distant golden Forge sits further along that
+ * same line: the whole city is framed inside the portal, whatever the viewport shape.
  *
- * Wide viewports: hero text on the left, gateway on the right third.
- * Narrow / portrait viewports: the camera pulls back, the gateway is centred
- * in the upper frame and the text sits below it.
+ * Wide viewports: hero text on the left, portal on the right.
+ * Narrow / portrait viewports: the camera pulls back, the portal is centred in the
+ * upper frame and the text sits below it.
  * The 5/4 threshold matches the `max-aspect-ratio: 5/4` rule in WorldForge.css.
  *
  * All coordinates in this file are in the Void's LOCAL frame. `computeVoidPlacement`
  * maps that frame into the fixed world (Forge at the origin, Void due south).
  */
-export const CAMERA_HEIGHT = 2.2;
+/** Eye height (P4): up on the platform steps, so the distant Forge sits inside the portal. */
+export const CAMERA_HEIGHT = 6.4;
 export const GATE_Z = -6;
-export const FORGE_Z = -200;
-/** The horizon glow sits far beyond the whole world (it used to be at -330, inside the new geography). */
-export const BACKDROP_Z = -1080;
-/** Original backdrop depth: the glow is scaled so its on-screen size and position are unchanged. */
-const ORIGINAL_BACKDROP_Z = -330;
-
-/** Top of the gateway composition, including the floating keystone. */
-const GATE_TOP = 12.4;
-/** Horizontal half-width to keep visible around the gateway on narrow screens. */
-const NARROW_HALF_WIDTH = 7.4;
+/** The Forge's distance along the sight line (P4, DEC-019; ≈ 800 m; was −200 in M2, −420 in P3). */
+export const FORGE_Z = -780;
+/** The portal ring (blueprint: ≈ 24 m), standing at GATE_Z; its centre height above the island. */
+export const PORTAL = { radius: 12, centreY: 16.5, tube: 1.6 } as const;
+/** Top of the portal composition, with a little sky above it. */
+const GATE_TOP = PORTAL.centreY + PORTAL.radius + 1.5;
+/** Horizontal half-width to keep visible around the portal on narrow screens. */
+const NARROW_HALF_WIDTH = PORTAL.radius + 3.5;
 const WIDE_ASPECT = 5 / 4;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -37,7 +36,7 @@ export interface VoidLayout {
   camera: [number, number, number];
   /** Camera pitch (rotation about X), radians. No roll, no yaw. */
   pitch: number;
-  /** World X of the gateway centre. */
+  /** X of the portal centre (local frame). */
   gateX: number;
   wide: boolean;
   dustCount: number;
@@ -50,42 +49,34 @@ export function computeVoidLayout(width: number, height: number): VoidLayout {
   const fov = wide ? 42 : clamp(48 + (0.9 - aspect) * 40, 48, 60);
   const tanHalf = Math.tan(toRad(fov / 2));
 
-  // Wide: fixed distance. Narrow: back off until the gateway fits with margin.
-  const distance = wide ? 27 : clamp(NARROW_HALF_WIDTH / (tanHalf * aspect), 20, 32);
+  // Wide: fixed distance. Narrow: back off until the portal fits, but no further than 52 m,
+  // or the portal no longer covers the whole distant Forge.
+  const distance = wide ? 46 : clamp(NARROW_HALF_WIDTH / (tanHalf * aspect), 40, 52);
   const cameraZ = GATE_Z + distance;
 
-  // Place the top of the gateway at a fixed share of the frame height.
+  // Place the top of the portal at a fixed share of the frame height.
   const halfHeight = distance * tanHalf;
-  const topShare = wide ? 0.5 : 0.72;
+  const topShare = wide ? 0.66 : 0.72;
   const centreY = GATE_TOP - topShare * halfHeight;
   const pitch = Math.atan((centreY - CAMERA_HEIGHT) / distance);
 
-  // Wide: gateway centred on roughly the right third, clear of the hero text column.
+  // Wide: portal on the right, clear of the hero text column.
   const halfWidth = halfHeight * aspect;
 
   return {
     fov,
     camera: [0, CAMERA_HEIGHT, cameraZ],
     pitch,
-    gateX: wide ? Math.min(9, halfWidth * 0.38) : 0,
+    gateX: wide ? Math.min(13, halfWidth * 0.46) : 0,
     wide,
     dustCount: wide ? 320 : 150,
   };
 }
 
-/** X on the camera→gateway sight line at depth `z`. */
+/** X on the camera→portal sight line at depth `z`. */
 export function sightLineX(layout: VoidLayout, z: number): number {
   const cameraZ = layout.camera[2];
   return layout.gateX * ((cameraZ - z) / (cameraZ - GATE_Z));
-}
-
-/**
- * Scale factor that moves the horizon glow from its original depth to BACKDROP_Z
- * along camera rays, so it looks exactly the same from the opening camera.
- */
-export function backdropScale(layout: VoidLayout): number {
-  const cameraZ = layout.camera[2];
-  return (cameraZ - BACKDROP_Z) / (cameraZ - ORIGINAL_BACKDROP_Z);
 }
 
 export interface VoidPlacement {

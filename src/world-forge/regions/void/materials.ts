@@ -85,21 +85,6 @@ function canvasTexture(width: number, height: number, paint: (ctx: CanvasRenderi
   return texture;
 }
 
-/** Pale, cold glow low on the horizon behind the Forge. */
-export function createHorizonGlowTexture(): CanvasTexture {
-  return canvasTexture(512, 256, (ctx) => {
-    ctx.translate(256, 170);
-    ctx.scale(2.4, 1);
-    const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, 110);
-    glow.addColorStop(0, 'rgba(168, 190, 216, 0.55)');
-    glow.addColorStop(0.35, 'rgba(92, 114, 144, 0.32)');
-    glow.addColorStop(0.7, 'rgba(34, 44, 60, 0.14)');
-    glow.addColorStop(1, 'rgba(5, 7, 11, 0)');
-    ctx.fillStyle = glow;
-    ctx.fillRect(-110, -170, 220, 256);
-  });
-}
-
 /** Soft round sprite for dust motes. */
 export function createDustTexture(): CanvasTexture {
   return canvasTexture(32, 32, (ctx) => {

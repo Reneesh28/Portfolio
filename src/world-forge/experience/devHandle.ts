@@ -13,7 +13,7 @@ export interface DevRenderStats {
 declare global {
   interface Window {
     /** Development-only test handle (absent from production builds). */
-    __worldForge?: { store: ExperienceStore; render?: DevRenderStats };
+    __worldForge?: { store: ExperienceStore; render?: DevRenderStats; camera?: { position: number[]; fov: number; toScreen: (point: number[]) => number[] } };
   }
 }
 
