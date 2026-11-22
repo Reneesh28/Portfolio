@@ -1,4 +1,4 @@
-# Content Inventory — World Forge projects (M5.1), Origin Sanctum (M6.1), Blueprint Archive (M6.2), Path of Ascension (M6.3), Worlds Beyond (M7.1)
+# Content Inventory — World Forge projects (M5.1), Origin Sanctum (M6.1), Blueprint Archive (M6.2), Path of Ascension (M6.3), Worlds Beyond (M7.1), The Horizon (M8.1)
 
 Doc 11 rules apply: no invented facts, metrics, descriptions, links or media.
 
@@ -180,3 +180,15 @@ doc 06: "Audit content to verify six interests. Do not invent hobbies."
 | Worlds Beyond | The Guild: members and events | Leading 50+ members · CosCon 2.0 · Spooky Nights 2.0 | Owner (DEC-032) | Owner | VERIFIED |
 | Worlds Beyond | The Guild: title | Master doc says "leadership/CEO"; the CV says Co-CEO | CV wins (DEC-025) | — | Resolved: Co-CEO |
 | Worlds Beyond | Training Grounds | "A king never wavers. A king never bends. A king never relies on others. A king never gives up." | Owner (DEC-032; placement inferred from order) | Owner | VERIFIED |
+
+## The Horizon (M8.1 content and contact audit, 2026-11-22)
+| Region | Item | Proposed content | Source | Owner confirmation | Status |
+|---|---|---|---|---|---|
+| Horizon | Closing text | **THE GREATEST CREATION IS STILL AHEAD.** / Every world begins with an idea. / This one is only getting started. | Master doc §1 and doc 06 (locked, exact) | Owner-written | VERIFIED (locked) |
+| Horizon | Ambitions | AI/ML engineering ambitions · Original games · Original IP and universes · Indie development · Content creation · Meaningful experiences | Master doc §6 Region 06 (owner-written themes; no further text anywhere) | Owner-written | DRAFT (show the six as written, or add a line each) |
+| Horizon | GitHub | https://github.com/Reneesh28 | CV; Classic (Footer, Navigation, Contact) | CV (DEC-025) | VERIFIED (link not tested) |
+| Horizon | Email | reneesh3508925@gmail.com | CV; Classic (Footer, Contact) | CV (DEC-025) | VERIFIED |
+| Horizon | LinkedIn | Classic: https://www.linkedin.com/in/balam-reneesh. The CV's text reads "linkedin.com/inbalamreneesh" (a slash seems to be missing, so it may be /in/balamreneesh) | CV and Classic disagree | — | NEEDS OWNER |
+| Horizon | Resume | /resume.pdf (the CV) | Repository file | — | VERIFIED |
+| Horizon | Phone | +91 number in the CV | CV | — | OMIT (private; the master doc's contact list has no phone) |
+| Horizon | Instagram (Void Ronin) | void_ronin.exe | Owner (DEC-032), for Gaming & Content Creation | Owner | Optional in contact: owner's choice |

@@ -4,10 +4,22 @@ import { BoxGeometry, BufferAttribute, Color, MeshBasicMaterial, MeshStandardMat
 import { isTerritory, openTerritories, TERRITORIES, type TerritoryId } from '../../content/interests';
 import { WORLDS_BEYOND_TERRITORIES } from '../../data/worldGeography';
 import { useExperienceSnapshot, useExperienceStore } from '../../experience/ExperienceContext';
-import { BEYOND_LEVEL, buildBeyond, type Range } from './beyondGeometry';
+import { BEYOND_LEVEL, buildBeyond, type BuiltTerritory, type Range } from './beyondGeometry';
 import { GATE, GATES, LANDMARKS } from './beyondLayout';
 
-const WARM = '#ffc27a';
+/** Each built territory's own light (DEC-033: one family, each in its colour). */
+const LIGHT: Readonly<Record<BuiltTerritory, string>> = {
+  anime: '#ff5a3c',
+  // Formula 1: steel track edges; the streak running along it is white (STREAK).
+  f1: '#7f8ea8',
+  creator: '#b06bff',
+  guild: '#ffc27a',
+  training: '#fff1d6',
+};
+/** Seconds for the F1 streak to run the length of the track; the broadcast rings' pulse period. */
+const STREAK_SECONDS = 4.5;
+const STREAK = '#f2f7ff';
+const PULSE_SECONDS = 2.4;
 /** Each territory's colour: its island's biome accent. */
 const colourOf = (id: TerritoryId): string => {
   const island = TERRITORIES.find((t) => t.id === id)?.island;
@@ -15,17 +27,19 @@ const colourOf = (id: TerritoryId): string => {
 };
 
 /**
- * 05 — THE WORLDS BEYOND (M7, DEC-032): the Convergence and, so far, The Guild.
+ * 05 — THE WORLDS BEYOND (M7, DEC-032, DEC-033): the Convergence and the territories built so far.
  *
  * The Convergence is a round plaza of six stone gates, each facing its territory and lit in
  * its colour, around a compass monolith whose six strips point at the gates. A territory that
  * can be opened (built, with content) has a brighter gate; choosing it (here or from the card)
- * draws the camera to its landmark and opens its panel. The Guild (AniCos) is a courtyard with
- * the Hall, the Chronicle wall, the Assembly's ring of seats and the Stage.
+ * draws the camera to its landmark and opens its panel. Each territory has one landmark in its
+ * own colour: Anime & Manga's gate on a crag, Formula 1's banked track (a streak of light runs
+ * along it), the broadcast tower (its rings pulse outward), The Guild's courtyard, and the
+ * Training Grounds' cut stair.
  *
  * Rendering: everything static is baked into a stone mesh and a lines mesh (2 draws).
  */
-export default function BeyondRegion() {
+export default function BeyondRegion({ animate }: { animate: boolean }) {
   const store = useExperienceStore();
   const { beyondTerritory, currentRegion, phase } = useExperienceSnapshot();
   const invalidate = useThree((state) => state.invalidate);
@@ -86,7 +100,29 @@ export default function BeyondRegion() {
       paint(`g-${id}`, built.gateRanges[id], colourOf(id), level);
       paint(`s-${id}`, built.stripRanges[id], colourOf(id), open.has(id) ? BEYOND_LEVEL.monolith : BEYOND_LEVEL.closed);
     }
-    paint('guild', built.guildLights, WARM, chosen === 'guild' ? BEYOND_LEVEL.guild * 1.3 : BEYOND_LEVEL.guild);
+    for (const [id, range] of Object.entries(built.territoryLights) as Array<[BuiltTerritory, Range]>) {
+      paint(`t-${id}`, range, LIGHT[id], chosen === id ? BEYOND_LEVEL.territory * 1.3 : BEYOND_LEVEL.territory);
+    }
+    // The F1 streak runs the track; the broadcast rings pulse outward. Still under reduced motion.
+    const t = clock.elapsedTime;
+    const streak = built.sequences.f1;
+    if (streak) {
+      const head = animate ? ((t / STREAK_SECONDS) % 1) * streak.length : -1;
+      streak.forEach((range, k) => {
+        const d = head < 0 ? 99 : (head - k + streak.length) % streak.length;
+        const level = head < 0 ? BEYOND_LEVEL.territory : d < 4 ? 2.6 - d * 0.5 : 0.35;
+        paint(`f1-${k}`, range, STREAK, level);
+      });
+    }
+    const rings = built.sequences.creator;
+    if (rings) {
+      const phase = animate ? ((t / PULSE_SECONDS) % 1) * rings.length : -1;
+      rings.forEach((range, k) => {
+        const d = Math.abs(phase - k - 0.5);
+        const level = phase < 0 ? BEYOND_LEVEL.territory : d < 0.5 ? 2.4 : 0.5;
+        paint(`ring-${k}`, range, LIGHT.creator, level);
+      });
+    }
     if (dirty) attr.needsUpdate = true;
   });
 

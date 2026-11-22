@@ -1,7 +1,7 @@
 # M6.3 report: The Path of Ascension ("The Lit Ascent")
 
 Date: 2026-11-22. Branch `the-world-forge`, committed when QA passes. Decision: DEC-030.
-Status: **M6.3 stages 3–7 done; QA done. Waiting on your M6.3 lock.**
+Status: **M6.3 LOCKED** ("Proceed", DEC-033, 2026-11-22). Commit `0113000`.
 
 ## What you'll see
 - **Arrival.** The camera settles in a three-quarter view up the climb: the foot island nearest on the right, and the four islands rising to the summit beacon far left, with its faint beam of light.

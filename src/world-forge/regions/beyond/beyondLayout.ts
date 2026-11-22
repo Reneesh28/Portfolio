@@ -78,7 +78,19 @@ export const GUILD = {
   stage: { at: [7, 0, 1] as Vec3, size: [5.5, 1, 6] as Vec3 },
 } as const;
 
-/** Where each territory's landmark is (world), for the camera focus and picking. Only built territories have one. */
-export const LANDMARKS: Readonly<Partial<Record<TerritoryId, { centre: Vec3; height: number; radius: number }>>> = {
-  guild: { centre: territoryToWorld('guild', [0, 3.5, -2]), height: 10, radius: 12 },
+/** Each territory's landmark in its own frame: centre, height and radius (camera focus and picking). */
+export const TERRITORY_LANDMARK: Readonly<Record<Exclude<TerritoryId, 'stories'>, { centre: Vec3; height: number; radius: number }>> = {
+  anime: { centre: [0, 9, -2], height: 14, radius: 13 },
+  f1: { centre: [3, 5, -3], height: 12, radius: 19 },
+  creator: { centre: [0, 10, -2], height: 20, radius: 9 },
+  guild: { centre: [0, 3.5, -2], height: 10, radius: 12 },
+  training: { centre: [-2, 3.5, -2], height: 8, radius: 10 },
 };
+
+/** Where each built territory's landmark is (world), for the camera focus and picking. */
+export const LANDMARKS: Readonly<Partial<Record<TerritoryId, { centre: Vec3; height: number; radius: number }>>> = Object.fromEntries(
+  TERRITORIES.filter((t) => t.built && t.id !== 'stories').map((t) => {
+    const l = TERRITORY_LANDMARK[t.id as Exclude<TerritoryId, 'stories'>];
+    return [t.id, { ...l, centre: territoryToWorld(t.id, l.centre) }];
+  }),
+);

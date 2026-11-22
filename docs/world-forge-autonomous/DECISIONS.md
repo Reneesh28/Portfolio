@@ -332,6 +332,54 @@ Recorded before implementation, as doc 16 requires:
 - Not taken as: link testing, Classic changes, or push/merge/deploy.
 - Status: **OWNER DECISION** (design gate and content)
 
+## DEC-033 — M7 review passed; M6.3 locked; build the four territories with text
+- Date: 2026-11-22 · Owner: "Proceed", in reply to the M7 review report. That report asked for:
+  1. the review of the Convergence and The Guild;
+  2. the still-open M6.3 lock;
+  3. Story-driven Games text;
+  4. a check on where the "king" line belongs.
+- **Taken as:**
+  - **The M7 review passed:** the Convergence, and The Guild as the visual standard for the other territories (doc 16 M7.4 hub lock and M7.7 visual-language lock).
+  - **M6.3 Path of Ascension LOCKED** (commit `0113000`). It was on the open list since its report, and "Proceed" is taken as covering it, as DEC-030 did for M6.2. The owner can reopen it.
+  - **Build the four territories with text**, each in its own stage: Anime & Manga, Formula 1, Gaming & Content Creation, The Training Grounds.
+  - The "king" line stays in The Training Grounds (not moved).
+- **Story-driven Games** stays closed (no text yet).
+- Not taken as: link testing, Classic changes, or push/merge/deploy.
+- Status: **OWNER DECISION** (review and lock)
+
+## DEC-034 — Link testing, Classic CGPA, Chronoshift from GitHub, display font, fading controls; complete M7, M8 and M9
+- Date: 2026-11-22 · Owner:
+  > Limk testing: Proceed with them
+  > The cgpa go along with cv
+  > And about chronoshift you can knwo from the github itself
+  > Display font: you choose according to he requirements
+  > Complete the fading controls as well
+  > and you are allowed to complete m7, m8 and m9
+- **Taken as:**
+  1. **Link testing allowed.** Run 2026-11-22. Results and fixes are recorded below and in the content inventory.
+  2. **Classic CGPA → 6.86** (the CV), in `src/data/education.js`. This is the only Classic change; Classic's NeuroPlay text is not changed.
+  3. **Chronoshift from its GitHub repositories** (`Chronoshift_Frontend`, `Chronoshift_Backend`). The READMEs hold no description (a Vite template, and none), so the dossier states only what the repositories themselves show: their pages, services and dependencies, plus the live demo.
+  4. **Display font: Cinzel** (SIL Open Font License), self-hosted, recorded in an asset register. It's used for display text only; body text keeps the readable inherited font (master doc §9 typography).
+  5. **Fading controls** per master doc §9. Controls never fade while keyboard navigation is active, a panel or menu is open, an element is focused, or an interaction is underway. Mobile is conservative.
+  6. **Complete M7, M8 and M9 autonomously**, stage by stage with commits:
+     - M7: the routing and responsive pass, QA, and the lock.
+     - M8: "The Unfinished Gate" approved with the proposal's recommendations: the six ambition themes as written; a Contact button in the bottom bar; LinkedIn per the CV's own link target; Instagram stays in the Worlds Beyond, not in contact.
+     - M9: integration, optimisation and QA.
+- **Found by link testing and the CV's embedded links:**
+  - **LinkedIn:** the CV's link target is `linkedin.com/in/balam-reneesh`, the same as Classic. LinkedIn answers automated checks with 999, its bot block.
+  - **NeuroPlay:**
+    - `github.com/Reneesh28/NeuroPlay` is **404**, so it's replaced by the CV's links, `NeuroPlay-Backend` and `Neuroplay-Frontend` (both live);
+    - the demo `neuroplay.vercel.app` is **503** (down), so it's hidden until it works.
+  - **FinLit AI:** `FinLit-AI` is **404**, so it's replaced by `finlit-frontend`, `finlit-backend` and `finlit-ai-service` (all live).
+  - **PARAS System:** `PARAS` is **404**, and there's no public repository, so the link is removed.
+  - **SPAE:** `Project_ML` redirects to `SPAE-SALES_PREDICTION_ANALYSIS_ENGINE-`, which now becomes the link.
+  - **Instagram, GitHub profile, and the other repositories:** live.
+- **Reported to the owner, not changed:**
+  - the CV PDF's clickable email and GitHub links point to another person's address and profile (a template leftover; the printed text is the owner's);
+  - `Chronoshift_Frontend` has a committed `.env` file. It was not opened. The owner may want to remove it and rotate any keys.
+- **Still not done without an explicit yes:** push, merge or deploy, and inventing Story-driven Games' text. That territory is built as an environment and stays closed until text arrives.
+- Status: **OWNER DECISION**
+
 ## Open items carried forward (not decided)
 - **World Map:** master doc §8/§9 make it the "primary navigation entry" (a clean illustrated SVG map), and the master M3 lists "World map reflecting geography". Not built (doc 05: not in M1). It needs a design and scheduling decision.
 - **Controls fading after inactivity** (master doc §9): not implemented. It's UI polish with rules (no fading while focused, open or interacting).

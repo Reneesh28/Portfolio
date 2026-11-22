@@ -22,7 +22,7 @@ export interface Territory {
   short: string;
   /** The P2 island it stands on. */
   island: string;
-  /** Built in the world yet (M7 builds them in stages, DEC-032). */
+  /** Built in the world yet (M7 builds them in stages: DEC-032, DEC-033). */
   built: boolean;
   /** Set apart as a quote, if any. */
   quote?: string;
@@ -40,7 +40,7 @@ export const TERRITORIES: readonly Territory[] = [
     title: 'Anime & Manga',
     short: 'Anime',
     island: 'wb-ember',
-    built: false,
+    built: true,
     sections: [{ lines: ['One Piece'] }],
     links: [],
     source: OWNER,
@@ -60,7 +60,7 @@ export const TERRITORIES: readonly Territory[] = [
     title: 'Formula 1',
     short: 'F1',
     island: 'wb-steel',
-    built: false,
+    built: true,
     quote: "It's not over until it's over.",
     sections: [{ lines: ['The Max Verstappen mentality.'] }],
     links: [],
@@ -71,7 +71,7 @@ export const TERRITORIES: readonly Territory[] = [
     title: 'Gaming & Content Creation',
     short: 'Creator',
     island: 'wb-temporal',
-    built: false,
+    built: true,
     sections: [{ lines: ['Void Ronin'] }],
     links: [{ label: 'void_ronin.exe on Instagram', href: 'https://www.instagram.com/void_ronin.exe/' }],
     source: OWNER,
@@ -96,7 +96,7 @@ export const TERRITORIES: readonly Territory[] = [
     title: 'The Training Grounds',
     short: 'Training',
     island: 'wb-dunes',
-    built: false,
+    built: true,
     quote: 'A king never wavers. A king never bends. A king never relies on others. A king never gives up.',
     sections: [],
     links: [],

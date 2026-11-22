@@ -1,7 +1,7 @@
 # M7 report (part 1): the Convergence and The Guild — review stop
 
 Date: 2026-11-22. Branch `the-world-forge`. Decision: DEC-032.
-Status: **the Convergence and the representative territory (The Guild) are built and QA'd. Waiting on your review.** This combines doc 16's M7.4 hub lock and M7.7 visual-language lock into one stop, as DEC-032 records. The other five territories come after it.
+Status: **Review passed** ("Proceed", DEC-033, 2026-11-22): the Convergence and The Guild are the visual standard for the other territories. This combines doc 16's M7.4 hub lock and M7.7 visual-language lock into one stop, as DEC-032 records. The other five territories come after it.
 
 ## What you'll see
 - **The Convergence.** The camera settles above the Worlds Beyond from the hub side: the central island with a round stone plaza and **six gates** on its edge, each facing its territory's island, around a **compass monolith** whose six coloured strips point at the gates.

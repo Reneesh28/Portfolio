@@ -54,33 +54,12 @@ function build(): Built {
 
   // 05 Worlds Beyond: the Convergence is built by its own region since M7 (regions/beyond), and so is
   // each territory once built (The Guild first); the others keep a blockout landmark for now.
+  // The territories are built by the region too; only Story-driven Games (no text yet) keeps a blockout.
   for (const t of WORLDS_BEYOND_TERRITORIES) {
+    if (t.id !== 'wb-shadow') continue;
     const p = islandTop(t.id);
-    switch (t.id) {
-      case 'wb-ember':
-        stone.push([cone, placement(at(p, 0, 10, 0), [0, 0, 0], [8, 20, 8])]);
-        accent(t.accent, [gem, placement(at(p, 0, 22, 0), [0, 0, 0], [2, 3, 2])]);
-        break;
-      case 'wb-temporal':
-        stone.push([cone, placement(at(p, 0, 12, 0), [Math.PI, 0, 0], [5, 8, 5])]);
-        stone.push([cone, placement(at(p, 0, 4, 0), [0, 0, 0], [5, 8, 5])]);
-        accent(t.accent, [gem, placement(at(p, 0, 8, 0), [0, 0, 0], [1.4, 1.4, 1.4])]);
-        break;
-      case 'wb-sunken':
-        // The Guild: built in M7 (DEC-032).
-        break;
-      case 'wb-dunes':
-        stone.push([peak, placement(at(p, 0, 7, 0), [0, 0.3, 0], [12, 14, 12])]);
-        accent(t.accent, [gem, placement(at(p, 0, 16, 0), [0, 0, 0], [1.6, 2.4, 1.6])]);
-        break;
-      case 'wb-steel':
-        stone.push([box, placement(at(p, 0, 12, 0), [0, 0.5, 0], [6, 24, 6])]);
-        accent(t.accent, [box, placement(at(p, 3.05, 14, 0), [0, 0.5, 0], [0.2, 12, 1.2])]);
-        break;
-      default:
-        stone.push([pillar, placement(at(p, 0, 9, 0), [0, 0, 0], [2.2, 18, 2.2])]);
-        accent(t.accent, [gem, placement(at(p, 0, 21, 0), [0, 0, 0], [2, 3, 2])]);
-    }
+    stone.push([pillar, placement(at(p, 0, 9, 0), [0, 0, 0], [2.2, 18, 2.2])]);
+    accent(t.accent, [gem, placement(at(p, 0, 21, 0), [0, 0, 0], [2, 3, 2])]);
   }
 
   // 06 Horizon: an unfinished gate at the edge of the world, facing the open sky.

@@ -56,7 +56,7 @@ export default function WorldScene({ animate, store, quality }: WorldSceneProps)
       <ForgeRegion animate={animate} emberShare={quality.embers} />
       <ArchiveRegion animate={animate} />
       <AscensionRegion animate={animate} />
-      <BeyondRegion />
+      <BeyondRegion animate={animate} />
       <VoidRegion layout={layout} animate={animate} />
       <CameraRig />
       {import.meta.env.DEV && <DevRenderStats />}
