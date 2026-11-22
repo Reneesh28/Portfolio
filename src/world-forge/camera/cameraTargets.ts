@@ -24,6 +24,7 @@ import { CLIMB_CENTRE, CLIMB_DIRECTION, TOWARD_HUB, waystone } from '../regions/
 import type { MilestoneId } from '../content/timeline';
 import { CONVERGENCE, LANDMARKS } from '../regions/beyond/beyondLayout';
 import type { TerritoryId } from '../content/interests';
+import { HORIZON_YAW } from '../regions/horizon/horizonLayout';
 
 export interface CameraPose {
   position: Vec3;
@@ -60,36 +61,6 @@ interface RegionFraming {
   /** `provisional` (M1 functional framing) or the milestone whose approved design set it. */
   status: 'provisional' | 'M4' | 'P5' | 'M6' | 'M7';
   narrow?: NarrowFraming;
-}
-
-/**
- * Island framing (P5 final, DEC-020): a three-quarter view from the hub side, scaled
- * to the region's footprint, so the island, its landmark and the open archipelago
- * behind it all read. Narrow screens pull back and up with a fixed horizontal coverage.
- */
-function islandFraming(id: RegionId, lean = 0): RegionFraming {
-  const region = REGIONS.find((r) => r.id === id);
-  if (!region) throw new Error(`Unknown region ${id}`);
-  const [cx, , cz] = region.position;
-  const r = region.footprint;
-  const toHub = Math.atan2(-cx, -cz);
-  const a = toHub + (28 * Math.PI) / 180;
-  const distance = r * 1.9 + 45;
-  const height = r * 0.55 + 22;
-  // `lean` pulls the aim toward the hub and down (the Path of Ascension frames its climb, not just the summit).
-  const aim: Vec3 = [Math.sin(toHub) * r * lean, r * 0.12 + 8 - lean * 60, Math.cos(toHub) * r * lean];
-  return {
-    offset: [Math.sin(a) * distance, height, Math.cos(a) * distance],
-    aim,
-    fov: 50,
-    status: 'P5',
-    narrow: {
-      offset: [Math.sin(a) * distance * 1.3, height * 1.3, Math.cos(a) * distance * 1.3],
-      aim,
-      horizontalFov: 40,
-      minFov: 50,
-    },
-  };
 }
 
 /**
@@ -210,6 +181,36 @@ const beyondFraming: RegionFraming = (() => {
   };
 })();
 
+/**
+ * The Horizon (M8, DEC-034): from the island's south-west, so the unfinished gate stands on the
+ * left against the bright western sky and the Forge glows far off on the right; the scene sits low,
+ * leaving the sky for the closing words. Narrow screens face the gate and the island. In the Horizon's local
+ * frame (+Z toward the hub, +X north).
+ */
+export const HORIZON_VIEW = {
+  wide: { camera: [-150, 30, -90] as Vec3, aim: [-50, 16, 21] as Vec3, fov: 50 },
+  narrow: { camera: [-125, 38, -27] as Vec3, aim: [0, 15, -27] as Vec3, horizontalFov: 50, minFov: 50 },
+} as const;
+
+const horizonDirection = ([x, y, z]: Vec3): Vec3 => {
+  const c = Math.cos(HORIZON_YAW);
+  const s = Math.sin(HORIZON_YAW);
+  return [x * c + z * s, y, -x * s + z * c];
+};
+
+const horizonFraming: RegionFraming = {
+  offset: horizonDirection(HORIZON_VIEW.wide.camera),
+  aim: horizonDirection(HORIZON_VIEW.wide.aim),
+  fov: HORIZON_VIEW.wide.fov,
+  status: 'M7',
+  narrow: {
+    offset: horizonDirection(HORIZON_VIEW.narrow.camera),
+    aim: horizonDirection(HORIZON_VIEW.narrow.aim),
+    horizontalFov: HORIZON_VIEW.narrow.horizontalFov,
+    minFov: HORIZON_VIEW.narrow.minFov,
+  },
+};
+
 /** Framings for every stop after the Void (route order). */
 export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionFraming>> = {
   'origin-sanctum': sanctumFraming,
@@ -225,7 +226,7 @@ export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionF
   'blueprint-archive': archiveFraming,
   'path-of-ascension': ascensionFraming,
   'worlds-beyond': beyondFraming,
-  horizon: islandFraming('horizon'),
+  horizon: horizonFraming,
 };
 
 /**

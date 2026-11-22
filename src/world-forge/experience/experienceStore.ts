@@ -53,6 +53,10 @@ export interface ExperienceSnapshot {
   ascensionMilestone: string | null;
   /** The Worlds Beyond territory chosen at the Convergence (M7; the camera focuses it), or null. */
   beyondTerritory: string | null;
+  /** The Horizon's open panel (M8): 'ambitions', or null. */
+  horizonView: string | null;
+  /** The contact panel is open (M8: reachable from every region, not gated behind the journey). */
+  contactOpen: boolean;
 }
 
 /**
@@ -110,6 +114,13 @@ export interface ExperienceStore {
    * Only honoured at the Worlds Beyond while idle; direct navigation clears it.
    */
   openBeyond(territory: string | null): void;
+  /** Open a Horizon panel ('ambitions') or close it (null). Only honoured at the idle Horizon. */
+  openHorizon(view: string | null): void;
+  /**
+   * Open or close the contact panel. Honoured anywhere, at any time (master doc: contact is
+   * directly accessible). Opening it closes any other panel; direct navigation closes it.
+   */
+  openContact(open: boolean): void;
   /**
    * Travel to the World Forge and open a work's dossier once the camera arrives there idle
    * (M6.2 evidence links). Any other navigation, or arriving anywhere else, cancels it.
@@ -135,6 +146,8 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
   let archiveCategory: string | null = null;
   let ascensionMilestone: string | null = null;
   let beyondTerritory: string | null = null;
+  let horizonView: string | null = null;
+  let contactOpen = false;
   let pendingProject: string | null = null;
   const listeners = new Set<() => void>();
 
@@ -150,6 +163,8 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     archiveCategory,
     ascensionMilestone,
     beyondTerritory,
+    horizonView,
+    contactOpen,
   });
 
   let snapshot = buildSnapshot();
@@ -165,7 +180,9 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       next.sanctumView === snapshot.sanctumView &&
       next.archiveCategory === snapshot.archiveCategory &&
       next.ascensionMilestone === snapshot.ascensionMilestone &&
-      next.beyondTerritory === snapshot.beyondTerritory
+      next.beyondTerritory === snapshot.beyondTerritory &&
+      next.horizonView === snapshot.horizonView &&
+      next.contactOpen === snapshot.contactOpen
     ) {
       return;
     }
@@ -197,6 +214,8 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     archiveCategory = null;
     ascensionMilestone = null;
     beyondTerritory = null;
+    horizonView = null;
+    contactOpen = false;
     pendingProject = null;
   };
 
@@ -265,6 +284,27 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       if (territory === beyondTerritory) return;
       beyondTerritory = territory;
       wake?.();
+      publish();
+    },
+    openHorizon(view) {
+      if (view !== null && (snapshot.currentRegion !== 'horizon' || journey.phase !== 'idle')) return;
+      if (view === horizonView) return;
+      horizonView = view;
+      publish();
+    },
+    openContact(open) {
+      if (open === contactOpen) return;
+      if (open) {
+        // Contact outranks the other panels: one panel at a time.
+        focusedProject = null;
+        sanctumView = null;
+        archiveCategory = null;
+        ascensionMilestone = null;
+        beyondTerritory = null;
+        horizonView = null;
+        wake?.();
+      }
+      contactOpen = open;
       publish();
     },
     visitWork(projectId) {

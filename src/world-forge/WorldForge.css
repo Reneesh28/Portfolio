@@ -1278,6 +1278,122 @@
   }
 }
 
+/* ---------------------------------------------------------------- M8 The Horizon */
+/* The closing composition: the locked words, large and quiet, in the sky above the gate. */
+.wf-root .wf-closing {
+  position: absolute;
+  left: 50%;
+  top: clamp(48px, 12vh, 120px);
+  transform: translateX(-50%);
+  width: min(52rem, calc(100vw - 32px));
+  text-align: center;
+  color: #f6efe0;
+  animation: wf-dossier-fade 900ms ease-out both;
+}
+.wf-root .wf-closing-title {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.6rem, 4.2vw, 3.2rem);
+  line-height: 1.15;
+  color: #fbf3df;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.55);
+}
+.wf-root .wf-closing-line {
+  margin: 0.2rem 0;
+  font-size: clamp(1rem, 1.7vw, 1.3rem);
+  letter-spacing: 0.02em;
+  color: #e9dfc9;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.6);
+}
+.wf-root .wf-closing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wf-root .wf-closing-actions button,
+.wf-root .wf-closing-panel-actions button {
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 1px solid rgba(242, 211, 138, 0.55);
+  border-radius: 999px;
+  background: rgba(20, 14, 30, 0.6);
+  color: #f6efe0;
+  font: inherit;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+.wf-root .wf-closing-actions .wf-closing-primary {
+  border-color: rgba(255, 224, 150, 0.95);
+  background: rgba(242, 211, 138, 0.18);
+}
+.wf-root .wf-closing-actions button:focus-visible,
+.wf-root .wf-closing-panel-actions button:focus-visible,
+.wf-root .wf-contact-list a:focus-visible {
+  outline: 2px solid #f2d38a;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-root .wf-closing { animation: none; }
+}
+.wf-root .wf-dossier--horizon .wf-dossier-panel,
+.wf-root .wf-dossier--contact .wf-dossier-panel {
+  border-color: rgba(242, 211, 138, 0.4);
+}
+.wf-root .wf-dossier--horizon .wf-dossier-count,
+.wf-root .wf-dossier--horizon .wf-dossier-meta,
+.wf-root .wf-dossier--contact .wf-dossier-count,
+.wf-root .wf-dossier--contact .wf-dossier-meta {
+  color: #f2d38a;
+}
+.wf-root .wf-contact-list {
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wf-root .wf-contact-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(242, 211, 138, 0.14);
+}
+.wf-root .wf-contact-label {
+  flex: 0 0 6.5rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #d8a35c;
+}
+.wf-root .wf-contact-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #f6efe0;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  word-break: break-all;
+}
+.wf-root .wf-closing-panel-actions {
+  margin-top: 1rem;
+}
+/* Narrow screens: the closing words sit higher and smaller, clear of the bottom navigation. */
+@media (max-aspect-ratio: 5/4), (max-height: 599px) {
+  .wf-root .wf-closing {
+    top: clamp(24px, 8vh, 72px);
+  }
+}
+@media (max-height: 599px) and (min-aspect-ratio: 5/4) {
+  .wf-root .wf-closing-title { font-size: 1.4rem; margin-bottom: 0.4rem; }
+  .wf-root .wf-closing-actions { margin-top: 0.8rem; }
+}
+
 /* ---------------------------------------------------------------- M9 display type */
 .wf-root :is(.wf-title, .wf-dossier-title, .wf-map-title, .wf-sanctum-name, .wf-archive-title, .wf-path-title, .wf-beyond-title, .wf-closing-title) {
   font-family: var(--font-display);

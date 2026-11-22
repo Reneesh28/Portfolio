@@ -32,6 +32,8 @@ describe('experience store', () => {
       archiveCategory: null,
       ascensionMilestone: null,
       beyondTerritory: null,
+      horizonView: null,
+      contactOpen: false,
     });
   });
 

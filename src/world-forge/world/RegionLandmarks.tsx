@@ -1,14 +1,14 @@
 import { useEffect, useMemo } from 'react';
 import { BoxGeometry, Color, ConeGeometry, CylinderGeometry, MeshBasicMaterial, MeshStandardMaterial, OctahedronGeometry, TorusGeometry, type BufferGeometry } from 'three';
 import { createRandom } from '../core/random';
-import { ISLANDS, REGIONS, WORLDS_BEYOND_TERRITORIES, type Vec3 } from '../data/worldGeography';
+import { ISLANDS, WORLDS_BEYOND_TERRITORIES, type Vec3 } from '../data/worldGeography';
 import { mergeParts, placement, type Part } from '../core/mergeStatic';
 
 /**
  * P2 landmark blockouts: one simple, recognisable silhouette per region so each
  * island reads from a distance. These are placeholders; each region's real design
  * belongs to its own milestone (M6–M8). The Origin Sanctum's was replaced in M6.1, the
- * Blueprint Archive's in M6.2, the Path of Ascension's in M6.3. Stone is baked into one draw; glowing
+ * Blueprint Archive's in M6.2, the Path of Ascension's in M6.3, the Horizon's in M8. Stone is baked into one draw; glowing
  * accents are baked per colour.
  */
 const islandTop = (id: string): Vec3 => {
@@ -16,7 +16,6 @@ const islandTop = (id: string): Vec3 => {
   if (!island) throw new Error(`Unknown island ${id}`);
   return island.position;
 };
-const accentOf = (id: string) => REGIONS.find((r) => r.id === id)?.accent ?? '#ffffff';
 const at = ([x, y, z]: Vec3, dx: number, dy: number, dz: number): Vec3 => [x + dx, y + dy, z + dz];
 
 interface Built {
@@ -62,13 +61,7 @@ function build(): Built {
     accent(t.accent, [gem, placement(at(p, 0, 21, 0), [0, 0, 0], [2, 3, 2])]);
   }
 
-  // 06 Horizon: an unfinished gate at the edge of the world, facing the open sky.
-  const hz = islandTop('horizon');
-  stone.push([box, placement(at(hz, -3, 11, -9), [0, 0, 0], [3, 22, 3])]);
-  stone.push([box, placement(at(hz, -3, 11, 9), [0, 0, 0], [3, 22, 3])]);
-  stone.push([box, placement(at(hz, -3, 23.5, 4), [0.08, 0, 0], [3.4, 3, 13])]);
-  accent(accentOf('horizon'), [box, placement(at(hz, -3, 22, -9), [0, 0, 0], [0.6, 0.6, 0.6])]);
-  accent(accentOf('horizon'), [gem, placement(at(hz, -3, 12, 0), [0, 0, 0], [1.6, 3, 1.6])]);
+  // 06 Horizon: built by its own region since M8 (regions/horizon).
 
   return { stone, accents, temporary: [box, pillar, cone, peak, gem, arch] };
 }

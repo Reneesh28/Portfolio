@@ -10,6 +10,8 @@ import SanctumPanel from './ui/SanctumPanel';
 import ArchivePanel from './ui/ArchivePanel';
 import AscensionPanel from './ui/AscensionPanel';
 import BeyondPanel from './ui/BeyondPanel';
+import HorizonPanel from './ui/HorizonPanel';
+import ContactPanel from './ui/ContactPanel';
 import WorldStage from './ui/WorldStage';
 import { useJourneyInput } from './input/useJourneyInput';
 import { useIdleControls } from './ui/useIdleControls';
@@ -61,6 +63,14 @@ function WorldForgeExperience() {
         <ArchivePanel />
         <AscensionPanel />
         <BeyondPanel />
+        <HorizonPanel />
+        <ContactPanel
+          onClosed={() =>
+            requestAnimationFrame(() =>
+              (document.querySelector<HTMLElement>('.wf-closing button[data-action="contact"]') ?? document.querySelector<HTMLElement>('.wf-quick[data-contact]'))?.focus(),
+            )
+          }
+        />
         <WorksPanel />
         <JourneyNav />
       </Stage>

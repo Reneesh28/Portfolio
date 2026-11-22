@@ -12,8 +12,9 @@ const regionById = (id: RegionId) => JOURNEY_ROUTE.find((region) => region.id ==
 /**
  * Bottom-centre global navigation (master doc §8/§9): a compact button showing the
  * current region that expands into direct access to every region, and a quick bar
- * (P5): return to the Void, the World Map, The World Forge. Screen-space, keyboard
- * and touch operable, no hover dependency.
+ * (P5): return to the Void, the World Map, The World Forge, and Contact (M8: contact is
+ * reachable from every region, not gated behind the journey). Screen-space, keyboard and
+ * touch operable, no hover dependency.
  */
 export default function JourneyNav() {
   const store = useExperienceStore();
@@ -141,6 +142,12 @@ export default function JourneyNav() {
             <path d="M12 2.5 14 9h-4z" />
             <path d="M8 21V12l4-3 4 3v9" />
             <path d="M5 21h14" />
+          </svg>
+        </button>
+        <button type="button" className="wf-quick" data-contact="" onClick={() => store.openContact(true)} aria-label="Contact" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="3.5" y="5.5" width="17" height="13" rx="1.5" />
+            <path d="m4 7 8 6 8-6" />
           </svg>
         </button>
       </div>
