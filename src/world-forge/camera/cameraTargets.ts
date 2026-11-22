@@ -22,6 +22,8 @@ import { fragmentCentre, toWorldDirection, type FragmentId } from '../regions/sa
 import { toWorldDirection as archiveDirection } from '../regions/archive/archiveLayout';
 import { CLIMB_CENTRE, CLIMB_DIRECTION, TOWARD_HUB, waystone } from '../regions/ascension/ascensionLayout';
 import type { MilestoneId } from '../content/timeline';
+import { CONVERGENCE, LANDMARKS } from '../regions/beyond/beyondLayout';
+import type { TerritoryId } from '../content/interests';
 
 export interface CameraPose {
   position: Vec3;
@@ -56,7 +58,7 @@ interface RegionFraming {
   /** Vertical field of view at the reference aspect (16:10). */
   fov: number;
   /** `provisional` (M1 functional framing) or the milestone whose approved design set it. */
-  status: 'provisional' | 'M4' | 'P5' | 'M6';
+  status: 'provisional' | 'M4' | 'P5' | 'M6' | 'M7';
   narrow?: NarrowFraming;
 }
 
@@ -139,40 +141,72 @@ const archiveFraming: RegionFraming = {
 };
 
 /**
- * The Path of Ascension (M6.3, DEC-030): from the hub side, turned a third of the way down the
- * climb, so all four islands and the five waystones read as an ascent, the summit rising to the
- * left and behind. It is centred: choosing
- * a milestone always moves the camera to that milestone (master doc §6), which clears the panel.
+ * The Path of Ascension (M6.3, DEC-030): from the hub side, turned down the climb, so all four
+ * islands and the five waystones read as an ascent, the summit rising to the left and behind.
+ * Portrait screens turn further, looking up the climb almost end-on, so the islands stack upward
+ * instead of spreading sideways (and the camera stays well clear of the hub). It is centred:
+ * choosing a milestone always moves the camera to that milestone (master doc §6).
  */
 export const ASCENSION_VIEW = {
-  /** Radians the view turns from square-on toward the foot of the climb (a three-quarter view up the ascent). */
-  turn: 0.6,
-  /** `aimAlong`: metres the aim sits down the climb from its centre (the near foot needs more of the frame). */
-  wide: { distance: 255, height: 62, aimHeight: 6, aimAlong: -34, fov: 50 },
-  narrow: { distance: 470, height: 135, aimHeight: -16, aimAlong: -14, horizontalFov: 62, minFov: 50 },
+  /**
+   * `turn`: radians the view turns from square-on toward the foot of the climb.
+   * `aimAlong`: metres the aim sits down the climb from its centre (the near foot needs more of the frame).
+   */
+  wide: { turn: 0.6, distance: 255, height: 62, aimHeight: 6, aimAlong: -34, fov: 50 },
+  narrow: { turn: 1.15, distance: 330, height: 150, aimHeight: 0, aimAlong: 0, horizontalFov: 60, minFov: 50 },
 } as const;
 
 const ascensionFraming: RegionFraming = (() => {
   const anchor = REGIONS.find((r) => r.id === 'path-of-ascension')?.position ?? [0, 0, 0];
-  const c = Math.cos(ASCENSION_VIEW.turn);
-  const s = Math.sin(ASCENSION_VIEW.turn);
-  const hx = TOWARD_HUB[0] * c - CLIMB_DIRECTION[0] * s;
-  const hz = TOWARD_HUB[1] * c - CLIMB_DIRECTION[1] * s;
-  const rel = (d: number, h: number, aim: number, aimAlong: number) => ({
-    offset: [CLIMB_CENTRE[0] + hx * d - anchor[0], CLIMB_CENTRE[1] + h - anchor[1], CLIMB_CENTRE[2] + hz * d - anchor[2]] as Vec3,
-    aim: [
-      CLIMB_CENTRE[0] + CLIMB_DIRECTION[0] * aimAlong - anchor[0],
-      CLIMB_CENTRE[1] + aim - anchor[1],
-      CLIMB_CENTRE[2] + CLIMB_DIRECTION[1] * aimAlong - anchor[2],
-    ] as Vec3,
-  });
-  const wide = rel(ASCENSION_VIEW.wide.distance, ASCENSION_VIEW.wide.height, ASCENSION_VIEW.wide.aimHeight, ASCENSION_VIEW.wide.aimAlong);
-  const narrow = rel(ASCENSION_VIEW.narrow.distance, ASCENSION_VIEW.narrow.height, ASCENSION_VIEW.narrow.aimHeight, ASCENSION_VIEW.narrow.aimAlong);
+  const rel = ({ turn, distance, height, aimHeight, aimAlong }: { turn: number; distance: number; height: number; aimHeight: number; aimAlong: number }) => {
+    const hx = TOWARD_HUB[0] * Math.cos(turn) - CLIMB_DIRECTION[0] * Math.sin(turn);
+    const hz = TOWARD_HUB[1] * Math.cos(turn) - CLIMB_DIRECTION[1] * Math.sin(turn);
+    return {
+      offset: [CLIMB_CENTRE[0] + hx * distance - anchor[0], CLIMB_CENTRE[1] + height - anchor[1], CLIMB_CENTRE[2] + hz * distance - anchor[2]] as Vec3,
+      aim: [
+        CLIMB_CENTRE[0] + CLIMB_DIRECTION[0] * aimAlong - anchor[0],
+        CLIMB_CENTRE[1] + aimHeight - anchor[1],
+        CLIMB_CENTRE[2] + CLIMB_DIRECTION[1] * aimAlong - anchor[2],
+      ] as Vec3,
+    };
+  };
+  const wide = rel(ASCENSION_VIEW.wide);
+  const narrow = rel(ASCENSION_VIEW.narrow);
   return {
     ...wide,
     fov: ASCENSION_VIEW.wide.fov,
     status: 'M6',
     narrow: { ...narrow, horizontalFov: ASCENSION_VIEW.narrow.horizontalFov, minFov: ASCENSION_VIEW.narrow.minFov },
+  };
+})();
+
+/**
+ * The Worlds Beyond (M7, DEC-032): above and behind the Convergence from the hub side, so the
+ * six gates on the plaza and the territories floating around it all read. Choosing a territory
+ * always moves the camera to it, so the settled view is centred.
+ */
+export const BEYOND_VIEW = {
+  wide: { distance: 255, height: 105, aimHeight: 4, fov: 50 },
+  narrow: { distance: 430, height: 190, aimHeight: -20, horizontalFov: 64, minFov: 50 },
+  /** Radians the view turns off the line to the hub (as P5's island framing). */
+  turn: (28 * Math.PI) / 180,
+} as const;
+
+const beyondFraming: RegionFraming = (() => {
+  const anchor = REGIONS.find((r) => r.id === 'worlds-beyond')?.position ?? [0, 0, 0];
+  const [cx, cy, cz] = CONVERGENCE.position;
+  const a = Math.atan2(-cx, -cz) + BEYOND_VIEW.turn;
+  const at = (d: number, h: number, aim: number) => ({
+    offset: [cx + Math.sin(a) * d - anchor[0], cy + h - anchor[1], cz + Math.cos(a) * d - anchor[2]] as Vec3,
+    aim: [cx - anchor[0], cy + aim - anchor[1], cz - anchor[2]] as Vec3,
+  });
+  const wide = at(BEYOND_VIEW.wide.distance, BEYOND_VIEW.wide.height, BEYOND_VIEW.wide.aimHeight);
+  const narrow = at(BEYOND_VIEW.narrow.distance, BEYOND_VIEW.narrow.height, BEYOND_VIEW.narrow.aimHeight);
+  return {
+    ...wide,
+    fov: BEYOND_VIEW.wide.fov,
+    status: 'M7',
+    narrow: { ...narrow, horizontalFov: BEYOND_VIEW.narrow.horizontalFov, minFov: BEYOND_VIEW.narrow.minFov },
   };
 })();
 
@@ -190,7 +224,7 @@ export const REGION_FRAMINGS: Readonly<Record<Exclude<RegionId, 'void'>, RegionF
   },
   'blueprint-archive': archiveFraming,
   'path-of-ascension': ascensionFraming,
-  'worlds-beyond': islandFraming('worlds-beyond'),
+  'worlds-beyond': beyondFraming,
   horizon: islandFraming('horizon'),
 };
 
@@ -377,6 +411,31 @@ export function computeMilestoneFocusPose(id: MilestoneId, width: number, height
     ? [px, mid - reach * MILESTONE_FOCUS.narrowDrop, pz]
     : [px + right[0] * reach * MILESTONE_FOCUS.wideShift, mid, pz + right[2] * reach * MILESTONE_FOCUS.wideShift];
   return { position, target, fov: narrow ? MILESTONE_FOCUS.narrowFov : MILESTONE_FOCUS.wideFov };
+}
+
+/** Territory focus (M7): from the Convergence side, a little above, on the territory's landmark. */
+export const TERRITORY_FOCUS = { reach: 2.6, lift: 0.9, turn: 0.3, wideFov: 44, narrowFov: 58, wideShift: 0.22, narrowDrop: 0.32 } as const;
+
+/**
+ * Focus view of a Worlds Beyond territory (M7): looking out from the Convergence side at the
+ * territory's landmark. Wide screens put it left of centre (the panel takes the right side);
+ * narrow screens put it in the upper part, above the sheet. Null for territories not yet built.
+ */
+export function computeTerritoryFocusPose(id: TerritoryId, width: number, height: number): CameraPose | null {
+  const landmark = LANDMARKS[id];
+  if (!landmark) return null;
+  const narrow = width / Math.max(height, 1) < NARROW_ASPECT;
+  const [lx, ly, lz] = landmark.centre;
+  const [cx, , cz] = CONVERGENCE.position;
+  const a = Math.atan2(cx - lx, cz - lz) + TERRITORY_FOCUS.turn;
+  const reach = landmark.radius * TERRITORY_FOCUS.reach * (narrow ? 1.35 : 1);
+  const position: Vec3 = [lx + Math.sin(a) * reach, ly + landmark.height * TERRITORY_FOCUS.lift + reach * 0.25, lz + Math.cos(a) * reach];
+  // The camera's right when facing the landmark: forward x up, with forward = -(sin a, cos a).
+  const right: Vec3 = [Math.cos(a), 0, -Math.sin(a)];
+  const target: Vec3 = narrow
+    ? [lx, ly - reach * TERRITORY_FOCUS.narrowDrop, lz]
+    : [lx + right[0] * reach * TERRITORY_FOCUS.wideShift, ly, lz + right[2] * reach * TERRITORY_FOCUS.wideShift];
+  return { position, target, fov: narrow ? TERRITORY_FOCUS.narrowFov : TERRITORY_FOCUS.wideFov };
 }
 
 /**

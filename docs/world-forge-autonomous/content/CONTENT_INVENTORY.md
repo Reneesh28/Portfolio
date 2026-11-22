@@ -172,11 +172,11 @@ doc 06: "Audit content to verify six interests. Do not invent hobbies."
 | Region | Item | Proposed content | Source | Owner confirmation | Status |
 |---|---|---|---|---|---|
 | Worlds Beyond | The six interests | Anime & Manga · Story-driven Games · Formula 1 · Gaming & Content Creation · The Guild (AniCos) · The Training Grounds (fitness) | Master doc §6 | Owner-written | VERIFIED (names only) |
-| Worlds Beyond | Anime & Manga: what to say | — (which series or genres; text only, no character art) | None | — | NEEDS OWNER |
-| Worlds Beyond | Story-driven Games: what to say | — (which games or narrative interests) | None | — | NEEDS OWNER |
-| Worlds Beyond | Formula 1: what to say | — (what draws you: teams, engineering, racing) | None | — | NEEDS OWNER |
-| Worlds Beyond | Gaming & Content Creation | The master doc names "gaming, streaming, YouTube, Amarok, and creative experiments"; no detail, links or channel names anywhere else | Master doc only | — | NEEDS OWNER (what Amarok is; any links) |
+| Worlds Beyond | Anime & Manga | One Piece | Owner (DEC-032) | Owner | VERIFIED |
+| Worlds Beyond | Story-driven Games | — | No text yet | — | NEEDS OWNER (territory stays closed) |
+| Worlds Beyond | Formula 1 | "It's not over until it's over" · the Max Verstappen mentality | Owner (DEC-032) | Owner | VERIFIED |
+| Worlds Beyond | Gaming & Content Creation | Void Ronin (renamed; not "Amarok") · Instagram void_ronin.exe (link not tested) | Owner (DEC-032) | Owner | VERIFIED |
 | Worlds Beyond | The Guild: AniCos progression | Volunteer → Board Member → Co-CEO, over two years | CV (DEC-025) | CV | VERIFIED |
-| Worlds Beyond | The Guild: "leading 50+ members", events, coordination | Master doc asks to verify them; not in the CV | Master doc only | — | NEEDS OWNER |
+| Worlds Beyond | The Guild: members and events | Leading 50+ members · CosCon 2.0 · Spooky Nights 2.0 | Owner (DEC-032) | Owner | VERIFIED |
 | Worlds Beyond | The Guild: title | Master doc says "leadership/CEO"; the CV says Co-CEO | CV wins (DEC-025) | — | Resolved: Co-CEO |
-| Worlds Beyond | Training Grounds: what to say | — (fitness, discipline, consistency, in your words; no body statistics) | None | — | NEEDS OWNER |
+| Worlds Beyond | Training Grounds | "A king never wavers. A king never bends. A king never relies on others. A king never gives up." | Owner (DEC-032; placement inferred from order) | Owner | VERIFIED |

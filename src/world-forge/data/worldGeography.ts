@@ -95,7 +95,8 @@ export const REGIONS: readonly RegionGeography[] = [
 export const WORLDS_BEYOND_TERRITORIES: ReadonlyArray<{ id: string; bearing: number; distance: number; y: number; radius: number; top: string; accent: string }> = [
   { id: 'wb-ember', bearing: 20, distance: 135, y: 12, radius: 26, top: '#4a2420', accent: '#ff5a3c' },
   { id: 'wb-temporal', bearing: 80, distance: 140, y: 45, radius: 24, top: '#33244f', accent: '#b06bff' },
-  { id: 'wb-sunken', bearing: 140, distance: 130, y: 5, radius: 28, top: '#1f3f3c', accent: '#3fc9b0' },
+  // The Guild (M7, DEC-032): warm amber, a gathering place.
+  { id: 'wb-sunken', bearing: 140, distance: 130, y: 5, radius: 28, top: '#4a3426', accent: '#e8915a' },
   { id: 'wb-dunes', bearing: 200, distance: 140, y: 30, radius: 25, top: '#4d3f28', accent: '#e3b35a' },
   { id: 'wb-steel', bearing: 260, distance: 135, y: 55, radius: 22, top: '#383d47', accent: '#9aa7b8' },
   { id: 'wb-shadow', bearing: 320, distance: 140, y: 20, radius: 24, top: '#241f42', accent: '#5d4bd6' },

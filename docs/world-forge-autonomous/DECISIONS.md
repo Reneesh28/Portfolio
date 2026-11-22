@@ -307,6 +307,31 @@ Recorded before implementation, as doc 16 requires:
 - Not taken as: link testing, Classic changes, or push/merge/deploy.
 - Status: **OWNER DIRECTION**
 
+## DEC-032 — M7 concept set approved; build order; the owner's content per zone
+- Date: 2026-11-22 · Owner, in reply to the M7 gate:
+  > Proceed with build order
+  > Anime or manga: onepiece
+  > F1; It's not over until it's over and max Verstappen mentailty
+  > Not Amarok It is void ronin i recently changed name you can find it as void_ronin.exe on instagram
+  > Confirm with 50+members Coscon 2.0 and Spooky Nights 2.0
+  > A king never wavers. A king never bends. A king never relies on others. A king never gives up.
+- **Taken as:**
+  - **Concept set approved** (the Convergence with six gates and a compass monolith; the six territory concepts). No concept was redirected.
+  - **Build order:** the Convergence, then The Guild as the representative territory, then **the owner's review** (doc 16 M7.4 hub lock and M7.7 visual-language lock, combined into one stop), then the other five.
+  - **Content:**
+
+    | Zone | Content |
+    |---|---|
+    | Anime & Manga | One Piece |
+    | Formula 1 | "It's not over until it's over" and the Max Verstappen mentality |
+    | Gaming & Content Creation | **Void Ronin** (renamed; not "Amarok"), Instagram `void_ronin.exe`. The link is shown as given and not fetched; link testing still needs a yes. |
+    | The Guild | "leading 50+ members" is confirmed; events: CosCon 2.0 and Spooky Nights 2.0. The title stays Co-CEO (CV). |
+    | The Training Grounds | "A king never wavers. A king never bends. A king never relies on others. A king never gives up." Assigned here because it came last, in the order the proposal asked, after the Guild. The owner can move it. |
+  - **Story-driven Games:** no text was given, so that territory is built later and stays closed (no panel) until text arrives.
+- No character art, logos or team marks: text only (master doc).
+- Not taken as: link testing, Classic changes, or push/merge/deploy.
+- Status: **OWNER DECISION** (design gate and content)
+
 ## Open items carried forward (not decided)
 - **World Map:** master doc §8/§9 make it the "primary navigation entry" (a clean illustrated SVG map), and the master M3 lists "World map reflecting geography". Not built (doc 05: not in M1). It needs a design and scheduling decision.
 - **Controls fading after inactivity** (master doc §9): not implemented. It's UI polish with rules (no fading while focused, open or interacting).

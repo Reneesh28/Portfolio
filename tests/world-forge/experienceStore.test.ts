@@ -31,6 +31,7 @@ describe('experience store', () => {
       sanctumView: null,
       archiveCategory: null,
       ascensionMilestone: null,
+      beyondTerritory: null,
     });
   });
 

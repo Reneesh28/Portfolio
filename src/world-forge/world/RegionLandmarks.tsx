@@ -52,14 +52,8 @@ function build(): Built {
   // drew from the shared random sequence; consume the same draws so the later blockouts stay as approved.
   for (let k = 0; k < 3; k++) rand();
 
-  // 05 Worlds Beyond: the Convergence's standing stones and monolith; one landmark per territory.
-  const wb = islandTop('wb-convergence');
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2;
-    stone.push([box, placement(at(wb, Math.sin(a) * 20, 5, Math.cos(a) * 20), [0, a, 0], [3, 10, 1.6])]);
-  }
-  stone.push([box, placement(at(wb, 0, 11, 0), [0, 0.4, 0], [5, 22, 3])]);
-  accent(accentOf('worlds-beyond'), [gem, placement(at(wb, 0, 26, 0), [0, 0.2, 0], [2.6, 4, 2.6])]);
+  // 05 Worlds Beyond: the Convergence is built by its own region since M7 (regions/beyond), and so is
+  // each territory once built (The Guild first); the others keep a blockout landmark for now.
   for (const t of WORLDS_BEYOND_TERRITORIES) {
     const p = islandTop(t.id);
     switch (t.id) {
@@ -73,8 +67,7 @@ function build(): Built {
         accent(t.accent, [gem, placement(at(p, 0, 8, 0), [0, 0, 0], [1.4, 1.4, 1.4])]);
         break;
       case 'wb-sunken':
-        stone.push([arch, placement(at(p, 0, 0, 0), [0, 0.6, 0], [12, 12, 12])]);
-        accent(t.accent, [gem, placement(at(p, 0, 6, 0), [0, 0, 0], [1.8, 2.6, 1.8])]);
+        // The Guild: built in M7 (DEC-032).
         break;
       case 'wb-dunes':
         stone.push([peak, placement(at(p, 0, 7, 0), [0, 0.3, 0], [12, 14, 12])]);

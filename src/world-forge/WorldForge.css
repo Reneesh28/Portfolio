@@ -1153,6 +1153,117 @@
   }
 }
 
+/* ---------------------------------------------------------------- M7 Worlds Beyond */
+/* The Convergence card: the territories that can be visited (built, with the owner's content). */
+.wf-root .wf-beyond-card {
+  position: absolute;
+  left: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  width: min(360px, calc(50vw - 250px));
+  min-width: 260px;
+  padding: 16px 18px;
+  border: 1px solid rgba(176, 107, 255, 0.4);
+  border-radius: 14px;
+  background: rgba(12, 8, 30, 0.82);
+  color: #efe9ff;
+  backdrop-filter: blur(6px);
+  animation: wf-dossier-fade 320ms ease-out both;
+}
+.wf-root .wf-beyond-title {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  color: #f7f3ff;
+}
+.wf-root .wf-beyond-subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c9a6ff;
+}
+.wf-root .wf-beyond-worlds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.wf-root .wf-beyond-worlds button,
+.wf-root .wf-beyond-actions button {
+  min-height: 44px;
+  padding: 0 0.95rem;
+  border: 1px solid rgba(176, 107, 255, 0.5);
+  border-radius: 999px;
+  background: rgba(20, 12, 44, 0.6);
+  color: #f3eeff;
+  font: inherit;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+.wf-root .wf-beyond-worlds button:hover,
+.wf-root .wf-beyond-actions button:hover {
+  border-color: rgba(214, 180, 255, 0.95);
+}
+.wf-root .wf-beyond-worlds button:focus-visible,
+.wf-root .wf-beyond-actions button:focus-visible {
+  outline: 2px solid #c9a6ff;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-root .wf-beyond-card { animation: none; }
+}
+.wf-root .wf-dossier--beyond .wf-dossier-panel {
+  border-color: rgba(176, 107, 255, 0.4);
+}
+.wf-root .wf-dossier--beyond .wf-dossier-count,
+.wf-root .wf-dossier--beyond .wf-dossier-meta {
+  color: #c9a6ff;
+}
+.wf-root .wf-beyond-quote {
+  border-left-color: rgba(176, 107, 255, 0.75);
+}
+.wf-root .wf-beyond-actions {
+  margin-top: 1.2rem;
+}
+@media (max-aspect-ratio: 5/4), (max-height: 599px), (max-width: 1099px) {
+  .wf-root .wf-beyond-card {
+    left: 16px;
+    right: 16px;
+    bottom: calc(max(16px, env(safe-area-inset-bottom)) + 84px);
+    width: auto;
+    min-width: 0;
+    padding: 12px 14px;
+  }
+  .wf-root .wf-beyond-title {
+    display: inline;
+    font-size: 1rem;
+  }
+  .wf-root .wf-beyond-subtitle {
+    display: inline;
+    margin: 0 0 0 0.7rem;
+  }
+  .wf-root .wf-beyond-worlds {
+    flex-wrap: nowrap;
+    margin-top: 0.6rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .wf-root .wf-beyond-worlds li {
+    flex: none;
+  }
+}
+@media (max-height: 599px) and (min-aspect-ratio: 5/4) {
+  .wf-root .wf-beyond-card {
+    top: max(12px, env(safe-area-inset-top));
+    bottom: auto;
+    right: auto;
+    width: min(440px, 58vw);
+  }
+}
+
 /* The bottom navigation stays above the dossier: direct navigation outranks an open panel. */
 .wf-root .wf-nav {
   z-index: 16;

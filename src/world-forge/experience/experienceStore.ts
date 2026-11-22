@@ -51,6 +51,8 @@ export interface ExperienceSnapshot {
   archiveCategory: string | null;
   /** The Path of Ascension's chosen milestone (M6.3; the camera focuses it), or null when closed. */
   ascensionMilestone: string | null;
+  /** The Worlds Beyond territory chosen at the Convergence (M7; the camera focuses it), or null. */
+  beyondTerritory: string | null;
 }
 
 /**
@@ -104,6 +106,11 @@ export interface ExperienceStore {
    */
   openAscension(milestone: string | null): void;
   /**
+   * Choose a Worlds Beyond territory (focus and panel), or return to the Convergence (null).
+   * Only honoured at the Worlds Beyond while idle; direct navigation clears it.
+   */
+  openBeyond(territory: string | null): void;
+  /**
    * Travel to the World Forge and open a work's dossier once the camera arrives there idle
    * (M6.2 evidence links). Any other navigation, or arriving anywhere else, cancels it.
    */
@@ -127,6 +134,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
   let sanctumView: string | null = null;
   let archiveCategory: string | null = null;
   let ascensionMilestone: string | null = null;
+  let beyondTerritory: string | null = null;
   let pendingProject: string | null = null;
   const listeners = new Set<() => void>();
 
@@ -141,6 +149,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     sanctumView,
     archiveCategory,
     ascensionMilestone,
+    beyondTerritory,
   });
 
   let snapshot = buildSnapshot();
@@ -155,7 +164,8 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       next.focusedProject === snapshot.focusedProject &&
       next.sanctumView === snapshot.sanctumView &&
       next.archiveCategory === snapshot.archiveCategory &&
-      next.ascensionMilestone === snapshot.ascensionMilestone
+      next.ascensionMilestone === snapshot.ascensionMilestone &&
+      next.beyondTerritory === snapshot.beyondTerritory
     ) {
       return;
     }
@@ -186,6 +196,7 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
     sanctumView = null;
     archiveCategory = null;
     ascensionMilestone = null;
+    beyondTerritory = null;
     pendingProject = null;
   };
 
@@ -246,6 +257,13 @@ export function createExperienceStore(start: RegionId = 'void'): ExperienceStore
       if (milestone !== null && (snapshot.currentRegion !== 'path-of-ascension' || journey.phase !== 'idle')) return;
       if (milestone === ascensionMilestone) return;
       ascensionMilestone = milestone;
+      wake?.();
+      publish();
+    },
+    openBeyond(territory) {
+      if (territory !== null && (snapshot.currentRegion !== 'worlds-beyond' || journey.phase !== 'idle')) return;
+      if (territory === beyondTerritory) return;
+      beyondTerritory = territory;
       wake?.();
       publish();
     },

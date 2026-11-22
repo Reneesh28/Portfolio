@@ -7,6 +7,7 @@ import ForgeRegion from '../regions/forge/ForgeRegion';
 import SanctumRegion from '../regions/sanctum/SanctumRegion';
 import ArchiveRegion from '../regions/archive/ArchiveRegion';
 import AscensionRegion from '../regions/ascension/AscensionRegion';
+import BeyondRegion from '../regions/beyond/BeyondRegion';
 import DevRenderStats from './DevRenderStats';
 import BlueprintSky from '../look/BlueprintSky';
 import Bloom from '../look/Bloom';
@@ -55,6 +56,7 @@ export default function WorldScene({ animate, store, quality }: WorldSceneProps)
       <ForgeRegion animate={animate} emberShare={quality.embers} />
       <ArchiveRegion animate={animate} />
       <AscensionRegion animate={animate} />
+      <BeyondRegion />
       <VoidRegion layout={layout} animate={animate} />
       <CameraRig />
       {import.meta.env.DEV && <DevRenderStats />}

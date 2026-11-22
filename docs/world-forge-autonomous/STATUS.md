@@ -14,17 +14,17 @@ Commits: allowed on this branch since 2026-11-22 (DEC-025). P1–P5 and M5 are c
 | M4 | REOPENED. P3 golden spire-city hub owner-approved (DEC-019) | `reports/P3-world-forge-hub.md` |
 | M5 | **LOCKED** ("PRoceed", DEC-025); NeuroPlay and AETHERION content from the CV | `reports/M5-7-8-9-integration-and-qa.md` (and `M5-5-6-works-and-dossier.md`) |
 | M6 | M6.1 **LOCKED** (DEC-027) · M6.2 **LOCKED** (DEC-030) · M6.3 Path of Ascension built and QA'd (DEC-030); **waiting on your M6.3 lock** | `reports/M6-3-path-of-ascension.md` |
-| M7 | GATE. Interest audit, Convergence design and six territory concepts written; **waiting on your approval and your content per zone** | `proposals/M7-worlds-beyond-design-proposal.md` |
+| M7 | IN PROGRESS. Concepts and content approved (DEC-032). The Convergence and The Guild built and QA'd; **waiting on your review** (hub and visual-language lock) | `reports/M7-1-convergence-and-guild.md` |
 | M8 | NOT STARTED | — |
 | M9 | NOT STARTED | — |
 
 ## Current stage
-Stage: M6.3 Path of Ascension: stages 3–7 and QA done, **lock is yours**. M7 Worlds Beyond: design gate written (DEC-031), **approval and content are yours**
-Objective (M6.3): "The Lit Ascent" built as approved: path and stair spans over four islands, five waystones, lanterns lighting up to the chosen milestone, a timeline selector and panel with CV facts, milestone focus
-Files: `regions/ascension/*`, `content/timeline.ts`, `ui/AscensionPanel.tsx`, `camera/{cameraTargets,CameraRig}`, `experience/experienceStore.ts`; report `reports/M6-3-path-of-ascension.md`
-Validation: `npm test` 130/130 · typecheck/lint/build clean · M6.3 probe 105/105 (high and low) · M6.2 105/105 · M6.1 105/105 · M5 41/41 · M5.7 39/39 · M5.8 19/19 (high and low) · map 21/21 · regression 70/70 · Classic Δ 0 against the M6.2 capture
-Blockers: **M6.3 lock (owner)**; **M7 concept approval and one to three lines of content per zone (owner)**
-Next: on the M7 approval, the Convergence build (M7.3–M7.4), then one representative territory and your review (M7.6–M7.7)
+Stage: M7 Worlds Beyond: the Convergence and the representative territory (The Guild) built and QA'd; **your review is the next stop** (doc 16 M7.4 and M7.7, combined, DEC-032). M6.3 lock also still yours.
+Objective: the Convergence (plaza, six gates facing their territories, compass monolith); The Guild (Hall, Chronicle, Assembly, Stage) with AniCos facts; card → fly to the territory → panel → return
+Files: `regions/beyond/*`, `content/interests.ts`, `ui/BeyondPanel.tsx`, `camera/{cameraTargets,CameraRig}`, `experience/experienceStore.ts`; report `reports/M7-1-convergence-and-guild.md`
+Validation: `npm test` 138/138 · typecheck/lint/build clean · M7 probe 81/81 (high and low) · M6.3 105/105 · M6.2 105/105 · M6.1 105/105 · M5 41/41 · M5.7 39/39 · M5.8 19/19 (high and low) · map 21/21 · regression 70/70 · Classic Δ 0 against the M6.3 capture
+Blockers: **M7 review (owner)**; **M6.3 lock (owner)**; Story-driven Games text (owner)
+Next: on your go-ahead, Anime & Manga, Formula 1, Gaming & Content Creation and The Training Grounds, one stage each
 
 ## Owner decisions needed
 - [x] P1 look approved ("Proceed with phase 2, we are good to go")
@@ -41,7 +41,9 @@ Next: on the M7 approval, the Convergence build (M7.3–M7.4), then one represen
 - [x] M6.2 design approved: "The Drafting hall - Proceed with everything"; skills = CV + the owner's image (DEC-028)
 - [x] M6.2 lock and M6.3 design: "We can proceed with this Good to go" (DEC-030)
 - [ ] **M6.3 lock**: the Lit Ascent, the timeline selector and panel, the milestone focus and lanterns
-- [ ] **M7 Worlds Beyond**: concept set, content per zone, build order (proposal §4)
+- [x] M7 concepts, build order and content (DEC-032)
+- [ ] **M7 review**: the Convergence and The Guild (the hub and visual-language lock)
+- [ ] Story-driven Games text
 - [ ] Assets: procedural only, or present CC0/licensed candidates
 - [ ] Chronoshift content: description, stack, status, links
 - [ ] Update docs 02/06, or keep overrides only in DECISIONS.md

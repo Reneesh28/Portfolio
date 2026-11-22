@@ -8,6 +8,7 @@ import {
   approach,
   computeFragmentFocusPose,
   computeMilestoneFocusPose,
+  computeTerritoryFocusPose,
   computeProjectFocusPose,
   type CameraPose,
   computeRegionPose,
@@ -22,13 +23,15 @@ import { createJourneyPath, TRAVEL_ARC, type SampledPose } from './journeyPath';
 import type { ExperienceSnapshot } from '../experience/experienceStore';
 import type { FragmentId } from '../regions/sanctum/sanctumLayout';
 import { isMilestone } from '../content/timeline';
+import { isTerritory } from '../content/interests';
 
 const FRAGMENTS: readonly string[] = ['engineer', 'creator', 'explorer'];
 
 /**
  * What the camera focuses on, if anything: a project's monument at the Forge (M5), an identity
  * fragment at the Origin Sanctum (M6.1; the Sanctum's overview has no focus), or a milestone on
- * the Path of Ascension (M6.3). The Blueprint Archive never moves the camera (M6.2).
+ * the Path of Ascension (M6.3), or a Worlds Beyond territory (M7). The Blueprint Archive never
+ * moves the camera (M6.2).
  */
 function focusTarget(snap: ExperienceSnapshot, width: number, height: number): { id: string; pose: () => CameraPose | null } | null {
   if (snap.focusedProject) {
@@ -42,6 +45,10 @@ function focusTarget(snap: ExperienceSnapshot, width: number, height: number): {
   if (isMilestone(snap.ascensionMilestone)) {
     const milestone = snap.ascensionMilestone;
     return { id: `milestone:${milestone}`, pose: () => computeMilestoneFocusPose(milestone, width, height) };
+  }
+  if (isTerritory(snap.beyondTerritory)) {
+    const territory = snap.beyondTerritory;
+    return { id: `territory:${territory}`, pose: () => computeTerritoryFocusPose(territory, width, height) };
   }
   return null;
 }
