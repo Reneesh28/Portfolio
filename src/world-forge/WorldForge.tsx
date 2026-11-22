@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { classicHref, lookDevView } from './mode';
 import { useReducedMotion } from './core/useReducedMotion';
 import { createExperienceStore } from './experience/experienceStore';
@@ -12,6 +12,8 @@ import AscensionPanel from './ui/AscensionPanel';
 import BeyondPanel from './ui/BeyondPanel';
 import WorldStage from './ui/WorldStage';
 import { useJourneyInput } from './input/useJourneyInput';
+import { useIdleControls } from './ui/useIdleControls';
+import { useExperienceSnapshot } from './experience/ExperienceContext';
 import VoidHero from './regions/void/VoidHero';
 import './WorldForge.css';
 
@@ -46,7 +48,7 @@ function WorldForgeExperience() {
 
   return (
     <ExperienceContext value={store}>
-      <WorldStage ref={rootRef} reducedMotion={reducedMotion}>
+      <Stage rootRef={rootRef} reducedMotion={reducedMotion}>
         <Suspense fallback={null}>
           <WorldCanvas reducedMotion={reducedMotion} store={store} />
         </Suspense>
@@ -61,7 +63,18 @@ function WorldForgeExperience() {
         <BeyondPanel />
         <WorksPanel />
         <JourneyNav />
-      </WorldStage>
+      </Stage>
     </ExperienceContext>
+  );
+}
+
+/** The stage, with the controls fading after inactivity (master doc §9): held while the journey moves. */
+function Stage({ rootRef, reducedMotion, children }: { rootRef: RefObject<HTMLElement | null>; reducedMotion: boolean; children: ReactNode }) {
+  const { phase } = useExperienceSnapshot();
+  const idle = useIdleControls(rootRef, phase !== 'idle');
+  return (
+    <WorldStage ref={rootRef} reducedMotion={reducedMotion} idle={idle}>
+      {children}
+    </WorldStage>
   );
 }

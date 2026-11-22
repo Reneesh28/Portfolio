@@ -1,5 +1,19 @@
 /* THE WORLD FORGE — every selector is scoped under .wf-root. */
+
+/* Display type (master doc §9: an elegant cinematic display font; DEC-034): Cinzel, SIL Open Font
+   License (assets/fonts/Cinzel-OFL.txt), self-hosted so no visitor request leaves the site. Latin
+   subset, variable weight. Body text keeps the readable inherited font. */
+@font-face {
+  font-family: 'Cinzel';
+  src: url('./assets/fonts/cinzel-latin.woff2') format('woff2');
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 .wf-root {
+  --font-display: 'Cinzel', 'Trajan Pro', Georgia, serif;
   position: fixed;
   inset: 0;
   overflow: hidden;
@@ -1261,6 +1275,33 @@
     bottom: auto;
     right: auto;
     width: min(440px, 58vw);
+  }
+}
+
+/* ---------------------------------------------------------------- M9 display type */
+.wf-root :is(.wf-title, .wf-dossier-title, .wf-map-title, .wf-sanctum-name, .wf-archive-title, .wf-path-title, .wf-beyond-title, .wf-closing-title) {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.wf-root .wf-title {
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------------- M9 controls fade after inactivity */
+/* Master doc §9 (DEC-034): the controls fade to a faint, still-discoverable presence after a quiet
+   spell, and come back on any input. useIdleControls never sets data-idle while a panel, the map or
+   the menu is open, while something inside is focused, or while the journey is moving. */
+.wf-root :is(.wf-nav, .wf-works, .wf-sanctum-card, .wf-archive-card, .wf-path-card, .wf-beyond-card, .wf-classic-link) {
+  transition: opacity 320ms ease;
+}
+.wf-root[data-idle] :is(.wf-nav, .wf-works, .wf-sanctum-card, .wf-archive-card, .wf-path-card, .wf-beyond-card, .wf-classic-link) {
+  opacity: 0.3;
+  transition-duration: 1400ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wf-root :is(.wf-nav, .wf-works, .wf-sanctum-card, .wf-archive-card, .wf-path-card, .wf-beyond-card, .wf-classic-link) {
+    transition: none;
   }
 }
 
