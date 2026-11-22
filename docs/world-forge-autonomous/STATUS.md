@@ -2,7 +2,7 @@
 
 Last updated: 2026-11-22
 Current branch: `the-world-forge` (repository: `portfolio/`). `main` untouched; nothing pushed.
-Commits: allowed on this branch since 2026-11-22 (DEC-025). P1–P5 and M5 are committed (`ee17210`, `37e4581`); the M6.1 gate documents are committed after them. Nothing pushed.
+Commits: allowed on this branch since 2026-11-22 (DEC-025). Everything through M9 is committed. Nothing pushed, merged or deployed (that needs your explicit yes).
 
 ## Milestone overview
 | Milestone | Status | Evidence / report |
@@ -13,18 +13,20 @@ Commits: allowed on this branch since 2026-11-22 (DEC-025). P1–P5 and M5 are c
 | M3 | REOPENED. P2 archipelago owner-approved (DEC-018); World Map data in place (UI in P5) | `reports/P2-geography.md` |
 | M4 | REOPENED. P3 golden spire-city hub owner-approved (DEC-019) | `reports/P3-world-forge-hub.md` |
 | M5 | **LOCKED** ("PRoceed", DEC-025); NeuroPlay and AETHERION content from the CV | `reports/M5-7-8-9-integration-and-qa.md` (and `M5-5-6-works-and-dossier.md`) |
-| M6 | M6.1 **LOCKED** (DEC-027) · M6.2 **LOCKED** (DEC-030) · M6.3 Path of Ascension built and QA'd (DEC-030); **waiting on your M6.3 lock** | `reports/M6-3-path-of-ascension.md` |
-| M7 | IN PROGRESS. Concepts and content approved (DEC-032). The Convergence and The Guild built and QA'd; **waiting on your review** (hub and visual-language lock) | `reports/M7-1-convergence-and-guild.md` |
-| M8 | NOT STARTED | — |
-| M9 | NOT STARTED | — |
+| M6 | **LOCKED**: M6.1 (DEC-027) · M6.2 (DEC-030) · M6.3 (DEC-033) | `reports/M6-1-origin-sanctum.md`, `M6-2-blueprint-archive.md`, `M6-3-path-of-ascension.md` |
+| M7 | **COMPLETE** (DEC-034): the Convergence, five open territories; Story-driven Games' keep built and closed until its text arrives | `reports/M7-1-convergence-and-guild.md`, `M7-2-four-territories.md`, `M7-3-completion.md` |
+| M8 | **COMPLETE** (DEC-034): the Unfinished Gate, the closing words, Ambitions, contact from anywhere | `reports/M8-horizon.md` |
+| M9 | **COMPLETE** (DEC-034): integration, display font, fading controls, link test, full QA; release readiness written | `reports/M9-integration-and-release-readiness.md` |
 
 ## Current stage
-Stage: M7 Worlds Beyond: the Convergence and the representative territory (The Guild) built and QA'd; **your review is the next stop** (doc 16 M7.4 and M7.7, combined, DEC-032). M6.3 lock also still yours.
-Objective: the Convergence (plaza, six gates facing their territories, compass monolith); The Guild (Hall, Chronicle, Assembly, Stage) with AniCos facts; card → fly to the territory → panel → return
-Files: `regions/beyond/*`, `content/interests.ts`, `ui/BeyondPanel.tsx`, `camera/{cameraTargets,CameraRig}`, `experience/experienceStore.ts`; report `reports/M7-1-convergence-and-guild.md`
-Validation: `npm test` 138/138 · typecheck/lint/build clean · M7 probe 81/81 (high and low) · M6.3 105/105 · M6.2 105/105 · M6.1 105/105 · M5 41/41 · M5.7 39/39 · M5.8 19/19 (high and low) · map 21/21 · regression 70/70 · Classic Δ 0 against the M6.3 capture
-Blockers: **M7 review (owner)**; **M6.3 lock (owner)**; Story-driven Games text (owner)
-Next: on your go-ahead, Anime & Manga, Formula 1, Gaming & Content Creation and The Training Grounds, one stage each
+Stage: **M7, M8 and M9 complete** (DEC-034). The journey is built end to end.
+Next (yours):
+- push, merge or deploy (explicit yes needed);
+- a real-device check;
+- Story-driven Games' text.
+
+Validation: see `reports/M9-integration-and-release-readiness.md` (unit tests, typecheck, lint, build, every browser probe on high and low quality, Classic).
+Blockers: none on our side. Deployment waits on your yes.
 
 ## Owner decisions needed
 - [x] P1 look approved ("Proceed with phase 2, we are good to go")
@@ -40,17 +42,18 @@ Next: on your go-ahead, Anime & Manga, Formula 1, Gaming & Content Creation and 
 - [x] M6.1 lock: "Proceed, M6.1 Locked and good" (DEC-027)
 - [x] M6.2 design approved: "The Drafting hall - Proceed with everything"; skills = CV + the owner's image (DEC-028)
 - [x] M6.2 lock and M6.3 design: "We can proceed with this Good to go" (DEC-030)
-- [ ] **M6.3 lock**: the Lit Ascent, the timeline selector and panel, the milestone focus and lanterns
+- [x] M6.3 lock and the M7 review: "Proceed" (DEC-033)
 - [x] M7 concepts, build order and content (DEC-032)
-- [ ] **M7 review**: the Convergence and The Guild (the hub and visual-language lock)
-- [ ] Story-driven Games text
-- [ ] Assets: procedural only, or present CC0/licensed candidates
-- [ ] Chronoshift content: description, stack, status, links
+- [ ] **Story-driven Games text** (its keep stands, closed until then)
+- [x] Assets: procedural only, plus the display font (Cinzel, OFL; `ASSETS.md`)
+- [x] Chronoshift: from its GitHub repositories (DEC-034)
 - [ ] Update docs 02/06, or keep overrides only in DECISIONS.md
 - [x] Commit permission: "Commit permssion granted" (DEC-025); push, merge and deploy not included
 - [x] M5 content: "Cv" / "Everything is in CV" (DEC-025)
-- [ ] Link testing (GitHub and Vercel) still needs an explicit yes
-- [ ] Classic corrections (NeuroPlay text, CGPA 6.91 → 6.86): a Classic change, needs your yes
+- [x] Link testing: done (DEC-034); dead links fixed or removed
+- [x] Classic CGPA → 6.86 (DEC-034); Classic's NeuroPlay text not changed (not approved)
+- [ ] **Push, merge or deploy**: explicit yes needed
+- [ ] **Real-device check** (phone and desktop GPU)
 - [ ] Optional: `@types/node` dev dependency (DEC-004)
 
 ## Forced or inferred items flagged by the owner's audit (2026-11-21)

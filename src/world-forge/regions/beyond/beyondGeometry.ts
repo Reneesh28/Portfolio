@@ -27,7 +27,7 @@ export interface Range {
   count: number;
 }
 
-export type BuiltTerritory = Exclude<TerritoryId, 'stories'>;
+export type BuiltTerritory = TerritoryId;
 
 export interface BeyondGeometry {
   stone: BufferGeometry;
@@ -97,8 +97,8 @@ export function buildBeyond(): BeyondGeometry {
   const territoryLights: BeyondGeometry['territoryLights'] = {};
   const sequences: BeyondGeometry['sequences'] = {};
   for (const t of TERRITORIES) {
-    if (!t.built || t.id === 'stories') continue;
-    const id = t.id as BuiltTerritory;
+    if (!t.built) continue;
+    const id = t.id;
     const { origin, yaw } = territoryFrame(id);
     const frame = placement(origin, [0, yaw, 0]);
     const toWorld = ([geo, m]: Part): Part => [geo, new Matrix4().multiplyMatrices(frame, m)];

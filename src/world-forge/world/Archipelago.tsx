@@ -4,7 +4,6 @@ import { HORIZON_BEYOND, ISLANDS, WORLD_ROUTES } from '../data/worldGeography';
 import FloatingIsland from '../look/FloatingIsland';
 import { BLUEPRINT } from '../look/palette';
 import { mergeParts, type Part } from '../core/mergeStatic';
-import RegionLandmarks from './RegionLandmarks';
 
 /** Golden routes (blueprint): every spoke and link baked into one glowing draw. */
 function GoldenRoutes() {
@@ -26,8 +25,9 @@ function GoldenRoutes() {
 }
 
 /**
- * The archipelago (P2): every island from the geography, the regions' landmark
- * blockouts, the golden routes and the fragments drifting beyond the Horizon.
+ * The archipelago (P2): every island from the geography, the golden routes and the
+ * fragments drifting beyond the Horizon. (Each region now builds its own landmarks:
+ * M6–M8; the P2 blockouts are retired.)
  */
 export default function Archipelago() {
   return (
@@ -45,7 +45,6 @@ export default function Archipelago() {
         />
       ))}
       <GoldenRoutes />
-      <RegionLandmarks />
     </group>
   );
 }

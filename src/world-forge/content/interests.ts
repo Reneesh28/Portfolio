@@ -22,7 +22,7 @@ export interface Territory {
   short: string;
   /** The P2 island it stands on. */
   island: string;
-  /** Built in the world yet (M7 builds them in stages: DEC-032, DEC-033). */
+  /** Its environment stands in the world (M7: DEC-032–034). A panel also needs content (`openTerritories`). */
   built: boolean;
   /** Set apart as a quote, if any. */
   quote?: string;
@@ -50,7 +50,8 @@ export const TERRITORIES: readonly Territory[] = [
     title: 'Story-driven Games',
     short: 'Stories',
     island: 'wb-shadow',
-    built: false,
+    // The keep stands (M7 completion, DEC-034); it opens no panel until there is text.
+    built: true,
     sections: [],
     links: [],
     source: 'none yet (the owner has not supplied text)',

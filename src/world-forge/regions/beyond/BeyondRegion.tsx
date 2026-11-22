@@ -10,6 +10,8 @@ import { GATE, GATES, LANDMARKS } from './beyondLayout';
 /** Each built territory's own light (DEC-033: one family, each in its colour). */
 const LIGHT: Readonly<Record<BuiltTerritory, string>> = {
   anime: '#ff5a3c',
+  // Story-driven Games: one warm window and the lantern path, against the indigo mist.
+  stories: '#ffd9a0',
   // Formula 1: steel track edges; the streak running along it is white (STREAK).
   f1: '#7f8ea8',
   creator: '#b06bff',

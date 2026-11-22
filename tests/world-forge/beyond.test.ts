@@ -105,7 +105,7 @@ describe('Worlds Beyond camera (M7)', () => {
         else assert.ok(v.y > 0.25, `${t.id} ${w}x${h}: above the sheet (${v.y.toFixed(2)})`);
       }
     }
-    assert.equal(computeTerritoryFocusPose('stories', 1440, 900), null);
+    assert.ok(computeTerritoryFocusPose('stories', 1440, 900), 'the keep stands (it just opens no panel yet)');
   });
 });
 
@@ -116,6 +116,7 @@ describe('Worlds Beyond content (M7, DEC-032)', () => {
     assert.equal(built.sequences.f1?.length, 30, 'the F1 streak runs 30 segments');
     assert.equal(built.sequences.creator?.length, 3, 'three broadcast rings');
     assert.equal(hasContent(territoryById('stories')), false, 'Story-driven Games has no text yet');
+    assert.ok(territoryById('stories').built, 'its keep is built, closed until text arrives');
   });
 
   it("uses the owner's words and the CV, and nothing invented", () => {

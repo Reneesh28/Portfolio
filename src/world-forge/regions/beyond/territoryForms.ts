@@ -217,4 +217,43 @@ function training(g: Shared): TerritoryForm {
   return { stone, lights };
 }
 
-export const TERRITORY_FORMS: Readonly<Record<Exclude<TerritoryId, 'stories'>, (g: Shared) => TerritoryForm>> = { anime, f1, creator, guild, training };
+/**
+ * Story-driven Games: a misty, half-ruined keep, one lit window, and a path of lanterns that ends at
+ * a closed door (environmental storytelling). Built as an environment; it opens no panel until the
+ * owner sends its text (DEC-034).
+ */
+function stories(g: Shared): TerritoryForm {
+  const stone: Part[] = [];
+  const lights: Part[] = [];
+  // The keep: a tall tower with a broken crown, and a low hall whose far wall has fallen.
+  stone.push([g.box, placement([-3, 6.5, -6], [0, 0.2, 0], [6, 13, 6])]);
+  for (const [x, z, h] of [
+    [-5.2, -8.2, 2.2],
+    [-0.8, -8.4, 1.2],
+    [-5.4, -3.8, 1.6],
+  ])
+    stone.push([g.box, placement([x, 13 + h / 2, z], [0, 0.2, 0], [1.4, h, 1.4])]);
+  stone.push([g.box, placement([3, 2.5, -5], [0, 0.2, 0], [7, 5, 0.9])]);
+  stone.push([g.box, placement([6.4, 1.6, -2.5], [0, 0.2, 0.08], [0.9, 3.2, 4.6])]);
+  stone.push([g.rock, placement([5.5, 0.6, 1.5], [0.4, 1, 0], [1.6, 0.9, 1.2])]);
+  stone.push([g.rock, placement([7.5, 0.5, -0.5], [1, 0.3, 0], [1.2, 0.7, 1])]);
+  // One lit window high in the tower; the closed door at its foot, outlined in light.
+  const face = -3 + 3.02;
+  lights.push([g.box, placement([-2.6, 9.5, face], [0, 0.2, 0], [0.9, 1.5, 0.05])]);
+  stone.push([g.box, placement([-3.4, 1.7, face - 0.02], [0, 0.2, 0], [2, 3.4, 0.2])]);
+  lights.push([g.box, placement([-3.4, 3.45, face + 0.06], [0, 0.2, 0], [2.2, 0.08, 0.05])]);
+  for (const x of [-4.45, -2.35]) lights.push([g.box, placement([x, 1.7, face + 0.06], [0, 0.2, 0], [0.08, 3.4, 0.05])]);
+  // A path of lanterns leading to the door.
+  for (const [x, z] of [
+    [-1.5, 9],
+    [-2.6, 6],
+    [-1.6, 3.6],
+    [-2.8, 1.6],
+  ]) {
+    stone.push([g.box, placement([x, 0.9, z], [0, 0, 0], [0.2, 1.8, 0.2])]);
+    lights.push([g.gem, placement([x, 2, z], [0, 0.4, 0], [0.26, 0.36, 0.26])]);
+  }
+  return { stone, lights };
+}
+
+export const TERRITORY_FORMS: Readonly<Record<TerritoryId, (g: Shared) => TerritoryForm>> = { anime, stories, f1, creator, guild, training };
