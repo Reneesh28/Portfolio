@@ -17,8 +17,12 @@ describe('project content (M5, doc 11 rules)', () => {
   });
 
   it('never shows conflicting, unconfirmed or missing content', () => {
+    // Chronoshift: only what its GitHub repositories show (DEC-034), each field naming that source.
     const chrono = projectById('chronoshift');
-    assert.ok(chrono && fields(chrono).every((f) => !isDisplayable(f)), 'nothing invented for Chronoshift');
+    assert.ok(chrono);
+    for (const f of fields(chrono).filter(isDisplayable)) assert.ok(/Chronoshift|link test/.test(f.source), f.source);
+    assert.equal(isDisplayable(chrono.status), false, 'no status: the repositories do not state one');
+    assert.ok(chrono.tech.value.includes('Django') && chrono.links.value.some((l) => l.href.includes('vercel.app')));
     for (const p of PROJECTS) {
       for (const f of fields(p)) {
         if (isDisplayable(f)) assert.ok(f.status === 'owner' || f.status === 'repo', `${p.id}: only owner or published repo text`);
@@ -37,6 +41,14 @@ describe('project content (M5, doc 11 rules)', () => {
     }
     assert.ok(neuro.tech.value.includes('LangGraph') && aetherion.tech.value.includes('Kafka'), 'the CV stacks');
     assert.ok(aetherion.approach.value.some((t) => t.includes('~30%')) && neuro.approach.value.some((t) => t.includes('~28,000')), 'the CV figures');
+  });
+
+  it('links only to what the link test found live (DEC-034)', () => {
+    const hrefs = PROJECTS.flatMap((p) => p.links.value.map((l) => l.href));
+    const dead = ['https://github.com/Reneesh28/NeuroPlay', 'https://neuroplay.vercel.app', 'https://github.com/Reneesh28/FinLit-AI', 'https://github.com/Reneesh28/PARAS', 'https://github.com/Reneesh28/Project_ML'];
+    for (const href of dead) assert.ok(!hrefs.includes(href), `no dead link: ${href}`);
+    assert.ok(hrefs.includes('https://github.com/Reneesh28/Neuroplay-Frontend') && hrefs.includes('https://github.com/Reneesh28/finlit-ai-service'));
+    assert.equal(projectById('paras')?.links.value.length, 0, 'PARAS has no public repository');
   });
 
   it('uses no pictures (DEC-015) and only secure external links', () => {

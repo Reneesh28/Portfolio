@@ -192,3 +192,17 @@ doc 06: "Audit content to verify six interests. Do not invent hobbies."
 | Horizon | Resume | /resume.pdf (the CV) | Repository file | — | VERIFIED |
 | Horizon | Phone | +91 number in the CV | CV | — | OMIT (private; the master doc's contact list has no phone) |
 | Horizon | Instagram (Void Ronin) | void_ronin.exe | Owner (DEC-032), for Gaming & Content Creation | Owner | Optional in contact: owner's choice |
+
+## Link test and Chronoshift (DEC-034, 2026-11-22)
+| Region | Item | Result | Source | Owner confirmation | Status |
+|---|---|---|---|---|---|
+| World Forge | NeuroPlay links | `github.com/Reneesh28/NeuroPlay` 404, so it's replaced by `Neuroplay-Frontend` and `NeuroPlay-Backend` (live; the CV links them). Demo `neuroplay.vercel.app` 503, so it's hidden. | Link test; CV link targets | DEC-034 | VERIFIED |
+| World Forge | AETHERION, NutriFit AI, Game Stats links | live | Link test | DEC-034 | VERIFIED |
+| World Forge | FinLit AI links | `FinLit-AI` 404, so it's replaced by `finlit-frontend`, `finlit-backend` and `finlit-ai-service` (live) | Link test; public repository list | DEC-034 | VERIFIED |
+| World Forge | PARAS System link | 404 and no public repository, so it's removed | Link test | DEC-034 | OMIT |
+| World Forge | SPAE link | `Project_ML` redirects, so the link is now `SPAE-SALES_PREDICTION_ANALYSIS_ENGINE-` | Link test | DEC-034 | VERIFIED |
+| World Forge | Chronoshift | Category (Full Stack), overview, architecture, tech stack (13), links (live demo, frontend, backend); no status | `Chronoshift_Frontend` and `Chronoshift_Backend`: pages, services, dependency files (the READMEs hold no description) | DEC-034 ("from the github itself") | VERIFIED |
+| Archive | Chronoshift as evidence | React, FastAPI, Django, Flask, WebSockets, LangChain, MongoDB, Docker | Its tech list | DEC-034 | VERIFIED |
+| Classic | CGPA | 6.91 → 6.86 in `src/data/education.js` | CV | DEC-034 | VERIFIED |
+| Horizon | LinkedIn | `linkedin.com/in/balam-reneesh`: the CV's own link target (Classic agrees). LinkedIn answers automated checks with 999. | CV PDF link annotation | DEC-034 | VERIFIED |
+| Worlds Beyond | Instagram void_ronin.exe | live | Link test | DEC-034 | VERIFIED |

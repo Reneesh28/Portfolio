@@ -1,7 +1,7 @@
 const education = [
   {
     period: "2023 – Present",
-    score: "CGPA: 6.91",
+    score: "CGPA: 6.86", // The CV's figure (owner, DEC-034).
     degree: "Bachelor of Technology (CSE)",
     institution: "Lovely Professional University, Punjab",
     description:

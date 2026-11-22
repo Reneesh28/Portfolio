@@ -53,6 +53,14 @@ export interface Project {
 }
 
 const repo = <T,>(value: T): Field<T> => ({ value, status: 'repo', source: 'src/data/projects.js (also shown by Classic)' });
+/** Links tested on 2026-11-22 (DEC-034): live, and the right repositories. */
+const tested = (value: ProjectLink[]): Field<ProjectLink[]> => ({ value, status: 'owner', source: 'link test 2026-11-22 (DEC-034)' });
+/** Chronoshift, from its own GitHub repositories (owner: "you can know from the github itself", DEC-034). */
+const github = <T,>(value: T): Field<T> => ({
+  value,
+  status: 'owner',
+  source: 'github.com/Reneesh28/Chronoshift_Frontend and Chronoshift_Backend: pages, services and dependencies (DEC-034)',
+});
 /** The owner's CV, which the owner confirmed as the source of truth ("Everything is in CV", DEC-025). */
 const cv = <T,>(value: T): Field<T> => ({ value, status: 'owner', source: 'public/resume.pdf (owner-confirmed, DEC-025)' });
 const missing = <T,>(value: T): Field<T> => ({ value, status: 'missing', source: 'none' });
@@ -77,9 +85,10 @@ export const PROJECTS: readonly Project[] = [
     architecture: cv([
       'An async distributed architecture with 5-stage execution pipelines, BullMQ workers, FastAPI orchestration and domain-isolated FAISS retrieval systems, enabling deterministic and fault-tolerant AI processing workflows.',
     ]),
-    links: repo([
-      { label: 'GitHub', href: 'https://github.com/Reneesh28/NeuroPlay' },
-      { label: 'Live demo', href: 'https://neuroplay.vercel.app' },
+    // The old repository is gone (404); the CV links these two. The demo was down (503) at the test, so it is not shown.
+    links: tested([
+      { label: 'GitHub (frontend)', href: 'https://github.com/Reneesh28/Neuroplay-Frontend' },
+      { label: 'GitHub (backend)', href: 'https://github.com/Reneesh28/NeuroPlay-Backend' },
     ]),
   },
   {
@@ -98,7 +107,7 @@ export const PROJECTS: readonly Project[] = [
       'Quantitative analytics modules (risk analysis, liquidity stress, anomaly detection), enabling data-driven trading decisions at scale.',
     ]),
     architecture: cv(['A microservices architecture with real-time data ingestion and WebSocket streaming, achieving low latency (<200 ms) for live market data.']),
-    links: repo([
+    links: tested([
       { label: 'GitHub (frontend)', href: 'https://github.com/Reneesh28/AETHERION_FRONTEND' },
       { label: 'GitHub (backend)', href: 'https://github.com/Reneesh28/AETHERION_BACKEND' },
     ]),
@@ -118,7 +127,7 @@ export const PROJECTS: readonly Project[] = [
     tech: repo(['Python', 'LangChain', 'FAISS', 'Streamlit', 'FastAPI', 'Sentence Transformers', 'Groq API']),
     approach: missing([]),
     architecture: missing([]),
-    links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/Nutrifit-AI' }]),
+    links: tested([{ label: 'GitHub', href: 'https://github.com/Reneesh28/Nutrifit-AI' }]),
   },
   {
     id: 'finlit',
@@ -133,7 +142,12 @@ export const PROJECTS: readonly Project[] = [
     tech: repo(['Python', 'Pandas', 'LLMs', 'FastAPI']),
     approach: missing([]),
     architecture: missing([]),
-    links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/FinLit-AI' }]),
+    // FinLit-AI is gone (404); the project lives in three repositories now.
+    links: tested([
+      { label: 'GitHub (frontend)', href: 'https://github.com/Reneesh28/finlit-frontend' },
+      { label: 'GitHub (backend)', href: 'https://github.com/Reneesh28/finlit-backend' },
+      { label: 'GitHub (AI service)', href: 'https://github.com/Reneesh28/finlit-ai-service' },
+    ]),
   },
   {
     id: 'paras',
@@ -148,7 +162,8 @@ export const PROJECTS: readonly Project[] = [
     tech: repo(['Python', 'Computer Vision', 'Real-Time Processing']),
     approach: missing([]),
     architecture: missing([]),
-    links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/PARAS' }]),
+    // No public repository (PARAS is 404 and absent from the public list): no link is shown.
+    links: missing([]),
   },
   {
     id: 'game-stats',
@@ -163,7 +178,7 @@ export const PROJECTS: readonly Project[] = [
     tech: repo(['Python', 'Streamlit', 'Pandas', 'NumPy', 'Groq API', 'Matplotlib', 'Plotly']),
     approach: missing([]),
     architecture: missing([]),
-    links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/Game_Stats_Dashboard_Recommendation-System' }]),
+    links: tested([{ label: 'GitHub', href: 'https://github.com/Reneesh28/Game_Stats_Dashboard_Recommendation-System' }]),
   },
   {
     id: 'spae',
@@ -180,7 +195,8 @@ export const PROJECTS: readonly Project[] = [
     tech: repo(['Python', 'Machine Learning', 'Data Analytics', 'Statistics', 'Dashboarding']),
     approach: missing([]),
     architecture: missing([]),
-    links: repo([{ label: 'GitHub', href: 'https://github.com/Reneesh28/Project_ML' }]),
+    // Project_ML redirects here (renamed).
+    links: tested([{ label: 'GitHub', href: 'https://github.com/Reneesh28/SPAE-SALES_PREDICTION_ANALYSIS_ENGINE-' }]),
   },
   {
     id: 'chronoshift',
@@ -189,13 +205,19 @@ export const PROJECTS: readonly Project[] = [
     featured: false,
     emblem: 'hourglass',
     built: true,
-    category: missing(''),
+    category: github('Full Stack'),
     status: missing(''),
-    overview: missing(''),
-    tech: missing([]),
+    overview: github('A web app with a timeline explorer, scenario comparison and a replay deck, on a Django REST API with real-time timelines, a FastAPI simulator and a Flask AI engine.'),
+    tech: github(['React', 'Vite', 'Tailwind CSS', 'D3', 'Framer Motion', 'Django', 'Django REST Framework', 'FastAPI', 'Flask', 'LangChain', 'MongoDB', 'WebSockets', 'Docker']),
     approach: missing([]),
-    architecture: missing([]),
-    links: missing([]),
+    architecture: github([
+      'Three backend services: a Django REST API (JWT authentication; timelines, branches and replays; WebSocket consumers for real-time timelines), a FastAPI simulation engine, and a Flask AI engine built on LangChain, all on MongoDB, containerised with Docker.',
+    ]),
+    links: tested([
+      { label: 'Live demo', href: 'https://chronoshift-frontend-nine.vercel.app' },
+      { label: 'GitHub (frontend)', href: 'https://github.com/Reneesh28/Chronoshift_Frontend' },
+      { label: 'GitHub (backend)', href: 'https://github.com/Reneesh28/Chronoshift_Backend' },
+    ]),
   },
 ];
 
